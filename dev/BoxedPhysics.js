@@ -784,6 +784,11 @@ while keeping general compatability. (made with box2D js es6) */
               },
             },
           },
+          {
+            hideFromPalette: !legacymode,
+            blockType: Scratch.BlockType.LABEL,
+            text: `Legacy mode enabled.`
+          },
         ],
         menus: {
           sceneType: ['boxed stage', 'closed stage', 'opened stage', 'nothing'],
