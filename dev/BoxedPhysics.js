@@ -713,8 +713,8 @@ while keeping general compatability. (made with box2D js es6) */
             hideFromPalette: !wipblocks,
             arguments: {
               GROUP: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
               },
             },
           },
@@ -725,8 +725,8 @@ while keeping general compatability. (made with box2D js es6) */
             hideFromPalette: !wipblocks,
             arguments: {
               GROUP: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
               },
             },
           },
@@ -736,6 +736,10 @@ while keeping general compatability. (made with box2D js es6) */
             text: 'Add objects [NAMES] to group [GROUP]',
             hideFromPalette: !wipblocks,
             arguments: {
+              GROUP: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
+              },
               NAMES: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'Object1 Object2',
@@ -748,6 +752,10 @@ while keeping general compatability. (made with box2D js es6) */
             text: 'Remove objects [NAMES] from group [GROUP]',
             hideFromPalette: !wipblocks,
             arguments: {
+              GROUP: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '1',
+              },
               NAMES: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 'Object1 Object2',
