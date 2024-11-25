@@ -707,9 +707,33 @@ while keeping general compatability. (made with box2D js es6) */
           },
 
           {
+            opcode: 'createGroup',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Create group [GROUP]',
+            hideFromPalette: !wipblocks,
+            arguments: {
+              GROUP: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object1 Object2',
+              },
+            },
+          },
+          {
+            opcode: 'destroyGroup',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Destroy group [GROUP]',
+            hideFromPalette: !wipblocks,
+            arguments: {
+              GROUP: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object1 Object2',
+              },
+            },
+          },
+          {
             opcode: 'addObjectToGroup',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Add objects [NAMES] to [GROUPTYPE] [GROUP]',
+            text: 'Add objects [NAMES] to group [GROUP]',
             hideFromPalette: !wipblocks,
             arguments: {
               NAMES: {
@@ -721,7 +745,7 @@ while keeping general compatability. (made with box2D js es6) */
           {
             opcode: 'removeObjectFromGroup',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Remove objects [NAMES] from groups [GROUPS]',
+            text: 'Remove objects [NAMES] from group [GROUP]',
             hideFromPalette: !wipblocks,
             arguments: {
               NAMES: {
