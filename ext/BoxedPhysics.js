@@ -754,6 +754,11 @@ while keeping general compatability. (made with box2D js es6) */
               },
             },
           },
+          {
+            opcode: 'getgroups',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Groups',
+          },
 
           {
             opcode: 'get_debug',
