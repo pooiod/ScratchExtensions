@@ -5,9 +5,8 @@
 // Original: Griffpatch
 // License: zlib
 
-/* This extension was originally based off of the Box2D Physics extension
-for ScratchX by Griffpatch, but has since deviated to have more features,
-while keeping general compatability. (made with box2D js es6) */
+/* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
+but has since deviated to be its own thing. (made with box2D js es6) */
 
 (function(Scratch) {
   'use strict';
@@ -57,13 +56,13 @@ while keeping general compatability. (made with box2D js es6) */
 
       this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
 
-      vm.runtime.on('PROJECT_LOADED', () => {
+      this.vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
       });
       this.vm.runtime.on('PROJECT_STOP', () => {
         this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
       });
-      vm.runtime.on('PROJECT_START', () => {
+      this. vm.runtime.on('PROJECT_START', () => {
         this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
       });
       this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
@@ -762,6 +761,7 @@ while keeping general compatability. (made with box2D js es6) */
       };
     }
 
+    // this is not a commonly used fucntion, but it is nice to have.
     get_debug(args) {
       try { args = args.VAL } catch (error) { args = args; }
       if (args == "version") {
@@ -798,7 +798,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       b2Dworld = new b2World(
         new b2Vec2(0, args.GRAVITY) // args.GRAVITY (10)
-        , true                     // allow sleep
+        , true                     // allow sleep (for performance)
       );
 
       b2Dzoom = args.SCALE;
@@ -857,32 +857,9 @@ while keeping general compatability. (made with box2D js es6) */
       noCollideSeq = 0;
 
       bodyDef.type = b2Body.b2_dynamicBody;
-    }
 
-    setObjectLayer({ NAME, LAYERS }) {
-      var body = bodies[NAME];
-      if (!body) return '';
-
-      LAYERS = LAYERS.toString();
-      var layers = LAYERS.split(' ').map(Number);
-      if (!layers.length) return '';
-
-      var categoryBits = 0;
-      var maskBits = 0;
-
-      layers.forEach(layer => {
-        categoryBits |= 1 << (layer - 1);
-        maskBits |= 1 << (layer - 1);
-      });
-
-      var fixture = body.GetFixtureList();
-      while (fixture) {
-        var filter = fixture.GetFilterData();
-        filter.categoryBits = categoryBits;
-        filter.maskBits = maskBits;
-        fixture.SetFilterData(filter);
-        fixture = fixture.GetNext();
-      }
+      fixDef.shape = new b2CircleShape; // Default shape is circle 100
+      fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
     }
 
     rotatePoint(args) {
@@ -1015,7 +992,12 @@ while keeping general compatability. (made with box2D js es6) */
 
         fixDef.shape.SetAsArray(vertices);
       } catch (error) {
-        console.warn(error);
+        // console.warn(error);
+        fixDef.shape = new b2CircleShape;
+        fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+        console.error("Unable to create hull for hidden sprite.");
+        console.warn("Defaulting to \"circle 100\"");
+        return;
       }
     }
 
@@ -1024,7 +1006,7 @@ while keeping general compatability. (made with box2D js es6) */
       return;
     }
 
-    ispoly(args) {
+    ispoly(args) { // wip
       return this.definePoly(args);
     }
 
@@ -1079,6 +1061,32 @@ while keeping general compatability. (made with box2D js es6) */
       body.uid = id;
       body.CreateFixture(fixDef);
       bodies[id] = body;
+    }
+
+    setObjectLayer({ NAME, LAYERS }) {
+      var body = bodies[NAME];
+      if (!body) return '';
+
+      LAYERS = LAYERS.toString();
+      var layers = LAYERS.split(' ').map(Number);
+      if (!layers.length) return '';
+
+      var categoryBits = 0;
+      var maskBits = 0;
+
+      layers.forEach(layer => {
+        categoryBits |= 1 << (layer - 1);
+        maskBits |= 1 << (layer - 1);
+      });
+
+      var fixture = body.GetFixtureList();
+      while (fixture) {
+        var filter = fixture.GetFilterData();
+        filter.categoryBits = categoryBits;
+        filter.maskBits = maskBits;
+        fixture.SetFilterData(filter);
+        fixture = fixture.GetNext();
+      }
     }
 
     createNoCollideSet(args) {
