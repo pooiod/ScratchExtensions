@@ -9,11 +9,10 @@
 for ScratchX by Griffpatch, but has since deviated to have more features,
 while keeping general compatability. (made with box2D js es6) */
 
-// https://raw.githubusercontent.com/pooiod/scratchextensions/refs/heads/main/ext/BoxedPhysics.js
-
 (function(Scratch) {
   'use strict';
-  var b2Dversion = "1.8.2";
+  var b2Dupdated = "11/25/2024";
+  var publishedUpdateIndex = 9;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -22,9 +21,9 @@ while keeping general compatability. (made with box2D js es6) */
   var b2Dworld, fixDef; var mousePVec, selectedBody, prb2djaxisX, prb2djaxisY, prb2djl, prb2dju;
   var b2Dzoom = 50; var b2Math;
 
-  var physdebugmode = true;
+  var physdebugmode = false;
   var wipblocks = physdebugmode;
-  var legacymode = true;
+  var legacymode = false;
 
   var positerations = 10;
   var veliterations = 10;
@@ -187,26 +186,17 @@ while keeping general compatability. (made with box2D js es6) */
             text: 'Destroy every object',
           },
           {
-            opcode: 'createNoCollideSet',
+            opcode: 'setObjectLayer',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Disable collision between [NAMES]',
-            hideFromPalette: !legacymode,
+            text: 'Set object [NAME] to be on collision layer [LAYERS]',
             arguments: {
-              NAMES: {
+              LAYERS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
+                defaultValue: '1',
               },
-            },
-          },
-          {
-            opcode: 'createYesCollideSet',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Reset collision of objects [NAMES]',
-            hideFromPalette: !legacymode,
-            arguments: {
-              NAMES: {
+              NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
+                defaultValue: 'Object',
               },
             },
           },
@@ -687,42 +677,42 @@ while keeping general compatability. (made with box2D js es6) */
             },
           },
 
-          
           {
-            hideFromPalette: !physdebugmode && !wipblocks,
-            blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-            text: "Upcoming blocks (can brake projects)"
+            hideFromPalette: !legacymode,
+            blockType: Scratch.BlockType.LABEL,  // ---- Legacy blocks (old and not recomended for use) ----
+            text: `Legacy blocks`
           },
           {
-            opcode: 'ignore',
+            opcode: 'createNoCollideSet',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Disable collision between [NAMES]',
+            hideFromPalette: !legacymode,
+            arguments: {
+              NAMES: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object1 Object2',
+              },
+            },
+          },
+          {
+            opcode: 'createYesCollideSet',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Reset collision of objects [NAMES]',
+            hideFromPalette: !legacymode,
+            arguments: {
+              NAMES: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object1 Object2',
+              },
+            },
+          },
+
+
+          {
             hideFromPalette: !physdebugmode,
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Ignore [VALUE]',
-            arguments: {
-              VALUE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
-              },
-            },
+            blockType: Scratch.BlockType.LABEL, // --------------------- Debug blocks ----
+            text: "Debug blocks"
           },
-
-          {
-            opcode: 'setObjectLayer',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Set object [NAME] to be on layers [LAYERS]',
-            hideFromPalette: !wipblocks,
-            arguments: {
-              LAYERS: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1 2',
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1',
-              },
-            },
-          },
-
           {
             opcode: 'get_debug',
             hideFromPalette: !physdebugmode,
@@ -735,6 +725,13 @@ while keeping general compatability. (made with box2D js es6) */
               },
             },
           },
+          
+          {
+            hideFromPalette: !wipblocks,
+            blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
+            text: "Upcoming blocks (can brake projects)"
+          }, // the ids on any of the following can change, so it's YOUR fault if you use them and your project brakes
+
           {
             opcode: 'ispoly',
             hideFromPalette: !wipblocks,
@@ -746,11 +743,6 @@ while keeping general compatability. (made with box2D js es6) */
                 defaultValue: "0 50   40 -50   -40 -50",
               },
             },
-          },
-          {
-            hideFromPalette: !legacymode,
-            blockType: Scratch.BlockType.LABEL,
-            text: `Legacy mode enabled.`
           },
         ],
         menus: {
@@ -770,11 +762,10 @@ while keeping general compatability. (made with box2D js es6) */
       };
     }
 
-    ignore() { }
     get_debug(args) {
       try { args = args.VAL } catch (error) { args = args; }
       if (args == "version") {
-        return b2Dversion;
+        return publishedUpdateIndex;
       } else if (args == "lib") {
         return "Box2D JS es6 (Uli Hecht's port of Box2D flash)";
       } else if (args === "maker") {
@@ -783,8 +774,10 @@ while keeping general compatability. (made with box2D js es6) */
         return "Box2D Physics by griffpatch for ScratchX (Scratch 2.0)";
       } else if (args === "docs") {
         return this.docs;
+      } else if (args = "lastupdated") {
+        return b2Dupdated;
       } else {
-        return '["version", "lib", "maker", "base", "docs"]';
+        return '["version", "lib", "maker", "base", "docs", "lastupdated"]';
       }
     }
 
@@ -869,23 +862,27 @@ while keeping general compatability. (made with box2D js es6) */
     setObjectLayer({ NAME, LAYERS }) {
       var body = bodies[NAME];
       if (!body) return '';
-  
+
+      LAYERS = LAYERS.toString();
       var layers = LAYERS.split(' ').map(Number);
       if (!layers.length) return '';
-  
+
       var categoryBits = 0;
       var maskBits = 0;
-  
+
       layers.forEach(layer => {
         categoryBits |= 1 << (layer - 1);
         maskBits |= 1 << (layer - 1);
       });
-  
-      body.GetFixtureList().SetFilterData({
-        categoryBits: categoryBits,
-        maskBits: maskBits,
-        groupIndex: 0
-      });
+
+      var fixture = body.GetFixtureList();
+      while (fixture) {
+        var filter = fixture.GetFilterData();
+        filter.categoryBits = categoryBits;
+        filter.maskBits = maskBits;
+        fixture.SetFilterData(filter);
+        fixture = fixture.GetNext();
+      }
     }
 
     rotatePoint(args) {
@@ -1085,6 +1082,8 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     createNoCollideSet(args) {
+      legacymode = true;
+
       if (noCollideSeq > 0) {
         noCollideSeq = -noCollideSeq;
       }
@@ -1111,6 +1110,8 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     createYesCollideSet(args) {
+      legacymode = true;
+      
       if (noCollideSeq < 0) {
         noCollideSeq = -noCollideSeq;
       }
