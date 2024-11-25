@@ -1615,8 +1615,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     | /// https://www.npmjs.com/package/box2d-es6 (the lib by itself)
     */// Prepare for 90% of this extensions code: the box2D_es6 lib.
 
-  'use strict';
-
   let Box2D = {};
 
   (((a2j, undefined) => {
