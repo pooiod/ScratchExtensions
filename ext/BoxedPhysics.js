@@ -9,9 +9,11 @@
 for ScratchX by Griffpatch, but has since deviated to have more features,
 while keeping general compatability. (made with box2D js es6) */
 
+// https://raw.githubusercontent.com/pooiod/scratchextensions/refs/heads/main/ext/BoxedPhysics.js
+
 (function(Scratch) {
   'use strict';
-  var b2Dversion = "1.8.1";
+  var b2Dversion = "1.8.2";
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -22,6 +24,7 @@ while keeping general compatability. (made with box2D js es6) */
 
   var physdebugmode = true;
   var wipblocks = physdebugmode;
+  var legacymode = true;
 
   var positerations = 10;
   var veliterations = 10;
@@ -53,10 +56,7 @@ while keeping general compatability. (made with box2D js es6) */
 
       this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
 
-      this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : false ? 'https://extensions.turbowarp.org/pooiod7/BoxedPhysics",' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
-
-      // this is a penguinmod only thing
-      this.squaretype = Scratch.extensions.isPenguinMod ? Scratch.BlockShape.SQUARE : false;
+      this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
 
       vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
@@ -190,6 +190,7 @@ while keeping general compatability. (made with box2D js es6) */
             opcode: 'createNoCollideSet',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Disable collision between [NAMES]',
+            hideFromPalette: !legacymode,
             arguments: {
               NAMES: {
                 type: Scratch.ArgumentType.STRING,
@@ -201,6 +202,7 @@ while keeping general compatability. (made with box2D js es6) */
             opcode: 'createYesCollideSet',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Reset collision of objects [NAMES]',
+            hideFromPalette: !legacymode,
             arguments: {
               NAMES: {
                 type: Scratch.ArgumentType.STRING,
@@ -693,7 +695,7 @@ while keeping general compatability. (made with box2D js es6) */
           },
           {
             opcode: 'ignore',
-            hideFromPalette: !physdebugmode && !wipblocks,
+            hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.COMMAND,
             text: 'Ignore [VALUE]',
             arguments: {
@@ -703,11 +705,36 @@ while keeping general compatability. (made with box2D js es6) */
               },
             },
           },
+
+          {
+            opcode: 'addObjectToGroup',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Add objects [NAMES] to [GROUPTYPE] [GROUP]',
+            hideFromPalette: !wipblocks,
+            arguments: {
+              NAMES: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object1 Object2',
+              },
+            },
+          },
+          {
+            opcode: 'removeObjectFromGroup',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Remove objects [NAMES] from groups [GROUPS]',
+            hideFromPalette: !wipblocks,
+            arguments: {
+              NAMES: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object1 Object2',
+              },
+            },
+          },
+
           {
             opcode: 'get_debug',
-            hideFromPalette: !physdebugmode && !wipblocks,
+            hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.REPORTER,
-            blockShape: this.squaretype,
             text: 'Get debug [VAL]',
             arguments: {
               VAL: {
@@ -718,7 +745,7 @@ while keeping general compatability. (made with box2D js es6) */
           },
           {
             opcode: 'ispoly',
-            hideFromPalette: !physdebugmode && !wipblocks,
+            hideFromPalette: !wipblocks,
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'Is [POINTS] a polygon?',
             arguments: {
