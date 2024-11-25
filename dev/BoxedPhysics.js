@@ -707,65 +707,20 @@ while keeping general compatability. (made with box2D js es6) */
           },
 
           {
-            opcode: 'createGroup',
+            opcode: 'setObjectLayer',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Create group [GROUP]',
+            text: 'Set object [NAME] to be on layers [LAYERS]',
             hideFromPalette: !wipblocks,
             arguments: {
-              GROUP: {
+              LAYERS: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
+                defaultValue: '1 2',
               },
-            },
-          },
-          {
-            opcode: 'destroyGroup',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Destroy group [GROUP]',
-            hideFromPalette: !wipblocks,
-            arguments: {
-              GROUP: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-              },
-            },
-          },
-          {
-            opcode: 'addObjectToGroup',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Add objects [NAMES] to group [GROUP]',
-            hideFromPalette: !wipblocks,
-            arguments: {
-              GROUP: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-              },
-              NAMES: {
+              NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
+                defaultValue: 'Object1',
               },
             },
-          },
-          {
-            opcode: 'removeObjectFromGroup',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Remove objects [NAMES] from group [GROUP]',
-            hideFromPalette: !wipblocks,
-            arguments: {
-              GROUP: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: '1',
-              },
-              NAMES: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
-              },
-            },
-          },
-          {
-            opcode: 'getgroups',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Groups',
           },
 
           {
@@ -909,6 +864,28 @@ while keeping general compatability. (made with box2D js es6) */
       noCollideSeq = 0;
 
       bodyDef.type = b2Body.b2_dynamicBody;
+    }
+
+    setObjectLayer({ NAME, LAYERS }) {
+      var body = bodies[NAME];
+      if (!body) return '';
+  
+      var layers = LAYERS.split(' ').map(Number);
+      if (!layers.length) return '';
+  
+      var categoryBits = 0;
+      var maskBits = 0;
+  
+      layers.forEach(layer => {
+        categoryBits |= 1 << (layer - 1);
+        maskBits |= 1 << (layer - 1);
+      });
+  
+      body.GetFixtureList().SetFilterData({
+        categoryBits: categoryBits,
+        maskBits: maskBits,
+        groupIndex: 0
+      });
     }
 
     rotatePoint(args) {
