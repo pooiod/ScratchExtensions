@@ -11,7 +11,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 (function(Scratch) {
   'use strict';
   var b2Dupdated = "11/25/2024";
-  var publishedUpdateIndex = 9;
+  var publishedUpdateIndex = 12;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
