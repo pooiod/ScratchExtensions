@@ -1,6 +1,6 @@
 // Name: Boxed Plysics
 // ID: P7BoxPhys
-// Description: Implements the Box2D physics engine, adding joints, springs, sliders, and more.
+// Description: An implementation the Box2D physics engine with support for joints, springs, sliders, and more.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
 // Original: Griffpatch
 // License: zlib
@@ -52,7 +52,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime
 
-      this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
+      // this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
 
       this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
 
@@ -1224,9 +1224,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         case 'awake': return body.IsAwake() ? 1 : 0;
 
         case 'Tension':
-          // Assume that body is a b2Body object that represents the object
-          var force = 0; // Initialize the force to 0
-          var contact = body.GetContactList(); // Get the contact list
+          var force = 0;
+          var contact = body.GetContactList();
           while (contact) { // Loop through the contacts
             var impulse = contact.impulse; // Get the impulse object
             var normalImpulse = impulse.normalImpulses[0]; // Get the normal impulse
@@ -1235,7 +1234,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             force += impulseMagnitude; // Add the impulse magnitude to the force
             contact = contact.next; // Move to the next contact
           }
-          console.log("The force applied to the object by other objects is " + force + " N"); // Print the result
+          // console.log("The force applied to the object by other objects is " + force + " N");
           return force;
 
         //case 'touching': return JSON.stringify(this.getTouchingObjectNames(body));
@@ -1587,8 +1586,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     }
 
     stepSimulation() {
-      var secondsimspeed = Math.abs(simspeed + 29);
-      if (secondsimspeed == 0) { secondsimspeed = 1 };
+      var secondsimspeed = Math.abs(simspeed + 30);
+      if (secondsimspeed == 0) secondsimspeed = 1 ;
 
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
