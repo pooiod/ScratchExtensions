@@ -10,7 +10,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "11/25/2024";
+  var b2Dupdated = "11/26/2024";
   var publishedUpdateIndex = 12;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -55,7 +55,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       // this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
 
       this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
-
+      
       this.vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
       });
@@ -273,7 +273,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'changevel',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set Velocity of [NAME] to x [X] y [Y] dir [DIR]',
+            text: 'Set Velocity of object [NAME] to x [X] y [Y] dir [DIR]',
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -356,7 +356,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'getBodyIDAt',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Get body of type [type] at x: [X]  y: [Y]',
+            text: 'Get object of type [type] at x: [X]  y: [Y]',
             arguments: {
               type: {
                 type: Scratch.ArgumentType.STRING,
@@ -493,7 +493,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'setJointTarget',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set Mouse Joint Target [JOINTID] to x: [X]  y: [Y]',
+            text: 'Set mouse joint target [JOINTID] to x: [X]  y: [Y]',
             arguments: {
               JOINTID: {
                 type: Scratch.ArgumentType.STRING,
@@ -528,7 +528,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'init',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Make World, scale 1m: [SCALE]  gravity: [GRAVITY]  scene: [SCENE]',
+            text: 'Make world, scale 1m: [SCALE]  gravity: [GRAVITY]  scene: [SCENE]',
             arguments: {
               SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -548,7 +548,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'physoptions',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set physics Position Iterations: [POS] Velocity Iterations: [VEL] Continuous Physics: [CONPHYS] Warm Starting: [WARMSTART]',
+            text: 'Set physics position iterations: [POS] velocity iterations: [VEL] continuous physics: [CONPHYS] warm starting: [WARMSTART]',
             arguments: {
               POS: {
                 type: Scratch.ArgumentType.NUMBER,
