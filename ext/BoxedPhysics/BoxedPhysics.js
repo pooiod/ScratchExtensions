@@ -142,7 +142,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             opcode: 'difineCostume',
             blockType: Scratch.BlockType.COMMAND,
             filter: [Scratch.TargetType.SPRITE],
-            text: 'Define pollygon as this costume',
+            text: 'Define polygon as this costume',
           },
           {
             opcode: 'placeBody',
