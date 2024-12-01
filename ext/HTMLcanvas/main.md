@@ -168,7 +168,7 @@ Although once agreed to once, all future scripts will not ask.
 
 Scripts come in two parts: reporter scripts, and void scripts.
 
-### Void scripts
+#### Void scripts
 Void scripts simply run a function, without returning anything.
 Any data returned with the`Add script` block will just be sent into the void _(ignored)_.
 Void scripts also take an id, as they are added to the page like an element.
@@ -177,7 +177,7 @@ Void scripts also take an id, as they are added to the page like an element.
 Add script [alert("Hello, World!");] with id [script1] :: #6164ff
 ```
 
-### Reporter scripts
+#### Reporter scripts
 Reporter scripts are similar to void scripts, but they don't actually add any elements, and they return a value.
 
 ```scratch3
