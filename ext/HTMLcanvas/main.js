@@ -577,23 +577,14 @@
       }
 
       fetchAndGetCostumeNames() {
-        const selectedTarget = vm.runtime.targets.find(target => target.isSprite() || target.isStage());
-        const costumeNames = [];
-        
-        if (selectedTarget) {
-          if (selectedTarget.isSprite()) {
-            const costumes = selectedTarget.sprite.costumes_;
-            costumeNames.push(...costumes.map((costume) => costume.name));
-          } else if (selectedTarget.isStage()) {
-            const backdrops = selectedTarget.stage.getBackdrops(); // Get all backdrops
-            costumeNames.push(...backdrops.map((backdrop) => backdrop.name));
-          }
-      
+        const selectedSprite = vm.runtime.getEditingTarget();
+        if (selectedSprite) {
+          const costumes = selectedSprite.sprite.costumes_;
+          const costumeNames = costumes.map((costume, index) => costume.name);
           costumeNames.unshift('current');
-          console.log(costumeNames);
+          return costumeNames;
         }
-        
-        return costumeNames;
+        return [];
       }
   
       createOverlayFrame() {
