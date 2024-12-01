@@ -569,7 +569,7 @@
           Scratch.vm.extensionManager.refreshBlocks();
         } else {
           this.clearAllElements(true);
-          var html = `<iframe src="//p7scratchextensions.pages.dev/docs/#/HTMLcanvas" style="width: 100vw; height: calc(100vh + 0px); position: absolute; top: 0px; left: 0; border: none;"></iframe>`;
+          var html = `<iframe src="https://p7scratchextensions.pages.dev/docs/#/HTMLcanvas" style="width: 100vw; height: calc(100vh + 0px); position: absolute; top: 0px; left: 0; border: none;"></iframe>`;
           var css = `body {margin:0px;padding:0px;} iframe{width:100%;height:100%;border:none;}`;
           this.makeElement({type:"iframe",id:"extdocsp7markdownonstage"});
           this.setContent({elm:"#extdocsp7markdownonstage",content:html});
