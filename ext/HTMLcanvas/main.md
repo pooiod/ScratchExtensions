@@ -186,7 +186,8 @@ Reporter scripts are similar to void scripts, but they don't actually add any el
 ```
 
 ### Communicating with your scripts
-Some scripts need to to return content over time (like events). In order to do this, you can use the `Last recived message` block along with the `postToScratch` js function.
+Some scripts need to to return content over time (like events). 
+In order to do this, you can use the `Last recived message` block along with the `postToScratch` js function.
 
 ```js
 postToScratch("message");
