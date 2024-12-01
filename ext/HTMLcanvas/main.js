@@ -340,6 +340,22 @@
                 },
               },
             },
+            {
+                opcode: 'setImageAsCostume',
+                blockType: Scratch.BlockType.REPORTER,
+                text: 'Set image [elm] to [costume]',
+                arguments: {
+                    costume: {
+                        type: Scratch.ArgumentType.COMMAND,
+                        menu: 'costumeMenu',
+                        defaultValue: 'current'
+                    },
+                    elm: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: '#elementId',
+                    },
+                }
+            },
   
             {
               blockType: "label", text: "Interactions",
@@ -549,9 +565,25 @@
                 'right',
                 'bottom',
               ],
+            },
+            costumeMenu: {
+                acceptReporters: true,
+                items: 'fetchAndGetCostumeNames'
             }
           },
         };
+      }
+
+      fetchAndGetCostumeNames() {
+        const selectedSprite = vm.runtime.targets.find(target => target.isSprite());
+        if (selectedSprite) {
+          const costumes = selectedSprite.sprite.costumes_;
+          const costumeNames = costumes.map((costume, index) => costume.name);
+          costumeNames.unshift('current');
+          console.log(costumeNames);
+          return costumeNames;
+        }
+        return [];
       }
   
       createOverlayFrame() {
@@ -897,6 +929,39 @@
           }
         }
         el.style.transition = transitions.join(', ');
+      }
+
+      setImageAsCostume({ elm, costume }, util) {
+        const sprite = util.target.sprite;
+        const costumeName = costume;
+
+        let selectedCostume;
+        if (costumeName === 'current') {
+            selectedCostume = sprite.costumes_[util.target.currentCostume];
+        } else {
+            selectedCostume = sprite.costumes_.find(costume => costume.name === costumeName);
+        }
+            
+        function uint8ArrayToBase64(uint8Array) {
+            let binary = '';
+            const len = uint8Array.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(uint8Array[i]);
+            }
+            return window.btoa(binary);
+        }
+
+        var img = "https://storage.googleapis.com/replit/images/1608749573246_3ecaeb5cdbf14cd5f1ad8c48673dd7ce.png";
+        if (selectedCostume) {
+            const costumeData = selectedCostume.asset.data;
+            const mimeType = selectedCostume.asset.assetType.contentType;
+
+            if (costumeData) {
+                const base64Data = uint8ArrayToBase64(costumeData);
+                img = `data:${mimeType};base64,${base64Data}`;
+            }
+        }
+        setContent(elm, img);
       }
   
       setParent(args) {
