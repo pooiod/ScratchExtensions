@@ -164,7 +164,7 @@ You can also use the following blocks for more complex actions.
 ### Working with scripts
 Scripts are a touchy addition, as they allow for some not so nice things to be done.
 This is why the first attempt to use scripts prompts the user about the action.
-Although once agreed to once, all future scripts will not ask.
+Although it only needs to be agreed to once. all future scripts will not ask.
 
 Scripts come in two parts: reporter scripts, and void scripts.
 
