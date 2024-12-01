@@ -185,7 +185,7 @@ Reporter scripts are similar to void scripts, but they don't actually add any el
 (Run script [window.prompt("How are you today?"\);] :: #6164ff)
 ```
 
-### COmmunicating with your scripts
+### Communicating with your scripts
 Some scripts need to to return content over time (like events). In order to do this, you can use the `Last recived message` block along with the `postToScratch` js function.
 
 ```js
