@@ -360,7 +360,6 @@ body > * {
             },
             {
                 opcode: 'addFont',
-                hideFromPalette: !this.canscript,
                 blockType: Scratch.BlockType.COMMAND,
                 text: 'Add font [url] with id [id]',
                 arguments: {
