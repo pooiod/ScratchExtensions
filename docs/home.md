@@ -51,7 +51,7 @@ for (let i = 0; i < 10; i++) {
 document.getElementById("loading-bar").style.color = "#18a100";
 ~~~
 
-~~~Scratch3
+~~~scratch3
 when green flag clicked
 Init World, scale 1m: [50]  gravity: [-10]  scene: [boxed stage v] :: #2cb0c0
 Dеfine Type [Dynamic v]  Density (1)  Friction (0.5)  Bounce (0.2) :: #2cb0c0
@@ -65,7 +65,7 @@ forever
 end
 ~~~
 
-~~~Scratch2
+~~~scratch2
 when green flag clicked
 Init World, scale 1m: [50]  gravity: [-10]  scene: [boxed stage v] :: #2cb0c0
 Dеfine Type [Dynamic v]  Density (1)  Friction (0.5)  Bounce (0.2) :: #2cb0c0
