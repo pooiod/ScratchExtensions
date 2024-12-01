@@ -1004,7 +1004,7 @@ body > * {
         
             const fontFaceRule = `
                 @font-face {
-                    src: url(${url}) format('woff2');
+                    src: url(${url});
                     ${style}
                 }
             `;
