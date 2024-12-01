@@ -4,6 +4,8 @@
 
 [Open your own file (data uri)](#/markdown/any.html)
 
+[!js-alert('hello')]
+
 Paragraphs are separated by a blank line.
 
 2nd paragraph. *Italic*, **bold**, and `backticked`. Itemized lists
