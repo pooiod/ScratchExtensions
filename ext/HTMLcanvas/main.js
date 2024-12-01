@@ -37,7 +37,8 @@
           }, 1000);
         }
 
-        this.lastmessage = ""
+        this.lastmessage = "";
+        this.lastmessage2 == "";
   
         this.docsloaded = false;
         window.addEventListener("message", (event) => {
@@ -415,8 +416,8 @@
             {
                 blockType: Scratch.BlockType.HAT,
                 opcode: 'whenmessagerecived',
-                text: 'When html message recived',
-                isEdgeActivated: true,
+                text: 'When message recived',
+                isEdgeActivated: false,
                 hideFromPalette: !this.canscript
             },
             {
@@ -425,7 +426,7 @@
                 blockType: Scratch.BlockType.REPORTER,
                 text: 'Last recived message',
                 hideFromPalette: !this.canscript
-              },
+            },
             
             {
               opcode: 'addScript',
@@ -770,7 +771,6 @@
         }
       }
   
-  
       isactive({ ELM }) {
         var element = this.findelement(ELM);
         if (!element) {
@@ -962,13 +962,16 @@
           const newDoc = document.implementation.createHTMLDocument();
           this.page.contentDocument.documentElement.replaceWith(newDoc.documentElement);
         }
+        try {
+            const scriptElement = this.pagecontent.createElement('script');
+            scriptElement.text = "function postToScratch(message) {window.parent.postMessage({ scratchmessage: message }, '*'); }";
+            this.pagecontent.head.appendChild(scriptElement);
+        } catch (e) {
+            console.error('Error adding script:', e);
+        }
       }
 
       whenmessagerecived() {
-        return true;
-      }
-
-      getlastmessage() {
         if (this.lastmessage != this.lastmessage2) {
             this.lastmessage2 == this.lastmessage;
             return true;
@@ -976,8 +979,12 @@
             return false;
         }
       }
+
+      getlastmessage() {
+        return this.lastmessage;
+      }
   
-      addScript({ script }) {
+      addScript({ script, id }) {
         if (!this.canscript) {
           if (!window.confirm("Do you want to allow this project to run custom javascript?")) {
             return;
@@ -989,6 +996,7 @@
         try {
           const scriptElement = this.pagecontent.createElement('script');
           scriptElement.text = script;
+          scriptElement.id = id;
           this.pagecontent.head.appendChild(scriptElement);
         } catch (e) {
           console.error('Error adding script:', e);
