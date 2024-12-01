@@ -76,6 +76,7 @@ forever
   Set [backgroundColor] of [#element1] to [orange] :: #6164ff
   wait (1) seconds
 end
+```
 
 Tables are like this:
 <table>
