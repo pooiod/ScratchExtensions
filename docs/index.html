@@ -82,6 +82,21 @@ Sorry, the file you are looking for could not be found on the server.`;
 
                         content.classList.remove('hidden');
                       document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
+
+                      document.querySelectorAll('#markdown-content *').forEach(element => {
+                          const matches = element.innerHTML.match(/\[!js-(.+?)\]/g);
+                          if (matches) {
+                              matches.forEach(match => {
+                                  const jsCode = match.slice(5, -1);
+                                  element.innerHTML = element.innerHTML.replace(match, '');
+                                  try {
+                                      eval(jsCode);
+                                  } catch (error) {
+                                      console.error(`Error executing JS: ${error.message}`);
+                                  }
+                              });
+                          }
+                      });
                       
                       Prism.highlightAll(); // Syntax stuff 
                       
