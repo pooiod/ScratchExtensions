@@ -558,6 +558,7 @@ body > * {
                 'borderStyle',
                 'borderColor',
                 'font-size',
+                'pointerEvents',
                 'background',
                 'opacity',
                 'transform',
