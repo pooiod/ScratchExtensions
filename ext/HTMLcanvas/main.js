@@ -157,7 +157,7 @@
                 arguments: {
                     costume: {
                         type: Scratch.ArgumentType.STRING,
-                        menu: 'costumeMenu',
+                        menu: 'costumeNames',
                         defaultValue: 'current'
                     },
                     elm: {
@@ -568,7 +568,7 @@
                 'bottom',
               ],
             },
-            costumeMenu: {
+            costumeNames: {
                 acceptReporters: true,
                 items: 'fetchAndGetCostumeNames'
             }
