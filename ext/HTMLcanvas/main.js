@@ -365,7 +365,7 @@ body > * {
                 arguments: {
                     url: {
                         type: Scratch.ArgumentType.STRING,
-                        defaultValue: 'https://fonts.gstatic.com/s/sono/v6/aFT97PNiY3U2Cqf_aYEN64CYaK18YWJEsV6u-QLiOsxVtkWtFX55.woff2',
+                        defaultValue: 'https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf',
                     },
                     style: {
                         type: Scratch.ArgumentType.STRING,
