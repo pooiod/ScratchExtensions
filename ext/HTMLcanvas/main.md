@@ -194,7 +194,7 @@ postToScratch("message");
 ```
 ```scratch3
 When message recived :: #6164ff hat
-say (Last recived message :: #6164ff) for 0.5 seconds
+say (Last recived message :: #6164ff) for (0.5) seconds
 ```
 
 ---
