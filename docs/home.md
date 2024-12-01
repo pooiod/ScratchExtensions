@@ -65,19 +65,17 @@ forever
 end
 ~~~
 
-~~~scratch2
-when green flag clicked
-Init World, scale 1m: [50]  gravity: [-10]  scene: [boxed stage v] :: #2cb0c0
-Dеfine Type [Dynamic v]  Density (1)  Friction (0.5)  Bounce (0.2) :: #2cb0c0
-Dеfine Polygon, points: [0 50   40 -50   -40 -50] :: #2cb0c0
-Create Body [tri] at x: (0)y: (0)  dir: (90) :: #2cb0c0
-Set Velocity of [tri] to x (-2) y (5) dir (-10) :: #2cb0c0
+```scratch2
+when gf clicked
+Make element [p v] with id [element1] :: #6164ff
+Set content of [#element1] to [Hello, world!] :: #6164ff
+Set [backgroundColor] of [#element1] to [yellow] :: #6164ff
 forever
-  step simulation :: #2cb0c0
-  go to x: (Get [x v] from [tri] :: #2cb0c0) y: (Get [y v] from [tri] :: #2cb0c0)
-  point in direction (Get [Direction v] from [tri] :: #2cb0c0)
+  Set [backgroundColor] of [#element1] to [yellow] :: #6164ff
+  wait (1) seconds
+  Set [backgroundColor] of [#element1] to [orange] :: #6164ff
+  wait (1) seconds
 end
-~~~
 
 Tables are like this:
 <table>
