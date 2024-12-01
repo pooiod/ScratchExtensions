@@ -2,8 +2,10 @@
 
 ---
 
-HTML Canvas is an extension that allows you to use HTML and CSS to make stylistically pleasing and interactive projects. <br>
-_You can also use it to make some of the worst looking projects in existance._
+HTML Canvas is an extension that allows you to use HTML and CSS to make projects with complex interfaces that would be hard, if not impossible, to make in normal Scratch.
+
+<p hidden>HTML Canvas is an extension that allows you to use HTML and CSS to make stylistically pleasing and interactive projects. <br>
+_You can also use it to make some of the worst looking projects in existance._</p>
 
 > To use this extension, you ***will*** need at least some knowlage of how html works
 
