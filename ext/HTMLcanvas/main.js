@@ -961,7 +961,7 @@
                 img = `data:${mimeType};base64,${base64Data}`;
             }
         }
-        setContent(elm, img);
+        this.setContent(elm, img);
       }
   
       setParent(args) {
