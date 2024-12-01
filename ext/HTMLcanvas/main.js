@@ -668,8 +668,8 @@ body > * {
         }
       }
   
-      strformat(args) { // A basic string formatting function pulled from scratchx.free.nf
-        var str = String(args.STRING);
+      strformat({ STRING }) { // A basic string formatting function pulled from scratchx.free.nf
+        var str = String(STRING);
         // strip harmful tags but allow basic user formated text
         var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'img'];
         str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function(match, p1) {
@@ -694,8 +694,7 @@ body > * {
         return str;
       }
   
-      makeElement(args) {
-        const { type, id } = args;
+      makeElement({ type, id }) {
         const element = document.createElement(type);
         element.id = id;
         if (type == "a") {
@@ -705,8 +704,7 @@ body > * {
         this.pagecontent.body.appendChild(element);
       }
   
-      setContent(args) {
-        const { elm, content } = args;
+      setContent({ elm, content }) {
         const element = this.findelement(elm);
         if (element) {
           if (content.includes("<script") || content.includes("onclick=") || content.includes("onload=") || content.includes("onerror=") || content.includes("javascript:")) {
@@ -734,8 +732,7 @@ body > * {
         }
       }
   
-      setInteract(args) {
-        const { interact } = args;
+      setInteract({ interact }) {
         this.setClickThrough(!interact);
       }
   
@@ -857,8 +854,7 @@ body > * {
         }
       }
   
-      setProperty(args) {
-        const { property, elm, value } = args;
+      setProperty({ property, elm, value }) {
         const targetElement = this.findelement(elm);
   
         if (value.includes("javascript:") || property == "onclick" || property == "onerror" || property == "onload") {
@@ -876,8 +872,7 @@ body > * {
         }
       }
   
-      getProperty(args) {
-        const { property, elm } = args;
+      getProperty({ property, elm }) {
         const targetElement = this.findelement(elm);
   
         if (targetElement) {
@@ -895,8 +890,7 @@ body > * {
         }
       }
   
-      setStyle(args) {
-        const { property, elm, value } = args;
+      setStyle({ property, elm, value }) {
         const targetElement = this.findelement(elm);
         if (targetElement) {
           targetElement.style[property] = value;
@@ -984,8 +978,7 @@ body > * {
         this.setContent({ elm: elm, content: img });
       }
   
-      setParent(args) {
-        const { element1, element2 } = args;
+      setParent({ element1, element2 }) {
         try {
           const childElement = this.findelement(element1);
           if (element2 === '/') { // you can also just say "body"
@@ -1013,24 +1006,21 @@ body > * {
         }
       }
   
-      addClass(args) {
-        var { elm, clas } = args;
+      addClass({ elm, clas }) {
         elm = this.findelement(elm);
         if (elm && clas) {
             elm.classList.add(clas);
         }
       }
   
-      removeClass(args) {
-        var { elm, clas } = args;
+      removeClass({ elm, clas }) {
         elm = this.findelement(elm);
         if (elm && clas) {
             elm.classList.remove(clas);
         }
       }
   
-      classList(args) {
-        var { elm } = args;
+      classList({ elm }) {
         elm = this.findelement(elm);
         if (elm) {
           return Array.from(elm.classList).join(',');
