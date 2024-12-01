@@ -83,16 +83,16 @@
         this.debugcss = `* {
     outline: 2px dashed #8B7070; 
     outline-offset: 0px; 
-  }
-  
-  body * {
+}
+
+body * {
     outline: 2px dashed #59636E; 
-    outline-offset: -3px; 
-  }
-  body > * {
+    outline-offset: -2px; 
+}
+body > * {
     outline: 2px dashed #707D8B; 
-    outline-offset: -3px; 
-  }`;
+    outline-offset: -2px; 
+}`;
       }
   
       getInfo() {
