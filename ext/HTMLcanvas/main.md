@@ -110,7 +110,7 @@ Add css [https://example.com/style.css] with id [style2] :: #6164ff
 ---
 
 ### Animating elements
-Changing the styles of elements is usually instant, but you can change that, and add animatons by using the `Set transition` block.
+Changing the styles of elements is usually instant, but you can change that, and add animatons by using the `Set transition` block. Most style properties can be animated with this.
 
 ```scratch3
 when gf clicked
