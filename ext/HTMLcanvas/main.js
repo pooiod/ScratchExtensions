@@ -365,7 +365,7 @@ body > * {
                 arguments: {
                     url: {
                         type: Scratch.ArgumentType.STRING,
-                        defaultValue: 'https://fonts.googleapis.com/css2?family=Sono&display=swap',
+                        defaultValue: '?family=Sono&display=swap',
                     },
                     id: {
                         type: Scratch.ArgumentType.STRING,
@@ -993,17 +993,27 @@ body > * {
         }
       }
 
-      addFont({ url, id }) {
+      addFont({ url, style, id }) {
         try {
-          const link = this.pagecontent.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = url;
-          link.id = id;
-          this.pagecontent.head.appendChild(link);
+            const styleTag = this.pagecontent.createElement('style');
+            styleTag.id = id;
+        
+            const fontFaceRule = `
+                @font-face {
+                    src: url(${url}) format('woff2');
+                    ${style}
+                }
+            `;
+        
+            // Set the content of the style tag to the @font-face rule
+            styleTag.textContent = fontFaceRule;
+        
+            // Append the style tag to the head of the document
+            this.pagecontent.head.appendChild(styleTag);
         } catch (e) {
-          console.error('Error adding font:', e);
+            console.error('Error adding font:', e);
         }
-      }
+      }      
   
       addClass({ elm, clas }) {
         elm = this.findelement(elm);

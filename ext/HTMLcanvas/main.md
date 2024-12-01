@@ -96,8 +96,6 @@ forever
 end
 ```
 
----
-
 ### Making global css
 You can also add css files to the page with the `Add css` block.
 
@@ -105,6 +103,16 @@ You can also add css files to the page with the `Add css` block.
 when gf clicked
 Add css [body { background-color: yellow; }] with id [style1] :: #6164ff
 Add css [https://example.com/style.css] with id [style2] :: #6164ff
+```
+
+### Adding fonts
+You can add global fonts by using the `Add font [url] with id [id]` block.
+
+> this block only takes fonts from allowed sources
+
+```scratch3
+when gf clicked
+Add font [?family=Sono] with id [SonoFont] :: #6164ff
 ```
 
 ---
