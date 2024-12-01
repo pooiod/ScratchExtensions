@@ -65,15 +65,15 @@ Parent [#source1] to [#sound1] :: #6164ff
 
 ### Setting up a link
 Another element that needs special treatment is the &#060;a> element. This element is used to create links to other websites. 
-When you use it, it will work like the &#060;div> element, and can contain most anything, but where it differs is with the inclusion of a src.
-A src is the source for elements that need more than just some inside content.
+When you use it, it will work like the &#060;div> element, and can contain most anything, but where it differs is with the inclusion of a href.
+A href is the targat for elements that link outside of the current page. Some elements may take "src" instead.
 To set it, you will need to use the `Set property` block.
 
 ```scratch3
 when gf clicked
 Make element [img v] with id [element1] :: #6164ff
 Set content of [#element1] to [Click me to go to example.com] :: #6164ff
-Set property [src] of [#element1] to [https://example.com/] :: #6164ff
+Set property [href] of [#element1] to [https://example.com/] :: #6164ff
 ```
 
 ---
