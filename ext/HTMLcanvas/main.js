@@ -567,6 +567,7 @@ body > * {
                 'left',
                 'right',
                 'bottom',
+                'float'
               ],
             },
             costumeNames: {
