@@ -134,11 +134,11 @@ Sorry, the page you are looking for could not be loaded due to an internal serve
         }
 
         function getMarkdownFilePathFromHash() {
-          const hash = window.location.hash.slice(1);
+          var hash = window.location.hash.slice(1);
           if (!hash) {
             return 'home.md';
           } else {
-            return `/ext${hash.replace('/', '/') + (hash.split('/').length < 2)?"/main":""}.md`;
+            return `/ext${hash + ((hash.split('/').length < 3)?"/main":"")}.md`;
           }
         }
 
