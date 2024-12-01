@@ -90,7 +90,7 @@
           name: 'HTML Canvas',
           color1: "#6164ff",
           color2: '#4346d1',
-          // docsURI: 'https://example.com',
+          // docsURI: 'https://p7scratchextensions.pages.dev/docs/#/HTMLcanvas',
           blocks: [
             {
               func: "showdocs",
@@ -569,7 +569,7 @@
           Scratch.vm.extensionManager.refreshBlocks();
         } else {
           this.clearAllElements(true);
-          var html = `<iframe src="https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/htmlcanvas" style="width: 100vw; height: calc(100vh + 0px); position: absolute; top: 0px; left: 0; border: none;"></iframe>`;
+          var html = `<iframe src="//p7scratchextensions.pages.dev/docs/#/HTMLcanvas" style="width: 100vw; height: calc(100vh + 0px); position: absolute; top: 0px; left: 0; border: none;"></iframe>`;
           var css = `body {margin:0px;padding:0px;} iframe{width:100%;height:100%;border:none;}`;
           this.makeElement({type:"iframe",id:"extdocsp7markdownonstage"});
           this.setContent({elm:"#extdocsp7markdownonstage",content:html});
@@ -579,14 +579,14 @@
           Scratch.vm.extensionManager.refreshBlocks();
   
           this.docsloaded = false;
-          setTimeout(function() {
-            if (!this.docsloaded && this.findelement("#extdocsp7markdownonstage")) {
-              this.clearAllElements();
-              window.open(this.docs);
-              this.setClickThrough(true);
-              Scratch.vm.extensionManager.refreshBlocks();
-            } // my website is blocked by GoGardian
-          }.bind(this), 4000);
+          // setTimeout(function() {
+          //   if (!this.docsloaded && this.findelement("#extdocsp7markdownonstage")) {
+          //     this.clearAllElements();
+          //     window.open(this.docs);
+          //     this.setClickThrough(true);
+          //     Scratch.vm.extensionManager.refreshBlocks();
+          //   }
+          // }.bind(this), 4000);
         }
       }
   
