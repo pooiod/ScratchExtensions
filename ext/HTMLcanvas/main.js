@@ -361,11 +361,15 @@ body > * {
             {
                 opcode: 'addFont',
                 blockType: Scratch.BlockType.COMMAND,
-                text: 'Add font [url] with id [id]',
+                text: 'Add font [url] with properties [style] and id [id]',
                 arguments: {
                     url: {
                         type: Scratch.ArgumentType.STRING,
-                        defaultValue: '?family=Sono&display=swap',
+                        defaultValue: 'https://fonts.gstatic.com/s/sono/v6/aFT97PNiY3U2Cqf_aYEN64CYaK18YWJEsV6u-QLiOsxVtkWtFX55.woff2',
+                    },
+                    style: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: "font-family: 'Sono'; font-style: normal; font-weight: 400;",
                     },
                     id: {
                         type: Scratch.ArgumentType.STRING,
