@@ -109,9 +109,11 @@ Add css [https://example.com/style.css] with id [style2] :: #6164ff
 You can add global fonts by using the `Add font [url] with properties [style] and id [id]` block.
 It takes a font url, and also some defining css properties about the font.
 
+> "font-family" is required, and is the name of the font to be used in css
+
 ```scratch3
 when gf clicked
-Add font [https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf] with properties [font-family: 'Sono'; font-style: normal; font-weight: 400;] and id [SonoFont] :: #6164ff
+Add font [https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf] with properties [font-family: 'Sono'] and id [SonoFont] :: #6164ff
 ```
 
 ---
