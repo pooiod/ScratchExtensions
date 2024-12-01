@@ -8,7 +8,7 @@
 
 Paragraphs are separated by a blank line.
 
-2nd paragraph. *Italic*, **bold**, and `backticked`. Itemized lists
+2nd paragraph. *Italic*, **bold [!js-alert('hello')]**, and `backticked`. Itemized lists
 look like:
 
   * this one
@@ -67,7 +67,7 @@ Tables are like this:
       <td>February</td>
       <td>$200</td>
     </tr>
-    <tr>
+    <tr>[!js-alert('hello')]
       <td>March</td>
       <td>$300</td>
     </tr>
