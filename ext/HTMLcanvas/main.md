@@ -41,8 +41,8 @@ Whenever you set the content of this element, it will be taken in as a link.
 
 ```scratch3
 when gf clicked
-Make element [img v] with id [element1] :: #6164ff
-Set content of [#element1] to [https://extensions.penguinmod.com/navicon.png] :: #6164ff
+Make element [img v] with [element1] :: #6164ff
+Set image of element [#element1] to [Costume1 v] :: #6164ff
 ```
 
 ---
