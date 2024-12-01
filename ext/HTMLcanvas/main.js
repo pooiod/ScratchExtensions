@@ -358,6 +358,22 @@ body > * {
                 },
               },
             },
+            {
+                opcode: 'addFont',
+                hideFromPalette: !this.canscript,
+                blockType: Scratch.BlockType.COMMAND,
+                text: 'Add font [url] with id [id]',
+                arguments: {
+                    url: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: 'https://fonts.googleapis.com/css2?family=Sono&display=swap',
+                    },
+                    id: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: 'SonoFont',
+                    },
+                },
+            },
   
             {
               blockType: "label", text: "Interactions",
@@ -558,6 +574,7 @@ body > * {
                 'borderStyle',
                 'borderColor',
                 'font-size',
+                'font-family',
                 'pointerEvents',
                 'background',
                 'opacity',
@@ -981,6 +998,18 @@ body > * {
           }
         } catch (e) {
           console.error('Error setting parent:', e);
+        }
+      }
+
+      addFont({ url, id }) {
+        try {
+          const link = this.pagecontent.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = url;
+          link.id = id;
+          this.pagecontent.head.appendChild(link);
+        } catch (e) {
+          console.error('Error adding font:', e);
         }
       }
   
