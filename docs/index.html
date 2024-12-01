@@ -138,9 +138,9 @@ Sorry, the page you are looking for could not be loaded due to an internal serve
           if (!hash) {
             return 'home.md';
           } else if (hash.startsWith('#')) {
-            return `/ext${hash.slice(1)}.md`;
+            return `/ext${hash.slice(1) + (hash.split('/').length === 2)?"/main":""}.md`;
           } else {
-            return `/ext${hash.replace('/', '/')}.md`;
+            return `/ext${hash.replace('/', '/') + (hash.split('/').length === 2)?"/main":""}.md`;
           }
         }
 
