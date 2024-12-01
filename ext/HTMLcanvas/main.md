@@ -39,6 +39,8 @@ This means that you can use it to show resources, include a single file across s
 Much like iframes, &#060;img> elements also use src to set the content, however they only take images. 
 Although, unlike iframes, images can be set directly from costumes.
 
+> Vector fonts will not be loaded, and all text will have the "Times New Roman" font
+
 ```scratch3
 when gf clicked
 Make element [img v] with id [element1] :: #6164ff
