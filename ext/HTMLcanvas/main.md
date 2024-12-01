@@ -36,8 +36,8 @@ This means that you can use it to show resources, include a single file across s
 ---
 
 ### Making an image
-Much like iframes, &#060;img> elements also allow you to contains content, but they only take images. 
-Whenever you set the content of this element, it will be taken in as a link.
+Much like iframes, &#060;img> elements also use src to set the content, however they only take images. 
+Although, unlike iframes, images can be set directly from costumes.
 
 ```scratch3
 when gf clicked
