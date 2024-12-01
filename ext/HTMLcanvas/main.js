@@ -36,6 +36,8 @@
             }
           }, 1000);
         }
+
+        this.lastmessage = ""
   
         this.docsloaded = false;
         window.addEventListener("message", (event) => {
@@ -48,6 +50,14 @@
           } catch (err) {
             console.error(err);
             this.docsloaded = false;
+          }
+          try {
+            if (event.data && 'scratchmessage' in event.data) {
+                this.lastmessage = Scratch.Cast.toString(event.data.scratchmessage);
+                Scratch.vm.runtime.startHats('HTMLcanvas_whenmessagerecived');
+            }
+          } catch (err) {
+            console.warn("Message dropped", event.data);
           }
         }, false);
         this.docs = "https://extensions.penguinmod.com/docs/HTMLcanvas";
@@ -401,6 +411,21 @@
               text: "Enable scripts (danger)",
               hideFromPalette: this.canscript
             },
+
+            {
+                blockType: Scratch.BlockType.HAT,
+                opcode: 'whenmessagerecived',
+                text: 'When html message recived',
+                isEdgeActivated: true,
+                hideFromPalette: !this.canscript
+            },
+            {
+                opcode: 'getlastmessage',
+                hideFromPalette: !this.canscript,
+                blockType: Scratch.BlockType.REPORTER,
+                text: 'Last recived message',
+                hideFromPalette: !this.canscript
+              },
             
             {
               opcode: 'addScript',
@@ -936,6 +961,19 @@
         } else {
           const newDoc = document.implementation.createHTMLDocument();
           this.page.contentDocument.documentElement.replaceWith(newDoc.documentElement);
+        }
+      }
+
+      whenmessagerecived() {
+        return true;
+      }
+
+      getlastmessage() {
+        if (this.lastmessage != this.lastmessage2) {
+            this.lastmessage2 == this.lastmessage;
+            return true;
+        } else {
+            return false;
         }
       }
   
