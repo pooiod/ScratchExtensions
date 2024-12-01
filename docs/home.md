@@ -1,14 +1,13 @@
 #Example Markdown page
+[!js-document.title="Extension docs home"]
 
 ---
 
 [Open your own file (data uri)](#/markdown/any.html)
 
-[!js-alert('hello')]
-
 Paragraphs are separated by a blank line.
 
-2nd paragraph. *Italic*, **bold [!js-alert('hello')]**, and `backticked`. Itemized lists
+2nd paragraph. *Italic*, **bold**, and `backticked`. Itemized lists
 look like:
 
   * this one
@@ -67,7 +66,7 @@ Tables are like this:
       <td>February</td>
       <td>$200</td>
     </tr>
-    <tr>[!js-alert('hello')]
+    <tr>
       <td>March</td>
       <td>$300</td>
     </tr>
