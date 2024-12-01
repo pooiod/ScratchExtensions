@@ -342,11 +342,11 @@
             },
             {
                 opcode: 'setImageAsCostume',
-                blockType: Scratch.BlockType.REPORTER,
+                blockType: Scratch.BlockType.COMMAND,
                 text: 'Set image [elm] to [costume]',
                 arguments: {
                     costume: {
-                        type: Scratch.ArgumentType.COMMAND,
+                        type: Scratch.ArgumentType.STRING,
                         menu: 'costumeMenu',
                         defaultValue: 'current'
                     },
@@ -951,7 +951,7 @@
             return window.btoa(binary);
         }
 
-        var img = "https://storage.googleapis.com/replit/images/1608749573246_3ecaeb5cdbf14cd5f1ad8c48673dd7ce.png";
+        var img = "Costume not found";
         if (selectedCostume) {
             const costumeData = selectedCostume.asset.data;
             const mimeType = selectedCostume.asset.assetType.contentType;
@@ -961,7 +961,7 @@
                 img = `data:${mimeType};base64,${base64Data}`;
             }
         }
-        this.setContent(elm, img);
+        this.setContent({ elm: elm, content: img });
       }
   
       setParent(args) {
