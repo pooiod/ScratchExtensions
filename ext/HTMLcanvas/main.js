@@ -151,15 +151,31 @@
               },
             },
             {
+                opcode: 'setImageAsCostume',
+                blockType: Scratch.BlockType.COMMAND,
+                text: 'Set image [elm] to [costume]',
+                arguments: {
+                    costume: {
+                        type: Scratch.ArgumentType.STRING,
+                        menu: 'costumeMenu',
+                        defaultValue: 'current'
+                    },
+                    elm: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: '#elementId',
+                    },
+                }
+            },
+            {
               opcode: 'setProperty',
               blockType: Scratch.BlockType.COMMAND,
-              text: 'Set property [property] of [element] to [value]',
+              text: 'Set property [property] of [elm] to [value]',
               arguments: {
                 property: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: 'id',
                 },
-                element: {
+                elm: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: '#elementId',
                 },
@@ -187,9 +203,9 @@
             {
               opcode: 'addClass',
               blockType: Scratch.BlockType.COMMAND,
-              text: 'Add class [clas] to [element]',
+              text: 'Add class [clas] to [elm]',
               arguments: {
-                element: {
+                elm: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: '#elementId',
                 },
@@ -199,12 +215,13 @@
                 },
               },
             },
+
             {
               opcode: 'removeClass',
               blockType: Scratch.BlockType.COMMAND,
-              text: 'Remove class [clas] from [element]',
+              text: 'Remove class [clas] from [elm]',
               arguments: {
-                element: {
+                elm: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: '#elementId',
                 },
@@ -230,16 +247,17 @@
               blockType: Scratch.BlockType.COMMAND,
               text: 'Clear all elements',
             },
+
             {
               opcode: 'getProperty',
               blockType: Scratch.BlockType.REPORTER,
-              text: 'Get property [property] from [element]',
+              text: 'Get property [property] from [elm]',
               arguments: {
                 property: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: 'id',
                 },
-                element: {
+                elm: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: '#elementId',
                 },
@@ -248,9 +266,9 @@
             {
               opcode: 'classList',
               blockType: Scratch.BlockType.REPORTER,
-              text: 'Class list from [element]',
+              text: 'Class list from [elm]',
               arguments: {
-                element: {
+                elm: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: '#elementId',
                 },
@@ -288,14 +306,14 @@
             {
               opcode: 'setStyle',
               blockType: Scratch.BlockType.COMMAND,
-              text: 'Set [property] of [element] to [value]',
+              text: 'Set [property] of [elm] to [value]',
               arguments: {
                 property: {
                   type: Scratch.ArgumentType.STRING,
                   menu: 'styleProperties',
                   defaultValue: 'filter',
                 },
-                element: {
+                elm: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: '#elementId',
                 },
@@ -323,14 +341,14 @@
             {
               opcode: 'setTransition',
               blockType: Scratch.BlockType.COMMAND,
-              text: 'Set transition of [property] on [element] to [value]',
+              text: 'Set transition of [property] on [elm] to [value]',
               arguments: {
                 property: {
                   type: Scratch.ArgumentType.STRING,
                   menu: 'styleProperties',
                   defaultValue: 'backgroundColor',
                 },
-                element: {
+                elm: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: '#elementId',
                 },
@@ -339,22 +357,6 @@
                   defaultValue: '2s ease-in-out',
                 },
               },
-            },
-            {
-                opcode: 'setImageAsCostume',
-                blockType: Scratch.BlockType.COMMAND,
-                text: 'Set image [elm] to [costume]',
-                arguments: {
-                    costume: {
-                        type: Scratch.ArgumentType.STRING,
-                        menu: 'costumeMenu',
-                        defaultValue: 'current'
-                    },
-                    elm: {
-                        type: Scratch.ArgumentType.STRING,
-                        defaultValue: '#elementId',
-                    },
-                }
             },
   
             {
@@ -838,8 +840,8 @@
       }
   
       setProperty(args) {
-        const { property, element, value } = args;
-        const targetElement = this.findelement(element);
+        const { property, elm, value } = args;
+        const targetElement = this.findelement(elm);
   
         if (value.includes("javascript:") || property == "onclick" || property == "onerror" || property == "onload") {
           if (!this.canscript) {
@@ -857,8 +859,8 @@
       }
   
       getProperty(args) {
-        const { property, element } = args;
-        const targetElement = this.findelement(element);
+        const { property, elm } = args;
+        const targetElement = this.findelement(elm);
   
         if (targetElement) {
           var jsonreturn = targetElement[property];
@@ -876,8 +878,8 @@
       }
   
       setStyle(args) {
-        const { property, element, value } = args;
-        const targetElement = this.findelement(element);
+        const { property, elm, value } = args;
+        const targetElement = this.findelement(elm);
         if (targetElement) {
           targetElement.style[property] = value;
         }
@@ -907,8 +909,8 @@
         }
       }
   
-      setTransition({ property, element, value }) {
-        const el = this.findelement(element);
+      setTransition({ property, elm, value }) {
+        const el = this.findelement(elm);
         property = property.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
         if (!el) {
           return;
@@ -982,26 +984,26 @@
       }
   
       addClass(args) {
-        var { element, clas } = args;
-        element = this.findelement(element);
-        if (element && clas) {
-          element.classList.add(clas);
+        var { elm, clas } = args;
+        elm = this.findelement(elm);
+        if (elm && clas) {
+            elm.classList.add(clas);
         }
       }
   
       removeClass(args) {
-        var { element, clas } = args;
-        element = this.findelement(element);
-        if (element && clas) {
-          element.classList.remove(clas);
+        var { elm, clas } = args;
+        elm = this.findelement(elm);
+        if (elm && clas) {
+            elm.classList.remove(clas);
         }
       }
   
       classList(args) {
-        var { element } = args;
-        element = this.findelement(element);
-        if (element) {
-          return Array.from(element.classList).join(',');
+        var { elm } = args;
+        elm = this.findelement(elm);
+        if (elm) {
+          return Array.from(elm.classList).join(',');
         } else {
           return;
         }
