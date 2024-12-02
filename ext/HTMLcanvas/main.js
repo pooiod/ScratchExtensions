@@ -122,12 +122,12 @@ body > * {
           {
             func: "toggledebug",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Toggle Debug outlines"
+            text: "Toggle debug outlines"
           },
           {
             func: "toggleinspect",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Toggle Inspect element"
+            text: "Toggle inspect element"
           },
 
           {
