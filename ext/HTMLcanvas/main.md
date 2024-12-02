@@ -81,7 +81,7 @@ Set property [href] of [#element1] to [https://example.com/] :: #6164ff
 ---
 
 ## Working with styles
-This extension allows you to modify the styling of any element with just 3 simple blocks.
+This extension also allows you to modify the styling of any element with just a few simple blocks.
 
 Starting with the `Set style` block
 
@@ -120,7 +120,7 @@ Add font [https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf] with prop
 
 ---
 
-### Animating elements
+### Animating changes in elements
 Changing the styles of elements is usually instant, but you can change that, and add animatons by using the `Set transition` block. Most style properties can be animated with this.
 
 ```scratch3
@@ -172,6 +172,17 @@ You can also use the following blocks for more complex actions.
 
 ---
 
+You can also interact with the page scrolling. The following functions may be used to scroll the page automatically, or to get the current scroll of the page.
+
+> These functions only work in px, and don't need a unit type to be defined
+
+```scratch3
+Set [y] scroll of element [elementId] to [20] :: #6164ff
+(Get [y] scroll of element [elementId] :: #6164ff)
+```
+
+---
+
 ### Working with scripts
 Scripts are a touchy addition, as they allow for some not so nice things to be done.
 This is why the first attempt to use scripts prompts the user about the action.
@@ -195,7 +206,7 @@ Reporter scripts are similar to void scripts, but they don't actually add any el
 (Run script [window.prompt("How are you today?"\);] :: #6164ff)
 ```
 
-### Communicating with your scripts
+#### Communicating with your scripts
 Some scripts need to to return content over time (like events). 
 In order to do this, you can use the `Last recived message` block along with the `postToScratch` js function.
 
