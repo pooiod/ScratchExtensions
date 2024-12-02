@@ -104,7 +104,7 @@ You can also add css files to the page with the `Add css` block.
 ```scratch3
 when gf clicked
 Add css [body { background-color: yellow; }] with id [style1] :: #6164ff
-Add css [https://example.com/style․css] with id [style2] :: #6164ff
+Add css [https://example.com/style.css] with id [style2] :: #6164ff
 ```
 
 ### Adding fonts
@@ -115,7 +115,7 @@ It takes a font url, and also some defining css properties about the font.
 
 ```scratch3
 when gf clicked
-Add font [https://p7scratchextensions.pages.dev/extras/fonts/Sono․ttf] with properties [font-family: 'Sono'] and id [SonoFont] :: #6164ff
+Add font [https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf] with properties [font-family: 'Sono'] and id [SonoFont] :: #6164ff
 ```
 
 ---
