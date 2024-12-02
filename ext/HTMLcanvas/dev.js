@@ -718,13 +718,16 @@ body > * {
         this.firstconsoleload = true;
         try {
           this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
+          this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
         } catch(err) {
           setTimeout(()=>{
             try {
               this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
+              this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
             } catch(err) {
               setTimeout(()=>{
                 this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
+                this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
               }, 500);
             }
           }, 200);
