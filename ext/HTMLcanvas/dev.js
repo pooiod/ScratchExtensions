@@ -1,4 +1,4 @@
-// HTML Canvas (wip) by pooiod7
+// HTML Canvas (Dec/12/2024 dev build) by pooiod7
 
 (function(Scratch) {
   'use strict';
