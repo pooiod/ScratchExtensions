@@ -36,7 +36,7 @@
       }, 1500);
     </script>
 
-    <script>// import scratchblocks from "$lib/scratchblocks.js";
+    <script>
         function fetchAndRenderMarkdown() {
             const content = document.querySelector('.content');
             content.classList.add('hidden');
@@ -47,7 +47,7 @@
             setTimeout(() => {
                 var markdownFilePath = getMarkdownFilePathFromHash();
                 if (markdownFilePath.includes("https://")) {
-                  var re = "aHR0cHM6Ly9hcGkuYWxsb3JpZ2lucy53aW4vcmF3P3VybD0=";
+                  var re = "";
                   document.getElementById("loading-bar").style.animation = "loading 3s linear";
                   markdownFilePath = /*atob(re) + */markdownFilePath;
                 }
