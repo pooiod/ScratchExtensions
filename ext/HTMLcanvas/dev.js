@@ -25,6 +25,16 @@
       this.page;
       this.pagecontent;
 
+      this.runInternalScript = (js, bool) => {
+        try {
+          return bool?!!this.page.contentWindow.eval(js):this.page.contentWindow.eval(js);
+        } catch (e) {
+          if (bool) return false;
+          console.warn('Error running internal script:', e);
+          return e;
+        }
+      }
+
       if (!packaged) {
         setInterval(()=> {
           try {
@@ -113,6 +123,11 @@ body > * {
             func: "toggledebug",
             blockType: Scratch.BlockType.BUTTON,
             text: "Toggle Debug outlines"
+          },
+          {
+            func: "toggleinspect",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "Toggle Inspect element"
           },
 
           {
@@ -442,13 +457,50 @@ body > * {
           {
             opcode: 'isclicking',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: '[ELM] clicked',
+            text: 'Element [ELM] clicked',
             arguments: {
               ELM: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: '#elementId',
               }
             }
+          },
+
+          {
+            opcode: 'setScrollOnElm',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Set [type] scroll of element [elm] to [scroll]',
+            arguments: {
+              elm: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'body',
+              },
+              type: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'xy',
+                defaultValue: 'y',
+              },
+              scroll: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: '20',
+              },
+            },
+          },
+          {
+            opcode: 'getScrollOnElm',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get [type] scroll of element [elm]',
+            arguments: {
+              elm: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'body',
+              },
+              type: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'xy',
+                defaultValue: 'y',
+              },
+            },
           },
 
           {
@@ -572,6 +624,7 @@ body > * {
             'time'
           ],
           truefalse: ['true', 'false'],
+          xy: ['x', 'y'],
           styleProperties: {
             isTypeable: true,
             items: [
@@ -651,6 +704,46 @@ body > * {
         if (styleElement) {
           styleElement.remove();
         }
+      }
+    }
+
+    inspecting = false;
+    adderuda(inspecting) {
+      var script = this.pagecontent.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+      script.onload = () => {
+        this.inspecting = inspecting;
+        this.runInternalScript(`eruda.init()`);
+        try {
+          this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
+        } catch(err) {
+          setTimeout(()=>{
+            try {
+              this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
+            } catch(err) {
+              setTimeout(()=>{
+                this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
+              }, 500);
+            }
+          }, 200);
+        }
+        if (inspecting) this.runInternalScript(`eruda.show()`);
+      }
+      this.pagecontent.head.appendChild(script);
+    }
+    toggleinspect() {
+      if (!this.findelement("#eruda")) {
+        this.adderuda(true);
+      } else {
+        if (this.inspecting) {
+          this.inspecting = false;
+        } else {
+          this.inspecting = true;
+        }
+        this.runInternalScript(`eruda.${this.inspecting?"show":"hide"}()`);
+      } if (this.inspecting) {
+        this.setClickThrough(false);
+        this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
       }
     }
 
@@ -855,7 +948,11 @@ body > * {
     isactive({ ELM }) {
       var element = this.findelement(ELM);
       if (!element) {
-        return false;
+        if (ELM == "page") {
+          return document.visibilityState === "visible" || this.pagecontent.visibilityState === "visible";
+        } else {
+          return false;
+        }
       }
 
       return this.pagecontent.activeElement === element;
@@ -1026,6 +1123,22 @@ body > * {
       }
     }
 
+    getScrollOnElm({ elm, type }) {
+      elm = this.findelement(elm);
+      if (!elm) return 0;
+      return type === "x" ? elm.scrollLeft : elm.scrollTop;
+    }
+
+    setScrollOnElm({ elm, type, scroll }) {
+      elm = this.findelement(elm);
+      if (!elm) return;
+      if (type === "x") {
+        elm.scrollLeft = scroll;
+      } else {
+        elm.scrollTop = scroll;
+      }
+    }
+
     addFont({ url, style, id }) {
       try {
           const styleTag = this.pagecontent.createElement('style');
@@ -1092,11 +1205,12 @@ body > * {
         this.page.contentDocument.documentElement.replaceWith(newDoc.documentElement);
       }
       try {
-          const scriptElement = this.pagecontent.createElement('script');
-          scriptElement.text = "function postToScratch(message) {window.parent.postMessage({ scratchmessage: message }, '*'); }";
-          this.pagecontent.head.appendChild(scriptElement);
+        const scriptElement = this.pagecontent.createElement('script');
+        scriptElement.text = "function postToScratch(message) {window.parent.postMessage({ scratchmessage: message }, '*'); }";
+        this.pagecontent.head.appendChild(scriptElement);
+        // if (!packaged) this.adderuda(false);
       } catch (e) {
-          console.error('Error adding script:', e);
+        console.error('Error adding script:', e);
       }
     }
 
