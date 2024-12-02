@@ -743,6 +743,7 @@ body > * {
       if (!this.findelement("#eruda")) {
         this.adderuda(true);
         this.firstconsoleload = false;
+        this.setClickThrough(false);
       } else {
         if (this.inspecting) {
           this.inspecting = false;
