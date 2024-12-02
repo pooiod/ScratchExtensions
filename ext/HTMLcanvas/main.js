@@ -286,6 +286,17 @@ body > * {
                 },
               },
             },
+            {
+                opcode: 'HTMLencode',
+                blockType: Scratch.BlockType.REPORTER,
+                text: 'Make [text] HTML-safe',
+                arguments: {
+                  text: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: '<h1>Hello!</h1>',
+                  },
+                },
+              },
   
             {
               opcode: 'elementExists',
@@ -695,6 +706,24 @@ body > * {
         str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
         str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
         return str;
+      }
+
+      HTMLencode({ text }) {
+        return Scratch.Cast.toString(text).replace(/["'&<>]/g, (a) => {
+          switch (a) {
+            case "&":
+              return "&amp;";
+            case '"':
+              return "&apos;";
+            case "'":
+              return "&quot;";
+            case ">":
+              return "&gt;";
+            case "<":
+              return "&lt;";
+          }
+          return a;
+        });
       }
   
       makeElement({ type, id }) {
