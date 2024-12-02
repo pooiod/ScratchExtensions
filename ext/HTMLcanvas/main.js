@@ -729,7 +729,12 @@ body > * {
             }
           }, 200);
         }
-        if (inspecting) this.runInternalScript(`eruda.show()`);
+        if (inspecting) {
+          this.runInternalScript(`eruda.show()`);
+          setTimeout(()=>{
+            this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
+          }, 500);
+        }
       }
       this.pagecontent.head.appendChild(script);
     }
@@ -738,7 +743,6 @@ body > * {
       if (!this.findelement("#eruda")) {
         this.adderuda(true);
         this.firstconsoleload = false;
-        this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
       } else {
         if (this.inspecting) {
           this.inspecting = false;
