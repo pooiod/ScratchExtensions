@@ -159,8 +159,7 @@ When element [#element1] clicked :: #6164ff hat
 Set [backgroundColor] of [#element1] to [yellow] :: #6164ff
 ```
 
-You can also use the following blocks for more complex actions.
-
+You can also use the following blocks to add hover efects, button highlighting, and more.
 
 ```scratch3
 <Element [#element1] clicked :: #6164ff>
