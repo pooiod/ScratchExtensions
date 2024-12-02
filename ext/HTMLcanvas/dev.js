@@ -718,16 +718,13 @@ body > * {
         this.firstconsoleload = true;
         try {
           this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
-          this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
         } catch(err) {
           setTimeout(()=>{
             try {
               this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
-              this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
             } catch(err) {
               setTimeout(()=>{
                 this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
-                this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
               }, 500);
             }
           }, 200);
@@ -736,10 +733,12 @@ body > * {
       }
       this.pagecontent.head.appendChild(script);
     }
+
     toggleinspect() {
       if (!this.findelement("#eruda")) {
         this.adderuda(true);
-        this.firstconsoleload = true;
+        this.firstconsoleload = false;
+        this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
       } else {
         if (this.inspecting) {
           this.inspecting = false;
@@ -751,7 +750,7 @@ body > * {
         this.setClickThrough(false);
         if (this.firstconsoleload) {
           this.firstconsoleload = false;
-          // this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
+          this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
         }
       }
     }
