@@ -751,7 +751,7 @@ body > * {
         this.setClickThrough(false);
         if (this.firstconsoleload) {
           this.firstconsoleload = false;
-          this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
+          // this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
         }
       }
     }
