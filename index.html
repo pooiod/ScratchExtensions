@@ -1,2 +1,326 @@
-wip
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pooiod7's Scratch Extensions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .description {
+            text-align: center;
+            margin: 1rem auto;
+            max-width: 800px;
+        }
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin: 1rem;
+        }
+        .search-bar input {
+            width: 80%;
+            max-width: 600px;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            max-width: 1000px;
+            margin: auto;
+        }
+        .card {
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: outline 0.3s ease-in-out;
+        }
+        .card:focus, .card.focused {
+            outline: 2px solid #007BFF;
+        }
+        .card img {
+            width: 100%;
+            aspect-ratio: 6 / 3;
+        }
+        .card-content {
+            padding: 1rem;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            margin: 0 0 0.5rem;
+            font-weight: bold;
+        }
+        .card-description {
+            font-size: 0.9rem;
+            margin: 0 0 0.5rem;
+        }
+        .card-subtext {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .card-buttons {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .card-button {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .card-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px;
+        }
+        .card-icon img {
+            width: 24px;
+            height: 24px;
+            opacity: 0.7;
+        }
+        @media (max-width: 700px) {
+            .card {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pooiod7's Scratch Extensions</h1>
+    </header>
+    <div class="description">
+        A collection of scratch extensions made by pooiod7.
+    </div>
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Search extensions..." oninput="filterCards()">
+    </div>
+    <div class="cards-container" id="cards-container"></div>
 <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
+
+    <script>
+        const cardsData = [
+            {
+                id: "ext1",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 1",
+                description: "A great extension for Scratch.",
+                subtext: "Requires Scratch 3.0",
+                icon: "https://icons.veryicon.com/png/o/miscellaneous/logo-design-of-lingzhuyun/icon-warning-24.png", // Icon URL
+                iconText: "Warning: Scratch 3.0 required",
+                buttons: [
+                    { text: "View", color: "#007BFF", link: "#[id]" },
+                    { text: "Download", color: "#28A745", link: "#[id]/download" }
+                ]
+            },
+            {
+                id: "ext2",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 2",
+                description: "An amazing tool for Scratchers.",
+                subtext: "",
+                icon: "", // No icon
+                iconText: "",
+                buttons: [
+                    { text: "View", color: "#007BFF", link: "#[id]" }
+                ]
+            },
+            {
+                id: "ext3",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 3",
+                description: "A must-have extension.",
+                subtext: "Recommended for beginners.",
+                icon: "https://icons.veryicon.com/png/o/miscellaneous/logo-design-of-lingzhuyun/icon-warning-24.png", // Icon URL
+                iconText: "Be careful with the API usage",
+                buttons: [
+                    { text: "View", color: "#007BFF", link: "#[id]" },
+                    { text: "More Info", color: "#FFC107", link: "#[id]/info" }
+                ]
+            },
+            {
+                id: "ext4",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 4",
+                description: "Enhance your Scratch experience.",
+                subtext: "",
+                icon: "",
+                iconText: "",
+                buttons: []
+            },
+            {
+                id: "ext5",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 5",
+                description: "Great for educational projects.",
+                subtext: "Compatible with all devices.",
+                icon: "https://icons.veryicon.com/png/o/miscellaneous/logo-design-of-lingzhuyun/icon-warning-24.png", // Icon URL
+                iconText: "Educational Use Only",
+                buttons: [
+                    { text: "Download", color: "#28A745", link: "#[id]" }
+                ]
+            },
+            {
+                id: "ext6",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 6",
+                description: "A versatile Scratch extension.",
+                subtext: "Works offline.",
+                icon: "",
+                iconText: "",
+                buttons: [
+                    { text: "Learn More", color: "#17A2B8", link: "#[id]/learn" }
+                ]
+            },
+            {
+                id: "ext7",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 7",
+                description: "Boost your Scratch projects.",
+                subtext: "",
+                icon: "",
+                iconText: "",
+                buttons: []
+            },
+            {
+                id: "ext8",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 8",
+                description: "An all-in-one extension.",
+                subtext: "For advanced users.",
+                icon: "https://icons.veryicon.com/png/o/miscellaneous/logo-design-of-lingzhuyun/icon-warning-24.png", // Icon URL
+                iconText: "Advanced Features",
+                buttons: [
+                    { text: "View", color: "#007BFF", link: "#[id]" }
+                ]
+            },
+            {
+                id: "ext9",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 9",
+                description: "Streamline your workflow.",
+                subtext: "",
+                icon: "",
+                iconText: "",
+                buttons: [
+                    { text: "Download", color: "#28A745", link: "#[id]" }
+                ]
+            },
+            {
+                id: "ext10",
+                image: "https://dummyimage.com/600x300?text=[id]",
+                title: "Extension 10",
+                description: "Perfect for teams.",
+                subtext: "Requires internet connection.",
+                icon: "https://icons.veryicon.com/png/o/miscellaneous/logo-design-of-lingzhuyun/icon-warning-24.png", // Icon URL
+                iconText: "Requires internet",
+                buttons: [
+                    { text: "More Info", color: "#FFC107", link: "#[id]" }
+                ]
+            }
+        ];
+
+        function createCard(card) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card';
+            cardDiv.id = card.id;
+
+            const imageURL = card.image.replace(/\[id\]/g, card.id);
+            const buttonsHTML = card.buttons.map(button => `
+                <a href="${button.link.replace(/\[id\]/g, card.id)}" 
+                   class="card-button" 
+                   style="background-color: ${button.color}">
+                   ${button.text.replace(/ /g, '&nbsp;')}
+                </a>
+            `).join('');
+
+            const iconHTML = card.icon ? `
+                <div class="card-icon" title="${card.iconText}">
+                    <img src="${card.icon}" alt="Warning Icon">
+                </div>
+            ` : '';
+
+            cardDiv.innerHTML = `
+                ${iconHTML}
+                <img src="${imageURL}" alt="${card.title}">
+                <div class="card-content">
+                    <div class="card-title">${card.title}</div>
+                    <div class="card-description">${card.description}</div>
+                    <div class="card-subtext">${card.subtext}</div>
+                    <div class="card-buttons">${buttonsHTML}</div>
+                </div>
+            `;
+
+            return cardDiv;
+        }
+
+        function renderCards() {
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            cardsData.forEach(card => {
+                container.appendChild(createCard(card));
+            });
+            scrollToHash();
+        }
+
+        function filterCards() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const filteredData = cardsData.filter(card => 
+                card.title.toLowerCase().includes(query) ||
+                card.description.toLowerCase().includes(query) ||
+                card.subtext.toLowerCase().includes(query)
+            );
+
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+            filteredData.forEach(card => {
+                container.appendChild(createCard(card));
+            });
+        }
+
+        function scrollToHash() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                const targetCard = document.getElementById(hash);
+                if (targetCard) {
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetCard.classList.add('focused');
+                    setTimeout(() => targetCard.classList.remove('focused'), 3000);
+                }
+            }
+        }
+
+        window.addEventListener('hashchange', scrollToHash);
+
+        renderCards();
+    </script>
+</body>
+</html>
