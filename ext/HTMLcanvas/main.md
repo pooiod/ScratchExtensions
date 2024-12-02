@@ -104,7 +104,7 @@ You can also add css files to the page with the `Add css` block.
 ```scratch3
 when gf clicked
 Add css [body { background-color: yellow; }] with id [style1] :: #6164ff
-Add css [https://example.com/style.css] with id [style2] :: #6164ff
+Add css [https://pooiod7.neocities.org/style.css] with id [style2] :: #6164ff
 ```
 
 ### Adding fonts
