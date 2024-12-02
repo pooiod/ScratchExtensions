@@ -163,9 +163,9 @@ You can also use the following blocks for more complex actions.
 
 
 ```scratch3
-([#element1] clicked :: #6164ff)
-(Button [#element1] active :: #6164ff)
-(Hovering [#element1] :: #6164ff)
+<Element [#element1] clicked :: #6164ff>
+<Button [#element1] active :: #6164ff>
+<Hovering [#element1] :: #6164ff>
 ```
 
 > Hover is not supported on mobile
