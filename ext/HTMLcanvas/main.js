@@ -708,12 +708,14 @@ body > * {
     }
 
     inspecting = false;
+    firstconsoleload = true
     adderuda(inspecting) {
       var script = this.pagecontent.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/eruda';
       script.onload = () => {
         this.inspecting = inspecting;
         this.runInternalScript(`eruda.init()`);
+        this.firstconsoleload = true;
         try {
           this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
         } catch(err) {
@@ -731,9 +733,12 @@ body > * {
       }
       this.pagecontent.head.appendChild(script);
     }
+
     toggleinspect() {
       if (!this.findelement("#eruda")) {
         this.adderuda(true);
+        this.firstconsoleload = false;
+        this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
       } else {
         if (this.inspecting) {
           this.inspecting = false;
@@ -743,7 +748,10 @@ body > * {
         this.runInternalScript(`eruda.${this.inspecting?"show":"hide"}()`);
       } if (this.inspecting) {
         this.setClickThrough(false);
-        this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
+        if (this.firstconsoleload) {
+          this.firstconsoleload = false;
+          this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
+        }
       }
     }
 
