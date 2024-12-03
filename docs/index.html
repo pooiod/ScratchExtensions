@@ -47,6 +47,7 @@
 
 	.container {
 		display: flex;
+		height: calc(100vh - 40px);
 	}
 	.content {
 		padding-left: 20px;
@@ -55,7 +56,7 @@
 		width: 50%;
 		transition: opacity 0.3s ease-in-out;
 		overflow-y: auto;
-		height: calc(100vh - 20px);
+		height: 100%;
 	}
 	.content.hidden {
 		opacity: 0;
@@ -87,9 +88,9 @@
 	<div id="toolbar" style="display: none;">
 		<a href="/">&#x2190; Back to extensions</a>
 	</div>
-	<div class="container" style="height: 100vh;">
-		<div class="content hidden" style="height: 100vh;">
-			<div class="markdown-content" id="markdown-content" style="height: 100vh;">
+	<div class="container">
+		<div class="content hidden">
+			<div class="markdown-content" id="markdown-content">
 				<p style="width: 300px;">Your content is loading :)</p>
 			</div>
 		</div>
