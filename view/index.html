@@ -63,7 +63,7 @@
             }).catch((error) => {
                 console.log('Error sharing:', error);
                 if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    navigator.clipboard.writeText();
+                    navigator.clipboard.writeText(link);
                 } else {
                     window.open(link)
                 }
