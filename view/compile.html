@@ -189,7 +189,7 @@
         }
 
         function uploadFile(file) {
-            statusText("Generating packages");
+            statusText("Generating packet");
 
             if (!file) {
                 alert('No file.');
@@ -220,7 +220,7 @@
                     const fileId = response.fileId;
                     const downloadUrl = `https://yeetyourfiles.lol/download/${fileId}`;
 
-                    statusText("Opening packages");
+                    statusText("Editor ready");
 
                     const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(downloadUrl)}`;
                     window.location.href = url;
