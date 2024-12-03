@@ -8,7 +8,21 @@
         "icon": "",
         "iconText": "",
         "buttons": [
-            { "text": "ViewSource", "color": "#007BFF", "link": "/view/#/[id]" },
+            { "text": "View Source", "color": "#007BFF", "link": "/view/#/[id]" },
+            { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]/dev.js" }
+        ]
+    },
+    {
+        "id": "HTMLcanvas",
+        "image": "/ext/[id]/img.svg",
+        "title": "HTML Canvas",
+        "description": "An extension that allows you to use HTML and CSS to make projects with complex visual interfaces",
+        "subtext": "",
+        "icon": "https://cdn-icons-png.freepik.com/256/12884/12884314.png?semt=ais_hybrid",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "buttons": [
+            // { "text": "View Source", "color": "#007BFF", "link": "/view/#/[id]" },
+            { "text": "View Docs", "color": "#007BFF", "link": "/docs/#/[id]" },
             { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]/dev.js" }
         ]
     }
