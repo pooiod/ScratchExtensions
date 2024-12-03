@@ -98,8 +98,8 @@
         </div>
         <div class="loader_title"><span>Loading Project</span></div>
         <div class="loader_message-container" id="loader_message-container">Loading…</div>
-        <div class="loader_progress" hidden>
-            <div class="loader_progress-inner" style="width: 0%;"></div>
+        <div class="loader_progress" id="progressheader" hidden>
+            <div class="loader_progress-inner" id="progress" style="width: 0%;"></div>
         </div>
     </div>
     </div>
@@ -177,6 +177,8 @@
                 return;
             }
 
+            document.getElementById("progressheader").removeAttribute("hidden");
+
             const formData = new FormData();
             formData.append('file', file);
 
@@ -187,7 +189,8 @@
             xhr.upload.onprogress = function(e) {
                 if (e.lengthComputable) {
                     const percentComplete = (e.loaded / e.total) * 100;
-                    console.log('Upload progress: ' + percentComplete + '%');
+                    // console.log('Upload progress: ' + percentComplete + '%');
+                    document.getElementById("progress").style.width = percentComplete + "%";
                 }
             };
 
