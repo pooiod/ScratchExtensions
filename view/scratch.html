@@ -80,6 +80,7 @@
                 const updatedJson = projectJson
                     .replace(/\[EXTURL\]/g, extensionUrl)
                     .replace(/\[EXTID\]/g, extId);
+                console.log(updatedJson)
 
                 // Update the zip with the new project.json
                 zip.file('project.json', updatedJson);
