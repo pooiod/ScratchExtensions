@@ -8,9 +8,9 @@
         "icon": "",
         "iconText": "",
         "buttons": [
-            { "text": "View extension", "color": "#b4d1ed", "link": "/view/#/[id]" },
-            { "text": "Open in PegnuinMod", "color": "#b4d1ed", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Box2D.js" },
-            { "text": "View dev build", "color": "#b4d1ed", "link": "/view/#/[id]/dev.js" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
+            { "text": "Open in PegnuinMod", "color": "#cbe0f2", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Box2D.js" },
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ]
     },
     {
@@ -22,8 +22,8 @@
         "icon": "/extras/images/icons/warn.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "buttons": [
-            { "text": "View Docs", "color": "#b4d1ed", "link": "/docs/#/[id]" },
-            { "text": "View dev build", "color": "#b4d1ed", "link": "/view/#/[id]/dev.js" }
+            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ]
     },
     {
@@ -35,8 +35,8 @@
         "icon": "",
         "iconText": "",
         "buttons": [
-            { "text": "View extension", "color": "#b4d1ed", "link": "/view/#/[id]" },
-            { "text": "Open in PegnuinMod", "color": "#b4d1ed", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Scratchblocks.js" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
+            { "text": "Open in PegnuinMod", "color": "#cbe0f2", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Scratchblocks.js" }
         ]
     }
 ]
