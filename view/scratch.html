@@ -62,8 +62,8 @@
         window.onload = async function() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
-                const extensionUrl = urlParams.get('extension');
-                const extId = extensionUrl.split('/')[2];
+                const extensionUrl = "https://p7scratchextensions.pages.dev" + urlParams.get('ext');
+                const extId = urlParams.get('ext').split('/')[2];
 
                 if (!extensionUrl || !extId) {
                     throw new Error("Missing 'extension' or 'extId' in URL parameters.");
