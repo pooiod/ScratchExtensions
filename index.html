@@ -120,6 +120,19 @@
     </style>
 </head>
 <body>
+    <header>
+        <h1>Pooiod7's Scratch Extensions</h1>
+    </header>
+    <div class="description">
+        A collection of scratch extensions made by pooiod7.
+    </div>
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Search extensions..." oninput="filterCards()">
+    </div>
+    <div class="cards-container" id="cards-container"></div>
+    <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
+    <p id="loader">Loading extensions...</p>
+
     <script>
         if (window.location.pathname !== "/") {
             document.body.innerHTML = '';
@@ -177,119 +190,104 @@
 
             document.body.style.margin = '0';
             document.body.style.fontFamily = 'Arial, sans-serif';
-        }
-    </script>
-    
-    <header>
-        <h1>Pooiod7's Scratch Extensions</h1>
-    </header>
-    <div class="description">
-        A collection of scratch extensions made by pooiod7.
-    </div>
-    <div class="search-bar">
-        <input type="text" id="search" placeholder="Search extensions..." oninput="filterCards()">
-    </div>
-    <div class="cards-container" id="cards-container"></div>
-    <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
-    <p id="loader">Loading extensions...</p>
+        } else {
+            let cardsData = ["/ext/extensions.json"];
 
-    <script>
-        let cardsData = ["/ext/extensions.json"];
+            function createCard(card) {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+                cardDiv.id = card.id;
 
-        function createCard(card) {
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'card';
-            cardDiv.id = card.id;
-
-            var imageURL = card.image.replace(/\[id\]/g, card.id);
-            if (!imageURL || imageURL == "") {
-                imageURL = "https://dummyimage.com/600x300/e0e0e0/000&text=" + card.id;
-            }
-
-            const buttonsHTML = card.buttons.map(button => `
-                <a href="${button.link.replace(/\[id\]/g, card.id)}" 
-                   class="card-button" 
-                   style="background-color: ${button.color}">
-                   ${button.text.replace(/ /g, '&nbsp;')}
-                </a>
-            `).join('');
-
-            const iconHTML = card.icon ? `
-                <div class="card-icon" title="${card.iconText}">
-                    <img src="${card.icon}" alt="Warning Icon">
-                </div>
-            ` : '';
-
-            cardDiv.innerHTML = `
-                ${iconHTML}
-                <img src="${imageURL}" alt="${card.title}">
-                <div class="card-content">
-                    <div class="card-title">${card.title}</div>
-                    <div class="card-description">${card.description}</div>
-                    <div class="card-subtext">${card.subtext}</div><p>&nbsp;</p>
-                    <div class="card-buttons">${buttonsHTML}</div>
-                </div>
-            `;
-
-            return cardDiv;
-        }
-
-        async function fetchExtensions() {
-            try {
-                const response = await fetch(cardsData[0]);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                var imageURL = card.image.replace(/\[id\]/g, card.id);
+                if (!imageURL || imageURL == "") {
+                    imageURL = "https://dummyimage.com/600x300/e0e0e0/000&text=" + card.id;
                 }
-                cardsData = await response.json();
-                document.getElementById("loader").remove();
-                renderCards();
-            } catch (error) {
-                document.getElementById("loader").remove();
-                console.error('Failed to fetch extensions:', error);
-                document.querySelector('p[hidden]').removeAttribute('hidden');
-                document.querySelector('p[hidden]').innerText = "Error loading extensions";
+
+                const buttonsHTML = card.buttons.map(button => `
+                    <a href="${button.link.replace(/\[id\]/g, card.id)}" 
+                    class="card-button" 
+                    style="background-color: ${button.color}">
+                    ${button.text.replace(/ /g, '&nbsp;')}
+                    </a>
+                `).join('');
+
+                const iconHTML = card.icon ? `
+                    <div class="card-icon" title="${card.iconText}">
+                        <img src="${card.icon}" alt="Warning Icon">
+                    </div>
+                ` : '';
+
+                cardDiv.innerHTML = `
+                    ${iconHTML}
+                    <img src="${imageURL}" alt="${card.title}">
+                    <div class="card-content">
+                        <div class="card-title">${card.title}</div>
+                        <div class="card-description">${card.description}</div>
+                        <div class="card-subtext">${card.subtext}</div><p>&nbsp;</p>
+                        <div class="card-buttons">${buttonsHTML}</div>
+                    </div>
+                `;
+
+                return cardDiv;
             }
-        }
 
-        function renderCards() {
-            const container = document.getElementById('cards-container');
-            container.innerHTML = '';
-            cardsData.forEach(card => {
-                container.appendChild(createCard(card));
-            });
-            scrollToHash();
-        }
-
-        function filterCards() {
-            const query = document.getElementById('search').value.toLowerCase();
-            const filteredData = cardsData.filter(card => 
-                card.title.toLowerCase().includes(query) ||
-                card.description.toLowerCase().includes(query) ||
-                card.subtext.toLowerCase().includes(query)
-            );
-
-            const container = document.getElementById('cards-container');
-            container.innerHTML = '';
-            filteredData.forEach(card => {
-                container.appendChild(createCard(card));
-            });
-        }
-
-        function scrollToHash() {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                const targetCard = document.getElementById(hash);
-                if (targetCard) {
-                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    targetCard.classList.add('focused');
-                    setTimeout(() => targetCard.classList.remove('focused'), 3000);
+            async function fetchExtensions() {
+                try {
+                    const response = await fetch(cardsData[0]);
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    cardsData = await response.json();
+                    document.getElementById("loader").remove();
+                    renderCards();
+                } catch (error) {
+                    document.getElementById("loader").remove();
+                    console.error('Failed to fetch extensions:', error);
+                    document.querySelector('p[hidden]').removeAttribute('hidden');
+                    document.querySelector('p[hidden]').innerText = "Error loading extensions";
                 }
             }
+
+            function renderCards() {
+                const container = document.getElementById('cards-container');
+                container.innerHTML = '';
+                cardsData.forEach(card => {
+                    container.appendChild(createCard(card));
+                });
+                scrollToHash();
+            }
+
+            function filterCards() {
+                const query = document.getElementById('search').value.toLowerCase();
+                const filteredData = cardsData.filter(card => 
+                    card.title.toLowerCase().includes(query) ||
+                    card.description.toLowerCase().includes(query) ||
+                    card.subtext.toLowerCase().includes(query)
+                );
+
+                const container = document.getElementById('cards-container');
+                container.innerHTML = '';
+                filteredData.forEach(card => {
+                    container.appendChild(createCard(card));
+                });
+            }
+
+            function scrollToHash() {
+                const hash = window.location.hash.substring(1);
+                if (hash) {
+                    const targetCard = document.getElementById(hash);
+                    if (targetCard) {
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetCard.classList.add('focused');
+                        setTimeout(() => targetCard.classList.remove('focused'), 3000);
+                    }
+                }
+            }
+
+            window.addEventListener('hashchange', scrollToHash);
+
+            fetchExtensions();
         }
-
-        window.addEventListener('hashchange', scrollToHash);
-
-        fetchExtensions();
     </script>
 </body>
 </html>
