@@ -34,7 +34,7 @@
         "icon": "",
         "iconText": "",
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ]
     }
 ]
