@@ -8,45 +8,29 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f7f7f7;
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
             text-align: center;
         }
 
-        .loading-container {
-            padding: 30px;
+        .container {
+            padding: 20px;
             border-radius: 10px;
             background-color: #fff;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            width: 300px;
         }
 
         h1 {
-            font-size: 1.5rem;
             color: #333;
+            font-size: 2rem;
         }
 
         .message {
             margin-top: 20px;
             color: #777;
-        }
-
-        .progress-bar-container {
-            margin-top: 30px;
-            background-color: #e0e0e0;
-            height: 20px;
-            border-radius: 10px;
-            width: 100%;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: #3498db;
-            border-radius: 10px;
         }
 
         .spinner {
@@ -66,13 +50,10 @@
     </style>
 </head>
 <body>
-    <div class="loading-container">
-        <h1>Preparing editor environment...</h1>
-        <div class="message">This may take a few moments.</div>
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        <div class="spinner" id="spinner"></div>
+    <div class="container">
+        <h1>Processing Project</h1>
+        <div class="message" id="statusMessage">Preparing editor environment...</div>
+        <div class="spinner"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -80,22 +61,8 @@
         // Function to process the project on page load
         window.onload = async function() {
             try {
-                // Simulate the progress bar update for now
-                let progress = 0;
-                const progressBar = document.getElementById('progress-bar');
-                const spinner = document.getElementById('spinner');
-
-                const updateProgressBar = () => {
-                    progress += 10;
-                    progressBar.style.width = `${progress}%`;
-                    if (progress >= 100) {
-                        clearInterval(progressInterval);
-                        // Hide spinner when process is complete
-                        spinner.style.display = 'none';
-                    }
-                };
-
-                const progressInterval = setInterval(updateProgressBar, 300);
+                // Update the message to show processing
+                document.getElementById('statusMessage').textContent = 'Preparing project and extension...';
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const extensionUrl = urlParams.get('ext');
@@ -116,6 +83,9 @@
                 const zipBlob = await zipResponse.blob();
                 const zip = await JSZip.loadAsync(zipBlob);
 
+                // Update message to indicate zip processing
+                document.getElementById('statusMessage').textContent = 'Modifying project files...';
+
                 // Loop through each file in the zip and modify project.json
                 const files = Object.keys(zip.files);
                 for (let fileName of files) {
@@ -135,6 +105,9 @@
 
                 // Generate the new zip file with all the original files plus the modified project.json
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
+
+                // Update message to indicate upload process
+                document.getElementById('statusMessage').textContent = 'Uploading project to hosting service...';
 
                 // Upload the updated zip to a temporary hosting service
                 uploadFile(updatedZipBlob);
@@ -172,7 +145,6 @@
                 if (e.lengthComputable) {
                     const percentComplete = (e.loaded / e.total) * 100;
                     console.log('Upload progress: ' + percentComplete + '%');
-                    document.getElementById('progress-bar').style.width = `${percentComplete}%`;
                 }
             };
 
