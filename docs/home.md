@@ -19,7 +19,7 @@ async function fetchExtensions() {
 }
 
 function generateMarkdown(cardsData) {
-  let markdownContent = `# Pooiod7's Scratch extensions
+  let markdownContent = `# Pooiod7's Scratch extensions (markdown edition)
 
 ---
 
