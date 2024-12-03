@@ -100,27 +100,16 @@
                 // Generate the new zip file with all the original files plus the modified project.json
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
-                // Upload the generated zip file to File.io (or similar service)
-                const uploadUrl = 'https://file.io'; // File.io API endpoint (can change depending on your service)
-                const formData = new FormData();
-                formData.append('file', updatedZipBlob, 'project.zip');
-
-                const uploadResponse = await fetch(uploadUrl, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (!uploadResponse.ok) {
-                    throw new Error('Failed to upload file');
-                }
-
-                const uploadData = await uploadResponse.json();
-                const fileUrl = uploadData.link; // The link to the uploaded file from File.io
-
-                // Redirect to the editor with the uploaded file URL
-                window.open(`https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(fileUrl)}`, '_blank');
-                window.close();
-
+                // Convert the zip to a Data URI
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const dataUri = reader.result;
+                    // Redirect to the editor with the Data URI
+                    window.open(dataUri)
+                    // window.open(`https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`, '_blank');
+                    window.close();
+                };
+                reader.readAsDataURL(updatedZipBlob);
             } catch (error) {
                 console.error('Error processing the project:', error);
             }
