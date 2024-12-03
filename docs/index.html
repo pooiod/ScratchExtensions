@@ -109,7 +109,7 @@
 
 	<script>
 		function parseMarkdown(markdownText) {
-			const matches = markdownText.match(/\[!js-(.+?)\]/g);
+			const matches = markdownText.match(/\[!js-(.+?)!\]/g);
 			if (matches) {
 				matches.forEach(match => {
 					const jsCode = match.slice(5, -1);
@@ -181,7 +181,7 @@ Sorry, the file you are looking for could not be found on the server.`;
 						}
 
 						parseMarkdown(markdownText);
-						
+
 						content.classList.remove('hidden');
 					})
 					.catch(error => {
