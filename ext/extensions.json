@@ -8,13 +8,13 @@
         "icon": "",
         "iconText": "",
         "buttons": [
-            { "text": "View Source", "color": "#007BFF", "link": "/view/#/[id]" },
+            { "text": "View extension", "color": "#007BFF", "link": "/view/#/[id]" },
             { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]/dev.js" }
         ]
     },
     {
         "id": "HTMLcanvas",
-        "image": "https://dummyimage.com/600x300/e0e0e0/000&text=[id]",
+        "image": "",
         "title": "HTML Canvas",
         "description": "An extension that allows you to use HTML and CSS to make projects with complex visual interfaces",
         "subtext": "",
