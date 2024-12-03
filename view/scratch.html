@@ -99,8 +99,9 @@
                 const reader = new FileReader();
                 reader.onloadend = function() {
                     const dataUri = reader.result;
+                    const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`;
                     // Redirect to the editor with the Data URI
-                    window.open(dataUri); window.close();
+                    window.open(url); window.close();
                     // window.location.href = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`;
                 };
                 reader.readAsDataURL(updatedZipBlob);
