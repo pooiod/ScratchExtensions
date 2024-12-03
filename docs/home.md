@@ -37,11 +37,10 @@ function generateMarkdown(cardsData) {
 
 ![${card.title}](${imageURL})
 
-**Description:** ${card.description}
+${card.description}
 
-**Subtext:** ${card.subtext}
+<sub>${card.subtext}</sub>
 
-**Buttons:**
 ${buttonsMarkdown}
 
 `;
