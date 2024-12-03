@@ -1,8 +1,9 @@
 #Loading cards...
-[!js-document.title="Pooiod7's Scratch extensions"!]
+[!js-document.title="Pooiod7's Scratch extensions (markdown edition)"!]
 
 [!js-
 let cardsData = ["/extensions.json"];
+document.querySelector("#toolbar > a").innerText = "← Back to html view";
 
 async function fetchExtensions() {
   try {
@@ -40,7 +41,7 @@ function generateMarkdown(cardsData) {
 
 ![${card.title}](${imageURL})
 
-${card.description}
+${card.description}<br>
 <sub>${card.subtext}</sub>
 
 ${buttonsMarkdown}
