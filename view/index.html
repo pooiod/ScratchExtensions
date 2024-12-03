@@ -118,7 +118,7 @@
 
                 document.querySelectorAll('a[link]').forEach(a => {
                     a.href = a.getAttribute('link').replace(/\[file\]/g, filePath)
-                        .replace(/\[id\]/g, hash.substring(0, hash.lastIndexOf('/')));
+                        .replace(/\[id\]/g, filePath.substring(0, filePath.lastIndexOf('/')));
                 });
 
                 try {
@@ -130,7 +130,7 @@
                     editor.setValue(`// Error loading file: ${e.message}`);
                 }
             } else {
-                editor.setValue('// No file specified');
+                editor.setValue('// No file');
             }
         }
 
