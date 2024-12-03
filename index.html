@@ -141,9 +141,10 @@
             cardDiv.id = card.id;
 
             var imageURL = card.image.replace(/\[id\]/g, card.id);
+            if (!imageURL || imageURL == "") {
+                imageURL == "https://dummyimage.com/600x300/e0e0e0/000&text=" + card.id;
+            }
             console.log(imageURL)
-            console.log(!imageURL || imageURL == "")
-            if (!imageURL || imageURL == "") imageURL == "https://dummyimage.com/600x300/e0e0e0/000&text=" + card.id
             const buttonsHTML = card.buttons.map(button => `
                 <a href="${button.link.replace(/\[id\]/g, card.id)}" 
                    class="card-button" 
