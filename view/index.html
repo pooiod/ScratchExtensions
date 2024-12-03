@@ -58,20 +58,29 @@
     <script>
         function share(link) {
             var extid = window.location.hash.slice(2).replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
-            navigator.share({
-                title: `${extid}`,
-                text: `Check out the ${extid} extension made by pooiod7`,
-                url: link
-            }).then(() => {
-                console.log('Shared successfully');
-            }).catch((error) => {
-                console.log('Error sharing:', error);
-                if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    navigator.clipboard.writeText(link);
-                } else {
-                    window.open(link)
-                }
-            });
+            try {
+                navigator.share({
+                    title: `${extid}`,
+                    text: `Check out the ${extid} extension made by pooiod7`,
+                    url: link
+                }).then(() => {
+                    console.log('Shared successfully');
+                }).catch((error) => {
+                    console.log('Error sharing:', error);
+                    if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        navigator.clipboard.writeText(link);
+                    } else {
+                        window.open(link)
+                    }
+                });
+            } catch(err) {
+                console.log(err);
+                    if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                        navigator.clipboard.writeText(link);
+                    } else {
+                        window.open(link)
+                    }
+            }
         }
     </script>
     <div id="toolbar">
