@@ -83,9 +83,8 @@
             const token = editor.getTokenAt(cursor);
             const curWord = token.string;
 
-            // Default CodeMirror snippets (functions, variables)
-            const defaultFunctions = CodeMirror.hint.javascript.getFunctions(editor);
-            const defaultVariables = CodeMirror.hint.javascript.getVariables(editor);
+            // Default CodeMirror hints (JavaScript-specific)
+            const defaultHints = CodeMirror.hint.javascript(editor, options);
 
             // Match custom snippets with curWord
             const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord));
@@ -101,8 +100,7 @@
             const suggestions = [
                 ...matchedFunctions.map(fn => ({ text: fn })),
                 ...matchedVariables.map(v => ({ text: v })),
-                ...defaultFunctions.map(fn => ({ text: fn })),
-                ...defaultVariables.map(v => ({ text: v }))
+                ...defaultHints.list
             ];
 
             // Sort suggestions by relevance (closest match)
