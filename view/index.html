@@ -115,7 +115,7 @@
                 const filePath = hash.endsWith('.js') ? `/ext/${hash}` : `/ext/${hash}/main.js`;
 
                 document.querySelectorAll('a[link]').forEach(a => {
-                    a.href = a.link.replace(/\[ext\]/g, filePath);
+                    a.href = a.getAttribute('link').replace(/\[ext\]/g, filePath);
                 });
 
                 try {
