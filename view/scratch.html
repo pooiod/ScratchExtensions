@@ -63,14 +63,14 @@
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 const extensionUrl = urlParams.get('extension');
-                const extId = window.location.pathname.split('/')[2];
+                const extId = extensionUrl.split('/')[2];
 
                 if (!extensionUrl || !extId) {
                     throw new Error("Missing 'extension' or 'extId' in URL parameters.");
                 }
 
                 // Fetch the zip file
-                const zipUrl = '/view/Project.zip';
+                const zipUrl = 'Project.zip';
                 const zipResponse = await fetch(zipUrl);
                 const zipBlob = await zipResponse.blob();
                 const zip = await JSZip.loadAsync(zipBlob);
