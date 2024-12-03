@@ -4,88 +4,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preparing editor evironment</title>
+    <title>Pooiod7's Scratch extension loader</title>
     <style>
-    .loader_background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 490;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: hsla(194, 100%, 50%, 1);
-        font-family: Arial, sans-serif;
-        text-align: center;
-        color: white;
-    }
-    [theme="dark"] .loader_background {
-        background-color: #009CCC;
-    }
-    .loader_fullscreen {
-        position: fixed;
-        z-index: 500;
-    }
-    .loader_animation {
-        width: 125px;
-        height: 150px;
-        margin: 50px auto 0;
-    }
-    .loader_animation img {
-        display: block;
-        position: relative;
-        height: 30%;
-        margin-top: -4px;
-    }
-    .loader_top {
-        animation: loader_top-slide-in 1.5s ease infinite;
-    }
-    .loader_middle {
-        animation: loader_middle-slide-in 1.5s ease infinite;
-    }
-    .loader_bottom {
-        animation: loader_bottom-slide-in 1.5s ease infinite;
-    }
-    @keyframes loader_top-slide-in {
-        0% { transform: translateY(50px); opacity: 0; }
-        33% { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes loader_middle-slide-in {
-        0% { transform: translateY(50px); opacity: 0; }
-        33% { transform: translateY(50px); opacity: 0; }
-        66% { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes loader_bottom-slide-in {
-        0% { transform: translateY(50px); opacity: 0; }
-        66% { transform: translateY(50px); opacity: 0; }
-        100% { transform: translateY(0); opacity: 1; }
-    }
-    .loader_title {
-        font-size: 2rem;
-        font-weight: bold;
-        margin: 0.75rem 0;
-    }
-    .loader_message-container {
-        height: 30px;
-        overflow: hidden;
-    }
-    .loader_progress {
-        position: relative;
-        width: 250px;
-        height: 5px;
-        border: 1px solid white;
-        margin: auto;
-    }
-    .loader_progress-inner {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 0;
-        background-color: white;
-    }
+        .loader_background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 490;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: hsla(194, 100%, 50%, 1);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+        }
+        [theme="dark"] .loader_background {
+            background-color: #009CCC;
+        }
+        .loader_fullscreen {
+            position: fixed;
+            z-index: 500;
+        }
+        .loader_animation {
+            width: 125px;
+            height: 150px;
+            margin: 50px auto 0;
+        }
+        .loader_animation img {
+            display: block;
+            position: relative;
+            height: 30%;
+            margin-top: -4px;
+        }
+        .loader_top {
+            animation: loader_top-slide-in 1.5s ease infinite;
+        }
+        .loader_middle {
+            animation: loader_middle-slide-in 1.5s ease infinite;
+        }
+        .loader_bottom {
+            animation: loader_bottom-slide-in 1.5s ease infinite;
+        }
+        @keyframes loader_top-slide-in {
+            0% { transform: translateY(50px); opacity: 0; }
+            33% { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes loader_middle-slide-in {
+            0% { transform: translateY(50px); opacity: 0; }
+            33% { transform: translateY(50px); opacity: 0; }
+            66% { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes loader_bottom-slide-in {
+            0% { transform: translateY(50px); opacity: 0; }
+            66% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .loader_title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0.75rem 0;
+        }
+        .loader_message-container {
+            height: 30px;
+            overflow: hidden;
+        }
+        .loader_progress {
+            position: relative;
+            width: 250px;
+            height: 5px;
+            border: 1px solid white;
+            margin: auto;
+        }
+        .loader_progress-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background-color: white;
+        }
     </style>
 </head>
 <body>
@@ -151,8 +151,6 @@
 
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
-                statusText("Uploading to server");
-
                 uploadFile(updatedZipBlob);
             } catch (error) {
                 console.error('Error processing the project:', error);
@@ -171,6 +169,8 @@
         }
 
         function uploadFile(file) {
+            statusText("Preparing editor environment");
+
             if (!file) {
                 alert('No file.');
                 window.close();
