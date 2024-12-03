@@ -87,7 +87,7 @@
         <a style="float: left;" href="/">&#x2190; Back to extensions</a>
         <a style="float: left;" link="compile?ext=[file]" target="_blank" id="yeet" hidden>Open in PenguinMod</a>
 
-        <a style="float: right;" link="#[file]/dev.js" >View dev build</a>
+        <a style="float: right;" link="#[file]/dev.js" id="buildswap">View dev build</a>
         <a style="float: right;" target="_blank" link="/#[id]" onclick="event.preventDefault(); share(this.href);">Share extension</a>
     </div>
     <div id="editor"></div>
@@ -174,6 +174,11 @@
             const hash = window.location.hash.slice(2);
             if (hash) {
                 const filePath = hash.endsWith('.js') ? `/ext/${hash}` : `/ext/${hash}/main.js`;
+
+                if (hash.endsWith('.js')) {
+                    document.getElementById("buildswap").innerText = "View release build";
+                    document.getElementById("buildswap").setAttribute("link", `#/[id]`);
+                }
 
                 document.querySelectorAll('a[link]').forEach(a => {
                     a.href = a.getAttribute('link').replace(/\[file\]/g, filePath)
