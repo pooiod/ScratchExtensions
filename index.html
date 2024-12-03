@@ -199,7 +199,7 @@
                 const buttonsHTML = card.buttons.map(button => `
                     <a href="${button.link.replace(/\[id\]/g, card.id)}" 
                     class="card-button" 
-                    style="background-color: ${lightenHexColor(button.color, 20)}; border: solid 1px ${button.color}">
+                    style="background-color: ${lightenHexColor(button.color, 80)}; border: solid 1px ${button.color}">
                     ${button.text.replace(/ /g, '&nbsp;')}
                     </a>
                 `).join('');
