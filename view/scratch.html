@@ -3,28 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading...</title>
+    <title>Zip File Processor</title>
     <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f0f0; }
-        .loading { font-size: 24px; color: #333; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h1 {
+            color: #333;
+        }
     </style>
 </head>
 <body>
-    <div class="loading">Loading...</div>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const extension = params.get('extension');
-        fetch(extension)
-            .then(res => res.blob())
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const dataUri = reader.result;
-                    window.location.href = `https://mirror.turbowarp.xyz/?extension=${encodeURIComponent(dataUri)}`;
-                };
-                reader.readAsDataURL(blob);
-            })
-            .catch(console.error);
-    </script>
+
+<h1>Download and Process the Project Zip</h1>
+<button id="processZipBtn">Download & Process Project</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script>
+    document.getElementById('processZipBtn').addEventListener('click', async function() {
+        try {
+            // Step 1: Download the zip file
+            const zipUrl = '/view/Project.zip';
+            const response = await fetch(zipUrl);
+            if (!response.ok) throw new Error('Failed to download zip file');
+            const zipData = await response.blob();
+
+            // Step 2: Unzip the file
+            const zip = await JSZip.loadAsync(zipData);
+            const projectJsonFile = zip.file('project.json');
+            if (!projectJsonFile) throw new Error('project.json not found in the zip file');
+
+            // Step 3: Parse the JSON file
+            const projectJson = JSON.parse(await projectJsonFile.async('text'));
+
+            // Step 4: Modify the JSON file
+            const urlParams = new URLSearchParams(window.location.search);
+            const extension = urlParams.get('extension');
+            const extId = window.location.pathname.split('/ext/')[1];
+
+            if (extension) {
+                projectJson.content = projectJson.content.replace('[EXTURL]', extension);
+                projectJson.content = projectJson.content.replace('[EXTID]', extId);
+            } else {
+                throw new Error('Extension URL is not provided');
+            }
+
+            // Step 5: Re-zip the updated file
+            const updatedZip = new JSZip();
+            updatedZip.file('project.json', JSON.stringify(projectJson, null, 2));
+
+            // Step 6: Convert the updated zip to a data URI
+            const updatedZipBlob = await updatedZip.generateAsync({ type: 'blob' });
+            const updatedZipUrl = URL.createObjectURL(updatedZipBlob);
+
+            // Step 7: Redirect to the editor
+            const editorUrl = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(updatedZipUrl)}`;
+            window.location.href = editorUrl;
+
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    });
+</script>
+
 </body>
 </html>
