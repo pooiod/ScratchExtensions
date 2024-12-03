@@ -1,4 +1,52 @@
 #Example Markdown page
 [!js-document.title="Markdown docs example"!]
 
-[!js-let cardsData = ["/extensions.json"]; fetch(cardsData[0]).then(res => res.ok ? res.json() : Promise.reject('Fetch error')).then(data => parseMarkdown("# Extensions\n\n" + data.map(card => `## ${card.title}\n\n![${card.title}](${card.image.replace(/\[id\]/g, card.id) || `https://dummyimage.com/600x300/e0e0e0/000&text=${card.id}`})\n\n**Description:** ${card.description}\n\n**Subtext:** ${card.subtext}\n\n**Buttons:**\n${card.buttons.map(b => `- [${b.text}](${b.link.replace(/\[id\]/g, card.id)})`).join('\n')}\n`).join('\n'))).catch(err => console.error(err));!]
+[!js-let cardsData = ["/extensions.json"];
+
+async function fetchExtensions() {
+    try {
+        const response = await fetch(cardsData[0]);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        cardsData = await response.json();
+        generateMarkdown(cardsData);
+    } catch (error) {
+        console.error('Failed to fetch extensions:', error);
+    }
+}
+
+function generateMarkdown(cardsData) {
+    let markdownContent = "# Extensions\n\n";
+
+    cardsData.forEach(card => {
+        let imageURL = card.image.replace(/\[id\]/g, card.id);
+        if (!imageURL || imageURL === "") {
+            imageURL = `https://dummyimage.com/600x300/e0e0e0/000&text=${card.id}`;
+        }
+
+        const buttonsMarkdown = card.buttons.map(button => {
+            const link = button.link.replace(/\[id\]/g, card.id);
+            return `- [${button.text}](${link})`;
+        }).join('\n');
+
+        markdownContent += `
+## ${card.title}
+
+![${card.title}](${imageURL})
+
+**Description:** ${card.description}
+
+**Subtext:** ${card.subtext}
+
+**Buttons:**
+${buttonsMarkdown}
+
+`;
+    });
+
+    console.log(markdownContent);
+}
+
+fetchExtensions();
+!]
