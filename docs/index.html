@@ -108,6 +108,40 @@
 	</script>
 
 	<script>
+		function parseMarkdown(markdownText) {
+			const matches = markdownText.match(/\[!js-(.+?)\]/g);
+			if (matches) {
+				matches.forEach(match => {
+					const jsCode = match.slice(5, -1);
+					markdownText = markdownText.replace(match, ''); // Remove the JS code from the string
+					try {
+						eval(jsCode); // Execute the JS code
+					} catch (error) {
+						console.error(`Error executing JS: ${error.message}`);
+					}
+				});
+			}
+			markdownText += "<p style='width: calc(100vw - 30px);'><br></p>";
+			const converter = new showdown.Converter();
+			const html = converter.makeHtml(markdownText);
+			const markdownContent = document.getElementById('markdown-content');
+			markdownContent.innerHTML = html;
+
+			content.classList.remove('hidden');
+			document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
+
+			Prism.highlightAll();
+			
+			scratchblocks.init();
+			scratchblocks.module.renderMatching(".scratch2", {
+				style: "scratch2",
+			});
+			scratchblocks.module.renderMatching(".scratch3", {
+				style: "scratch3",
+			});
+			
+			//console.log('Markdown content successfully rendered.');
+		}
 		function fetchAndRenderMarkdown() {
 			const content = document.querySelector('.content');
 			content.classList.add('hidden');
@@ -145,41 +179,7 @@ Please check with the website owner to make shure CORS is enabled.`;
 Sorry, the file you are looking for could not be found on the server.`;
 							}
 						}
-						markdownText += "<p style='width: calc(100vw - 30px);'><br></p>"
-							const converter = new showdown.Converter();
-							const html = converter.makeHtml(markdownText);
-							const markdownContent = document.getElementById('markdown-content');
-							markdownContent.innerHTML = html;
-
-							content.classList.remove('hidden');
-							document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
-
-							document.querySelectorAll('#markdown-content *').forEach(element => {
-							const matches = element.innerHTML.match(/\[!js-(.+?)\]/g);
-							if (matches) {
-								matches.forEach(match => {
-									const jsCode = match.slice(5, -1);
-									element.innerHTML = element.innerHTML.replace(match, '');
-									try {
-										eval(jsCode);
-									} catch (error) {
-										console.error(`Error executing JS: ${error.message}`);
-									}
-								});
-							}
-						});
-						
-						Prism.highlightAll(); // Syntax stuff 
-						
-						scratchblocks.init();
-						scratchblocks.module.renderMatching(".scratch2", {
-							style: "scratch2",
-						});
-						scratchblocks.module.renderMatching(".scratch3", {
-							style: "scratch3",
-						});
-						
-						//console.log('Markdown content successfully rendered.');
+						parseMarkdown(markdownText)
 					})
 					.catch(error => {
 						var markdownText = `
