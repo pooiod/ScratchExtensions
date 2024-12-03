@@ -83,38 +83,33 @@
             const token = editor.getTokenAt(cursor);
             const curWord = token.string;
 
-            // Call CodeMirror's default JavaScript hinting
-            const defaultHints = CodeMirror.hint.javascript(editor, options);
-
-            // Limit the default suggestions to a reasonable number
-            const defaultSuggestions = defaultHints.list.slice(0, 5);
-
-            // Filter custom snippets based on the current word (curWord)
             const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord));
             const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord));
 
-            // Debugging output
             console.log('Token:', token);
             console.log('Current Word:', curWord);
             console.log('Matched Functions:', matchedFunctions);
             console.log('Matched Variables:', matchedVariables);
 
-            // Combine matched custom snippets and default suggestions
-            const allSuggestions = [
-                ...matchedFunctions.slice(0, 5).map(fn => ({ text: fn })),
-                ...matchedVariables.slice(0, 5).map(v => ({ text: v })),
-                ...defaultSuggestions
+            const defaultSuggestions = CodeMirror.hint.javascript(editor, options).list;
+
+            const suggestions = [
+                ...matchedFunctions.map(fn => ({ text: fn })),
+                ...matchedVariables.map(v => ({ text: v }))
             ];
 
-            // Sort suggestions by relevance (closest match first)
-            allSuggestions.sort((a, b) => a.text.indexOf(curWord) - b.text.indexOf(curWord));
+            // Combine default suggestions with custom ones and limit to top 5 results
+            const allSuggestions = [...suggestions, ...defaultSuggestions]
+                .slice(0, 5); // Limit to top 5 suggestions
 
-            // Return the suggestions
-            return {
-                list: allSuggestions,
-                from: { line: cursor.line, ch: token.start },
-                to: { line: cursor.line, ch: token.end }
-            };
+            if (allSuggestions.length) {
+                return {
+                    list: allSuggestions,
+                    from: { line: cursor.line, ch: token.start },
+                    to: { line: cursor.line, ch: token.end }
+                };
+            }
+            return { list: [], from: cursor, to: cursor };
         }
 
         // Attach custom autocomplete to CodeMirror
