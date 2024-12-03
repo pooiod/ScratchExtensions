@@ -126,8 +126,7 @@
 			const html = converter.makeHtml(markdownText);
 			const markdownContent = document.getElementById('markdown-content');
 			markdownContent.innerHTML = html;
-
-			content.classList.remove('hidden');
+			
 			document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
 
 			Prism.highlightAll();
@@ -142,6 +141,7 @@
 			
 			//console.log('Markdown content successfully rendered.');
 		}
+
 		function fetchAndRenderMarkdown() {
 			const content = document.querySelector('.content');
 			content.classList.add('hidden');
@@ -179,7 +179,10 @@ Please check with the website owner to make shure CORS is enabled.`;
 Sorry, the file you are looking for could not be found on the server.`;
 							}
 						}
-						parseMarkdown(markdownText)
+
+						parseMarkdown(markdownText);
+						
+						content.classList.remove('hidden');
 					})
 					.catch(error => {
 						var markdownText = `
