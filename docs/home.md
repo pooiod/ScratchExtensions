@@ -3,7 +3,7 @@
 
 [!js-
 let cardsData = ["/extensions.json"];
-document.querySelector("#toolbar > a").innerText = "← Back to html view";
+document.querySelector("#toolbar > a").innerText = "← Back";
 
 async function fetchExtensions() {
   try {

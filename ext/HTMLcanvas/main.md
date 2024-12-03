@@ -1,5 +1,5 @@
 # HTML Canvas
-
+[!js-document.title="HTML Canvas docs"!]
 ---
 
 HTML Canvas is an extension that allows you to use HTML and CSS to make projects with complex visual interfaces with minimal lag.
