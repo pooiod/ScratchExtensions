@@ -21,8 +21,8 @@
         "icon": "/extras/images/icons/warn.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "buttons": [
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
+            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ]
     },
     {
