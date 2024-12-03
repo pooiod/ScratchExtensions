@@ -97,7 +97,7 @@
             <img class="loader_bottom" src="https://studio.penguinmod.com/static/assets/ce5820b006d753e4133f46ae776f4d96.svg">
         </div>
         <div class="loader_title"><span>Loading Project</span></div>
-        <div class="loader_message-container">Downloading base scratch project…</div>
+        <div class="loader_message-container" id="loader_message-container">Loading…</div>
         <div class="loader_progress" hidden>
             <div class="loader_progress-inner" style="width: 0%;"></div>
         </div>
@@ -106,6 +106,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
+        function statusText(txt) {
+            document.getElementById("loader_message-container").innerText = txt = "…";
+        }
         window.onload = async function() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -116,6 +119,8 @@
                     throw new Error("Missing 'extension' or 'extId' in URL parameters.");
                 }
 
+                statusText("Downloading base project file");
+
                 const extensionResponse = await fetch(extensionUrl);
                 const extensionBlob = await extensionResponse.blob();
                 const extensionDataUri = await blobToDataUri(extensionBlob);
@@ -125,11 +130,14 @@
                 const zipBlob = await zipResponse.blob();
                 const zip = await JSZip.loadAsync(zipBlob);
 
+                statusText("Looking for project.json");
+
                 const files = Object.keys(zip.files);
                 for (let fileName of files) {
                     const file = zip.file(fileName);
 
                     if (fileName === 'project.json') {
+                        statusText("Injecting extension");
                         let projectJson = await file.async('string');
                         projectJson = projectJson
                             .replace(/\[EXTURL\]/g, extensionDataUri)
@@ -139,7 +147,11 @@
                     }
                 }
 
+                statusText("Zipping project");
+
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
+
+                statusText("Uploading to server");
 
                 uploadFile(updatedZipBlob);
             } catch (error) {
@@ -184,6 +196,8 @@
                     const response = JSON.parse(xhr.responseText);
                     const fileId = response.fileId;
                     const downloadUrl = `https://yeetyourfiles.lol/download/${fileId}`;
+
+                    statusText("opening in editor");
 
                     const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(downloadUrl)}`;
                     window.location.href = url;
