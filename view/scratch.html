@@ -6,42 +6,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preparing editor evironment</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-
-        .container {
-            padding: 10px;
-            border-radius: 100%;
-            background-color: #fff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    .loader_background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 490;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: hsla(194, 100%, 50%, 1);
+        font-family: Arial, sans-serif;
+        text-align: center;
+        color: white;
+    }
+    [theme="dark"] .loader_background {
+        background-color: #009CCC;
+    }
+    .loader_fullscreen {
+        position: fixed;
+        z-index: 500;
+    }
+    .loader_animation {
+        width: 125px;
+        height: 150px;
+        margin: 50px auto 0;
+    }
+    .loader_animation img {
+        display: block;
+        position: relative;
+        height: 30%;
+        margin-top: -4px;
+    }
+    .loader_top {
+        animation: loader_top-slide-in 1.5s ease infinite;
+    }
+    .loader_middle {
+        animation: loader_middle-slide-in 1.5s ease infinite;
+    }
+    .loader_bottom {
+        animation: loader_bottom-slide-in 1.5s ease infinite;
+    }
+    @keyframes loader_top-slide-in {
+        0% { transform: translateY(50px); opacity: 0; }
+        33% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes loader_middle-slide-in {
+        0% { transform: translateY(50px); opacity: 0; }
+        33% { transform: translateY(50px); opacity: 0; }
+        66% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes loader_bottom-slide-in {
+        0% { transform: translateY(50px); opacity: 0; }
+        66% { transform: translateY(50px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+    .loader_title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 0.75rem 0;
+    }
+    .loader_message-container {
+        height: 30px;
+        overflow: hidden;
+    }
+    .loader_progress {
+        position: relative;
+        width: 250px;
+        height: 5px;
+        border: 1px solid white;
+        margin: auto;
+    }
+    .loader_progress-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0;
+        background-color: white;
+    }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="spinner"></div>
+    <div class="loader_background loader_fullscreen">
+    <div>
+        <div class="loader_animation">
+            <img class="loader_top" src="https://studio.penguinmod.com/static/assets/bbbd98ae6a34eac772e34a57aaa5f977.svg">
+            <img class="loader_middle" src="https://studio.penguinmod.com/static/assets/f9dce53613d5f85b311ce9f84423c08b.svg">
+            <img class="loader_bottom" src="https://studio.penguinmod.com/static/assets/ce5820b006d753e4133f46ae776f4d96.svg">
+        </div>
+        <div class="loader_title"><span>Loading Project</span></div>
+        <div class="loader_message-container">Downloading base scratch project…</div>
+        <div class="loader_progress" hidden>
+            <div class="loader_progress-inner" style="width: 0%;"></div>
+        </div>
+    </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
