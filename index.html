@@ -67,7 +67,9 @@
         }
         .card-content {
             padding: 1rem;
+            position: relative;
         }
+        
         .card-title {
             font-size: 1.2rem;
             margin: 0 0 0.5rem;
@@ -81,15 +83,7 @@
             font-size: 0.8rem;
             color: #666;
         }
-        .card-buttons {
-            margin-top: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            /* position: absolute; */
-            margin-bottom: 1rem;
-            bottom: 15px;
-        }
+
         .card-button {
             flex: 1;
             text-align: center;
@@ -215,9 +209,9 @@
                     <img src="${imageURL}" alt="${card.title}">
                     <div class="card-content">
                         <div class="card-title">${card.title}</div>
-                        <div class="card-buttons">${buttonsHTML}</div>
                         <div class="card-description">${card.description}</div>
                         <div class="card-subtext">${card.subtext}</div>
+                        <div class="card-buttons">${buttonsHTML}</div>
                     </div>
                 `;
 
