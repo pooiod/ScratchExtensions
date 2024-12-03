@@ -126,6 +126,28 @@
                 max-width: 400px;
             }
         }
+
+        #loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
@@ -140,7 +162,7 @@
     </div>
     <div class="cards-container" id="cards-container"></div>
     <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
-    <p id="loader">Loading extensions...</p>
+    <p id="loader"></p>
 
     <script>
         let cardsData = ["/extensions.json"];
