@@ -152,41 +152,21 @@
             container.style.boxSizing = 'border-box';
 
             const message = document.createElement('h1');
-            message.innerText = '404';
+            message.innerText = 'Yikes';
             message.style.fontSize = '6rem';
             message.style.fontWeight = 'bold';
             message.style.margin = '0';
             message.style.color = '#e74c3c';
 
             const subMessage = document.createElement('p');
-            subMessage.innerHTML = `Yikes! <br>We coudn't find that page. <br>D:`;
+            subMessage.innerHTML = `We coudn't find that page.
+Would you like to go back to our <a href="/">home page</a>?`;
             subMessage.style.fontSize = '1.5rem';
             subMessage.style.marginTop = '20px';
-            subMessage.style.color = '#7f8c8d';
-
-            const homeButton = document.createElement('a');
-            homeButton.href = '/';
-            homeButton.innerText = 'Go to Home';
-            homeButton.style.marginTop = '30px';
-            homeButton.style.padding = '15px 30px';
-            homeButton.style.fontSize = '1.2rem';
-            homeButton.style.backgroundColor = '#3498db';
-            homeButton.style.color = '#fff';
-            homeButton.style.textDecoration = 'none';
-            homeButton.style.borderRadius = '5px';
-            homeButton.style.transition = 'background-color 0.3s';
-            
-            homeButton.addEventListener('mouseover', () => {
-                homeButton.style.backgroundColor = '#2980b9';
-            });
-
-            homeButton.addEventListener('mouseout', () => {
-                homeButton.style.backgroundColor = '#3498db';
-            });
+            subMessage.style.color = '#999';
 
             container.appendChild(message);
             container.appendChild(subMessage);
-            container.appendChild(homeButton);
 
             document.body.appendChild(container);
 
