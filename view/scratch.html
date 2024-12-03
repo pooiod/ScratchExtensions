@@ -3,87 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zip File Processor</title>
+    <title>Project Zip Processor</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f7f7f7;
+            text-align: center;
         }
-        button {
-            padding: 15px 30px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
+
+        .container {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
-        button:hover {
-            background-color: #45a049;
-        }
+
         h1 {
             color: #333;
+            font-size: 2rem;
+        }
+
+        .message {
+            margin-top: 20px;
+            color: #777;
+        }
+
+        .spinner {
+            margin-top: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Processing Project</h1>
+        <div class="message">Your project is being prepared for the editor...</div>
+        <div class="spinner"></div>
+    </div>
 
-<h1>Download and Process the Project Zip</h1>
-<button id="processZipBtn">Download & Process Project</button>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        // Function to process the project on page load
+        window.onload = async function() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const extensionUrl = urlParams.get('extension');
+                const extId = window.location.pathname.split('/')[2];
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
-<script>
-    document.getElementById('processZipBtn').addEventListener('click', async function() {
-        try {
-            // Step 1: Download the zip file
-            const zipUrl = '/view/Project.zip';
-            const response = await fetch(zipUrl);
-            if (!response.ok) throw new Error('Failed to download zip file');
-            const zipData = await response.blob();
+                if (!extensionUrl || !extId) {
+                    throw new Error("Missing 'extension' or 'extId' in URL parameters.");
+                }
 
-            // Step 2: Unzip the file
-            const zip = await JSZip.loadAsync(zipData);
-            const projectJsonFile = zip.file('project.json');
-            if (!projectJsonFile) throw new Error('project.json not found in the zip file');
+                // Fetch the zip file
+                const zipUrl = '/view/Project.zip';
+                const zipResponse = await fetch(zipUrl);
+                const zipBlob = await zipResponse.blob();
+                const zip = await JSZip.loadAsync(zipBlob);
 
-            // Step 3: Parse the JSON file
-            const projectJson = JSON.parse(await projectJsonFile.async('text'));
+                // Process the project.json inside the zip
+                const projectJson = await zip.file('project.json').async('string');
+                const updatedJson = projectJson
+                    .replace(/\[EXTURL\]/g, extensionUrl)
+                    .replace(/\[EXTID\]/g, extId);
 
-            // Step 4: Modify the JSON file
-            const urlParams = new URLSearchParams(window.location.search);
-            const extension = urlParams.get('extension');
-            const extId = window.location.pathname.split('/ext/')[1];
+                // Update the zip with the new project.json
+                zip.file('project.json', updatedJson);
 
-            if (extension) {
-                projectJson.content = projectJson.content.replace('[EXTURL]', extension);
-                projectJson.content = projectJson.content.replace('[EXTID]', extId);
-            } else {
-                throw new Error('Extension URL is not provided');
+                // Generate the new zip file
+                const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
+
+                // Convert the zip to a Data URI
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const dataUri = reader.result;
+                    // Redirect to the editor with the Data URI
+                    window.location.href = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`;
+                };
+                reader.readAsDataURL(updatedZipBlob);
+            } catch (error) {
+                console.error('Error processing the project:', error);
             }
-
-            // Step 5: Re-zip the updated file
-            const updatedZip = new JSZip();
-            updatedZip.file('project.json', JSON.stringify(projectJson, null, 2));
-
-            // Step 6: Convert the updated zip to a data URI
-            const updatedZipBlob = await updatedZip.generateAsync({ type: 'blob' });
-            const updatedZipUrl = URL.createObjectURL(updatedZipBlob);
-
-            // Step 7: Redirect to the editor
-            const editorUrl = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(updatedZipUrl)}`;
-            window.location.href = editorUrl;
-
-        } catch (error) {
-            alert('Error: ' + error.message);
-        }
-    });
-</script>
-
+        };
+    </script>
 </body>
 </html>
