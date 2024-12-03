@@ -115,7 +115,7 @@
 					const jsCode = match.slice(5, -2);
 					markdownText = markdownText.replace(match, ''); // Remove the JS code from the string
 					try {
-						eval(jsCode); // Execute the JS code
+						eval(jsCode);
 					} catch (error) {
 						console.error(`Error executing JS: ${error.message}`);
 					}
