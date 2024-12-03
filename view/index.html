@@ -45,7 +45,9 @@
 <body>
     <div id="toolbar">
         <a href="/">&#x2190; Back to extensions</a>
-        <a link="[ext]">Extension file</a>
+        <a link="[file]">Extension file</a>
+
+        <a style="float: right;" link="[id]">Share extension</a>
     </div>
     <div id="editor"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
@@ -115,7 +117,8 @@
                 const filePath = hash.endsWith('.js') ? `/ext/${hash}` : `/ext/${hash}/main.js`;
 
                 document.querySelectorAll('a[link]').forEach(a => {
-                    a.href = a.getAttribute('link').replace(/\[ext\]/g, filePath);
+                    a.href = a.getAttribute('link').replace(/\[file\]/g, filePath)
+                    .getAttribute('link').replace(/\[id\]/g, hash.substring(0, hash.lastIndexOf('/')));
                 });
 
                 try {
