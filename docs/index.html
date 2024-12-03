@@ -100,7 +100,7 @@
 			window.parent.postMessage({docsloaded: "true"}, '*');
 			window.top.postMessage({docsloaded: "true"}, '*');
 		}, 1500);
-		if (window.top = window) {
+		if (window.top == window) {
 			document.getElementById("toolbar").removeAttribute("hidden");
 		}
 	</script>
