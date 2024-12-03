@@ -47,82 +47,82 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        input[type="file"] {
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Upload and Process Project</h1>
-        <input type="file" id="zip-file" accept=".zip" />
-        <div class="message" id="status-message"></div>
-        <div class="spinner" id="spinner" style="display: none;"></div>
+        <h1>Processing Project</h1>
+        <div class="message">Your project is being prepared for the editor...</div>
+        <div class="spinner"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
-        document.getElementById('zip-file').addEventListener('change', async function(event) {
-            const file = event.target.files[0];
-            if (!file) {
-                return;
-            }
-
-            document.getElementById('status-message').textContent = 'Processing your project...';
-            document.getElementById('spinner').style.display = 'block';
-
+        // Function to process the project on page load
+        window.onload = async function() {
             try {
-                // Read the uploaded zip file as a blob
-                const zipBlob = file;
-                const zip = await JSZip.loadAsync(zipBlob);
-
-                // Modify the project.json in the zip
-                const files = Object.keys(zip.files);
                 const urlParams = new URLSearchParams(window.location.search);
-                const extensionUrl = "https://p7scratchextensions.pages.dev" + urlParams.get('ext');
+                const extensionUrl = urlParams.get('ext');
                 const extId = urlParams.get('ext').split('/')[2];
 
                 if (!extensionUrl || !extId) {
                     throw new Error("Missing 'extension' or 'extId' in URL parameters.");
                 }
 
+                // Fetch the extension file as a Data URI
+                const extensionResponse = await fetch(extensionUrl);
+                const extensionBlob = await extensionResponse.blob();
+                const extensionDataUri = await blobToDataUri(extensionBlob);
+
+                // Fetch the zip file
+                const zipUrl = 'Project.zip';
+                const zipResponse = await fetch(zipUrl);
+                const zipBlob = await zipResponse.blob();
+                const zip = await JSZip.loadAsync(zipBlob);
+
+                // Loop through each file in the zip and modify project.json
+                const files = Object.keys(zip.files);
                 for (let fileName of files) {
                     const file = zip.file(fileName);
+
                     if (fileName === 'project.json') {
-                        // Modify project.json content
+                        // Modify project.json content to replace EXTURL and EXTID with Data URI
                         let projectJson = await file.async('string');
                         projectJson = projectJson
-                            .replace(/\[EXTURL\]/g, extensionUrl)
-                            .replace(/\[EXTID\]/g, extId);
-                        
+                            .replace(/\[EXTURL\]/g, extensionDataUri) // Replace EXTURL with Data URI
+                            .replace(/\[EXTID\]/g, extId); // Replace EXTID with extId
+
                         // Replace the project.json in the zip with the modified version
                         zip.file(fileName, projectJson);
                     }
                 }
 
-                // Generate the updated zip file as a Blob
+                // Generate the new zip file with all the original files plus the modified project.json
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
-                // Convert the zip file to a Data URI
+                // Convert the zip to a Data URI
                 const reader = new FileReader();
                 reader.onloadend = function() {
                     const dataUri = reader.result;
-                    const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`;
                     // Redirect to the editor with the Data URI
-                    window.open(url);
+                    window.open(`https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`, '_blank');
                     window.close();
                 };
-
                 reader.readAsDataURL(updatedZipBlob);
-
             } catch (error) {
                 console.error('Error processing the project:', error);
-                document.getElementById('status-message').textContent = 'Error processing the zip file.';
-            } finally {
-                document.getElementById('spinner').style.display = 'none';
             }
-        });
+        };
+
+        // Helper function to convert a Blob to a Data URI
+        function blobToDataUri(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
     </script>
 </body>
 </html>
