@@ -50,6 +50,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/show-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/javascript-hint.min.js"></script>
     <script>
+        let customSnippets = { functions: [], variables: [] };
+
+        // Fetch custom autocomplete JSON
+        async function fetchCustomSnippets() {
+            try {
+                const response = await fetch('scratchcomplete.json');
+                if (!response.ok) throw new Error('Failed to load snippet file');
+                customSnippets = await response.json();
+                console.log('Custom Snippets Loaded:', customSnippets);
+            } catch (error) {
+                console.error('Error loading custom snippets:', error);
+            }
+        }
+
         const editor = CodeMirror(document.getElementById('editor'), {
             mode: 'javascript',
             lineNumbers: true,
@@ -57,52 +71,43 @@
             theme: 'default',
             extraKeys: {
                 'Ctrl-Space': 'autocomplete'
+            },
+            hintOptions: {
+                completeSingle: false
             }
         });
 
-        let customSnippets = {
-            functions: [],
-            variables: []
-        };
+        // Custom autocomplete function
+        function customAutocomplete(editor, options) {
+            const cursor = editor.getCursor();
+            const token = editor.getTokenAt(cursor);
+            const curWord = token.string;
 
-        async function fetchCustomSnippets() {
-            try {
-                const response = await fetch('scratchcomplete.json');
-                if (!response.ok) throw new Error('Failed to load snippets');
-                customSnippets = await response.json();
-            } catch (e) {
-                console.error('Error loading custom snippets:', e.message);
+            const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord));
+            const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord));
+
+            console.log('Token:', token);
+            console.log('Current Word:', curWord);
+            console.log('Matched Functions:', matchedFunctions);
+            console.log('Matched Variables:', matchedVariables);
+
+            const suggestions = [
+                ...matchedFunctions.map(fn => ({ text: fn })),
+                ...matchedVariables.map(v => ({ text: v }))
+            ];
+
+            if (suggestions.length) {
+                return {
+                    list: suggestions,
+                    from: { line: cursor.line, ch: token.start },
+                    to: { line: cursor.line, ch: token.end }
+                };
             }
+            return { list: [], from: cursor, to: cursor };
         }
 
-        function customHint(editor) {
-            const cursor = editor.getCursor();
-            const currentLine = editor.getLine(cursor.line);
-            const currentWord = currentLine.slice(0, cursor.ch).replace(/\s+$/, "");
-
-            const matchingFunctions = customSnippets.functions.filter(func => func.startsWith(currentWord));
-            const matchingVariables = customSnippets.variables.filter(varName => varName.startsWith(currentWord));
-
-            const hints = [...matchingFunctions, ...matchingVariables].map(snippet => {
-                return { text: snippet };
-            });
-
-            return {
-                list: hints,
-                from: CodeMirror.Pos(cursor.line, currentWord.length),
-                to: cursor
-            };
-        }
-
-        editor.on('inputRead', function() {
-            const cursor = editor.getCursor();
-            const currentLine = editor.getLine(cursor.line);
-            const currentWord = currentLine.slice(0, cursor.ch).replace(/\s+$/, "");
-
-            if (currentWord.length > 0) {
-                editor.showHint({ hint: customHint });
-            }
-        });
+        // Attach custom autocomplete to CodeMirror
+        CodeMirror.registerHelper("hint", "javascript", customAutocomplete);
 
         async function loadFileFromHash() {
             const hash = window.location.hash.slice(2);
