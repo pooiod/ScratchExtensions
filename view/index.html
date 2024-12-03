@@ -58,7 +58,6 @@
                 const response = await fetch('scratchcomplete.json');
                 if (!response.ok) throw new Error('Failed to load snippet file');
                 customSnippets = await response.json();
-                console.log('Custom Snippets Loaded:', customSnippets);
             } catch (error) {
                 console.error('Error loading custom snippets:', error);
             }
@@ -86,25 +85,20 @@
             const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord));
             const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord));
 
-            console.log('Token:', token);
-            console.log('Current Word:', curWord);
-            console.log('Matched Functions:', matchedFunctions);
-            console.log('Matched Variables:', matchedVariables);
-
-            const defaultSuggestions = CodeMirror.hint.javascript(editor, options).list;
+            const defaultSnippets = CodeMirror.hint.javascript(editor) || { list: [] };
 
             const suggestions = [
                 ...matchedFunctions.map(fn => ({ text: fn })),
-                ...matchedVariables.map(v => ({ text: v }))
+                ...matchedVariables.map(v => ({ text: v })),
+                ...defaultSnippets.list
             ];
 
-            // Combine default suggestions with custom ones and limit to top 5 results
-            const allSuggestions = [...suggestions, ...defaultSuggestions]
-                .slice(0, 5); // Limit to top 5 suggestions
+            // Limit suggestions to top 5
+            const limitedSuggestions = suggestions.slice(0, 5);
 
-            if (allSuggestions.length) {
+            if (limitedSuggestions.length) {
                 return {
-                    list: allSuggestions,
+                    list: limitedSuggestions,
                     from: { line: cursor.line, ch: token.start },
                     to: { line: cursor.line, ch: token.end }
                 };
