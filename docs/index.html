@@ -2,148 +2,163 @@
 
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Pooiod7's scratch extension docs</title>
-  <link href="favicon.png" rel="icon" type="image/x-icon">
-  
-  <link rel="stylesheet" href="https://pooiod7.neocities.org/markdown/markdown.css">
-  <script src="https://pooiod7.neocities.org/markdown/showdown.js"></script>
-  
-  <link rel="stylesheet" href="https://pooiod7.neocities.org/markdown/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://pooiod7.neocities.org/markdown/code.css" rel="stylesheet">
-  <script src="https://pooiod7.neocities.org/markdown/prism.js"></script>
-  
-  <script src="https://pooiod7.neocities.org/markdown/scratchblocks.js"></script>
+<title>Pooiod7's scratch extension docs</title>
+<link href="favicon.png" rel="icon" type="image/x-icon">
+
+<link rel="stylesheet" href="https://pooiod7.neocities.org/markdown/markdown.css">
+<script src="https://pooiod7.neocities.org/markdown/showdown.js"></script>
+
+<link rel="stylesheet" href="https://pooiod7.neocities.org/markdown/style.css">
+<style>
+	#toolbar {
+		padding: 10px;
+		background: #fff;
+		border-bottom: 1px solid #dadada;
+		z-index: 1;
+	}
+	#toolbar a {
+		text-decoration: none;
+		color: #007BFF;
+	}
+</style>
+
+<link href="https://pooiod7.neocities.org/markdown/code.css" rel="stylesheet">
+<script src="https://pooiod7.neocities.org/markdown/prism.js"></script>
+
+<script src="https://pooiod7.neocities.org/markdown/scratchblocks.js"></script>
 </head>
 
 <body>
-  <div id="loading-bar" style="opacity: 0;"></div>
-    <div class="container" style="height: 100vh;">
-        <div class="content hidden" style="height: 100vh;">
-            <div class="markdown-content" id="markdown-content" style="height: 100vh;">
-                <p style="width: 300px;">Your content is loading :)</p>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-      setTimeout(() => {
-        window.parent.postMessage({docsloaded: "true"}, '*');
-        window.top.postMessage({docsloaded: "true"}, '*');
-      }, 1500);
-    </script>
+<div id="loading-bar" style="opacity: 0;"></div>
+<div id="toolbar">
+	<a href="/">&#x2190; Back to extensions</a>
+	</div>
+	<div class="container" style="height: 100vh;">
+		<div class="content hidden" style="height: 100vh;">
+			<div class="markdown-content" id="markdown-content" style="height: 100vh;">
+				<p style="width: 300px;">Your content is loading :)</p>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+	setTimeout(() => {
+		window.parent.postMessage({docsloaded: "true"}, '*');
+		window.top.postMessage({docsloaded: "true"}, '*');
+	}, 1500);
+	</script>
 
-    <script>
-        function fetchAndRenderMarkdown() {
-            const content = document.querySelector('.content');
-            content.classList.add('hidden');
+	<script>
+		function fetchAndRenderMarkdown() {
+			const content = document.querySelector('.content');
+			content.classList.add('hidden');
 
-          document.getElementById("loading-bar").style.animation = "loading 1s linear";
-          document.getElementById("loading-bar").setAttribute("style", "opacity: 1;");
+			document.getElementById("loading-bar").style.animation = "loading 1s linear";
+			document.getElementById("loading-bar").setAttribute("style", "opacity: 1;");
 
-            setTimeout(() => {
-                var markdownFilePath = getMarkdownFilePathFromHash();
-                if (markdownFilePath.includes("https://")) {
-                  var re = "";
-                  document.getElementById("loading-bar").style.animation = "loading 3s linear";
-                  markdownFilePath = /*atob(re) + */markdownFilePath;
-                }
-                if (!markdownFilePath.includes(".")) {
-                  markdownFilePath = markdownFilePath + ".md";
-                }
-                
-                // console.log('Markdown file:', markdownFilePath);
-              
-                fetch(markdownFilePath)
-                    .then(response => response.text())
-                    .then(markdownText => {
-                      if (!markdownText || markdownText.includes("Sorry, the page you are looking for could not be loaded due to an internal server error.")) {
-                        if (markdownFilePath.includes("https://")) {
-                          markdownText = `# Unable to find document
+			setTimeout(() => {
+				var markdownFilePath = getMarkdownFilePathFromHash();
+				if (markdownFilePath.includes("https://")) {
+					var re = "";
+					document.getElementById("loading-bar").style.animation = "loading 3s linear";
+					markdownFilePath = /*atob(re) + */markdownFilePath;
+				}
+				if (!markdownFilePath.includes(".")) {
+					markdownFilePath = markdownFilePath + ".md";
+				}
+				
+				// console.log('Markdown file:', markdownFilePath);
+			
+				fetch(markdownFilePath)
+					.then(response => response.text())
+					.then(markdownText => {
+						if (!markdownText || markdownText.includes("Sorry, the page you are looking for could not be loaded due to an internal server error.")) {
+							if (markdownFilePath.includes("https://")) {
+								markdownText = `# Unable to find document
 
 ---
 Sorry, the external file you are looking for could not be loaded. This may be due to a CORS issue. <br>
 Please check with the website owner to make shure CORS is enabled.`;
-                        } else {
-                          markdownText = `# Unable to find document
+							} else {
+								markdownText = `# Unable to find document
 
 ---
 Sorry, the file you are looking for could not be found on the server.`;
-                        }
-                      }
-                      markdownText += "<p style='width: calc(100vw - 30px);'><br></p>"
-                        const converter = new showdown.Converter();
-                        const html = converter.makeHtml(markdownText);
-                        const markdownContent = document.getElementById('markdown-content');
-                        markdownContent.innerHTML = html;
+							}
+						}
+						markdownText += "<p style='width: calc(100vw - 30px);'><br></p>"
+							const converter = new showdown.Converter();
+							const html = converter.makeHtml(markdownText);
+							const markdownContent = document.getElementById('markdown-content');
+							markdownContent.innerHTML = html;
 
-                        content.classList.remove('hidden');
-                      document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
+							content.classList.remove('hidden');
+							document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
 
-                      document.querySelectorAll('#markdown-content *').forEach(element => {
-                          const matches = element.innerHTML.match(/\[!js-(.+?)\]/g);
-                          if (matches) {
-                              matches.forEach(match => {
-                                  const jsCode = match.slice(5, -1);
-                                  element.innerHTML = element.innerHTML.replace(match, '');
-                                  try {
-                                      eval(jsCode);
-                                  } catch (error) {
-                                      console.error(`Error executing JS: ${error.message}`);
-                                  }
-                              });
-                          }
-                      });
-                      
-                      Prism.highlightAll(); // Syntax stuff 
-                      
-                      scratchblocks.init();
-                      scratchblocks.module.renderMatching(".scratch2", {
-                          style: "scratch2",
-                      });
-                      scratchblocks.module.renderMatching(".scratch3", {
-                          style: "scratch3",
-                      });
-                      
-                        //console.log('Markdown content successfully rendered.');
-                    })
-                    .catch(error => {
-                        var markdownText = `
+							document.querySelectorAll('#markdown-content *').forEach(element => {
+							const matches = element.innerHTML.match(/\[!js-(.+?)\]/g);
+							if (matches) {
+								matches.forEach(match => {
+									const jsCode = match.slice(5, -1);
+									element.innerHTML = element.innerHTML.replace(match, '');
+									try {
+										eval(jsCode);
+									} catch (error) {
+										console.error(`Error executing JS: ${error.message}`);
+									}
+								});
+							}
+						});
+						
+						Prism.highlightAll(); // Syntax stuff 
+						
+						scratchblocks.init();
+						scratchblocks.module.renderMatching(".scratch2", {
+							style: "scratch2",
+						});
+						scratchblocks.module.renderMatching(".scratch3", {
+							style: "scratch3",
+						});
+						
+						//console.log('Markdown content successfully rendered.');
+					})
+					.catch(error => {
+						var markdownText = `
 # File Error
 
 Sorry, the page you are looking for could not be loaded due to an internal server error. 
-                        `;
-                        const converter = new showdown.Converter();
-                        const html = converter.makeHtml(markdownText);
-                        const markdownContent = document.getElementById('markdown-content');
-                        markdownContent.innerHTML = html;
+						`;
+						const converter = new showdown.Converter();
+						const html = converter.makeHtml(markdownText);
+						const markdownContent = document.getElementById('markdown-content');
+						markdownContent.innerHTML = html;
 
-                        content.classList.remove('hidden');
-                      document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
-                        console.error('Error fetching and rendering Markdown:', error);
-                    });
-              document.querySelector('.content').scrollTop = 0;
-              
-              if (new URLSearchParams(window.location.search).has('parent')) {
-                document.querySelectorAll('a').forEach(link => link.target = '_parent');
-              }
-            }, 300);
-        }
+						content.classList.remove('hidden');
+					document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
+						console.error('Error fetching and rendering Markdown:', error);
+					});
+			document.querySelector('.content').scrollTop = 0;
+			
+			if (new URLSearchParams(window.location.search).has('parent')) {
+				document.querySelectorAll('a').forEach(link => link.target = '_parent');
+			}
+			}, 300);
+		}
 
-        function getMarkdownFilePathFromHash() {
-          var hash = window.location.hash.slice(1);
-          if (!hash) {
-            return 'home.md';
-          } else {
-            return `/ext${hash + ((hash.split('/').length < 3)?"/main":"")}.md`;
-          }
-        }
+		function getMarkdownFilePathFromHash() {
+			var hash = window.location.hash.slice(1);
+			if (!hash) {
+				return 'home.md';
+			} else {
+				return `/ext${hash + ((hash.split('/').length < 3)?"/main":"")}.md`;
+			}
+		}
 
-        window.addEventListener('hashchange', fetchAndRenderMarkdown);
-        fetchAndRenderMarkdown();
-    </script>
+		window.addEventListener('hashchange', fetchAndRenderMarkdown);
+		fetchAndRenderMarkdown();
+	</script>
 </body>
 </html>
