@@ -1,12 +1,12 @@
-function extractAutoCompleteMap(functionvar) {
-    function getAllKeys(obj, path = "", seen = new WeakSet()) {
+function extractAutoCompleteMap(Scratch) {
+    function getAllKeys(obj, path = "Scratch", seen = new WeakSet()) {
         if (obj !== Object(obj) || seen.has(obj)) return [];
         seen.add(obj);
 
         let keys = [];
         for (const key in obj) {
             if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                const currentPath = path ? `${path}.${key}` : key;
+                const currentPath = `${path}.${key}`;
                 keys.push(currentPath);
                 keys = keys.concat(getAllKeys(obj[key], currentPath, seen));
             }
@@ -23,7 +23,7 @@ function extractAutoCompleteMap(functionvar) {
         }
     }
 
-    const keys = getAllKeys(functionvar);
+    const keys = getAllKeys(Scratch);
     const functions = [];
     const variables = [];
 
