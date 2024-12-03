@@ -109,7 +109,7 @@
 
 	<script>
 		function parseMarkdown(markdownText) {
-			const matches = markdownText.match(/\[!js-(.+?)!\]/g);
+			const matches = markdownText.match(/\[!js-([\s\S]+?)!\]/g);
 			if (matches) {
 				matches.forEach(match => {
 					const jsCode = match.slice(5, -2);
