@@ -135,7 +135,7 @@
 
     <script>
         let cardsData = ["/ext/extensions.json"];
-        
+
         if (window.location.pathname !== "/") {
             document.body.innerHTML = '';
 
@@ -159,7 +159,7 @@
             message.style.color = '#e74c3c';
 
             const subMessage = document.createElement('p');
-            subMessage.innerText = 'Oops! The page you are looking for does not exist.';
+            subMessage.innerHTML = `Yikes! <br>We coudn't find that page. <br>D:`;
             subMessage.style.fontSize = '1.5rem';
             subMessage.style.marginTop = '20px';
             subMessage.style.color = '#7f8c8d';
