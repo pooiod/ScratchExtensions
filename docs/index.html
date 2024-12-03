@@ -84,7 +84,7 @@
 
 <body>
 <div id="loading-bar" style="opacity: 0;"></div>
-	<div id="toolbar">
+	<div id="toolbar" hidden>
 		<a href="/">&#x2190; Back to extensions</a>
 	</div>
 	<div class="container" style="height: 100vh;">
@@ -96,10 +96,13 @@
 	</div>
 	
 	<script>
-	setTimeout(() => {
-		window.parent.postMessage({docsloaded: "true"}, '*');
-		window.top.postMessage({docsloaded: "true"}, '*');
-	}, 1500);
+		setTimeout(() => {
+			window.parent.postMessage({docsloaded: "true"}, '*');
+			window.top.postMessage({docsloaded: "true"}, '*');
+		}, 1500);
+		if (window.top = window) {
+			document.getElementById("toolbar").removeAttribute("hidden");
+		}
 	</script>
 
 	<script>
