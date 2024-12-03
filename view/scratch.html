@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Pooiod7's Scratch extension loader</title>
     <link rel="icon" type="image/x-icon" href="https://studio.penguinmod.com/favicon.ico">
 
@@ -112,6 +112,25 @@
         function statusText(txt) {
             document.getElementById("loader_message-container").innerText = txt + "…";
         }
+        async function canYeet() {
+            try {
+                const response = await fetch("https://yeetyourfiles.lol/", {
+                    method: "HEAD",
+                });
+                return response.ok;
+            } catch (error) {
+                console.error("Error fetching URL:", error);
+                return false;
+            }
+        }
+
+        // canYeet().then(isReachable => {
+        //     if (isReachable) {
+        //         console.log("Your files can be yeeted :D");
+        //     } else {
+        //         console.log("Can't yeet right now :(");
+        //     }
+        // });
         window.onload = async function() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);

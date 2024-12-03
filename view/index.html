@@ -85,7 +85,7 @@
     </script>
     <div id="toolbar">
         <a style="float: left;" href="/">&#x2190; Back to extensions</a>
-        <a style="float: left;" link="scratch?ext=[file]" target="_blank">Open in scratch</a>
+        <a style="float: left;" link="scratch?ext=[file]" target="_blank" id="yeet" hidden>Open in scratch</a>
 
         <a style="float: right;" target="_blank" link="/#[id]" onclick="event.preventDefault(); share(this.href);">Share extension</a>
     </div>
@@ -96,6 +96,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/javascript-hint.min.js"></script>
     <script>
         let customSnippets = { functions: [], variables: [] };
+
+        async function canYeet() {
+            try {
+                const response = await fetch("https://yeetyourfiles.lol/", {
+                    method: "HEAD",
+                });
+                return response.ok;
+            } catch (error) {
+                console.error("Error fetching URL:", error);
+                return false;
+            }
+        }
+
+        canYeet().then(isReachable => {
+            if (isReachable) {
+                document.getElementById("yeet").removeAttribute("hidden");
+            }
+        });
 
         async function fetchCustomSnippets() {
             try {
