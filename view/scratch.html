@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f0f0; }
+        .loading { font-size: 24px; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="loading">Loading...</div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const extension = params.get('extension');
+        fetch(extension)
+            .then(res => res.blob())
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const dataUri = reader.result;
+                    window.location.href = `https://mirror.turbowarp.xyz/?extension=${encodeURIComponent(dataUri)}`;
+                };
+                reader.readAsDataURL(blob);
+            })
+            .catch(console.error);
+    </script>
+</body>
+</html>
