@@ -1,4 +1,4 @@
-function extractAutoCompleteMap(Scratch) {
+function extractAutoCompleteMap(functionvar) {
     function getAllKeys(obj, path = "", seen = new WeakSet()) {
         if (obj !== Object(obj) || seen.has(obj)) return [];
         seen.add(obj);
@@ -23,7 +23,7 @@ function extractAutoCompleteMap(Scratch) {
         }
     }
 
-    const keys = getAllKeys(Scratch);
+    const keys = getAllKeys(functionvar);
     const functions = [];
     const variables = [];
 
