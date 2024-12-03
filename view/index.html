@@ -46,12 +46,17 @@
     <div id="editor"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/show-hint.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/show-hint.min.css">
     <script>
         const editor = CodeMirror(document.getElementById('editor'), {
             mode: 'javascript',
             lineNumbers: true,
             lineWrapping: true,
-            theme: 'default'
+            theme: 'default',
+            extraKeys: {
+                "Ctrl-Space": "autocomplete"
+            }
         });
 
         async function loadFileFromHash() {
@@ -71,8 +76,32 @@
             }
         }
 
+        async function loadAutocompleteSnippets() {
+            const response = await fetch('scratchcomplete.json');
+            if (!response.ok) throw new Error('Autocomplete JSON not found');
+            const data = await response.json();
+
+            const functions = data.functions.map(func => ({ label: func, type: 'function' }));
+            const variables = data.variables.map(variable => ({ label: variable, type: 'variable' }));
+
+            editor.on('inputRead', function() {
+                const cursor = editor.getCursor();
+                const token = editor.getTokenAt(cursor);
+                if (token.string.length > 0 && !token.string.includes('.')) {
+                    CodeMirror.showHint(editor, function() {
+                        return {
+                            from: cursor,
+                            to: cursor,
+                            list: [...functions, ...variables]
+                        };
+                    });
+                }
+            });
+        }
+
         window.addEventListener('hashchange', loadFileFromHash);
         loadFileFromHash();
+        loadAutocompleteSnippets();
     </script>
 </body>
 </html>
