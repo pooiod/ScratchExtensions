@@ -44,6 +44,7 @@
 <body>
     <div id="toolbar">
         <a href="/">&#x2190; Back to extensions</a>
+        <a href="[ext]">Extension file</a>
     </div>
     <div id="editor"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
@@ -111,6 +112,11 @@
             const hash = window.location.hash.slice(2);
             if (hash) {
                 const filePath = hash.endsWith('.js') ? `/ext/${hash}` : `/ext/${hash}/main.js`;
+
+                document.querySelectorAll('a[href]').forEach(a => {
+                    a.href = a.href.replace(/\[ext\]/g, filePath);
+                });
+
                 try {
                     const response = await fetch(filePath);
                     if (!response.ok) throw new Error('File not found');
@@ -124,7 +130,7 @@
             }
         }
 
-        window.addEventListener('hashchange', loadFileFromHash);
+        window.addEventListener('hashchange', location.reload);
         loadFileFromHash();
         fetchCustomSnippets();
     </script>
