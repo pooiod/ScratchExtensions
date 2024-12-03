@@ -118,7 +118,7 @@
 
                 document.querySelectorAll('a[link]').forEach(a => {
                     a.href = a.getAttribute('link').replace(/\[file\]/g, filePath)
-                    .getAttribute('link').replace(/\[id\]/g, hash.substring(0, hash.lastIndexOf('/')));
+                        .replace(/\[id\]/g, hash.substring(0, hash.lastIndexOf('/')));
                 });
 
                 try {
