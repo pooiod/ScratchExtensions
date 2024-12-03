@@ -129,7 +129,7 @@
     <p id="loader">Loading extensions...</p>
 
     <script>
-        let cardsData = [];
+        let cardsData = ["/ext/extensions.json"];
 
         function createCard(card) {
             const cardDiv = document.createElement('div');
@@ -167,7 +167,7 @@
 
         async function fetchExtensions() {
             try {
-                const response = await fetch('/ext/extensions.json');
+                const response = await fetch(cardsData[0]);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
