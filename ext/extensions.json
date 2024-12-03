@@ -14,7 +14,7 @@
     },
     {
         "id": "HTMLcanvas",
-        "image": "/ext/[id]/img.svg",
+        "image": "https://dummyimage.com/600x400/fff/000&text=[id]",
         "title": "HTML Canvas",
         "description": "An extension that allows you to use HTML and CSS to make projects with complex visual interfaces",
         "subtext": "",
