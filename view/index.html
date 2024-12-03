@@ -58,6 +58,7 @@
                 const response = await fetch('scratchcomplete.json');
                 if (!response.ok) throw new Error('Failed to load snippet file');
                 customSnippets = await response.json();
+                console.log('Custom Snippets Loaded:', customSnippets);
             } catch (error) {
                 console.error('Error loading custom snippets:', error);
             }
@@ -85,20 +86,19 @@
             const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord));
             const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord));
 
-            const defaultSnippets = CodeMirror.hint.javascript(editor) || { list: [] };
+            // console.log('Token:', token);
+            // console.log('Current Word:', curWord);
+            // console.log('Matched Functions:', matchedFunctions);
+            // console.log('Matched Variables:', matchedVariables);
 
             const suggestions = [
                 ...matchedFunctions.map(fn => ({ text: fn })),
-                ...matchedVariables.map(v => ({ text: v })),
-                ...defaultSnippets.list
+                ...matchedVariables.map(v => ({ text: v }))
             ];
 
-            // Limit suggestions to top 5
-            const limitedSuggestions = suggestions.slice(0, 5);
-
-            if (limitedSuggestions.length) {
+            if (suggestions.length) {
                 return {
-                    list: limitedSuggestions,
+                    list: suggestions,
                     from: { line: cursor.line, ch: token.start },
                     to: { line: cursor.line, ch: token.end }
                 };
