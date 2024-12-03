@@ -89,14 +89,20 @@
             // Limit the default suggestions to a reasonable number
             const defaultSuggestions = defaultHints.list.slice(0, 5);
 
-            // Match custom snippets with curWord
-            const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord)).slice(0, 5);
-            const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord)).slice(0, 5);
+            // Filter custom snippets based on the current word (curWord)
+            const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord));
+            const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord));
+
+            // Debugging output
+            console.log('Token:', token);
+            console.log('Current Word:', curWord);
+            console.log('Matched Functions:', matchedFunctions);
+            console.log('Matched Variables:', matchedVariables);
 
             // Combine matched custom snippets and default suggestions
             const allSuggestions = [
-                ...matchedFunctions.map(fn => ({ text: fn })),
-                ...matchedVariables.map(v => ({ text: v })),
+                ...matchedFunctions.slice(0, 5).map(fn => ({ text: fn })),
+                ...matchedVariables.slice(0, 5).map(v => ({ text: v })),
                 ...defaultSuggestions
             ];
 
