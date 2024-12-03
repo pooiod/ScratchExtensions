@@ -84,7 +84,7 @@
 
 <body>
 <div id="loading-bar" style="opacity: 0;"></div>
-	<div id="toolbar" hidden>
+	<div id="toolbar" style="display: none;">
 		<a href="/">&#x2190; Back to extensions</a>
 	</div>
 	<div class="container" style="height: 100vh;">
@@ -101,7 +101,7 @@
 			window.top.postMessage({docsloaded: "true"}, '*');
 		}, 1500);
 		if (window.top == window) {
-			document.getElementById("toolbar").removeAttribute("hidden");
+			document.getElementById("toolbar").style.display = "block";
 		}
 	</script>
 
