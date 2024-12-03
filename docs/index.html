@@ -121,9 +121,9 @@
 					} catch (error) {
 						console.error(`Error executing JS: ${error.message}`);
 					}
+					console.log("Ran js snip:", match)
 				});
 			}
-			console.log("JS ships ran:", matches)
 
 			markdownText += "<p style='width: calc(100vw - 30px);'><br></p>";
 			const converter = new showdown.Converter();
