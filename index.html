@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -127,20 +128,7 @@
 <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
 
     <script>
-        const cardsData = [
-            {
-                id: "BoxedPhysics",
-                image: "/ext/[id]/img.svg",
-                title: "Boxed Physics",
-                description: "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
-                subtext: "Originally based on \"Box2D Physics\" by Griffpatch",
-                icon: "",
-                iconText: "",
-                buttons: [
-                    { text: "ViewSource", color: "#007BFF", link: "/ext/[id]/main.js" }
-                ]
-            }
-        ];
+        let cardsData = [];
 
         function createCard(card) {
             const cardDiv = document.createElement('div');
@@ -174,6 +162,20 @@
             `;
 
             return cardDiv;
+        }
+
+        async function fetchExtensions() {
+            try {
+                const response = await fetch('/ext/extensions.json');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                cardsData = await response.json();
+                renderCards();
+            } catch (error) {
+                console.error('Failed to fetch extensions:', error);
+                document.querySelector('p[hidden]').removeAttribute('hidden');
+            }
         }
 
         function renderCards() {
@@ -214,7 +216,7 @@
 
         window.addEventListener('hashchange', scrollToHash);
 
-        renderCards();
+        fetchExtensions();
     </script>
 </body>
 </html>

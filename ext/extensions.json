@@ -1,0 +1,14 @@
+[
+    {
+        "id": "BoxedPhysics",
+        "image": "/ext/[id]/img.svg",
+        "title": "Boxed Physics",
+        "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
+        "subtext": "Originally based on \"Box2D Physics\" by Griffpatch",
+        "icon": "",
+        "iconText": "",
+        "buttons": [
+            { "text": "ViewSource", "color": "#007BFF", "link": "/ext/[id]/main.js" }
+        ]
+    }
+]
