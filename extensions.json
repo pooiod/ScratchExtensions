@@ -1,3 +1,4 @@
+
 [
     {
         "id": "BoxedPhysics",
@@ -23,6 +24,18 @@
         "buttons": [
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        ]
+    },
+    {
+        "id": "Dictation",
+        "image": "/ext/[id]/img.svg",
+        "title": "Dictation",
+        "description": "Convert your voice into text.",
+        "subtext": "not supported in all browsers",
+        "icon": "",
+        "iconText": "",
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ]
     },
     {
