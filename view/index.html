@@ -83,38 +83,29 @@
             const token = editor.getTokenAt(cursor);
             const curWord = token.string;
 
-            // Use default JavaScript completions
+            // Call CodeMirror's default JavaScript hinting
             const defaultHints = CodeMirror.hint.javascript(editor, options);
-            const defaultSuggestions = defaultHints.list || [];
+
+            // Limit the default suggestions to a reasonable number
+            const defaultSuggestions = defaultHints.list.slice(0, 5);
 
             // Match custom snippets with curWord
-            const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord));
-            const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord));
+            const matchedFunctions = customSnippets.functions.filter(fn => fn.startsWith(curWord)).slice(0, 5);
+            const matchedVariables = customSnippets.variables.filter(v => v.startsWith(curWord)).slice(0, 5);
 
-            // Debugging output
-            console.log('Token:', token);
-            console.log('Current Word:', curWord);
-            console.log('Matched Functions:', matchedFunctions);
-            console.log('Matched Variables:', matchedVariables);
-
-            // Combine matched functions and variables from custom snippets
-            const suggestions = [
+            // Combine matched custom snippets and default suggestions
+            const allSuggestions = [
                 ...matchedFunctions.map(fn => ({ text: fn })),
                 ...matchedVariables.map(v => ({ text: v })),
                 ...defaultSuggestions
             ];
 
-            // Sort suggestions by relevance (closest match)
-            suggestions.sort((a, b) => {
-                return a.text.indexOf(curWord) - b.text.indexOf(curWord);
-            });
-
-            // Limit to top 5 suggestions
-            const topSuggestions = suggestions.slice(0, 5);
+            // Sort suggestions by relevance (closest match first)
+            allSuggestions.sort((a, b) => a.text.indexOf(curWord) - b.text.indexOf(curWord));
 
             // Return the suggestions
             return {
-                list: topSuggestions,
+                list: allSuggestions,
                 from: { line: cursor.line, ch: token.start },
                 to: { line: cursor.line, ch: token.end }
             };
