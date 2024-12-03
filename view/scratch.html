@@ -58,7 +58,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
-        // Function to process the project on page load
         window.onload = async function() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -81,13 +80,11 @@
                     const file = zip.file(fileName);
 
                     if (fileName === 'project.json') {
-                        // Modify project.json content
                         let projectJson = await file.async('string');
                         projectJson = projectJson
                             .replace(/\[EXTURL\]/g, extensionUrl)
                             .replace(/\[EXTID\]/g, extId);
                         
-                        // Replace the project.json in the zip with the modified version
                         zip.file(fileName, projectJson);
                     }
                 }
@@ -95,16 +92,20 @@
                 // Generate the new zip file with all the original files plus the modified project.json
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
-                // Convert the zip to a Data URI
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    const dataUri = reader.result;
-                    const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`;
-                    // Redirect to the editor with the Data URI
-                    window.open(url); window.close();
-                    // window.location.href = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`;
-                };
-                reader.readAsDataURL(updatedZipBlob);
+                // Upload to a temporary file hosting service (e.g., file.io)
+                const formData = new FormData();
+                formData.append('file', updatedZipBlob, 'project.zip');
+                const uploadResponse = await fetch('https://file.io', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const uploadData = await uploadResponse.json();
+                const fileUrl = uploadData.link;
+
+                // Redirect to the editor with the file URL
+                window.open(`https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(fileUrl)}`);
+                window.close();
             } catch (error) {
                 console.error('Error processing the project:', error);
             }
