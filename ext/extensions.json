@@ -9,6 +9,7 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#007BFF", "link": "/view/#/[id]" },
+            { "text": "Open in PegnuinMod", "color": "#007BFF", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Box2D.js" },
             { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]/dev.js" }
         ]
     },
@@ -23,6 +24,19 @@
         "buttons": [
             { "text": "View Docs", "color": "#007BFF", "link": "/docs/#/[id]" },
             { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]/dev.js" }
+        ]
+    },
+    {
+        "id": "ScratchBlocks",
+        "image": "/ext/[id]/img.svg",
+        "title": "ScratchBlocks",
+        "description": "Generate blocks in the Scratch3, or Scratch2 format.",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "buttons": [
+            { "text": "View extension", "color": "#007BFF", "link": "/view/#/[id]" },
+            { "text": "Open in PegnuinMod", "color": "#007BFF", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Scratchblocks.js" }
         ]
     }
 ]
