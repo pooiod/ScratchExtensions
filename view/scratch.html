@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Zip Processor</title>
+    <title>Preparing editor evironment</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,14 +19,13 @@
         .container {
             padding: 10px;
             border-radius: 100%;
-            background-color: #f7f7f7;
+            background-color: #fff;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
         .spinner {
-            margin-top: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -46,10 +45,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
-        // Function to process the project on page load
         window.onload = async function() {
             try {
-                // Update the message to show processing
                 document.getElementById('statusMessage').textContent = 'Preparing project and extension...';
 
                 const urlParams = new URLSearchParams(window.location.search);
@@ -60,44 +57,35 @@
                     throw new Error("Missing 'extension' or 'extId' in URL parameters.");
                 }
 
-                // Fetch the extension file as a Data URI
                 const extensionResponse = await fetch(extensionUrl);
                 const extensionBlob = await extensionResponse.blob();
                 const extensionDataUri = await blobToDataUri(extensionBlob);
 
-                // Fetch the zip file
                 const zipUrl = 'Project.zip';
                 const zipResponse = await fetch(zipUrl);
                 const zipBlob = await zipResponse.blob();
                 const zip = await JSZip.loadAsync(zipBlob);
 
-                // Update message to indicate zip processing
                 document.getElementById('statusMessage').textContent = 'Modifying project files...';
 
-                // Loop through each file in the zip and modify project.json
                 const files = Object.keys(zip.files);
                 for (let fileName of files) {
                     const file = zip.file(fileName);
 
                     if (fileName === 'project.json') {
-                        // Modify project.json content to replace EXTURL and EXTID with Data URI
                         let projectJson = await file.async('string');
                         projectJson = projectJson
-                            .replace(/\[EXTURL\]/g, extensionDataUri) // Replace EXTURL with Data URI
-                            .replace(/\[EXTID\]/g, extId); // Replace EXTID with extId
+                            .replace(/\[EXTURL\]/g, extensionDataUri)
+                            .replace(/\[EXTID\]/g, extId);
 
-                        // Replace the project.json in the zip with the modified version
                         zip.file(fileName, projectJson);
                     }
                 }
 
-                // Generate the new zip file with all the original files plus the modified project.json
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
-                // Update message to indicate upload process
                 document.getElementById('statusMessage').textContent = 'Uploading project to hosting service...';
 
-                // Upload the updated zip to a temporary hosting service
                 uploadFile(updatedZipBlob);
                 
             } catch (error) {
@@ -105,7 +93,6 @@
             }
         };
 
-        // Helper function to convert a Blob to a Data URI
         function blobToDataUri(blob) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -115,7 +102,6 @@
             });
         }
 
-        // Function to upload the file to a temporary hosting service
         function uploadFile(file) {
             if (!file) {
                 alert('Please select a file to upload!');
@@ -143,10 +129,8 @@
                     const downloadUrl = `https://yeetyourfiles.lol/download/${fileId}`;
                     console.log('Download URL:', downloadUrl);
 
-                    // Open the project in PenguinMod using the uploaded zip file
                     const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(downloadUrl)}`;
-                    window.open(url, '_blank');
-                    window.close();
+                    window.location.href = url;
                 } else {
                     console.error('Upload failed with status:', xhr.status);
                     alert('Upload failed. Please try again.');
