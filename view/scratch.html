@@ -75,17 +75,24 @@
                 const zipBlob = await zipResponse.blob();
                 const zip = await JSZip.loadAsync(zipBlob);
 
-                // Process the project.json inside the zip
-                const projectJson = await zip.file('project.json').async('string');
-                const updatedJson = projectJson
-                    .replace(/\[EXTURL\]/g, extensionUrl)
-                    .replace(/\[EXTID\]/g, extId);
-                console.log(updatedJson)
+                // Loop through each file in the zip and modify project.json
+                const files = Object.keys(zip.files);
+                for (let fileName of files) {
+                    const file = zip.file(fileName);
 
-                // Update the zip with the new project.json
-                zip.file('project.json', updatedJson);
+                    if (fileName === 'project.json') {
+                        // Modify project.json content
+                        let projectJson = await file.async('string');
+                        projectJson = projectJson
+                            .replace(/\[EXTURL\]/g, extensionUrl)
+                            .replace(/\[EXTID\]/g, extId);
+                        
+                        // Replace the project.json in the zip with the modified version
+                        zip.file(fileName, projectJson);
+                    }
+                }
 
-                // Generate the new zip file
+                // Generate the new zip file with all the original files plus the modified project.json
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
                 // Convert the zip to a Data URI
@@ -93,7 +100,6 @@
                 reader.onloadend = function() {
                     const dataUri = reader.result;
                     // Redirect to the editor with the Data URI
-                    alert(e)
                     window.location.href = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`;
                 };
                 reader.readAsDataURL(updatedZipBlob);
