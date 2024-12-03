@@ -99,7 +99,7 @@
             <img class="loader_middle" src="https://studio.penguinmod.com/static/assets/f9dce53613d5f85b311ce9f84423c08b.svg">
             <img class="loader_bottom" src="https://studio.penguinmod.com/static/assets/ce5820b006d753e4133f46ae776f4d96.svg">
         </div>
-        <div class="loader_title"><span>Loading Project</span></div>
+        <div class="loader_title"><span>Preparing editor</span></div>
         <div class="loader_message-container" id="loader_message-container">Loading…</div>
         <div class="loader_progress" id="progressheader" hidden>
             <div class="loader_progress-inner" id="progress" style="width: 0%;"></div>
@@ -169,8 +169,6 @@
                     }
                 }
 
-                statusText("Zipping project");
-
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
                 uploadFile(updatedZipBlob);
@@ -191,7 +189,7 @@
         }
 
         function uploadFile(file) {
-            statusText("Preparing editor");
+            statusText("Generating packages");
 
             if (!file) {
                 alert('No file.');
@@ -222,7 +220,7 @@
                     const fileId = response.fileId;
                     const downloadUrl = `https://yeetyourfiles.lol/download/${fileId}`;
 
-                    statusText("opening in editor");
+                    statusText("Opening packages");
 
                     const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(downloadUrl)}`;
                     window.location.href = url;
