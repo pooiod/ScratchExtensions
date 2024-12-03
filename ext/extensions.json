@@ -21,7 +21,6 @@
         "icon": "https://cdn-icons-png.freepik.com/256/12884/12884314.png?semt=ais_hybrid",
         "iconText": "This extension is in development, and may be changed frequently",
         "buttons": [
-            // { "text": "View Source", "color": "#007BFF", "link": "/view/#/[id]" },
             { "text": "View Docs", "color": "#007BFF", "link": "/docs/#/[id]" },
             { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]/dev.js" }
         ]

@@ -175,10 +175,10 @@
                 document.getElementById("loader").remove();
                 renderCards();
             } catch (error) {
+                document.getElementById("loader").remove();
                 console.error('Failed to fetch extensions:', error);
                 document.querySelector('p[hidden]').removeAttribute('hidden');
                 document.querySelector('p[hidden]').innerText = "Error loading extensions";
-                document.getElementById("loader").remove();
             }
         }
 
