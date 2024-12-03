@@ -3,127 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Zip Processor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-
-        .container {
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #333;
-            font-size: 2rem;
-        }
-
-        .message {
-            margin-top: 20px;
-            color: #777;
-        }
-
-        .spinner {
-            margin-top: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    <title>Upload and Open in PenguinMod</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Processing Project</h1>
-        <div class="message">Your project is being prepared for the editor...</div>
-        <div class="spinner"></div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <input type="file" id="fileInput" />
     <script>
-        // Function to process the project on page load
-        window.onload = async function() {
-            try {
-                const urlParams = new URLSearchParams(window.location.search);
-                const extensionUrl = urlParams.get('ext');
-                const extId = urlParams.get('ext').split('/')[2];
-
-                if (!extensionUrl || !extId) {
-                    throw new Error("Missing 'extension' or 'extId' in URL parameters.");
-                }
-
-                // Fetch the extension file as a Data URI
-                const extensionResponse = await fetch(extensionUrl);
-                const extensionBlob = await extensionResponse.blob();
-                const extensionDataUri = await blobToDataUri(extensionBlob);
-
-                // Fetch the zip file
-                const zipUrl = 'Project.zip';
-                const zipResponse = await fetch(zipUrl);
-                const zipBlob = await zipResponse.blob();
-                const zip = await JSZip.loadAsync(zipBlob);
-
-                // Loop through each file in the zip and modify project.json
-                const files = Object.keys(zip.files);
-                for (let fileName of files) {
-                    const file = zip.file(fileName);
-
-                    if (fileName === 'project.json') {
-                        // Modify project.json content to replace EXTURL and EXTID with Data URI
-                        let projectJson = await file.async('string');
-                        projectJson = projectJson
-                            .replace(/\[EXTURL\]/g, extensionDataUri) // Replace EXTURL with Data URI
-                            .replace(/\[EXTID\]/g, extId); // Replace EXTID with extId
-
-                        // Replace the project.json in the zip with the modified version
-                        zip.file(fileName, projectJson);
-                    }
-                }
-
-                // Generate the new zip file with all the original files plus the modified project.json
-                const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
-
-                // Convert the zip to a Data URI
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    const dataUri = reader.result;
-                    // Redirect to the editor with the Data URI
-                    window.open(dataUri)
-                    // window.open(`https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(dataUri)}`, '_blank');
-                    window.close();
-                };
-                reader.readAsDataURL(updatedZipBlob);
-            } catch (error) {
-                console.error('Error processing the project:', error);
+        function uploadFile(file) {
+            if (!file) {
+                alert('Please select a file to upload!');
+                return;
             }
-        };
 
-        // Helper function to convert a Blob to a Data URI
-        function blobToDataUri(blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const xhr = new XMLHttpRequest();
+
+            // Set up the POST request to the file hosting service
+            xhr.open('POST', 'https://yeetyourfiles.lol/api/upload', true);
+
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    console.log('Upload progress: ' + percentComplete + '%');
+                }
+            };
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    const fileId = response.fileId;
+                    const downloadUrl = `https://yeetyourfiles.lol/download/${fileId}`;
+
+                    console.log('File uploaded successfully. Download URL:', downloadUrl);
+
+                    // Redirect to PenguinMod editor with the uploaded file URL
+                    window.location.href = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(downloadUrl)}`;
+                } else {
+                    console.error('Upload failed with status:', xhr.status);
+                    alert('Upload failed. Please try again.');
+                }
+            };
+
+            xhr.onerror = function() {
+                console.error('An error occurred during the file upload.');
+                alert('An error occurred. Please try again.');
+            };
+
+            xhr.send(formData);
         }
+
+        // Trigger the file upload when a file is selected
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            uploadFile(file);
+        });
     </script>
 </body>
 </html>
