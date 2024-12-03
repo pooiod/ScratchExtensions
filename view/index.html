@@ -26,7 +26,12 @@
         #toolbar a {
             text-decoration: none;
             color: #007BFF;
+        }
+        #toolbar a[style*="float: left;"] {
             margin-right: 10px;
+        }
+        #toolbar a[style*="float: right;"] {
+            margin-left: 10px;
         }
         #editor {
             flex: 1;
@@ -44,8 +49,8 @@
 </head>
 <body>
     <div id="toolbar">
-        <a href="/">&#x2190; Back to extensions</a>
-        <a link="[file]" target="_blank">Extension file</a>
+        <a style="float: left;" href="/">&#x2190; Back to extensions</a>
+        <a style="float: left;" link="[file]" target="_blank">Extension file</a>
 
         <a style="float: right;" target="_blank" link="/#[id]">Share extension</a>
     </div>
