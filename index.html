@@ -17,9 +17,11 @@
             background: white;
             color: #333;
         }
+
         header {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #f0fff1;
+            border: #cfecd1 1px solid;
+            color: rgb(52, 68, 51);
             padding: 1rem;
             text-align: center;
         }
@@ -28,6 +30,7 @@
             margin: 1rem auto;
             max-width: 800px;
         }
+
         .search-bar {
             display: flex;
             justify-content: center;
@@ -41,6 +44,7 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+
         .cards-container {
             display: flex;
             flex-wrap: wrap;
@@ -64,11 +68,13 @@
         .card:focus, .card.focused {
             outline: 2px solid #007BFF;
         }
+
         .card img {
             width: 100%;
             aspect-ratio: 6 / 3;
             border-bottom: 1px solid #ccc;
         }
+
         .card-content {
             padding: 1rem;
             flex-grow: 1;
@@ -96,7 +102,6 @@
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
-            /* margin-top: 1rem; */
             margin-top: auto;
         }
         .card-button {
@@ -110,6 +115,7 @@
             font-size: 0.8rem;
             text-decoration: none;
         }
+
         .card-icon {
             position: absolute;
             top: 0;
@@ -121,6 +127,7 @@
             height: 24px;
             opacity: 0.7;
         }
+
         @media (max-width: 700px) {
             .card {
                 width: 100%;
