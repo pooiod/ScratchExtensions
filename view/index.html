@@ -44,7 +44,7 @@
 <body>
     <div id="toolbar">
         <a href="/">&#x2190; Back to extensions</a>
-        <a href="[ext]">Extension file</a>
+        <a link="[ext]">Extension file</a>
     </div>
     <div id="editor"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
@@ -113,8 +113,8 @@
             if (hash) {
                 const filePath = hash.endsWith('.js') ? `/ext/${hash}` : `/ext/${hash}/main.js`;
 
-                document.querySelectorAll('a[href]').forEach(a => {
-                    a.href = a.href.replace(/\[ext\]/g, filePath);
+                document.querySelectorAll('a[link]').forEach(a => {
+                    a.href = a.link.replace(/\[ext\]/g, filePath);
                 });
 
                 try {
