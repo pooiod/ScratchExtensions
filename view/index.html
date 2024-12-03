@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #toolbar {
+            padding: 10px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        #toolbar a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+        #editor {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar">
+        <a href="/">&#x2190; Back</a>
+    </div>
+    <div id="editor"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js"></script>
+    <script>
+        const editor = CodeMirror(document.getElementById('editor'), {
+            mode: 'javascript',
+            lineNumbers: true,
+            lineWrapping: true,
+            theme: 'default'
+        });
+
+        async function loadFileFromHash() {
+            const hash = window.location.hash.slice(2);
+            if (hash) {
+                const filePath = `/ext/${hash}`;
+                try {
+                    const response = await fetch(filePath);
+                    if (!response.ok) throw new Error('File not found');
+                    const code = await response.text();
+                    editor.setValue(code);
+                } catch (e) {
+                    editor.setValue(`Error loading file: ${e.message}`);
+                }
+            } else {
+                editor.setValue('// No file specified');
+            }
+        }
+
+        window.addEventListener('hashchange', loadFileFromHash);
+        loadFileFromHash();
+    </script>
+</body>
+</html>
