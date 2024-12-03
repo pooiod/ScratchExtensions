@@ -112,7 +112,7 @@
 			const matches = markdownText.match(/\[!js-(.+?)!\]/g);
 			if (matches) {
 				matches.forEach(match => {
-					const jsCode = match.slice(5, -1);
+					const jsCode = match.slice(5, -2);
 					markdownText = markdownText.replace(match, ''); // Remove the JS code from the string
 					try {
 						eval(jsCode); // Execute the JS code
