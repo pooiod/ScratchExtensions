@@ -9,7 +9,7 @@
         "iconText": "",
         "buttons": [
             { "text": "ViewSource", "color": "#007BFF", "link": "/view/#/[id]" },
-            { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]" }
+            { "text": "View dev build", "color": "#007BFF", "link": "/view/#/[id]/dev.js" }
         ]
     }
 ]
