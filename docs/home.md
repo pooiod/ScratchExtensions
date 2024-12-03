@@ -19,7 +19,11 @@ async function fetchExtensions() {
 }
 
 function generateMarkdown(cardsData) {
-  let markdownContent = "# Pooiod7's Scratch extensions\n\n";
+  let markdownContent = `# Pooiod7's Scratch extensions
+
+---
+
+`;
 
   cardsData.forEach(card => {
     let imageURL = card.image.replace(/\[id\]/g, card.id);
