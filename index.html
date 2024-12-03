@@ -134,6 +134,8 @@
     <p id="loader">Loading extensions...</p>
 
     <script>
+        let cardsData = ["/ext/extensions.json"];
+        
         if (window.location.pathname !== "/") {
             document.body.innerHTML = '';
 
@@ -191,8 +193,6 @@
             document.body.style.margin = '0';
             document.body.style.fontFamily = 'Arial, sans-serif';
         } else {
-            let cardsData = ["/ext/extensions.json"];
-
             function createCard(card) {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
