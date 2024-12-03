@@ -60,6 +60,50 @@
             }
         });
 
+        let customSnippets = {
+            functions: [],
+            variables: []
+        };
+
+        async function fetchCustomSnippets() {
+            try {
+                const response = await fetch('scratchcomplete.json');
+                if (!response.ok) throw new Error('Failed to load snippets');
+                customSnippets = await response.json();
+            } catch (e) {
+                console.error('Error loading custom snippets:', e.message);
+            }
+        }
+
+        function customHint(editor) {
+            const cursor = editor.getCursor();
+            const currentLine = editor.getLine(cursor.line);
+            const currentWord = currentLine.slice(0, cursor.ch).replace(/\s+$/, "");
+
+            const matchingFunctions = customSnippets.functions.filter(func => func.startsWith(currentWord));
+            const matchingVariables = customSnippets.variables.filter(varName => varName.startsWith(currentWord));
+
+            const hints = [...matchingFunctions, ...matchingVariables].map(snippet => {
+                return { text: snippet };
+            });
+
+            return {
+                list: hints,
+                from: CodeMirror.Pos(cursor.line, currentWord.length),
+                to: cursor
+            };
+        }
+
+        editor.on('inputRead', function() {
+            const cursor = editor.getCursor();
+            const currentLine = editor.getLine(cursor.line);
+            const currentWord = currentLine.slice(0, cursor.ch).replace(/\s+$/, "");
+
+            if (currentWord.length > 0) {
+                editor.showHint({ hint: customHint });
+            }
+        });
+
         async function loadFileFromHash() {
             const hash = window.location.hash.slice(2);
             if (hash) {
@@ -79,6 +123,7 @@
 
         window.addEventListener('hashchange', loadFileFromHash);
         loadFileFromHash();
+        fetchCustomSnippets();
     </script>
 </body>
 </html>
