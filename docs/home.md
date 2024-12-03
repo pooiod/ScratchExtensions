@@ -6,7 +6,6 @@ let cardsData = ["/extensions.json"];
 
 async function fetchExtensions() {
   try {
-    parseMarkdown("# Loading extensions...");
     const response = await fetch(cardsData[0]);
     if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -42,7 +41,6 @@ function generateMarkdown(cardsData) {
 ![${card.title}](${imageURL})
 
 ${card.description}
-
 <sub>${card.subtext}</sub>
 
 ${buttonsMarkdown}
