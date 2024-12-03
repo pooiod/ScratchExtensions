@@ -9,7 +9,6 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "Open in PegnuinMod", "color": "#cbe0f2", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Box2D.js" },
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ]
     },
@@ -36,7 +35,6 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "Open in PegnuinMod", "color": "#cbe0f2", "link": "https://studio.penguinmod.com/editor.html?extension=https://extensions.penguinmod.com/extensions/pooiod/Scratchblocks.js" }
         ]
     }
 ]
