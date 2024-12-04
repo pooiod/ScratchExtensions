@@ -129,6 +129,20 @@
         "hidden": false
     },
     {
+        "id": "BasicTTS",
+        "image": "",
+        "title": "Text to Speech",
+        "description": "Make your project read text out loud.",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "hidden": false
+    },
+    {
         "id": "ListsPlus",
         "image": "/ext/[id]/cover.png",
         "title": "Lists Plus",
