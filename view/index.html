@@ -116,6 +116,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/javascript-hint.min.js"></script>
     <script>
         let customSnippets = { functions: [], variables: [] };
+        let cardsData = ["/extensions.json"];
 
         async function canYeet() {
             try {
@@ -193,11 +194,23 @@
             const hash = window.location.hash.slice(2);
             if (hash) {
                 const filePath = hash.endsWith('.js') ? `/ext/${hash}` : `/ext/${hash}/main.js`;
+                editor.setValue('// Loading extension');
 
                 if (hash.endsWith('.js')) {
                     document.getElementById("buildswap").innerText = "View stable build";
                     document.getElementById("buildswap").setAttribute("link", `#/[id]`);
                     document.getElementById("direct").style.display = "none";
+                }
+
+                const response = await fetch(cardsData[0]);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                cardsData = await response.json();
+                var currentcard = cardsData[hash.replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "")];
+
+                if (!currentcard.unsandboxed) {
+                    document.getElementById("yeet").setAttribute('link', 'https://penguinmod.com/editor.html?extension=https://p7scratchextensions.pages.dev[file]')
                 }
 
                 document.querySelectorAll('a[link]').forEach(a => {
