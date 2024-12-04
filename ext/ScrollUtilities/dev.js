@@ -1,4 +1,4 @@
-// Work in progress
+// Work in progress (scroll detector by pooiod7)
 
 (function (Scratch) {
     'use strict';
@@ -19,7 +19,7 @@
       getInfo() {
         return {
           id: 'p7ScrollUtilities',
-          name: 'Scroll Detector',
+          name: 'Scroll Utilities',
           color1: '#4CAF50',
           color2: '#45A164',
           blocks: [
