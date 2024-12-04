@@ -26,229 +26,229 @@
 
 		getInfo() {
 			return {
-			id: 'elementalimages',
-			name: 'Elemental Images',
-			color1: '#FF9700',
-			color2: '#ab6500',
-			color3: '#cf7a00',
-			blocks: [
+				id: 'elementalimages',
+				name: 'Elemental Images',
+				color1: '#FF9700',
+				color2: '#ab6500',
+				color3: '#cf7a00',
+				blocks: [
 
-				//---------------- Setter blocks
+					//---------------- Setter blocks
 
-				{
-					opcode: 'createImage',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Create Image with ID [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'createImage',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Create Image with ID [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
 						},
 					},
-				},
-				{
-					opcode: 'setImageSource',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set Image [ID] Source to [SRC]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
-						},
-						SRC: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 's/duck-dance.gif',
-						},
-					},
-				},
-				{
-					opcode: 'setImagePosition',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set Image [ID] Position X: [X] Y: [Y]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
-						},
-						X: {
-						type: Scratch.ArgumentType.NUMBER,
-						defaultValue: 0,
-						},
-						Y: {
-						type: Scratch.ArgumentType.NUMBER,
-						defaultValue: 0,
+					{
+						opcode: 'setImageSource',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] Source to [SRC]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							SRC: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 's/duck-dance.gif',
+							},
 						},
 					},
-				},
-				{
-					opcode: 'setImageSize',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set Image [ID] Size Width: [WIDTH] Height: [HEIGHT]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
-						},
-						WIDTH: {
-						type: Scratch.ArgumentType.NUMBER,
-						defaultValue: 100,
-						},
-						HEIGHT: {
-						type: Scratch.ArgumentType.NUMBER,
-						defaultValue: 100,
-						},
-					},
-				},
-				{
-					opcode: 'setImageCSS',
-					hideFromPalette: true, // hidden for being too buggy :( 
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set Image [ID] CSS to [CSS]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
-						},
-						CSS: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'filter: grayscale(100%);',
+					{
+						opcode: 'setImagePosition',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] Position X: [X] Y: [Y]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							X: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 0,
+							},
+							Y: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 0,
+							},
 						},
 					},
-				},
-				{
-					opcode: 'setImageRendering',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set Image [ID] Rendering to [RENDERING]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
-						},
-						RENDERING: {
-						type: Scratch.ArgumentType.STRING,
-						menu: 'RENDERING_MENU',
-						defaultValue: 'auto',
-						},
-					},
-				},
-				{
-					opcode: 'setImageFilter',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set Image [ID] Filter to [FILTER]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
-						},
-						FILTER: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'blur(1px)',
+					{
+						opcode: 'setImageSize',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] Size Width: [WIDTH] Height: [HEIGHT]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							WIDTH: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 100,
+							},
+							HEIGHT: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 100,
+							},
 						},
 					},
-				},
-				{
-					opcode: 'setLayer',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Set Image [ID] Layer to [LAYER]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
-						},
-						LAYER: {
-						type: Scratch.ArgumentType.NUMBER,
-						defaultValue: 1,
-						},
-					},
-				},
-				{
-					opcode: 'deleteImage',
-					blockType: Scratch.BlockType.COMMAND,
-					text: 'Delete Image [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'setImageCSS',
+						hideFromPalette: true, // hidden for being too buggy :( 
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] CSS to [CSS]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							CSS: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'filter: grayscale(100%);',
+							},
 						},
 					},
-				},
+					{
+						opcode: 'setImageRendering',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] Rendering to [RENDERING]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							RENDERING: {
+								type: Scratch.ArgumentType.STRING,
+								menu: 'RENDERING_MENU',
+								defaultValue: 'auto',
+							},
+						},
+					},
+					{
+						opcode: 'setImageFilter',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] Filter to [FILTER]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							FILTER: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'blur(1px)',
+							},
+						},
+					},
+					{
+						opcode: 'setLayer',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] Layer to [LAYER]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							LAYER: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 1,
+							},
+						},
+					},
+					{
+						opcode: 'deleteImage',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Delete Image [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+						},
+					},
 
-				//---------------- Reporter blocks
+					//---------------- Reporter blocks
 
-				{
-					opcode: 'getImageURL',
-					blockType: Scratch.BlockType.REPORTER,
-					text: 'URL of Image [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'getImageURL',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'URL of Image [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
 						},
 					},
-				},
-				{
-					opcode: 'getImageX',
-					blockType: Scratch.BlockType.REPORTER,
-					text: 'X position of Image [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'getImageX',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'X position of Image [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
 						},
 					},
-				},
-				{
-					opcode: 'getImageY',
-					blockType: Scratch.BlockType.REPORTER,
-					text: 'Y position of Image [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'getImageY',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Y position of Image [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
 						},
 					},
-				},
 
-				{
-					opcode: 'getImageWidth',
-					blockType: Scratch.BlockType.REPORTER,
-					text: 'Width of Image [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'getImageWidth',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Width of Image [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
 						},
 					},
-				},
-				{
-					opcode: 'getImageHeight',
-					blockType: Scratch.BlockType.REPORTER,
-					text: 'Height of Image [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'getImageHeight',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Height of Image [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
 						},
 					},
-				},
-				{
-					opcode: 'getImageLayer',
-					blockType: Scratch.BlockType.REPORTER,
-					text: 'Layer of Image [ID]',
-					arguments: {
-						ID: {
-						type: Scratch.ArgumentType.STRING,
-						defaultValue: 'image1',
+					{
+						opcode: 'getImageLayer',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Layer of Image [ID]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
 						},
 					},
+				],
+				menus: {
+					RENDERING_MENU: {
+						acceptReporters: false,
+						items: ['auto', 'crisp-edges', 'pixelated'],
+					},
 				},
-			],
-			menus: {
-				RENDERING_MENU: {
-					acceptReporters: false,
-					items: ['auto', 'crisp-edges', 'pixelated'],
-				},
-			},
 			};
 		}
 
@@ -259,33 +259,25 @@
 			this.stageheight = Scratch.vm.runtime.stageHeight;
 		}
 
-		deleteImage(args) {
-			const {
-			ID
-			} = args;
+		deleteImage({ ID }) {
 			const imageElement = imageElements[ID];
 
 			if (imageElement) {
-			imageElement.parentElement.removeChild(imageElement);
-			delete imageElements[ID];
+				imageElement.parentElement.removeChild(imageElement);
+				delete imageElements[ID];
 			}
 		}
 
-		createImage(args) {
-			const {
-			ID
-			} = args;
+		createImage({ ID }) {
 			const imageElement = document.createElement('img');
 			imageElement.id = ID;
 
 			this.updatesizevars();
 
-			this.deleteImage({
-			"ID": ID
-			})
+			this.deleteImage({ "ID": ID })
 			if (imageElements[ID]) {
-			console.error(`Image "${ID}" did not remove before creation.`);
-			return;
+				console.error(`Image "${ID}" did not remove before creation.`);
+				return;
 			}
 
 			imageElement.src = defaultpng;
@@ -301,209 +293,161 @@
 
 			const stage = document.querySelector('canvas');
 			if (stage) {
-			stage.parentElement.appendChild(imageElement);
-			imageElements[ID] = imageElement;
+				stage.parentElement.appendChild(imageElement);
+				imageElements[ID] = imageElement;
 			} else {
-			console.error('Stage element not found (how?)');
+				console.error('Stage element not found (how?)');
 			}
 		}
 
-		setImageSource(args) {
-			const {
-			ID,
-			SRC
-			} = args;
+		setImageSource({ ID, SRC }) {
 			const imageElement = imageElements[ID];
 
 			if (imageElement) {
-			imageElement.src = fixurl(SRC);
+				imageElement.src = fixurl(SRC);
 			}
 		}
 
-		setImagePosition(args) {
-			const {
-			ID,
-			X,
-			Y
-			} = args;
+		setImagePosition({ ID, X, Y }) {
 			const imageElement = imageElements[ID];
 
 			this.updatesizevars();
 
 			if (imageElement) {
-			imageElement.style.left = ((X / this.stagewidth + 0.5) * 100) + '%';
-			imageElement.style.bottom = ((Y / this.stageheight + 0.5) * 100) + '%';
+				imageElement.style.left = ((X / this.stagewidth + 0.5) * 100) + '%';
+				imageElement.style.bottom = ((Y / this.stageheight + 0.5) * 100) + '%';
 			}
 		}
 
-		setImageFilter(args) {
-			const {
-			ID,
-			FILTER
-			} = args;
+		setImageFilter({ ID, FILTER }) {
 			const imageElement = imageElements[ID];
 			if (imageElement) {
-			imageElement.style.filter = FILTER;
+				imageElement.style.filter = FILTER;
 			}
 		}
 
-		setImageSize(args) {
-			const {
-			ID,
-			WIDTH,
-			HEIGHT
-			} = args;
+		setImageSize({ ID, WIDTH, HEIGHT }) {
 			const imageElement = imageElements[ID];
 
 			this.updatesizevars();
 
 			if (imageElement) {
-			imageElement.style.width = ((WIDTH / this.stagewidth) * 100) + '%';
-			imageElement.style.height = ((HEIGHT / this.stageheight) * 100) + '%';
+				imageElement.style.width = ((WIDTH / this.stagewidth) * 100) + '%';
+				imageElement.style.height = ((HEIGHT / this.stageheight) * 100) + '%';
 			}
 		}
 
-		setImageCSS(args) {
-			const {
-			ID,
-			CSS
-			} = args;
+		setImageCSS({ ID, CSS }) {
 			const imageElement = imageElements[ID];
 
 			if (imageElement) {
-			imageElement.style.cssText = CSS;
+				imageElement.style.cssText = CSS;
 			}
 		}
 
-		setImageRendering(args) {
-			const {
-			ID,
-			RENDERING
-			} = args;
+		setImageRendering({ ID, RENDERING }) {
 			const imageElement = imageElements[ID];
 			if (imageElement) {
-			imageElement.style.imageRendering = RENDERING;
+				imageElement.style.imageRendering = RENDERING;
 			}
 		}
 
-		setLayer(args) {
-			const {
-			ID,
-			LAYER
-			} = args;
+		setLayer({ ID, LAYER }) {
 			const imageElement = imageElements[ID];
 
 			if (imageElement) {
-			imageElement.style.zIndex = LAYER;
+				imageElement.style.zIndex = LAYER;
 			}
 		}
 
 		//---------------- Reporter blocks
 
-		getImageX(args) {
-			const {
-			ID
-			} = args;
+		getImageX({ ID }) {
+			const imageElement = imageElements[ID];
+
+			this.updatesizevars();
+
+			if (imageElement) {
+				const stage = document.querySelector('canvas');
+				if (stage) {
+					const stageRect = stage.getBoundingClientRect();
+					const imageRect = imageElement.getBoundingClientRect();
+					const xPercent = (((imageRect.left - stageRect.left) / stageRect.width) - 0.5) * this.stagewidth;
+					return Math.round(xPercent);
+				}
+			}
+			return 0;
+		}
+
+		getImageY({ ID }) {
+			const imageElement = imageElements[ID];
+
+			this.updatesizevars();
+
+			if (imageElement) {
+				const stage = document.querySelector('canvas');
+				if (stage) {
+					const stageRect = stage.getBoundingClientRect();
+					const imageRect = imageElement.getBoundingClientRect();
+					const yPercent = (((stageRect.bottom - imageRect.bottom) / stageRect.height) - 0.5) * this.stageheight;
+					return Math.round(yPercent);
+				}
+			}
+			return 0;
+		}
+
+		getImageWidth({ ID }) {
+			const imageElement = imageElements[ID];
+
+			this.updatesizevars();
+
+			if (imageElement) {
+				const stage = document.querySelector('canvas');
+				if (stage) {
+					const stageRect = stage.getBoundingClientRect();
+					const imageRect = imageElement.getBoundingClientRect();
+					const widthPercent = (imageRect.width / stageRect.width) * this.stagewidth;
+					return Math.round(widthPercent);
+				}
+			}
+			return 0;
+		}
+
+		getImageHeight({ ID }) {
 			const imageElement = imageElements[ID];
 
 			this.updatesizevars();
 
 			if (imageElement) {
 			const stage = document.querySelector('canvas');
-			if (stage) {
-				const stageRect = stage.getBoundingClientRect();
-				const imageRect = imageElement.getBoundingClientRect();
-				const xPercent = (((imageRect.left - stageRect.left) / stageRect.width) - 0.5) * this.stagewidth;
-				return Math.round(xPercent);
-			}
-			}
-			return 0;
-		}
-
-		getImageY(args) {
-			const {
-			ID
-			} = args;
-			const imageElement = imageElements[ID];
-
-			this.updatesizevars();
-
-			if (imageElement) {
-			const stage = document.querySelector('canvas');
-			if (stage) {
-				const stageRect = stage.getBoundingClientRect();
-				const imageRect = imageElement.getBoundingClientRect();
-				const yPercent = (((stageRect.bottom - imageRect.bottom) / stageRect.height) - 0.5) * this.stageheight;
-				return Math.round(yPercent);
-			}
+				if (stage) {
+					const stageRect = stage.getBoundingClientRect();
+					const imageRect = imageElement.getBoundingClientRect();
+					const heightPercent = (imageRect.height / stageRect.height) * this.stageheight;
+					return Math.round(heightPercent);
+				}
 			}
 			return 0;
 		}
 
-		getImageWidth(args) {
-			const {
-			ID
-			} = args;
-			const imageElement = imageElements[ID];
-
-			this.updatesizevars();
-
-			if (imageElement) {
-			const stage = document.querySelector('canvas');
-			if (stage) {
-				const stageRect = stage.getBoundingClientRect();
-				const imageRect = imageElement.getBoundingClientRect();
-				const widthPercent = (imageRect.width / stageRect.width) * this.stagewidth;
-				return Math.round(widthPercent);
-			}
-			}
-			return 0;
-		}
-
-		getImageHeight(args) {
-			const {
-			ID
-			} = args;
-			const imageElement = imageElements[ID];
-
-			this.updatesizevars();
-
-			if (imageElement) {
-			const stage = document.querySelector('canvas');
-			if (stage) {
-				const stageRect = stage.getBoundingClientRect();
-				const imageRect = imageElement.getBoundingClientRect();
-				const heightPercent = (imageRect.height / stageRect.height) * this.stageheight;
-				return Math.round(heightPercent);
-			}
-			}
-			return 0;
-		}
-
-		getImageLayer(args) {
-			const {
-			ID
-			} = args;
+		getImageLayer({ ID }) {
 			const imageElement = imageElements[ID];
 
 			if (imageElement) {
-			const zIndex = parseInt(imageElement.style.zIndex, 10);
-			return isNaN(zIndex) ? 0 : zIndex;
+				const zIndex = parseInt(imageElement.style.zIndex, 10);
+				return isNaN(zIndex) ? 0 : zIndex;
 			}
 
 			return 0;
 		}
 
-		getImageURL(args) {
-			const {
-			ID
-			} = args;
+		getImageURL({ ID }) {
 			const imageElement = imageElements[ID];
 
 			if (imageElement) {
-			return imageElement.src;
+				return imageElement.src;
 			} else {
-			return "";
+				return "";
 			}
 		}
 
