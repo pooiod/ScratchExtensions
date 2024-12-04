@@ -26,7 +26,7 @@
   </div>
   <div class="library-item_featured-extension-text_22A1k library-item_featured-text_2KFel">
     <span class="library-item_library-item-name_2qMXu"><span>Pooiod7's extensions</span></span><br>
-    <span class="library-item_featured-description_MjIJw"><span>A large array of extensions created by pooiod7</span></span>
+    <span class="library-item_featured-description_MjIJw"><span>Explore a large collection of Scratch extensions made by Pooiod7.</span></span>
   </div>
 </div>
 `;
