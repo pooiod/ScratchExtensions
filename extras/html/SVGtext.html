@@ -264,13 +264,40 @@ var App = /** @class */ (function () {
     App.prototype.$ = function (selector) {
         return document.querySelector(selector);
     };
-    App.prototype.addOption = function (select, optionText) {
+    App.prototype.addOption = function (select, optionText, fontLink) {
         var option = document.createElement('option');
         option.text = optionText;
         option.value = optionText;
         option.style.fontFamily = optionText;
+
+        var loadFont = function () {
+            if (isElementInViewport(option)) {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = fontLink;
+                document.head.appendChild(link);
+                window.removeEventListener('scroll', loadFont);
+            }
+        };
+
+        var unloadFont = function () {
+            if (!isElementInViewport(option)) {
+                var links = document.querySelectorAll(`link[href="${fontLink}"]`);
+                links.forEach(link => link.remove());
+                window.removeEventListener('scroll', unloadFont);
+            }
+        };
+
+        window.addEventListener('scroll', loadFont);
+        window.addEventListener('scroll', unloadFont);
+
         select.options.add(option);
     };
+
+    function isElementInViewport(el) {
+        var rect = el.getBoundingClientRect();
+        return rect.top >= 0 && rect.bottom <= window.innerHeight;
+    }
     App.prototype.getGoogleFonts = function (apiKey) {
         var _this = this;
         var xhr = new XMLHttpRequest();
@@ -278,17 +305,8 @@ var App = /** @class */ (function () {
         xhr.onloadend = function () {
             _this.fontList = JSON.parse(xhr.responseText);
 
-            _this.fontList.loadindex = 0;
             _this.fontList.items.forEach(function (font) {
-                _this.fontList.loadindex += 1;
-                setTimeout(()=>{
-                    var fontLink = document.createElement('link');
-                    fontLink.rel = 'stylesheet';
-                    fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
-                    document.head.appendChild(fontLink);
-                }, _this.fontList.loadindex * 100);
-
-                _this.addOption(_this.selectFamily, font.family);
+                _this.addOption(_this.selectFamily, font.family, `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`);
             });
 
             _this.loadVariants();
