@@ -147,11 +147,9 @@
                 const extensionBlob = await extensionResponse.blob();
                 var extensionDataUri = "https://p7scratchextensions.pages.dev" + urlParams.get('ext');
 
-                if (urlParams.get('ext').endsWith('.js')) {
+                if (extensionDataUri.includes('dev.js')) {
                     extensionDataUri = await blobToDataUri(extensionBlob);
                 }
-
-                console.log(extensionDataUri);
 
                 const zipUrl = 'Project.zip';
                 const zipResponse = await fetch(zipUrl);
