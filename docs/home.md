@@ -22,7 +22,7 @@ function generateMarkdown(cardsData) {
   let markdownContent = `# Pooiod7's hidden Scratch extensions
 
 > Most of these are hidden due to no-longer working, or beeing too unfinished to publish yet.
-> **Use with caution**
+> **Use with caution!**
 
 ---
 
