@@ -2,7 +2,7 @@
 [
     {
         "id": "BoxedPhysics",
-        "image": "/ext/[id]/img.svg",
+        "image": "/ext/[id]/cover.svg",
         "title": "Boxed Physics",
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
         "subtext": "",
@@ -31,7 +31,7 @@
     },
     {
         "id": "VideoSharing",
-        "image": "/ext/[id]/img.svg",
+        "image": "/ext/[id]/cover.svg",
         "title": "Video Sharing",
         "description": "Share your screen or camera on your project as a data-uri.",
         "subtext": "",
@@ -45,7 +45,7 @@
     },
     {
         "id": "ElementalImages",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "Elemental Images",
         "description": "Create and manipulate image elements in scratch.",
         "subtext": "",
@@ -73,7 +73,7 @@
     },
     {
         "id": "Dictation",
-        "image": "/ext/[id]/img.svg",
+        "image": "/ext/[id]/cover.svg",
         "title": "Dictation",
         "description": "Convert your voice into text.",
         "subtext": "not supported in all browsers",
@@ -87,7 +87,7 @@
     },
     {
         "id": "ScratchBlocks",
-        "image": "/ext/[id]/img.svg",
+        "image": "/ext/[id]/cover.svg",
         "title": "ScratchBlocks",
         "description": "Generate blocks in the Scratch3, or Scratch2 format.",
         "subtext": "",
@@ -101,7 +101,7 @@
     },
     {
         "id": "SuperStorage",
-        "image": "/ext/[id]/img.png",
+        "image": "/ext/[id]/cover.png",
         "title": "Super Storage",
         "description": "Store and retrieve data locally on device, or remotely on a server.",
         "subtext": "",
@@ -144,7 +144,7 @@
     },
     {
         "id": "WindowHasher",
-        "image": "/ext/[id]/img.png",
+        "image": "/ext/[id]/cover.png",
         "title": "Window Hasher",
         "description": "Interact with URL hash. <br>(the part of the URL after a hashtag)",
         "subtext": "",

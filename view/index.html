@@ -213,6 +213,7 @@
                 console.log(cardsData)
                 console.log(currentcard)
                 if (!currentcard.unsandboxed) {
+                    document.getElementById("yeet").removeAttribute("hidden");
                     document.getElementById("yeet").setAttribute('link', 'https://studio.penguinmod.com/editor.html?extension=https://p7scratchextensions.pages.dev[file]')
                 }
 
