@@ -143,6 +143,19 @@
             border: none;
         }
 
+        .card-icon2 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 5px;
+        }
+        .card-icon2 img {
+            width: 14px;
+            height: 14px;
+            opacity: 0.7;
+            border: none;
+        }
+
         a {
             color: inherit;
         }
@@ -269,7 +282,7 @@
                 ` : '';
 
                 const sandboxStatusIconHTML = `
-                    <div class="card-icon" title="${card.unsandboxed?"This extension does not work in the sandbox":"This extension works in the sandbox"}">
+                    <div class="card-icon2" title="${card.unsandboxed?"This extension does not work in the sandbox":"This extension works in the sandbox"}">
                         <img src="/extras/images/icons/${card.unsandboxed?"unsandboxed":"sandboxed"}.png" alt="${card.unsandboxed?"Unsandboxed":"Sandboxed"}">
                     </div>
                 `;
