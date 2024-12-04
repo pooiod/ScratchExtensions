@@ -116,7 +116,7 @@
     },
     {
         "id": "ListsPlus",
-        "image": "",
+        "image": "/ext/[id]/cover.png",
         "title": "Lists Plus",
         "description": "Adds the ability to create lists within lists, and place them in variables.",
         "subtext": "This extension is unnecessary <br>Please use <a href=\"https://turbowarp.org/editor?extension=https://extensions.turbowarp.org/Skyhigh173/json.js\">json by Skyhigh173</a> instead",
