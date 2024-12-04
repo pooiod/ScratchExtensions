@@ -12,18 +12,13 @@
 (function() {
     'use strict';
 
-    // Function to check if the "PenguinMod Extra Extensions" element exists and insert the new HTML
     function checkAndInsertExtensionGallery() {
-        // Find the span element with the text "PenguinMod Extra Extensions"
         const targetSpan = Array.from(document.querySelectorAll('span'))
             .find(span => span.textContent.trim() === 'PenguinMod Extra Extensions');
 
-        // Check if the target span exists and #p7extensionslist is not already in the document
         if (targetSpan && !document.querySelector('#p7extensionslist')) {
-            // Get the parent > parent of the span
             const parentElement = targetSpan.closest('span').parentElement.parentElement;
 
-            // Define the HTML content to be inserted
             const newHTML = `
 <div id="p7extensionslist" class="library-item_library-item_1DcMO library-item_featured-item_3V2-t library-item_library-item-extension_3xus9" onclick="window.open('https://p7scratchextensions.pages.dev')">
   <div class="library-item_featured-image-container_1KIHG">
@@ -36,12 +31,10 @@
 </div>
 `;
 
-            // Insert the new HTML right after the parent element
             parentElement.insertAdjacentHTML('afterend', newHTML);
         }
     }
 
-    // Run the function every second (1000 ms)
     setInterval(checkAndInsertExtensionGallery, 1000);
 
 })();
