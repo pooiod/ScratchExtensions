@@ -42,7 +42,7 @@
         "image": "https://ace.c9.io/doc/site/images/ace-logo.png",
         "title": "Ace Editor",
         "description": "Create and manipulate an instance of the Ace code editor.",
-        "subtext": "This extension is a work in progress (do not use)",
+        "subtext": "Do not use this in an actual project yet",
         "icon": "/extras/images/icons/warn.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "buttons": [
