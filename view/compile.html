@@ -147,7 +147,7 @@
                 const extensionBlob = await extensionResponse.blob();
                 var extensionDataUri = "https://p7scratchextensions.pages.dev" + urlParams.get('ext');
 
-                if (extensionDataUri.includes('dev.js')) {
+                if (extensionDataUri.includes('dev.js') || urlParams.get('local')) {
                     extensionDataUri = await blobToDataUri(extensionBlob);
                 }
 
