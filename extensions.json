@@ -26,6 +26,18 @@
         ]
     },
     {
+        "id": "VideoSharing",
+        "image": "/ext/[id]/img.svg",
+        "title": "Video Sharing",
+        "descriptioWndn": "Share your screen or camera on your project as a data-uri",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ]
+    },
+    {
         "id": "Dictation",
         "image": "/ext/[id]/img.svg",
         "title": "Dictation",
@@ -52,7 +64,7 @@
     {
         "id": "WindowHasher",
         "image": "/ext/[id]/img.png",
-        "title": "Wndow Hasher",
+        "title": "Window Hasher",
         "description": "Interact with URL hash. (the part of the URL after a hashtag)",
         "subtext": "",
         "icon": "",
