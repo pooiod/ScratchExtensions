@@ -214,7 +214,8 @@
                 console.log(currentcard)
                 if (!currentcard.unsandboxed) {
                     document.getElementById("yeet").removeAttribute("hidden");
-                    document.getElementById("yeet").setAttribute('link', 'https://studio.penguinmod.com/editor.html?extension=https://p7scratchextensions.pages.dev[file]')
+                    document.getElementById("yeet").setAttribute('link', 'https://mirror.turbowarp.xyz?extension=https://p7scratchextensions.pages.dev[file]');
+                    document.getElementById("yeet").innerText = "Open in Turbowarp";
                 }
 
                 document.querySelectorAll('a[link]').forEach(a => {
