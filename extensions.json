@@ -65,7 +65,7 @@
         "id": "SVGtext",
         "image": "",
         "title": "SVG Text",
-        "description": "Generate point-based svg text.",
+        "description": "Generate point-based svg text. (new add costume button)",
         "created": "Dec 4, 2024",
         "subtext": "An addidtion to the editor",
         "icon": "/extras/images/icons/warn.png",
