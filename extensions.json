@@ -161,7 +161,7 @@
         "image": "/ext/[id]/cover.svg",
         "title": "ServerData",
         "description": "Store and retrieve data on a <a href=\"https://snap.berkeley.edu/\">snap!</a> servers.",
-        "subtext": "This extension has been replaced by <a href=/#SuperStorage>Super Storage</a>",
+        "subtext": "Please use <a href=/#SuperStorage>Super Storage</a> instead",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
