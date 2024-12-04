@@ -29,7 +29,7 @@
         "id": "VideoSharing",
         "image": "/ext/[id]/img.svg",
         "title": "Video Sharing",
-        "descriptioWndn": "Share your screen or camera on your project as a data-uri",
+        "description": "Share your screen or camera on your project as a data-uri",
         "subtext": "",
         "icon": "",
         "iconText": "",
