@@ -146,7 +146,7 @@
         .card-icon2 {
             position: absolute;
             top: 0;
-            right: 0;
+            left: 0;
             padding: 5px;
         }
         .card-icon2 img {
@@ -293,9 +293,9 @@
 
                 cardDiv.innerHTML = `
                     ${iconHTML}
+                    ${sandboxStatusIconHTML}
                     <img src="${imageURL}" alt="${card.title}">
                     <div class="card-content">
-                        ${sandboxStatusIconHTML}
                         <div class="card-title">${card.title}</div>
                         <div class="card-description">${card.description}</div>
                         <div class="card-subtext">${card.subtext}</div>
