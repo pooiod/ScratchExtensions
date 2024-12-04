@@ -1,18 +1,15 @@
 # SuperStorage
 [!js-document.title="Super Storage docs"!]
----
 
 The **SuperStorage** extension provides a way to manage both **local** and **online storage** in your projects. With this extension, you can store and retrieve data locally on a user's device, or store it on a remote server. This guide covers all the available blocks and their usage.
 
 ---
 
-## Blocks and Functions
-
-### Local Storage
+## Local Storage
 
 Local storage blocks allow you to save data directly to the user's device (via browser local storage). The following blocks are available for interacting with local storage.
 
-#### **get local [key]**  
+### **get local [key]**  
 Retrieves the value associated with the specified local storage key.
 Just provide a key name, and it will return its content.
 
@@ -20,7 +17,7 @@ Just provide a key name, and it will return its content.
 (get local [save data] :: #31b3d4)
 ```
 
-#### **set local [key] to [value]**  
+### **set local [key] to [value]**  
 Sets a value in local storage for the given key.
 Just provide a key name, and it will save your chosen content to that key.
 
@@ -28,7 +25,7 @@ Just provide a key name, and it will save your chosen content to that key.
 set local [save data] to [data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAEpJREFUKFOdkFEKACAIQ+f9D20sUqZUUH45fajTUMObttCZACCkmkzWorGDYtjsEVTomHewnZjSv8Hr6uJu3cxaMfr8Hn2FGspBA/gaFwffFgUWAAAAAElFTkSuQmCC] :: #31b3d4
 ```
 
-#### **delete local [key]**  
+### **delete local [key]**  
 Deletes the specified key and its associated value from local storage.  
 Just prvide a key name, and it will be wiped from existance.
 
@@ -36,7 +33,7 @@ Just prvide a key name, and it will be wiped from existance.
 delete local [save data] :: #31b3d4
 ```
 
-#### **get all local stored names**  
+### **get all local stored names**  
 Retrieves a list of all the keys currently stored in local storage.  
 
 ```scratch3
@@ -45,11 +42,11 @@ Retrieves a list of all the keys currently stored in local storage.
 
 ---
 
-### Online Storage
+## Online Storage
 
 Online storage allows you to interact with data stored on a remote server. Use the following blocks for managing server-side storage.
 
-#### **waiting for server to respond?**  
+### **waiting for server to respond?**  
 Checks if the server has responded to a storage request. This block can be used to determine whether data retrieval or saving is still pending.  
 Returns a boolean value indicating whether the server is responding to something.
 
@@ -57,7 +54,7 @@ Returns a boolean value indicating whether the server is responding to something
 <waiting for server to respond? :: #31b3d4>
 ```
 
-#### **server failed to respond?**  
+### **server failed to respond?**  
 Checks if the server request has failed. This block can be used to handle server errors gracefully.  
 Returns a boolean value indicating whether the server request has failed.
 
@@ -65,7 +62,7 @@ Returns a boolean value indicating whether the server request has failed.
 <server failed to respond? :: #31b3d4>
 ```
 
-#### **server error**  
+### **server error**  
 Returns a text value when the server returns an error response. This block can be used to handle errors like server downtime or failed requests.
 Best when paured with the `server failed to respond?` block.
 
@@ -73,7 +70,7 @@ Best when paured with the `server failed to respond?` block.
 (server error :: #31b3d4)
 ```
 
-#### **get server [key]**  
+### **get server [key]**  
 Retrieves a value from the server associated with the specified key.  
 Works like `get local [key]` but with an online server.
 
@@ -81,7 +78,7 @@ Works like `get local [key]` but with an online server.
 (get server [save data] :: #31b3d4)
 ```
 
-#### **set server [key] to [value]**  
+### **set server [key] to [value]**  
 Sets a value on the server under the specified key.  
 Works like `set local [key] to [data]` but with an online server.
 
@@ -89,7 +86,7 @@ Works like `set local [key] to [data]` but with an online server.
 set server [save data] to [data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAEtJREFUKFOdkMEOADAEQ+v/P3pLZRpkDpuT6osoQ63VtIVWA4BQ1mQ0C+MGxTL3CGZo7DvYTpRc3+CU2jeWdOdmzor3/J78ihxIizZwEhYHj2iVjAAAAABJRU5ErkJggg==] :: #31b3d4
 ```
 
-#### **delete server [key]**  
+### **delete server [key]**  
 Deletes the specified key and its associated value from the server.  
 Works like `delete local [key]` but with an online server.
 
