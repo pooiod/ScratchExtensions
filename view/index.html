@@ -190,7 +190,7 @@
                     if (!response.ok) throw new Error('File not found');
                     var code = await response.text();
                     if (code.includes("Sorry, the page you are looking for could not be loaded due to an internal server error.")) {
-                        code = "// File does not exist";
+                        code = "// This build does not exist";
                     }
                     editor.setValue(code);
                 } catch (e) {
@@ -198,6 +198,7 @@
                 }
             } else {
                 editor.setValue('// No file');
+                window.location.href = "/";
             }
         }
 
