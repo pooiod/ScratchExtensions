@@ -277,7 +277,7 @@ var App = /** @class */ (function () {
         xhr.open('get', 'https://www.googleapis.com/webfonts/v1/webfonts?key=' + apiKey, true);
         xhr.onloadend = function () {
             _this.fontList = JSON.parse(xhr.responseText);
-s
+
             var styleSheet = document.createElement('style');
             document.head.appendChild(styleSheet);
 
