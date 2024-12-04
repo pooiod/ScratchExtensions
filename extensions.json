@@ -44,6 +44,20 @@
         "hidden": false
     },
     {
+        "id": "ElementalImages",
+        "image": "",
+        "title": "Elemental Images",
+        "description": "Create and manipulate image elements in scratch.",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        ],
+        "hidden": false
+    },
+    {
         "id": "Ace",
         "image": "https://ace.c9.io/doc/site/images/ace-logo.png",
         "title": "Ace Editor",
