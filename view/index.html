@@ -201,12 +201,15 @@
                     var code = await response.text();
                     if (code.includes("Sorry, the page you are looking for could not be loaded due to an internal server error.")) {
                         code = "// This build does not exist";
+                        document.getElementById("yeet").style.display = "none";
                     }
                     editor.setValue(code);
                 } catch (e) {
                     editor.setValue(`// Error loading file: ${e.message}`);
+                    document.getElementById("yeet").style.display = "none";
                 }
             } else {
+                document.getElementById("yeet").style.display = "none";
                 editor.setValue('// No file');
                 window.location.href = "/";
             }

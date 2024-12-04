@@ -50,7 +50,7 @@
         ]
     },
     {
-        "id": "WndowHasher",
+        "id": "WindowHasher",
         "image": "/ext/[id]/img.svg",
         "title": "Wndow Hasher",
         "description": "Interact with URL hash. (the part of the URL after a hashtag)",
