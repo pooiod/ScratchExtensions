@@ -10,7 +10,8 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ]
+        ],
+        "hidden": false
     },
     {
         "id": "HTMLcanvas",
@@ -23,7 +24,8 @@
         "buttons": [
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
-        ]
+        ],
+        "hidden": false
     },
     {
         "id": "VideoSharing",
@@ -35,7 +37,8 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ]
+        ],
+        "hidden": false
     },
     {
         "id": "Ace",
@@ -47,7 +50,8 @@
         "iconText": "This extension is in development, and may be changed frequently",
         "buttons": [
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
-        ]
+        ],
+        "hidden": false
     },
     {
         "id": "Dictation",
@@ -59,7 +63,8 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ]
+        ],
+        "hidden": false
     },
     {
         "id": "ScratchBlocks",
@@ -71,7 +76,8 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ]
+        ],
+        "hidden": false
     },
     {
         "id": "SuperStorage",
@@ -84,7 +90,8 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
-        ]
+        ],
+        "hidden": false
     },
     {
         "id": "ListsPlus",
@@ -96,7 +103,21 @@
         "iconText": "",
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ]
+        ],
+        "hidden": false
+    },
+    {
+        "id": "CharacterAI",
+        "image": "",
+        "title": "Chatbots (c.ai)",
+        "description": "",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        ],
+        "hidden": true
     },
     {
         "id": "WindowHasher",
@@ -107,7 +128,8 @@
         "icon": "",
         "iconText": "",
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ]
+            { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "hidden": false
     }
 ]
