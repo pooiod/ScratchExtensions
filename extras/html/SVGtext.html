@@ -278,13 +278,14 @@ var App = /** @class */ (function () {
         xhr.onloadend = function () {
             _this.fontList = JSON.parse(xhr.responseText);
 
-            var styleSheet = document.createElement('style');
-            document.head.appendChild(styleSheet);
+            _this.fontList.loadindex = 0;
             _this.fontList.items.forEach(function (font) {
-                var fontLink = document.createElement('link');
-                fontLink.rel = 'stylesheet';
-                fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
-                document.head.appendChild(fontLink);
+                setTimeout(()=>{
+                    var fontLink = document.createElement('link');
+                    fontLink.rel = 'stylesheet';
+                    fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
+                    document.head.appendChild(fontLink);
+                }, _this.fontList.loadindex * 100);
 
                 _this.addOption(_this.selectFamily, font.family);
             });
