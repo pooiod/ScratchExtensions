@@ -154,7 +154,21 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
-        "hidden": false
+        "hidden": true
+    },
+    {
+        "id": "YouTilities",
+        "image": "",
+        "title": "You-tilities",
+        "description": "An extension to interface with youtube.",
+        "subtext": "Currently does not work",
+        "icon": "/extras/images/icons/warn.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        ],
+        "hidden": true
     },
     {
         "id": "CharacterAI",
