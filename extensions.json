@@ -93,7 +93,7 @@
     },
     {
         "id": "ScrollUtilities",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "Scroll Utilities",
         "description": "Detect user scrolling on the page",
         "created": "Oct 05, 2023",
