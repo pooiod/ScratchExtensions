@@ -151,6 +151,8 @@
                     extensionDataUri = await blobToDataUri(extensionBlob);
                 }
 
+                console.log(extensionDataUri);
+
                 const zipUrl = 'Project.zip';
                 const zipResponse = await fetch(zipUrl);
                 const zipBlob = await zipResponse.blob();
