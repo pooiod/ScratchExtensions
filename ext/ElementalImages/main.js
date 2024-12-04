@@ -1,4 +1,4 @@
-// Elemental Images (v0.6.3) by pooiod7
+// Elemental Images (v2.2.0) by pooiod7
 
 (function (Scratch) {
 	'use strict';

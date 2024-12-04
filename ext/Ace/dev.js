@@ -1,4 +1,4 @@
-// Ace editor (wip)
+// Ace editor (0.3.4)
 
 (function (Scratch) {
     'use strict';
