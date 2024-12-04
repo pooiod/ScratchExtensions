@@ -75,7 +75,7 @@
     },
     {
         "id": "SuperStorage",
-        "image": "/ext/[id]/img.svg",
+        "image": "/ext/[id]/img.png",
         "title": "Super Storage",
         "description": "Store and retrieve data locally on device, or remotely on a server.",
         "subtext": "",
