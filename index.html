@@ -268,7 +268,7 @@
                     </div>
                 ` : '';
 
-                const iconHTML2 = `
+                const sandboxStatusIconHTML = `
                     <div class="card-icon" title="${card.unsandboxed?"This extension does not work in the sandbox":"This extension works in the sandbox"}">
                         <img src="/extras/images/icons/${card.unsandboxed?"unsandboxed":"sandboxed"}.png" alt="${card.unsandboxed?"Unsandboxed":"Sandboxed"}">
                     </div>
@@ -278,7 +278,7 @@
                     ${iconHTML}
                     <img src="${imageURL}" alt="${card.title}">
                     <div class="card-content">
-                        ${iconHTML2}
+                        ${sandboxStatusIconHTML}
                         <div class="card-title">${card.title}</div>
                         <div class="card-description">${card.description}</div>
                         <div class="card-subtext">${card.subtext}</div>
