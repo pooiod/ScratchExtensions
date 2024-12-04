@@ -278,7 +278,6 @@ var App = /** @class */ (function () {
         xhr.onloadend = function () {
             _this.fontList = JSON.parse(xhr.responseText);
 
-            // Add each Google Font to the document head dynamically
             var styleSheet = document.createElement('style');
             document.head.appendChild(styleSheet);
             _this.fontList.items.forEach(function (font) {
