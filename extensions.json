@@ -110,8 +110,8 @@
         "id": "CharacterAI",
         "image": "",
         "title": "Chatbots (c.ai)",
-        "description": "AI chatbots with the power of <a href=\"https://c.ai\">c.ai</a>",
-        "subtext": "",
+        "description": "AI chatbots with the power of <a href=\"https://c.ai">c.ai</a>",
+        "subtext": "Currently does not work",
         "icon": "",
         "iconText": "",
         "buttons": [
