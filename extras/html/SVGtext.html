@@ -280,6 +280,7 @@ var App = /** @class */ (function () {
 
             _this.fontList.loadindex = 0;
             _this.fontList.items.forEach(function (font) {
+                _this.fontList.loadindex += 1;
                 setTimeout(()=>{
                     var fontLink = document.createElement('link');
                     fontLink.rel = 'stylesheet';
