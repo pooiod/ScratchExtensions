@@ -39,15 +39,14 @@
     },
     {
         "id": "Ace",
-        "image": "",
+        "image": "https://ace.c9.io/doc/site/images/ace-logo.png",
         "title": "Ace Editor",
         "description": "Create and manipulate an instance of the Ace code editor.",
         "subtext": "This extension is a work in progress (do not use)",
         "icon": "/extras/images/icons/warn.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ]
     },
     {

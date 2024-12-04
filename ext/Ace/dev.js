@@ -1,4 +1,4 @@
-// Ace editor
+// Ace editor (wip)
 
 (function (Scratch) {
     'use strict';
@@ -26,7 +26,7 @@
     
     function fixurl(inputString) {
       if (inputString.startsWith('/')) {
-        return 'https://pooiod7.neocities.org/projects/scratch/extensions/external-files/ace' + inputString;
+        return 'https://p7scratchextensions.pages.dev/ext/Ace/themes' + inputString;
       }
       return inputString;
     }

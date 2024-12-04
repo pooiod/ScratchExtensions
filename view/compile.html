@@ -141,11 +141,15 @@
                     throw new Error("Missing 'extension' or 'extId' in URL parameters.");
                 }
 
-                statusText("Downloading base project file");
+                statusText("Downloading base project files");
 
                 const extensionResponse = await fetch(extensionUrl);
                 const extensionBlob = await extensionResponse.blob();
-                const extensionDataUri = await blobToDataUri(extensionBlob);
+                var extensionDataUri = "https://p7scratchextensions.pages.dev" + urlParams.get('ext');
+
+                if (urlParams.get('ext').endsWith('.js')) {
+                    extensionDataUri = await blobToDataUri(extensionBlob);
+                }
 
                 const zipUrl = 'Project.zip';
                 const zipResponse = await fetch(zipUrl);
