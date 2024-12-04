@@ -48,5 +48,17 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ]
+    },
+    {
+        "id": "WndowHasher",
+        "image": "/ext/[id]/img.svg",
+        "title": "Wndow Hasher",
+        "description": "Interact with URL hash. (the part of the URL after a hashtag)",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ]
     }
 ]
