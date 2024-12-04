@@ -186,7 +186,7 @@
     },
     {
         "id": "Fetch",
-        "image": "https://web.archive.org/web/20231016214618id_/https://extensions.turbowarp.org/images/fetch.svg",
+        "image": "/ext/[id]/cover.svg",
         "title": "Fetch",
         "description": "Make requests to the internet, without CORS errors.",
         "subtext": "",
