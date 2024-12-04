@@ -268,11 +268,11 @@
                     </div>
                 ` : '';
 
-                const iconHTML2 = card.icon ? `
-                    <div class="card-icon" title="${card.iconText}">
-                        <img src="${card.icon}" alt="Warning Icon">
+                const iconHTML2 = `
+                    <div class="card-icon" title="${card.unsandboxed?"This extension does not work in the sandbox":"This extension works in the sandbox"}">
+                        <img src="/extras/images/icons/${card.unsandboxed?"unsandboxed":"sandboxed"}" alt="Warning Icon">
                     </div>
-                ` : '';
+                `;
 
                 cardDiv.innerHTML = `
                     ${iconHTML}
