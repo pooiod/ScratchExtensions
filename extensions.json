@@ -53,7 +53,7 @@
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
         "hidden": false
     },
