@@ -1,5 +1,5 @@
 #Loading cards...
-[!js-document.title="Pooiod7's Scratch extensions (markdown edition)"!]
+[!js-document.title="Pooiod7's hidden Scratch extensions"!]
 
 [!js-
 let cardsData = ["/extensions.json"];
@@ -9,7 +9,7 @@ async function fetchExtensions() {
   try {
     const response = await fetch(cardsData[0]);
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+      throw new Error('Network response was not ok');
     }
     cardsData = await response.json();
     generateMarkdown(cardsData);
@@ -19,7 +19,7 @@ async function fetchExtensions() {
 }
 
 function generateMarkdown(cardsData) {
-  let markdownContent = `# Pooiod7's Scratch extensions (markdown edition)
+  let markdownContent = `# Pooiod7's hidden Scratch extensions
 
 ---
 
@@ -30,6 +30,8 @@ function generateMarkdown(cardsData) {
     if (!imageURL || imageURL === "") {
         imageURL = `https://dummyimage.com/600x300/e0e0e0/000&text=${card.id}`;
     }
+
+    if (!card.hidden) return;
 
     const buttonsMarkdown = card.buttons.map(button => {
       const link = button.link.replace(/\[id\]/g, card.id);
@@ -43,6 +45,8 @@ function generateMarkdown(cardsData) {
 
 ${card.description}<br>
 <sub>${card.subtext}</sub>
+
+<sub>${card.unsandboxed?"Does not work in sandbox":"Works in sandbox"}</sub>
 
 ${buttonsMarkdown}
 
