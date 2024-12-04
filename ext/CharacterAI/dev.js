@@ -4,6 +4,8 @@
 
 (async function(Scratch) {
     'use strict';
+
+    if (!Scratch.extensions.unsandboxed) throw new Error('Chatbots must run unsandboxed!');
     
     let serverkey = "8037184892640";
   
