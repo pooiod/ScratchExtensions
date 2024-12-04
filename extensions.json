@@ -86,6 +86,20 @@
         "hidden": false
     },
     {
+        "id": "ScrollUtilities",
+        "image": "",
+        "title": "Scroll Utilities",
+        "description": "Detect user scrolling on the page",
+        "subtext": "This extension is a work in progress",
+        "icon": "/extras/images/icons/warn.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        ],
+        "hidden": false
+    },
+    {
         "id": "ScratchBlocks",
         "image": "/ext/[id]/cover.svg",
         "title": "ScratchBlocks",
