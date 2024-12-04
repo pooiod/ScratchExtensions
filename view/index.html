@@ -209,6 +209,8 @@
                 cardsData = await response.json();
                 var currentcard = cardsData[hash.replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "")];
 
+                console.log(cardsData)
+                console.log(currentcard)
                 if (!currentcard.unsandboxed) {
                     document.getElementById("yeet").setAttribute('link', 'https://penguinmod.com/editor.html?extension=https://p7scratchextensions.pages.dev[file]')
                 }
