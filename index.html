@@ -253,6 +253,7 @@
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
                 cardDiv.id = card.id;
+                cardDiv.style.display = card.hidden?"none":"block";
 
                 var imageURL = card.image.replace(/\[id\]/g, card.id);
                 if (!imageURL || imageURL == "") {
