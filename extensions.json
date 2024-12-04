@@ -157,6 +157,21 @@
         "hidden": true
     },
     {
+        "id": "ServerData",
+        "image": "/ext/[id]/cover.png",
+        "title": "ServerData",
+        "description": "Store and retrieve data on a <a href=\"https://snap.berkeley.edu/\">snap!</a> servers.",
+        "subtext": "This extension has been replaced by <a href=/#SuperStorage>Super Storage</a>",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
+            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+        ],
+        "hidden": false
+    },
+    {
         "id": "WindowHasher",
         "image": "/ext/[id]/cover.png",
         "title": "Window Hasher",
