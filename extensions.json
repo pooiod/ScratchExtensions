@@ -8,6 +8,7 @@
         "subtext": "",
         "icon": "",
         "iconText": "",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
@@ -21,6 +22,7 @@
         "subtext": "This extension is a work in progress",
         "icon": "/extras/images/icons/warn.png",
         "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
@@ -35,6 +37,7 @@
         "subtext": "",
         "icon": "",
         "iconText": "",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
@@ -48,6 +51,7 @@
         "subtext": "Do not use this in an actual project yet",
         "icon": "/extras/images/icons/warn.png",
         "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
@@ -61,6 +65,7 @@
         "subtext": "not supported in all browsers",
         "icon": "",
         "iconText": "",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
@@ -74,6 +79,7 @@
         "subtext": "",
         "icon": "",
         "iconText": "",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
@@ -87,6 +93,7 @@
         "subtext": "",
         "icon": "",
         "iconText": "",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
@@ -101,6 +108,7 @@
         "subtext": "This extension is unnecessary <br>Please use <a href=\"https://turbowarp.org/editor?extension=https://extensions.turbowarp.org/Skyhigh173/json.js\">json by Skyhigh173</a> instead",
         "icon": "",
         "iconText": "",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
@@ -114,6 +122,7 @@
         "subtext": "Currently does not work",
         "icon": "",
         "iconText": "",
+        "unsandboxed": false,
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
@@ -127,6 +136,7 @@
         "subtext": "",
         "icon": "",
         "iconText": "",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],

@@ -268,10 +268,17 @@
                     </div>
                 ` : '';
 
+                const iconHTML2 = card.icon ? `
+                    <div class="card-icon" title="${card.iconText}">
+                        <img src="${card.icon}" alt="Warning Icon">
+                    </div>
+                ` : '';
+
                 cardDiv.innerHTML = `
                     ${iconHTML}
                     <img src="${imageURL}" alt="${card.title}">
                     <div class="card-content">
+                        ${iconHTML2}
                         <div class="card-title">${card.title}</div>
                         <div class="card-description">${card.description}</div>
                         <div class="card-subtext">${card.subtext}</div>
