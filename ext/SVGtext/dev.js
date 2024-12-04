@@ -82,7 +82,7 @@ addImageButton(
         wrapper.appendChild(modal);
         
         const iframe = document.createElement('iframe');
-        iframe.src = '//penguinpaint.pages.dev/widgets/TextGen';
+        iframe.src = '//p7scratchextensions.pages.dev/extras/html/SVGtext';
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.style.border = 'none'; 
