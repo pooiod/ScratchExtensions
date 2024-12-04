@@ -136,7 +136,7 @@
         "subtext": "This extension is unnecessary <br>Please use <a href=\"https://turbowarp.org/editor?extension=https://extensions.turbowarp.org/Skyhigh173/json.js\">json by Skyhigh173</a> instead",
         "icon": "",
         "iconText": "",
-        "unsandboxed": true,
+        "unsandboxed": false,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],

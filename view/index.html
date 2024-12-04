@@ -210,11 +210,11 @@
                 cardsData = await response.json();
                 var currentcard = cardsData.find(item => item.id === id);
 
-                if (!currentcard.unsandboxed) {
-                    document.getElementById("yeet").removeAttribute("hidden");
-                    document.getElementById("yeet").setAttribute('link', 'https://mirror.turbowarp.xyz?extension=https://p7scratchextensions.pages.dev[file]');
-                    document.getElementById("yeet").innerText = "Open in Turbowarp";
-                }
+                // if (!currentcard.unsandboxed) {
+                //     document.getElementById("yeet").removeAttribute("hidden");
+                //     document.getElementById("yeet").setAttribute('link', 'https://mirror.turbowarp.xyz?extension=https://p7scratchextensions.pages.dev[file]');
+                //     document.getElementById("yeet").innerText = "Open in Turbowarp";
+                // }
 
                 document.querySelectorAll('a[link]').forEach(a => {
                     a.href = a.getAttribute('link').replace(/\[file\]/g, filePath)
