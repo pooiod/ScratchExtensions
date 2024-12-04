@@ -130,7 +130,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'definePoly',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Define Polygon, points: [POINTS]',
+            text: 'Define polygon, points: [POINTS]',
             arguments: {
               POINTS: {
                 type: Scratch.ArgumentType.STRING,
@@ -142,7 +142,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             opcode: 'difineCostume',
             blockType: Scratch.BlockType.COMMAND,
             filter: [Scratch.TargetType.SPRITE],
-            text: 'Define polygon as this costume',
+            text: 'Define polygon as this costume', // https://github.com/PenguinMod/PenguinMod-ExtensionsGallery/issues/237
           },
           {
             opcode: 'placeBody',
@@ -710,14 +710,14 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.LABEL, // --------------------- Debug blocks ----
-            text: "Debug blocks"
-          },
+            text: "Debug blocks (can brake projects)"
+          }, // the ids on any of the following can change, so it's YOUR fault if you use them and your project brakes
           {
             opcode: 'get_debug',
             hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.REPORTER,
             text: 'Get debug [VAL]',
-            arguments: {
+            arguments: { // this is the only debug block I don't plan on changing
               VAL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "version",
@@ -729,8 +729,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             hideFromPalette: !wipblocks,
             blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
             text: "Upcoming blocks (can brake projects)"
-          }, // the ids on any of the following can change, so it's YOUR fault if you use them and your project brakes
-
+          },
           {
             opcode: 'ispoly',
             hideFromPalette: !wipblocks,
