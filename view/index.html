@@ -84,7 +84,7 @@
                 });
             } catch(err) {
                 console.log(err);
-                editor.setValue(txt);
+                editor.setValue(link);
                 if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                     navigator.clipboard.writeText(link);
                 } else {
