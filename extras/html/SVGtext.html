@@ -280,22 +280,14 @@ var App = /** @class */ (function () {
 
             var styleSheet = document.createElement('style');
             document.head.appendChild(styleSheet);
+            _this.fontList.items.forEach(function (font) {
+                var fontLink = document.createElement('link');
+                fontLink.rel = 'stylesheet';
+                fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
+                document.head.appendChild(fontLink);
 
-            (async function () {
-                for (const font of _this.fontList.items) {
-                    var fontLink = document.createElement('link');
-                    fontLink.rel = 'stylesheet';
-                    fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
-                    document.head.appendChild(fontLink);
-
-                    await new Promise((resolve) => {
-                        const fontFace = new FontFace(font.family, `url(${fontLink.href})`);
-                        fontFace.load().then(() => setTimeout(resolve, 100));
-                    });
-
-                    _this.addOption(_this.selectFamily, font.family);
-                }
-            })();
+                _this.addOption(_this.selectFamily, font.family);
+            });
 
             _this.loadVariants();
             _this.handleEvents();
