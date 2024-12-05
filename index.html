@@ -362,7 +362,7 @@
             }
 
             function filterCards() {
-                const query = document.getElementById('search').value.toLowerCase().replace("show:hidden", "");
+                const query = document.getElementById('search').value.toLowerCase().replace("include:hidden", "");
                 const filters = query.split(/\s+/);
                 
                 let filteredData = cardsData.filter(card => {
@@ -424,7 +424,7 @@
                     container.appendChild(noResultsMessage);
                 } else {
                     filteredData.forEach(card => {
-                        container.appendChild(createCard(card, query.includes('is:hidden') || query.includes('show:hidden')));
+                        container.appendChild(createCard(card, query.includes('is:hidden') || query.includes('include:hidden')));
                     });
                 }
             }
