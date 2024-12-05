@@ -203,9 +203,10 @@
         "description": "An extension to interface with youtube.",
         "subtext": "Currently does not work",
         "icon": "/extras/images/icons/warn.png",
-        "iconText": "This extension is in development, and may be changed frequently",
+        "iconText": "This extension is half functioning.",
         "created": "Apr 22, 2024",
         "unsandboxed": true,
+        "notworking": true,
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
