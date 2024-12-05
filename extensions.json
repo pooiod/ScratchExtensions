@@ -272,7 +272,7 @@
         "iconText": "This extension is a work in progress",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View extension 9dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+            { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
         "tags": ["unfinished"],
         "hidden": false
