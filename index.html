@@ -226,15 +226,27 @@
     <header>
         <h1>Pooiod7's Scratch Extensions</h1>
     </header>
+
     <noscript><div class="notice">
         Please enable JavaScript to use this site
     </div></noscript>
+    <script>
+        window.addEventListener('error', function(event) {
+            const noticeDiv = document.createElement('div');
+            noticeDiv.classList.add('notice');
+            noticeDiv.textContent = `Error: ${event.message}`;
+            document.body.appendChild(noticeDiv);
+        });
+    </script>
+
     <div class="search-bar">
         <input type="text" id="search" placeholder="Search extensions..." oninput="filterCards()">
     </div>
+
     <div class="cards-container" id="cards-container"></div>
-    <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
     <p id="loader"></p>
+
+    <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
 
     <script>
         let cardsData = ["/extensions.json"];
@@ -343,7 +355,7 @@
                     }
                     cardsData = await response.json();
                     document.getElementById("loader").remove();
-                    
+
                     if (window.location.search.includes('?q=')) {
                         const query = new URLSearchParams(window.location.search).get('q');
                         document.getElementById('search').value = query;
