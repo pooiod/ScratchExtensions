@@ -264,42 +264,14 @@ var App = /** @class */ (function () {
     App.prototype.$ = function (selector) {
         return document.querySelector(selector);
     };
-
-App.prototype.addOption = function (select, optionText, fontLink) {
-    var option = document.createElement('option');
-    option.text = optionText;
-    option.value = optionText;
-
-    var visibilitySpan = document.createElement('span');
-    visibilitySpan.style.visibility = 'hidden';
-    option.appendChild(visibilitySpan);
-
-    select.options.add(option);
-
-    var fontLinkElement = null;
-
-    var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-                if (!fontLinkElement) {
-                    fontLinkElement = document.createElement('link');
-                    fontLinkElement.rel = 'stylesheet';
-                    fontLinkElement.href = fontLink;
-                    document.head.appendChild(fontLinkElement);
-                    option.style.fontFamily = optionText;
-                }
-            } else {
-                if (fontLinkElement) {
-                    document.head.removeChild(fontLinkElement);
-                    fontLinkElement = null;
-                }
-            }
-        });
-    }, { threshold: 0.1 });
-
-    observer.observe(visibilitySpan);
-};
-
+    App.prototype.addOption = function (select, optionText) {
+        var option = document.createElement('option');
+        option.text = optionText;
+        option.value = optionText;
+        option.style.fontFamily = optionText;
+        select.options.add(option);
+        return option;
+    };
     App.prototype.getGoogleFonts = function (apiKey) {
         var _this = this;
         var xhr = new XMLHttpRequest();
@@ -308,7 +280,13 @@ App.prototype.addOption = function (select, optionText, fontLink) {
             _this.fontList = JSON.parse(xhr.responseText);
 
             _this.fontList.items.forEach(function (font) {
-                _this.addOption(_this.selectFamily, font.family, `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`);
+                var fontLink = document.createElement('link');
+                fontLink.rel = 'stylesheet';
+                fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
+
+                var element = _this.addOption(_this.selectFamily, font.family);
+
+                document.head.appendChild(fontLink);
             });
 
             _this.loadVariants();
