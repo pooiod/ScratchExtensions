@@ -276,7 +276,7 @@
             document.body.style.margin = '0';
             document.body.style.fontFamily = 'Arial, sans-serif';
         } else {
-            function createCard(card) {
+            function createCard(card, showhidden) {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
                 cardDiv.id = card.id;
@@ -330,7 +330,7 @@
                     </div>
                 `;
 
-                cardDiv.style.display = card.hidden?"none":"";
+                cardDiv.style.display = card.hidden&&!showhidden?"none":"";
 
                 return cardDiv;
             }
@@ -361,7 +361,67 @@
                 scrollToHash();
             }
 
-function filterCards() {
+            function filterCards() {
+                const query = document.getElementById('search').value.toLowerCase();
+                const filters = query.split(/\s+/);
+                const filteredData = cardsData.filter(card => {
+                    let includeCard = true;
+
+                    for (const filter of filters) {
+                        if (filter.startsWith('is:')) {
+                            const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
+                            if (match) {
+                                const [, key, value] = match;
+                                const keys = key.split('.');
+                                const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+
+                                if (value) {
+                                    includeCard = includeCard && String(cardValue).toLowerCase().includes(value.toLowerCase());
+                                } else {
+                                    includeCard = includeCard && !!cardValue;
+                                }
+                            }
+                        } else if (filter.startsWith('-is:')) {
+                            const match = filter.match(/^-is:([\w.]+)(?:\((.*?)\))?$/);
+                            if (match) {
+                                const [, key, value] = match;
+                                const keys = key.split('.');
+                                const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+
+                                if (value) {
+                                    includeCard = includeCard && !String(cardValue).toLowerCase().includes(value.toLowerCase());
+                                } else {
+                                    includeCard = includeCard && !cardValue;
+                                }
+                            }
+                        } else if (filter.startsWith('-')) {
+                            const negativeTerm = filter.slice(1);
+                            const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
+                            includeCard = includeCard && !cardText.includes(negativeTerm);
+                        } else if (filter === 'is:hidden') {
+                            includeCard = includeCard && card.hidden;
+                        } else {
+                            const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
+                            includeCard = includeCard && cardText.includes(filter);
+                        }
+
+                        if (!includeCard) break;
+                    }
+
+                    return includeCard;
+                });
+
+                const container = document.getElementById('cards-container');
+                container.innerHTML = '';
+                filteredData.forEach(card => {
+                    if (card.hidden) {
+                        container.appendChild(createCard(card, true));
+                    } else {
+                        container.appendChild(createCard(card));
+                    }
+                });
+            }
+
     const query = document.getElementById('search').value.toLowerCase();
     const filters = query.split(/\s+/);
     const filteredData = cardsData.filter(card => {
@@ -400,7 +460,7 @@ function filterCards() {
     const container = document.getElementById('cards-container');
     container.innerHTML = '';
     filteredData.forEach(card => {
-        container.appendChild(createCard(card));
+        container.appendChild(createCard(card, true));
     });
 }
 
