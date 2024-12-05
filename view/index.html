@@ -36,14 +36,22 @@
             border-bottom: 1px solid #dadada;
             overflow-x: auto;
             z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+
         #toolbar a {
             text-decoration: none;
             color: #007BFF;
+            padding: 5px 10px;
+            white-space: nowrap;
         }
+
         #toolbar a[style*="float: left;"] {
             margin-right: 20px;
         }
+
         #toolbar a[style*="float: right;"] {
             margin-left: 20px;
         }
@@ -61,6 +69,21 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+
+        /* Media query for small screens */
+        @media (max-width: 600px) {
+            #toolbar {
+                flex-direction: column; /* Stack buttons vertically on small screens */
+                align-items: center; /* Center the buttons */
+                padding: 10px 5px; /* Add some padding on the sides */
+            }
+
+            #toolbar a {
+                width: 100%; /* Make each button take full width on small screens */
+                text-align: center; /* Center text within buttons */
+                margin-bottom: 10px; /* Add space between stacked buttons */
+            }
         }
 
         @media (prefers-color-scheme: dark) {
