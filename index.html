@@ -398,8 +398,6 @@
                             const negativeTerm = filter.slice(1);
                             const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
                             includeCard = includeCard && !cardText.includes(negativeTerm);
-                        } else if (filter === 'is:hidden') {
-                            includeCard = includeCard && card.hidden;
                         } else {
                             const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
                             includeCard = includeCard && cardText.includes(filter);
@@ -408,17 +406,19 @@
                         if (!includeCard) break;
                     }
 
+                    if (query.includes('is:hidden') && card.hidden) {
+                        includeCard = true;
+                    } else if (!query.includes('is:hidden') && card.hidden) {
+                        includeCard = false;
+                    }
+
                     return includeCard;
                 });
 
                 const container = document.getElementById('cards-container');
                 container.innerHTML = '';
                 filteredData.forEach(card => {
-                    if (card.hidden) {
-                        container.appendChild(createCard(card, true));
-                    } else {
-                        container.appendChild(createCard(card));
-                    }
+                    container.appendChild(createCard(card, card.hidden && query.includes('is:hidden')));
                 });
             }
 
