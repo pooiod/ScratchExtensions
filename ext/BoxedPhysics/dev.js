@@ -1092,12 +1092,15 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     createNoCollideSet(args) {
       legacymode = true;
 
+      var noCollideSeq3 = noCollideSeq;
       noCollideSeq = noCollideSeq2;
       if (noCollideSeq > 0) {
         noCollideSeq = -noCollideSeq;
       }
       noCollideSeq -= 1;
       noCollideSeq2 = noCollideSeq;
+      console.log(noCollideSeq)
+      noCollideSeq = noCollideSeq3;
       console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
@@ -1120,12 +1123,15 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     createYesCollideSet(args) {
       legacymode = true;
       
+      var noCollideSeq3 = noCollideSeq;
       noCollideSeq = noCollideSeq2;
       if (noCollideSeq < 0) {
         noCollideSeq = -noCollideSeq;
       }
       noCollideSeq += 1;
       noCollideSeq2 = noCollideSeq;
+      console.log(noCollideSeq)
+      noCollideSeq = noCollideSeq3;
       console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
