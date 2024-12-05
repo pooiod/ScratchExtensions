@@ -87,12 +87,10 @@
         .CodeMirror{font-family:monospace;height:300px;direction:ltr}
         .CodeMirror-lines{padding:4px 0}
         .CodeMirror pre.CodeMirror-line,.CodeMirror pre.CodeMirror-line-like{padding:0 4px}
-        .CodeMirror-gutter-filler,.CodeMirror-scrollbar-filler{background-color:#fff}
-        .CodeMirror-gutters{border-right:1px solid #ddd;background-color:#f7f7f7;white-space:nowrap}
+        .CodeMirror-gutters{white-space:nowrap}
         .CodeMirror-linenumber{padding:0 3px 0 5px;min-width:20px;text-align:right;white-space:nowrap}
-        .CodeMirror-cursor{border-left:1px solid #000;border-right:none;width:0}
-        .CodeMirror div.CodeMirror-secondarycursor{border-left:1px solid silver}
-        .cm-fat-cursor .CodeMirror-cursor{width:auto;border:0!important;background:#7e7}
+        .CodeMirror-cursor{border-right:none;width:0}
+        .cm-fat-cursor .CodeMirror-cursor{width:auto;border:0!important;}
         .cm-fat-cursor div.CodeMirror-cursors{z-index:1}
         .cm-fat-cursor .CodeMirror-line::selection,.cm-fat-cursor .CodeMirror-line>span::selection,.cm-fat-cursor .CodeMirror-line>span>span::selection{background:0 0}
         .cm-fat-cursor .CodeMirror-line::-moz-selection,.cm-fat-cursor .CodeMirror-line>span::-moz-selection,.cm-fat-cursor .CodeMirror-line>span>span::-moz-selection{background:0 0}
@@ -102,13 +100,11 @@
         @keyframes blink{50%{background-color:transparent}}
         .cm-tab{display:inline-block;text-decoration:inherit}
         .CodeMirror-rulers{position:absolute;left:0;right:0;top:-50px;bottom:0;overflow:hidden}
-        .CodeMirror-ruler{border-left:1px solid #ccc;top:0;bottom:0;position:absolute}
+        .CodeMirror-ruler{top:0;bottom:0;position:absolute}
         .cm-em{font-style:italic}
         .cm-link{text-decoration:underline}
         .cm-strikethrough{text-decoration:line-through}
-        .CodeMirror-matchingtag{background:rgba(255,150,0,.3)}
-        .CodeMirror-activeline-background{background:#e8f2ff}
-        .CodeMirror{position:relative;overflow:hidden;background:#fff}
+        .CodeMirror{position:relative;overflow:hidden;}
         .CodeMirror-scroll{overflow:scroll!important;margin-bottom:-50px;margin-right:-50px;padding-bottom:50px;height:100%;outline:0;position:relative;z-index:0}
         .CodeMirror-sizer{position:relative;border-right:50px solid transparent}
         .CodeMirror-gutter-filler,.CodeMirror-hscrollbar,.CodeMirror-scrollbar-filler,.CodeMirror-vscrollbar{position:absolute;z-index:6;display:none;outline:0}
@@ -137,12 +133,7 @@
         div.CodeMirror-cursors{visibility:hidden;position:relative;z-index:3}
         div.CodeMirror-dragcursors{visibility:visible}
         .CodeMirror-focused div.CodeMirror-cursors{visibility:visible}
-        .CodeMirror-selected{background:#d9d9d9}
-        .CodeMirror-focused .CodeMirror-selected{background:#d7d4f0}
         .CodeMirror-crosshair{cursor:crosshair}
-        .CodeMirror-line::selection,.CodeMirror-line>span::selection,.CodeMirror-line>span>span::selection{background:#d7d4f0}
-        .CodeMirror-line::-moz-selection,.CodeMirror-line>span::-moz-selection,.CodeMirror-line>span>span::-moz-selection{background:#d7d4f0}
-        .cm-searching{background-color:#ffa;background-color:rgba(255,255,0,.4)}
         .cm-force-border{padding-right:.1px}
         @media print{.CodeMirror div.CodeMirror-cursors{visibility:hidden}}
         .cm-tab-wrap-hack:after{content:''}
