@@ -361,74 +361,73 @@
                 scrollToHash();
             }
 
-function filterCards() {
-    const query = document.getElementById('search').value.toLowerCase();
-    const filters = query.split(/\s+/);
-    
-    let filteredData = cardsData.filter(card => {
-        let includeCard = true;
-        
-        for (const filter of filters) {
-            if (filter.startsWith('-')) {
-                const negativeTerm = filter.slice(1);
-                const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
-                includeCard = includeCard && !cardText.includes(negativeTerm);
-            } else if (!filter.startsWith('is:')) {
-                const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
-                includeCard = includeCard && cardText.includes(filter);
-            }
-        }
-
-        if (!includeCard) return false;
-
-        const checkIsFilters = filters.filter(filter => filter.startsWith('is:') || filter.startsWith('-is:'));
-        checkIsFilters.forEach(filter => {
-            if (filter.startsWith('is:')) {
-                const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
-                if (match) {
-                    const [, key, value] = match;
-                    const keys = key.split('.');
-                    const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
-
-                    if (value) {
-                        includeCard = includeCard && String(cardValue).toLowerCase().includes(value.toLowerCase());
-                    } else {
-                        includeCard = includeCard && !!cardValue;
+            function filterCards() {
+                const query = document.getElementById('search').value.toLowerCase().replace("show:hidden", "");
+                const filters = query.split(/\s+/);
+                
+                let filteredData = cardsData.filter(card => {
+                    let includeCard = true;
+                    
+                    for (const filter of filters) {
+                        if (filter.startsWith('-')) {
+                            const negativeTerm = filter.slice(1);
+                            const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
+                            includeCard = includeCard && !cardText.includes(negativeTerm);
+                        } else if (!filter.startsWith('is:')) {
+                            const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
+                            includeCard = includeCard && cardText.includes(filter);
+                        }
                     }
-                }
-            } else if (filter.startsWith('-is:')) {
-                const match = filter.match(/^-is:([\w.]+)(?:\((.*?)\))?$/);
-                if (match) {
-                    const [, key, value] = match;
-                    const keys = key.split('.');
-                    const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
 
-                    if (value) {
-                        includeCard = includeCard && !String(cardValue).toLowerCase().includes(value.toLowerCase());
-                    } else {
-                        includeCard = includeCard && !cardValue;
-                    }
+                    if (!includeCard) return false;
+
+                    const checkIsFilters = filters.filter(filter => filter.startsWith('is:') || filter.startsWith('-is:'));
+                    checkIsFilters.forEach(filter => {
+                        if (filter.startsWith('is:')) {
+                            const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
+                            if (match) {
+                                const [, key, value] = match;
+                                const keys = key.split('.');
+                                const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+
+                                if (value) {
+                                    includeCard = includeCard && String(cardValue).toLowerCase().includes(value.toLowerCase());
+                                } else {
+                                    includeCard = includeCard && !!cardValue;
+                                }
+                            }
+                        } else if (filter.startsWith('-is:')) {
+                            const match = filter.match(/^-is:([\w.]+)(?:\((.*?)\))?$/);
+                            if (match) {
+                                const [, key, value] = match;
+                                const keys = key.split('.');
+                                const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+
+                                if (value) {
+                                    includeCard = includeCard && !String(cardValue).toLowerCase().includes(value.toLowerCase());
+                                } else {
+                                    includeCard = includeCard && !cardValue;
+                                }
+                            }
+                        }
+                    });
+
+                    return includeCard;
+                });
+
+                const container = document.getElementById('cards-container');
+                container.innerHTML = '';
+
+                if (filteredData.length === 0) {
+                    const noResultsMessage = document.createElement('div');
+                    noResultsMessage.textContent = 'No results found';
+                    container.appendChild(noResultsMessage);
+                } else {
+                    filteredData.forEach(card => {
+                        container.appendChild(createCard(card, query.includes('is:hidden') || query.includes('show:hidden')));
+                    });
                 }
             }
-        });
-
-        return includeCard;
-    });
-
-    const container = document.getElementById('cards-container');
-    container.innerHTML = '';
-
-    if (filteredData.length === 0) {
-        const noResultsMessage = document.createElement('div');
-        noResultsMessage.textContent = 'No results found';
-        container.appendChild(noResultsMessage);
-    } else {
-        filteredData.forEach(card => {
-            container.appendChild(createCard(card, query.includes('is:hidden') || query.includes('show:hidden')));
-        });
-    }
-}
-
 
             function scrollToHash() {
                 const hash = window.location.hash.substring(1);
