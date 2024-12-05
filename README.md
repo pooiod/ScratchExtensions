@@ -1,2 +1,2 @@
 # ScratchExtensions
-A collection of scratch extensions made by me.
+An up to date collection of all the good scratch extensions I have made.
