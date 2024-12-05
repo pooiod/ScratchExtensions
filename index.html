@@ -369,30 +369,18 @@ function filterCards() {
 
         for (const filter of filters) {
             if (filter.startsWith('is:')) {
-                const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
-                if (match) {
-                    const [, key, value] = match;
+                const [_, key] = filter.match(/^is:([\w.]+)$/) || [];
+                if (key) {
                     const keys = key.split('.');
                     const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
-
-                    if (value) {
-                        includeCard = includeCard && String(cardValue).toLowerCase().includes(value.toLowerCase());
-                    } else {
-                        includeCard = includeCard && !!cardValue;
-                    }
+                    includeCard = includeCard && !!cardValue;
                 }
             } else if (filter.startsWith('-is:')) {
-                const match = filter.match(/^-is:([\w.]+)(?:\((.*?)\))?$/);
-                if (match) {
-                    const [, key, value] = match;
+                const [_, key] = filter.match(/^-is:([\w.]+)$/) || [];
+                if (key) {
                     const keys = key.split('.');
                     const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
-
-                    if (value) {
-                        includeCard = includeCard && !String(cardValue).toLowerCase().includes(value.toLowerCase());
-                    } else {
-                        includeCard = includeCard && !cardValue;
-                    }
+                    includeCard = includeCard && !cardValue;
                 }
             } else if (filter.startsWith('-')) {
                 const negativeTerm = filter.slice(1);
