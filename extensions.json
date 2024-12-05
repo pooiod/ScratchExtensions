@@ -78,7 +78,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
-        "editorFunc": true,
+        "addon": true,
         "tags": ["finished"],
         "noblocks": true,
         "hidden": false
