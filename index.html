@@ -368,7 +368,9 @@ function filterCards() {
         let includeCard = true;
         let matchHidden = false;
 
-        for (const filter of filters) {
+        const checkIsFilters = filters.filter(filter => filter.startsWith('is:') || filter.startsWith('-is:'));
+
+        filters.forEach(filter => {
             if (filter.startsWith('is:')) {
                 const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
                 if (match) {
@@ -403,11 +405,9 @@ function filterCards() {
                 const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
                 includeCard = includeCard && cardText.includes(filter);
             }
+        });
 
-            if (!includeCard) break;
-        }
-
-        if (query.includes('is:hidden') && card.hidden) {
+        if (checkIsFilters.length > 0 && query.includes('is:hidden') && card.hidden) {
             matchHidden = true;
             includeCard = true;
         } else if (!query.includes('is:hidden') && card.hidden) {
