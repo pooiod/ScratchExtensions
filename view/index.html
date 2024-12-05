@@ -35,23 +35,17 @@
             background: #fff;
             border-bottom: 1px solid #dadada;
             overflow-x: auto;
-            overflow-y: hidden; /* Prevent vertical scrolling */
+            overflow-y: hidden;
             white-space: nowrap;
             z-index: 1;
+            display: flex;
         }
 
         #toolbar a {
             text-decoration: none;
             color: #007BFF;
-            display: inline-block;
-        }
-
-        #toolbar a[style*="float: left;"] {
-            margin-right: 20px;
-        }
-
-        #toolbar a[style*="float: right;"] {
-            margin-left: 20px;
+            flex-shrink: 0;
+            margin-right: 10px;
         }
 
         #editor {
