@@ -84,7 +84,7 @@
             overlay.style.left = '0';
             overlay.style.width = '100%';
             overlay.style.height = '100%';
-            overlay.style.backgroundColor = 'rgba(0, 195, 255, 0.7)';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
             overlay.style.zIndex = '9999';
             overlay.id = "svgtextoverlay";
             
@@ -98,7 +98,7 @@
             wrapper.style.padding = '0px';
             
             const modal = document.createElement('div');
-            modal.style.backgroundColor = 'var(--ui-primary, white)';
+            modal.style.backgroundColor = 'white';
             modal.style.padding = '0px';
             modal.style.borderRadius = '10px';
             modal.style.width = '70vw';
