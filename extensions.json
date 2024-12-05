@@ -226,7 +226,7 @@
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
-        "tags": ["unfinished", "down"],
+        "tags": ["unfinished"],
         "hidden": true
     },
     {
@@ -236,7 +236,7 @@
         "description": "Store and retrieve data on <a href=\"https://snap.berkeley.edu/\">snap!</a> servers.",
         "created": "May 18, 2024",
         "subtext": "Please use <a href=/#SuperStorage>Super Storage</a> instead",
-        "icon": "/extras/images/icons/warn.png",
+        "icon": "https://cdn-icons-png.flaticon.com/512/4275/4275215.png",
         "iconText": "The api for this extension is currently down.",
         "unsandboxed": true,
         "buttons": [
