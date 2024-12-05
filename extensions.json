@@ -262,6 +262,22 @@
         "hidden": false
     },
     {
+        "id": "PageOpener",
+        "image": "",
+        "title": "Page Opener",
+        "description": "A simple extension to open websites.",
+        "created": "Dec 5, 2024",
+        "subtext": "",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "This extension is a work in progress",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension 9dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        ],
+        "tags": ["unfinished"],
+        "hidden": false
+    },
+    {
         "id": "Fetch",
         "image": "/ext/[id]/cover.svg",
         "title": "Fetch",
