@@ -232,6 +232,8 @@
     </div></noscript>
     <script>
         window.addEventListener('error', function(event) {
+            if (event.message == "Script error.") return;
+
             const existingNotice = document.querySelector('.notice');
             if (existingNotice) {
                 existingNotice.remove();
