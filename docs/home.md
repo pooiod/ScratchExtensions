@@ -49,7 +49,7 @@ function generateMarkdown(cardsData) {
 ${card.description}<br>
 <sub>${card.subtext}</sub>
 
-<sub>(${card.unsandboxed?"This extension does not work in sandbox":"This extension works in sandbox"})</sub>
+<sub>(${card.unsandboxed?"This extension does not work when sandboxed":"This extension works when sandboxed"})</sub>
 
 ${buttonsMarkdown}
 
