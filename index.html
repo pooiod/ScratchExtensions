@@ -232,10 +232,21 @@
     </div></noscript>
     <script>
         window.addEventListener('error', function(event) {
+            const existingNotice = document.querySelector('.notice');
+            if (existingNotice) {
+                existingNotice.remove();
+            }
+
             const noticeDiv = document.createElement('div');
             noticeDiv.classList.add('notice');
             noticeDiv.textContent = `Error: ${event.message}`;
-            document.body.appendChild(noticeDiv);
+
+            const header = document.querySelector('header');
+            if (header) {
+                header.insertAdjacentElement('afterend', noticeDiv);
+            } else {
+                document.body.appendChild(noticeDiv);
+            }
         });
     </script>
 
