@@ -20,79 +20,80 @@
     <meta name="twitter:image" content="/extras/images/P7ExtGalleryCover.png">
 
     <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f1faff;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1faff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
 
-#toolbar {
-    padding: 10px;
-    background: #fff;
-    border-bottom: 1px solid #dadada;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    z-index: 1;
-    display: block;
-}
+        #toolbar {
+            padding: 10px;
+            background: #fff;
+            border-bottom: 1px solid #dadada;
+            /* overflow-x: auto; */
+            /* overflow-y: hidden; */
+            overflow: visible;
+            white-space: nowrap;
+            z-index: 1;
+            display: block;
+        }
 
-#toolbar a {
-    text-decoration: none;
-    color: #007BFF;
-    display: inline-block;
-    white-space: nowrap;
-}
+        #toolbar a {
+            text-decoration: none;
+            color: #007BFF;
+            display: inline-block;
+            white-space: nowrap;
+        }
 
-#toolbar a[style*="float: left;"] {
-    float: left;
-    margin-right: 20px;
-}
+        #toolbar a[style*="float: left;"] {
+            float: left;
+            margin-right: 20px;
+        }
 
-#toolbar a[style*="float: right;"] {
-    float: right;
-    margin-left: 20px;
-}
+        #toolbar a[style*="float: right;"] {
+            float: right;
+            margin-left: 20px;
+        }
 
-#editor {
-    flex: 1;
-    position: relative;
-    height: calc(100vh - 40px);
-}
+        #editor {
+            flex: 1;
+            position: relative;
+            height: calc(100vh - 40px);
+        }
 
-.CodeMirror {
-    background: #fff;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+        .CodeMirror {
+            background: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
 
-@media (prefers-color-scheme: dark) {
-    body {
-        background: #181818;
-        color: #f1f1f1;
-    }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #181818;
+                color: #f1f1f1;
+            }
 
-    #toolbar {
-        background: #333;
-        border-bottom: 1px solid #444;
-    }
+            #toolbar {
+                background: #333;
+                border-bottom: 1px solid #444;
+            }
 
-    #toolbar a {
-        color: #1E90FF;
-    }
+            #toolbar a {
+                color: #1E90FF;
+            }
 
-    .CodeMirror {
-        background: #2e2e2e;
-        color: #f1f1f1;
-    }
-}
+            .CodeMirror {
+                background: #2e2e2e;
+                color: #f1f1f1;
+            }
+        }
 
         .CodeMirror{font-family:monospace;height:100%;direction:ltr}
         .CodeMirror-lines{padding:4px 0}
