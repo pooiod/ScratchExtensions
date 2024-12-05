@@ -40,6 +40,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
   var bodyCategoryBits = 1;
   var bodyMaskBits = 1;
   var noCollideSeq = 0;
+  var noCollideSeq2 = 0;
 
   const toRad = Math.PI / 180;
 
@@ -1091,10 +1092,13 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     createNoCollideSet(args) {
       legacymode = true;
 
+      noCollideSeq = noCollideSeq2;
       if (noCollideSeq > 0) {
         noCollideSeq = -noCollideSeq;
       }
       noCollideSeq -= 1;
+      noCollideSeq2 = noCollideSeq;
+      console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
@@ -1115,7 +1119,14 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
     createYesCollideSet(args) {
       legacymode = true;
-    
+      
+      noCollideSeq = noCollideSeq2;
+      if (noCollideSeq < 0) {
+        noCollideSeq = -noCollideSeq;
+      }
+      noCollideSeq += 1;
+      noCollideSeq2 = noCollideSeq;
+      console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
@@ -1123,16 +1134,19 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           var body = bodies[bid];
           if (body) {
             var fix = body.GetFixtureList();
+            console.log(body);
             while (fix) {
               var fdata = fix.GetFilterData();
-              fdata.groupIndex = 0;
+              fdata.groupIndex = noCollideSeq;
+              console.log(noCollideSeq)
               fix.SetFilterData(fdata);
+              console.log(fix);
               fix = fix.GetNext();
             }
           }
         }
       }
-    }    
+    }
 
     getobjects() {
       var bodynames = [];
