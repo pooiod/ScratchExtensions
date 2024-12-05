@@ -22,7 +22,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
   var physdebugmode = false;
   var wipblocks = physdebugmode;
-  var legacymode = false;
+  var legacymode = true;
 
   var positerations = 10;
   var veliterations = 10;
@@ -1102,13 +1102,10 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           var body = bodies[bid];
           if (body) {
             var fix = body.GetFixtureList();
-            console.log(body);
             while (fix) {
               var fdata = fix.GetFilterData();
               fdata.groupIndex = noCollideSeq;
-              console.log(noCollideSeq)
               fix.SetFilterData(fdata);
-              console.log(fix);
               fix = fix.GetNext();
             }
           }
@@ -1118,11 +1115,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
     createYesCollideSet(args) {
       legacymode = true;
-      
-      if (noCollideSeq < 0) {
-        noCollideSeq = -noCollideSeq;
-      }
-      noCollideSeq += 1;
+    
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
@@ -1130,19 +1123,16 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           var body = bodies[bid];
           if (body) {
             var fix = body.GetFixtureList();
-            console.log(body);
             while (fix) {
               var fdata = fix.GetFilterData();
-              fdata.groupIndex = noCollideSeq;
-              console.log(noCollideSeq)
+              fdata.groupIndex = 0;
               fix.SetFilterData(fdata);
-              console.log(fix);
               fix = fix.GetNext();
             }
           }
         }
       }
-    }
+    }    
 
     getobjects() {
       var bodynames = [];
