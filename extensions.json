@@ -220,8 +220,8 @@
         "description": "AI chatbots with the power of <a href=\"https://c.ai\">c.ai</a>",
         "created": "Oct 20, 2023",
         "subtext": "Currently does not work",
-        "icon": "",
-        "iconText": "",
+        "icon": "/extras/images/icons/warn.png",
+        "iconText": "This extension is not functioning.",
         "unsandboxed": false,
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
