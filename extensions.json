@@ -17,7 +17,7 @@
     },
     {
         "id": "HTMLcanvas",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "HTML Canvas",
         "description": "Use HTML and CSS to make projects with complex visual interfaces.",
         "created": "May 29, 2024",
