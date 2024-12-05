@@ -63,7 +63,7 @@
     },
     {
         "id": "SVGtext",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "SVG Text",
         "description": "Generate point-based svg text. (new add costume button)",
         "created": "Dec 4, 2024",
