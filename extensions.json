@@ -68,11 +68,11 @@
         "description": "Generate point-based svg text. <br>(new add costume button)",
         "created": "Dec 4, 2024",
         "subtext": "An addidtion to the editor",
-        "icon": "/extras/images/icons/wip.png",
-        "iconText": "This extension is in development, and may be changed frequently",
+        "icon": "",
+        "iconText": "",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
         "hidden": false
     },
