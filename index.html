@@ -364,8 +364,9 @@
             function filterCards() {
                 const query = document.getElementById('search').value.toLowerCase();
                 const filters = query.split(/\s+/);
-                const filteredData = cardsData.filter(card => {
+                let filteredData = cardsData.filter(card => {
                     let includeCard = true;
+                    let matchHidden = false;
 
                     for (const filter of filters) {
                         if (filter.startsWith('is:')) {
@@ -407,6 +408,7 @@
                     }
 
                     if (query.includes('is:hidden') && card.hidden) {
+                        matchHidden = true;
                         includeCard = true;
                     } else if (!query.includes('is:hidden') && card.hidden) {
                         includeCard = false;
@@ -417,9 +419,16 @@
 
                 const container = document.getElementById('cards-container');
                 container.innerHTML = '';
-                filteredData.forEach(card => {
-                    container.appendChild(createCard(card, card.hidden && query.includes('is:hidden')));
-                });
+
+                if (filteredData.length === 0) {
+                    const noResultsMessage = document.createElement('div');
+                    noResultsMessage.textContent = 'No results found';
+                    container.appendChild(noResultsMessage);
+                } else {
+                    filteredData.forEach(card => {
+                        container.appendChild(createCard(card, query.includes('is:hidden')));
+                    });
+                }
             }
 
             function scrollToHash() {
