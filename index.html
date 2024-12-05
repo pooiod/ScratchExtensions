@@ -364,13 +364,25 @@
 function filterCards() {
     const query = document.getElementById('search').value.toLowerCase();
     const filters = query.split(/\s+/);
+    
     let filteredData = cardsData.filter(card => {
         let includeCard = true;
-        let matchHidden = false;
+        
+        for (const filter of filters) {
+            if (filter.startsWith('-')) {
+                const negativeTerm = filter.slice(1);
+                const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
+                includeCard = includeCard && !cardText.includes(negativeTerm);
+            } else if (!filter.startsWith('is:')) {
+                const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
+                includeCard = includeCard && cardText.includes(filter);
+            }
+        }
+
+        if (!includeCard) return false;
 
         const checkIsFilters = filters.filter(filter => filter.startsWith('is:') || filter.startsWith('-is:'));
-
-        filters.forEach(filter => {
+        checkIsFilters.forEach(filter => {
             if (filter.startsWith('is:')) {
                 const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
                 if (match) {
@@ -397,18 +409,10 @@ function filterCards() {
                         includeCard = includeCard && !cardValue;
                     }
                 }
-            } else if (filter.startsWith('-')) {
-                const negativeTerm = filter.slice(1);
-                const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
-                includeCard = includeCard && !cardText.includes(negativeTerm);
-            } else {
-                const cardText = `${card.title} ${card.description} ${card.subtext}`.toLowerCase();
-                includeCard = includeCard && cardText.includes(filter);
             }
         });
 
-        if (checkIsFilters.length > 0 && query.includes('is:hidden') && card.hidden) {
-            matchHidden = true;
+        if (query.includes('is:hidden') && card.hidden) {
             includeCard = true;
         } else if (!query.includes('is:hidden') && card.hidden) {
             includeCard = false;
@@ -430,6 +434,7 @@ function filterCards() {
         });
     }
 }
+
 
             function scrollToHash() {
                 const hash = window.location.hash.substring(1);
