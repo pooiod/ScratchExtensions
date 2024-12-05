@@ -84,6 +84,43 @@
 		text-decoration: none;
 		color: #007BFF;
 	}
+
+	@media (prefers-color-scheme: dark) {
+		body {
+			background-color: #121212;
+			color: #e0e0e0;
+		}
+
+		#loading-bar {
+			background-color: #bb86fc;
+		}
+
+		.container {
+			background-color: #1e1e1e;
+		}
+
+		.content {
+			background-color: #1f1f1f;
+			color: #e0e0e0;
+		}
+
+		.content.hidden {
+			opacity: 0.5;
+		}
+
+		.markdown-content {
+			color: #cfcfcf;
+		}
+
+		#toolbar {
+			background: #1e1e1e;
+			border-bottom: 1px solid #333;
+		}
+
+		#toolbar a {
+			color: #8ab4f8;
+		}
+	}
 </style>
 
 <link href="https://pooiod7.neocities.org/markdown/code.css" rel="stylesheet">
