@@ -13,6 +13,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -29,6 +30,7 @@
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
+        "tags": ["unfinished"],
         "hidden": false
     },
     {
@@ -44,6 +46,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -59,6 +62,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -74,6 +78,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -89,6 +94,7 @@
         "buttons": [
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
+        "tags": ["unfinished"],
         "hidden": false
     },
     {
@@ -104,6 +110,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -119,6 +126,7 @@
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
+        "tags": ["unfinished"],
         "hidden": false
     },
     {
@@ -134,6 +142,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -150,6 +159,7 @@
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
+        "tags": ["unfinished"],
         "hidden": false
     },
     {
@@ -165,6 +175,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -180,6 +191,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": true
     },
     {
@@ -195,6 +207,7 @@
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
+        "tags": ["unfinished"],
         "hidden": true
     },
     {
@@ -210,6 +223,7 @@
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
+        "tags": ["unfinished", "down"],
         "hidden": true
     },
     {
@@ -225,6 +239,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": true
     },
     {
@@ -240,6 +255,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     },
     {
@@ -255,6 +271,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "tags": ["finished"],
         "hidden": false
     }
 ]
