@@ -172,7 +172,7 @@
             mode: 'javascript',
             lineNumbers: true,
             lineWrapping: true,
-            theme: 'default',
+            theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'default' : 'mbo',
             extraKeys: {
                 'Ctrl-Space': 'autocomplete'
             },
