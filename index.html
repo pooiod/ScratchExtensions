@@ -343,7 +343,14 @@
                     }
                     cardsData = await response.json();
                     document.getElementById("loader").remove();
-                    renderCards();
+                    
+                    if (window.location.search.includes('?q=')) {
+                        const query = new URLSearchParams(window.location.search).get('q');
+                        document.getElementById('search').value = query;
+                        filterCards();
+                    } else {
+                        renderCards();
+                    }
                 } catch (error) {
                     document.getElementById("loader").remove();
                     console.error('Failed to fetch extensions:', error);
@@ -442,12 +449,6 @@
             }
 
             window.addEventListener('hashchange', scrollToHash);
-
-            if (window.location.search.includes('?q=')) {
-                const query = new URLSearchParams(window.location.search).get('q');
-                document.getElementById('search').value = query;
-                filterCards();
-            }
 
             document.getElementById('search').addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
