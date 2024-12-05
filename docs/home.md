@@ -53,7 +53,7 @@ ${card.description}<br>
 
 ${buttonsMarkdown}
 
-> Also try searching "<a href="https://p7scratchextensions.pages.dev/?q=include\%3Ahidden">include:hidden</a>"
+> Also try searching "<a href="https://p7scratchextensions.pages.dev/?q=include%3Ahidden">include:hidden</a>"
 
 `;
   });
