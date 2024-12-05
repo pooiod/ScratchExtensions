@@ -180,6 +180,7 @@ var App = /** @class */ (function () {
         this.strokeNonScalingCheckbox = this.$('#input-stroke-non-scaling');
         this.fillRuleInput = this.$("#input-fill-rule");
         // Init units select.
+        this.fontlinks = atob('aHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vd2ViZm9udHMvdjEvd2ViZm9udHM/a2V5PUFJemFTeUFPRVM4RW1LaHVKRW5zbjlrUzFYS0JweHhwLVRnTjhKYw==');
         Object.values(makerjs.unitType).forEach(function (unit) { return _this.addOption(_this.selectUnits, unit); });
     };
     App.prototype.readQueryParams = function () {
@@ -272,21 +273,20 @@ var App = /** @class */ (function () {
         select.options.add(option);
         return option;
     };
-    App.prototype.getGoogleFonts = function (apiKey) {
+    App.prototype.getGoogleFonts = function () {
         var _this = this;
         var xhr = new XMLHttpRequest();
-        xhr.open('get', 'https://www.googleapis.com/webfonts/v1/webfonts?key=' + apiKey, true);
+        xhr.open('get', _this.fontlinks, true);
         xhr.onloadend = function () {
             _this.fontList = JSON.parse(xhr.responseText);
 
             _this.fontList.items.forEach(function (font) {
-                var fontLink = document.createElement('link');
-                fontLink.rel = 'stylesheet';
-                fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
+                // var fontLink = document.createElement('link');
+                // fontLink.rel = 'stylesheet';
+                // fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font.family)}&display=swap`;
+                // document.head.appendChild(fontLink);
 
                 var element = _this.addOption(_this.selectFamily, font.family);
-
-                document.head.appendChild(fontLink);
             });
 
             _this.loadVariants();
@@ -340,7 +340,7 @@ var App = /** @class */ (function () {
 var app = new App();
 window.onload = function () {
     app.init();
-    app.getGoogleFonts('AIzaSyAOES8EmKhuJEnsn9kS1XKBpxxp-TgN8Jc');
+    app.getGoogleFonts();
 };
 /**
  * Creates and returns a new debounced version of the passed function that will
