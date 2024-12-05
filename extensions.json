@@ -154,7 +154,7 @@
     },
     {
         "id": "BasicTTS",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "Text to Speech",
         "description": "Make your project read text out loud.",
         "created": "Dec 18, 2023",
