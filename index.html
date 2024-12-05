@@ -412,12 +412,6 @@ function filterCards() {
             }
         });
 
-        if (query.includes('is:hidden') && card.hidden) {
-            includeCard = true;
-        } else if (!query.includes('is:hidden') && card.hidden) {
-            includeCard = false;
-        }
-
         return includeCard;
     });
 
@@ -430,7 +424,7 @@ function filterCards() {
         container.appendChild(noResultsMessage);
     } else {
         filteredData.forEach(card => {
-            container.appendChild(createCard(card, query.includes('is:hidden')));
+            container.appendChild(createCard(card, query.includes('is:hidden') || query.includes('!showhidden')));
         });
     }
 }
