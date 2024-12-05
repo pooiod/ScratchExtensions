@@ -22,7 +22,7 @@
         "description": "Use HTML and CSS to make projects with complex visual interfaces.",
         "created": "May 29, 2024",
         "subtext": "This extension is a work in progress",
-        "icon": "/extras/images/icons/warn.png",
+        "icon": "/extras/images/icons/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
         "buttons": [
@@ -68,7 +68,7 @@
         "description": "Generate point-based svg text. <br>(new add costume button)",
         "created": "Dec 4, 2024",
         "subtext": "An addidtion to the editor",
-        "icon": "/extras/images/icons/warn.png",
+        "icon": "/extras/images/icons/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
         "buttons": [
@@ -83,7 +83,7 @@
         "description": "Create and manipulate an instance of the Ace code editor.",
         "created": "June 18, 2023",
         "subtext": "Do not use this in an actual project yet",
-        "icon": "/extras/images/icons/warn.png",
+        "icon": "/extras/images/icons/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
         "buttons": [
@@ -113,7 +113,7 @@
         "description": "Detect user scrolling on the page",
         "created": "Oct 05, 2023",
         "subtext": "This extension is a work in progress",
-        "icon": "/extras/images/icons/warn.png",
+        "icon": "/extras/images/icons/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
         "buttons": [
