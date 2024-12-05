@@ -78,7 +78,7 @@
     },
     {
         "id": "Ace",
-        "image": "https://ace.c9.io/doc/site/images/ace-logo.png",
+        "image": "/ext/[id]/cover.png",
         "title": "Ace Editor",
         "description": "Create and manipulate an instance of the Ace code editor.",
         "created": "June 18, 2023",
