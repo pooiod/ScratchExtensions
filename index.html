@@ -424,7 +424,7 @@
                     container.appendChild(noResultsMessage);
                 } else {
                     filteredData.forEach(card => {
-                        container.appendChild(createCard(card, query.includes('is:hidden') || query.includes('include:hidden')));
+                        container.appendChild(createCard(card, query.includes('is:hidden') || document.getElementById('search').value.toLowerCase().includes('include:hidden')));
                     });
                 }
             }
