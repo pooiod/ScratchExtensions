@@ -369,23 +369,27 @@ function filterCards() {
 
         for (const filter of filters) {
             if (filter.startsWith('is:')) {
-                const [_, key, value] = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/) || [];
-                if (key) {
+                const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
+                if (match) {
+                    const [, key, value] = match;
                     const keys = key.split('.');
                     const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+
                     if (value) {
-                        includeCard = includeCard && String(cardValue).toLowerCase() === value.toLowerCase();
+                        includeCard = includeCard && String(cardValue).toLowerCase().includes(value.toLowerCase());
                     } else {
                         includeCard = includeCard && !!cardValue;
                     }
                 }
             } else if (filter.startsWith('-is:')) {
-                const [_, key, value] = filter.match(/^-is:([\w.]+)(?:\((.*?)\))?$/) || [];
-                if (key) {
+                const match = filter.match(/^-is:([\w.]+)(?:\((.*?)\))?$/);
+                if (match) {
+                    const [, key, value] = match;
                     const keys = key.split('.');
                     const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+
                     if (value) {
-                        includeCard = includeCard && String(cardValue).toLowerCase() !== value.toLowerCase();
+                        includeCard = includeCard && !String(cardValue).toLowerCase().includes(value.toLowerCase());
                     } else {
                         includeCard = includeCard && !cardValue;
                     }
