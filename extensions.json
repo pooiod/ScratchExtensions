@@ -72,7 +72,7 @@
         "description": "Generate point-based svg text. <br>(new add costume button)",
         "created": "Dec 4, 2024",
         "subtext": "An addidtion to the editor",
-        "icon": "https://www.shareicon.net/data/256x256/2015/07/27/75816_addons_256x256.png",
+        "icon": "/extras/images/icons/addon.png",
         "iconText": "This extension adds editor functions and not blocks",
         "unsandboxed": true,
         "buttons": [
