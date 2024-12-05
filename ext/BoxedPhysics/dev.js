@@ -1100,8 +1100,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       noCollideSeq -= 1;
       noCollideSeq2 = noCollideSeq;
       console.log(noCollideSeq)
-      noCollideSeq = noCollideSeq3;
-      console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
@@ -1118,6 +1116,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           }
         }
       }
+      noCollideSeq = noCollideSeq3;
+      console.log(noCollideSeq)
     }
 
     createYesCollideSet(args) {
@@ -1131,8 +1131,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       noCollideSeq += 1;
       noCollideSeq2 = noCollideSeq;
       console.log(noCollideSeq)
-      noCollideSeq = noCollideSeq3;
-      console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
@@ -1140,18 +1138,17 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           var body = bodies[bid];
           if (body) {
             var fix = body.GetFixtureList();
-            console.log(body);
             while (fix) {
               var fdata = fix.GetFilterData();
               fdata.groupIndex = noCollideSeq;
-              console.log(noCollideSeq)
               fix.SetFilterData(fdata);
-              console.log(fix);
               fix = fix.GetNext();
             }
           }
         }
       }
+      noCollideSeq = noCollideSeq3;
+      console.log(noCollideSeq)
     }
 
     getobjects() {
