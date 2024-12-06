@@ -198,7 +198,7 @@
     },
     {
         "id": "YouTilities",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "You-tilities",
         "description": "An extension to interface with youtube.",
         "subtext": "Currently does not work",
