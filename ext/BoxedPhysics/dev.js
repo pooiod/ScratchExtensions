@@ -40,7 +40,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
   var bodyCategoryBits = 1;
   var bodyMaskBits = 1;
   var noCollideSeq = 0;
-  var noCollideSeq2 = 0;
 
   const toRad = Math.PI / 180;
 
@@ -1066,94 +1065,75 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     setObjectLayer({ NAME, LAYERS }) {
       var body = bodies[NAME];
       if (!body) return '';
-
-      LAYERS = LAYERS.toString();
-      var layers = LAYERS.split(' ').map(Number);
+  
+      body.layers = body.layers || "1";
+      LAYERS = LAYERS || body.layers;
+  
+      var layers = LAYERS.toString().split(' ').map(Number);
       if (!layers.length) return '';
-
+  
       var categoryBits = 0;
       var maskBits = 0;
-
+      var negativeLayers = [];
+  
       layers.forEach(layer => {
-        categoryBits |= 1 << (layer - 1);
-        maskBits |= 1 << (layer - 1);
+          if (layer > 0) {
+              categoryBits |= 1 << (layer - 1);
+              maskBits |= 1 << (layer - 1);
+          } else if (layer < 0) {
+              negativeLayers.push(layer);
+          }
       });
-
+  
       var fixture = body.GetFixtureList();
       while (fixture) {
-        var filter = fixture.GetFilterData();
-        filter.categoryBits = categoryBits;
-        filter.maskBits = maskBits;
-        fixture.SetFilterData(filter);
-        fixture = fixture.GetNext();
+          var filter = fixture.GetFilterData();
+          filter.categoryBits = categoryBits;
+          filter.maskBits = maskBits;
+          fixture.SetFilterData(filter);
+          fixture = fixture.GetNext();
       }
-    }
-
-    async createNoCollideSet(args) {
-      return new Promise((resolve) => {
-        if (noCollideSeq > 0) {
-          noCollideSeq = -noCollideSeq;
-        }
-        noCollideSeq -= 1;
-        console.log(noCollideSeq);
-        var bids = args.NAMES.split(' ');
-        for (var i = 0; i < bids.length; i++) {
-          var bid = bids[i];
-          if (bid.length > 0) {
-            var body = bodies[bid];
-            if (body) {
-              var fix = body.GetFixtureList();
-              console.log(body);
-              while (fix) {
-                var fdata = fix.GetFilterData();
-                fdata.groupIndex = noCollideSeq;
-                console.log(noCollideSeq);
-                fix.SetFilterData(fdata);
-                console.log(fix);
-                fix = fix.GetNext();
+  
+      body.SetAwake(true);
+      body.layers = LAYERS;
+  
+      for (var otherName in bodies) {
+          if (otherName !== NAME) {
+              var otherBody = bodies[otherName];
+              var otherLayers = otherBody.layers || "1";
+              var otherNegativeLayers = [];
+  
+              otherLayers.toString().split(' ').map(Number).forEach(layer => {
+                  if (layer < 0) {
+                      otherNegativeLayers.push(layer);
+                  }
+              });
+  
+              var fixture = otherBody.GetFixtureList();
+              while (fixture) {
+                  var otherFilter = fixture.GetFilterData();
+                  var mask = maskBits;
+                  if (negativeLayers.some(layer => otherNegativeLayers.includes(layer))) {
+                      mask = 0; 
+                  }
+                  otherFilter.maskBits = mask;
+                  fixture.SetFilterData(otherFilter);
+                  fixture = fixture.GetNext();
               }
-              const position = body.GetPosition();
-              var desiredPosition = new b2Vec2(position.x+0.1, position.y+0.1);
-              body.SetPosition(desiredPosition);
-              body.SetAwake(true);
-            }
+  
+              otherBody.SetAwake(true);
           }
-        }
-        console.log("collision updated");
-        resolve();
-      });
+      }
+  }
+  
+
+    createNoCollideSet({ NAMES }) {
+      noCollideSeq += 1;
+      this.setObjectLayer({ NAME: NAMES, LAYERS: "1 -" + noCollideSeq })
     }
     
-    async createYesCollideSet(args) {
-      return new Promise((resolve) => {
-        if (noCollideSeq < 0) {
-          noCollideSeq = -noCollideSeq;
-        }
-        noCollideSeq += 1;
-        console.log(noCollideSeq);
-        var bids = args.NAMES.split(' ');
-        for (var i = 0; i < bids.length; i++) {
-          var bid = bids[i];
-          if (bid.length > 0) {
-            var body = bodies[bid];
-            if (body) {
-              var fix = body.GetFixtureList();
-              console.log(body);
-              while (fix) {
-                var fdata = fix.GetFilterData();
-                fdata.groupIndex = noCollideSeq;
-                console.log(noCollideSeq);
-                fix.SetFilterData(fdata);
-                console.log(fix);
-                fix = fix.GetNext();
-              }
-            }
-            body.SetAwake(true);
-          }
-        }
-        console.log("collision updated");
-        resolve();
-      });
+    createYesCollideSet({ NAMES }) {
+      this.setObjectLayer({ NAME: NAMES, LAYERS: 1 })
     }
     
     getobjects() {
