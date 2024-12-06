@@ -1062,8 +1062,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       bodies[id] = body;
     }
 
-    // body.layers
-
     setObjectLayer({ NAME, LAYERS }) {
       var body = bodies[NAME];
       if (!body) return '';
@@ -1083,10 +1081,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         }
       });
     
-      console.log(`Setting layers for object: ${NAME}`);
-      console.log(`Positive layers: ${positiveLayers}`);
-      console.log(`Negative layers: ${negativeLayers}`);
-    
       body.layers = layers;
     
       var categoryBits = 0;
@@ -1096,9 +1090,17 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         categoryBits += Math.pow(2, layer - 1);
         maskBits += Math.pow(2, layer - 1);
       });
-    
-      console.log(`Category bits (positive layers): ${categoryBits}`);
-      console.log(`Mask bits (positive layers): ${maskBits}`);
+
+      if (negativeLayers.length > 1) console.warn("Only one negative layer can be enabled at a time.");
+      negativeLayers.forEach(layer => {
+        var fix = body.GetFixtureList();
+        while (fix) {
+          var fdata = fix.GetFilterData();
+          fdata.groupIndex = layer;
+          fix.SetFilterData(fdata);
+          fix = fix.GetNext();
+        }
+      });
     
       var fixture = body.GetFixtureList();
       while (fixture) {
@@ -1116,11 +1118,19 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
     createNoCollideSet({ NAMES }) {
       noCollideSeq += 1;
-      this.setObjectLayer({ NAME: NAMES, LAYERS: "1 -" + noCollideSeq })
+      NAMES = NAMES.toString().split(' ');
+      if (!NAMES.length) return '';
+      NAMES.forEach(NAME => {
+        this.setObjectLayer({ NAME: NAME, LAYERS: "1 -" + noCollideSeq });
+      });
     }
     
     createYesCollideSet({ NAMES }) {
-      this.setObjectLayer({ NAME: NAMES, LAYERS: 1 })
+      NAMES = NAMES.toString().split(' ');
+      if (!NAMES.length) return '';
+      NAMES.forEach(NAME => {
+        this.setObjectLayer({ NAME: NAME, LAYERS: "1" });
+      });
     }
     
     getobjects() {
@@ -1565,38 +1575,9 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
     stepSimulation() {
       var secondsimspeed = Math.abs(simspeed + 30);
-      if (secondsimspeed == 0) secondsimspeed = 1 ;
-    
-      var bodiesList = bodies;
-      for (var name in bodiesList) {
-        var body = bodiesList[name];
-        if (!body) continue;
-    
-        var layers = body.layers || ["1"];
-        var negativeLayers = layers.filter(layer => layer < 0);
-    
-        if (negativeLayers.length > 0) {
-          var fixture = body.GetFixtureList();
-          while (fixture) {
-            var filter = fixture.GetFilterData();
-    
-            var excludeFromCategoryBits = 0;
-            var excludeFromMaskBits = 0;
-    
-            negativeLayers.forEach(layer => {
-              excludeFromCategoryBits += Math.pow(2, Math.abs(layer) - 1);
-              excludeFromMaskBits += Math.pow(2, Math.abs(layer) - 1);
-            });
-    
-            filter.categoryBits &= ~excludeFromCategoryBits;
-            filter.maskBits &= ~excludeFromMaskBits;
-    
-            fixture.SetFilterData(filter);
-            fixture = fixture.GetNext();
-          }
-        }
-      }
-    
+      if (secondsimspeed == 0) secondsimspeed = 1;
+
+      // Run the simulation step
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
     }
