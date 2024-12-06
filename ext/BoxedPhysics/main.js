@@ -5,7 +5,7 @@
 // Original: Griffpatch
 // License: zlib
 
-// Note: something broke the collision group blocks, so don't use them yet.
+// Note: something broke the collision group blocks (but only sometimes???), so don't use them yet.
 
 /* This extension was originally based off of the Box2D Physics extension
 for ScratchX by Griffpatch, but has since deviated to have more features,
@@ -1045,6 +1045,7 @@ while keeping general compatability. (made with box2D js es6) */
         noCollideSeq = -noCollideSeq;
       }
       noCollideSeq -= 1;
+      console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
@@ -1071,6 +1072,7 @@ while keeping general compatability. (made with box2D js es6) */
         noCollideSeq = -noCollideSeq;
       }
       noCollideSeq += 1;
+      console.log(noCollideSeq)
       var bids = args.NAMES.split(' ');
       for (var i = 0; i < bids.length; i++) {
         var bid = bids[i];
