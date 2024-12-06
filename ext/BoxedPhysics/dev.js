@@ -868,14 +868,14 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     reload() {
       let contact = b2Dworld.getContactList();
       while (contact) {
-        b2Dworld.destroyContact(contact);
-        contact = contact.getNext();
+          b2Dworld.destroyContact(contact);
+          contact = contact.getNext();
       }
   
       let body = b2Dworld.getBodyList();
       while (body) {
-        body.setAwake(true);
-        body = body.getNext();
+          body.setAwake(true);
+          body = body.getNext();
       }
     }
 
@@ -1599,8 +1599,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
     }
-
-    // body.layers
   }
 
   /* Incoming ugly hack
