@@ -1092,7 +1092,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     createNoCollideSet(args) {
       legacymode = true;
 
-      var noCollideSeq3 = noCollideSeq;
       noCollideSeq = noCollideSeq2;
       if (noCollideSeq > 0) {
         noCollideSeq = -noCollideSeq;
@@ -1116,14 +1115,11 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           }
         }
       }
-      noCollideSeq = noCollideSeq3;
-      console.log(noCollideSeq)
     }
 
     createYesCollideSet(args) {
       legacymode = true;
       
-      var noCollideSeq3 = noCollideSeq;
       noCollideSeq = noCollideSeq2;
       if (noCollideSeq < 0) {
         noCollideSeq = -noCollideSeq;
@@ -1147,8 +1143,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           }
         }
       }
-      noCollideSeq = noCollideSeq3;
-      console.log(noCollideSeq)
     }
 
     getobjects() {
