@@ -1,17 +1,19 @@
 // Name: Boxed Plysics
 // ID: P7BoxPhys
-// Description: An implementation the Box2D physics engine with support for joints, springs, sliders, and more.
+// Description: Implements the Box2D physics engine, adding joints, springs, sliders, and more.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
 // Original: Griffpatch
 // License: zlib
 
-/* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
-but has since deviated to be its own thing. (made with box2D js es6) */
+// Note: something broke the collision group blocks, so don't use them yet.
+
+/* This extension was originally based off of the Box2D Physics extension
+for ScratchX by Griffpatch, but has since deviated to have more features,
+while keeping general compatability. (made with box2D js es6) */
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "11/26/2024";
-  var publishedUpdateIndex = 12;
+  var b2Dversion = "1.8.1";
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -21,8 +23,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
   var b2Dzoom = 50; var b2Math;
 
   var physdebugmode = false;
-  var wipblocks = physdebugmode;
-  var legacymode = false;
+  var wipblocks = false;
 
   var positerations = 10;
   var veliterations = 10;
@@ -52,17 +53,20 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime
 
-      // this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
+      this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
 
-      this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
-      
-      this.vm.runtime.on('PROJECT_LOADED', () => {
+      this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : false ? 'https://extensions.turbowarp.org/pooiod7/BoxedPhysics",' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
+
+      // this is a penguinmod only thing
+      this.squaretype = Scratch.extensions.isPenguinMod ? Scratch.BlockShape.SQUARE : false;
+
+      vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
       });
       this.vm.runtime.on('PROJECT_STOP', () => {
         this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
       });
-      this. vm.runtime.on('PROJECT_START', () => {
+      vm.runtime.on('PROJECT_START', () => {
         this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
       });
       this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
@@ -130,7 +134,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'definePoly',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Define polygon, points: [POINTS]',
+            text: 'Define Polygon, points: [POINTS]',
             arguments: {
               POINTS: {
                 type: Scratch.ArgumentType.STRING,
@@ -142,7 +146,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             opcode: 'difineCostume',
             blockType: Scratch.BlockType.COMMAND,
             filter: [Scratch.TargetType.SPRITE],
-            text: 'Define polygon as this costume', // https://github.com/PenguinMod/PenguinMod-ExtensionsGallery/issues/237
+            text: 'Define pollygon as this costume',
           },
           {
             opcode: 'placeBody',
@@ -185,17 +189,24 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             text: 'Destroy every object',
           },
           {
-            opcode: 'setObjectLayer',
+            opcode: 'createNoCollideSet',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set object [NAME] to be on collision layer [LAYERS]',
+            text: 'Disable collision between [NAMES]',
             arguments: {
-              LAYERS: {
+              NAMES: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '1',
+                defaultValue: 'Object1 Object2',
               },
-              NAME: {
+            },
+          },
+          {
+            opcode: 'createYesCollideSet',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Reset collision of objects [NAMES]',
+            arguments: {
+              NAMES: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object',
+                defaultValue: 'Object1 Object2',
               },
             },
           },
@@ -273,7 +284,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'changevel',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set Velocity of object [NAME] to x [X] y [Y] dir [DIR]',
+            text: 'Set Velocity of [NAME] to x [X] y [Y] dir [DIR]',
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -356,7 +367,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'getBodyIDAt',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Get object of type [type] at x: [X]  y: [Y]',
+            text: 'Get body of type [type] at x: [X]  y: [Y]',
             arguments: {
               type: {
                 type: Scratch.ArgumentType.STRING,
@@ -493,7 +504,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'setJointTarget',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set mouse joint target [JOINTID] to x: [X]  y: [Y]',
+            text: 'Set Mouse Joint Target [JOINTID] to x: [X]  y: [Y]',
             arguments: {
               JOINTID: {
                 type: Scratch.ArgumentType.STRING,
@@ -528,7 +539,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'init',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Make world, scale 1m: [SCALE]  gravity: [GRAVITY]  scene: [SCENE]',
+            text: 'Make World, scale 1m: [SCALE]  gravity: [GRAVITY]  scene: [SCENE]',
             arguments: {
               SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -548,7 +559,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'physoptions',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set physics position iterations: [POS] velocity iterations: [VEL] continuous physics: [CONPHYS] warm starting: [WARMSTART]',
+            text: 'Set physics Position Iterations: [POS] Velocity Iterations: [VEL] Continuous Physics: [CONPHYS] Warm Starting: [WARMSTART]',
             arguments: {
               POS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -676,63 +687,40 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             },
           },
 
+          
           {
-            hideFromPalette: !legacymode,
-            blockType: Scratch.BlockType.LABEL,  // ---- Legacy blocks (old and not recomended for use) ----
-            text: `Legacy blocks`
+            hideFromPalette: !physdebugmode && !wipblocks,
+            blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
+            text: "Upcoming blocks (can brake projects)"
           },
           {
-            opcode: 'createNoCollideSet',
+            opcode: 'ignore',
+            hideFromPalette: !physdebugmode && !wipblocks,
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Disable collision between [NAMES]',
-            hideFromPalette: !legacymode,
+            text: 'Ignore [VALUE]',
             arguments: {
-              NAMES: {
+              VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
+                defaultValue: "",
               },
             },
           },
-          {
-            opcode: 'createYesCollideSet',
-            blockType: Scratch.BlockType.COMMAND,
-            text: 'Reset collision of objects [NAMES]',
-            hideFromPalette: !legacymode,
-            arguments: {
-              NAMES: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object1 Object2',
-              },
-            },
-          },
-
-
-          {
-            hideFromPalette: !physdebugmode,
-            blockType: Scratch.BlockType.LABEL, // --------------------- Debug blocks ----
-            text: "Debug blocks (can brake projects)"
-          }, // the ids on any of the following can change, so it's YOUR fault if you use them and your project brakes
           {
             opcode: 'get_debug',
-            hideFromPalette: !physdebugmode,
+            hideFromPalette: !physdebugmode && !wipblocks,
             blockType: Scratch.BlockType.REPORTER,
+            blockShape: this.squaretype,
             text: 'Get debug [VAL]',
-            arguments: { // this is the only debug block I don't plan on changing
+            arguments: {
               VAL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "version",
               },
             },
           },
-          
-          {
-            hideFromPalette: !wipblocks,
-            blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-            text: "Upcoming blocks (can brake projects)"
-          },
           {
             opcode: 'ispoly',
-            hideFromPalette: !wipblocks,
+            hideFromPalette: !physdebugmode && !wipblocks,
             blockType: Scratch.BlockType.BOOLEAN,
             text: 'Is [POINTS] a polygon?',
             arguments: {
@@ -744,7 +732,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           },
         ],
         menus: {
-          sceneType: ['semi-closed stage', 'closed stage', 'opened stage', 'nothing'],
+          sceneType: ['boxed stage', 'closed stage', 'opened stage', 'nothing'],
           BodyTypePK: ['dynamic', 'static'],
           BodyTypePK2: ['dynamic', 'static', 'any'],
           bodyAttr: ['damping', 'rotational damping'],
@@ -760,11 +748,11 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       };
     }
 
-    // this is not a commonly used fucntion, but it is nice to have.
+    ignore() { }
     get_debug(args) {
       try { args = args.VAL } catch (error) { args = args; }
       if (args == "version") {
-        return publishedUpdateIndex;
+        return b2Dversion;
       } else if (args == "lib") {
         return "Box2D JS es6 (Uli Hecht's port of Box2D flash)";
       } else if (args === "maker") {
@@ -773,10 +761,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         return "Box2D Physics by griffpatch for ScratchX (Scratch 2.0)";
       } else if (args === "docs") {
         return this.docs;
-      } else if (args = "lastupdated") {
-        return b2Dupdated;
       } else {
-        return '["version", "lib", "maker", "base", "docs", "lastupdated"]';
+        return '["version", "lib", "maker", "base", "docs"]';
       }
     }
 
@@ -797,7 +783,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
       b2Dworld = new b2World(
         new b2Vec2(0, args.GRAVITY) // args.GRAVITY (10)
-        , true                     // allow sleep (for performance)
+        , true                     // allow sleep
       );
 
       b2Dzoom = args.SCALE;
@@ -828,7 +814,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         fixDef.shape.SetAsBox(9999999, 10 / b2Dzoom);
         bodyDef.position.Set(0, -190 / b2Dzoom);
         b2Dworld.CreateBody(bodyDef).CreateFixture(fixDef);
-      } else if (args.SCENE == 'boxed stage' || args.SCENE == 'semi-closed stage') {
+      } else if (args.SCENE == 'boxed stage') {
         bodyDef.type = b2Body.b2_staticBody;
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(250 / b2Dzoom, 10 / b2Dzoom);
@@ -856,9 +842,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       noCollideSeq = 0;
 
       bodyDef.type = b2Body.b2_dynamicBody;
-
-      fixDef.shape = new b2CircleShape; // Default shape is circle 100
-      fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
     }
 
     rotatePoint(args) {
@@ -991,12 +974,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
         fixDef.shape.SetAsArray(vertices);
       } catch (error) {
-        // console.warn(error);
-        fixDef.shape = new b2CircleShape;
-        fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
-        console.error("Unable to create hull for hidden sprite.");
-        console.warn("Defaulting to \"circle 100\"");
-        return;
+        console.warn(error);
       }
     }
 
@@ -1005,7 +983,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       return;
     }
 
-    ispoly(args) { // wip
+    ispoly(args) {
       return this.definePoly(args);
     }
 
@@ -1062,35 +1040,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       bodies[id] = body;
     }
 
-    setObjectLayer({ NAME, LAYERS }) {
-      var body = bodies[NAME];
-      if (!body) return '';
-
-      LAYERS = LAYERS.toString();
-      var layers = LAYERS.split(' ').map(Number);
-      if (!layers.length) return '';
-
-      var categoryBits = 0;
-      var maskBits = 0;
-
-      layers.forEach(layer => {
-        categoryBits |= 1 << (layer - 1);
-        maskBits |= 1 << (layer - 1);
-      });
-
-      var fixture = body.GetFixtureList();
-      while (fixture) {
-        var filter = fixture.GetFilterData();
-        filter.categoryBits = categoryBits;
-        filter.maskBits = maskBits;
-        fixture.SetFilterData(filter);
-        fixture = fixture.GetNext();
-      }
-    }
-
     createNoCollideSet(args) {
-      legacymode = true;
-
       if (noCollideSeq > 0) {
         noCollideSeq = -noCollideSeq;
       }
@@ -1117,8 +1067,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     }
 
     createYesCollideSet(args) {
-      legacymode = true;
-      
       if (noCollideSeq < 0) {
         noCollideSeq = -noCollideSeq;
       }
@@ -1223,8 +1171,9 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         case 'awake': return body.IsAwake() ? 1 : 0;
 
         case 'Tension':
-          var force = 0;
-          var contact = body.GetContactList();
+          // Assume that body is a b2Body object that represents the object
+          var force = 0; // Initialize the force to 0
+          var contact = body.GetContactList(); // Get the contact list
           while (contact) { // Loop through the contacts
             var impulse = contact.impulse; // Get the impulse object
             var normalImpulse = impulse.normalImpulses[0]; // Get the normal impulse
@@ -1233,7 +1182,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             force += impulseMagnitude; // Add the impulse magnitude to the force
             contact = contact.next; // Move to the next contact
           }
-          // console.log("The force applied to the object by other objects is " + force + " N");
+          console.log("The force applied to the object by other objects is " + force + " N"); // Print the result
           return force;
 
         //case 'touching': return JSON.stringify(this.getTouchingObjectNames(body));
@@ -1585,8 +1534,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     }
 
     stepSimulation() {
-      var secondsimspeed = Math.abs(simspeed + 30);
-      if (secondsimspeed == 0) secondsimspeed = 1 ;
+      var secondsimspeed = Math.abs(simspeed + 29);
+      if (secondsimspeed == 0) { secondsimspeed = 1 };
 
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
@@ -1612,6 +1561,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     * 3. This notice may not be removed or altered from any source distribution.
     | /// https://www.npmjs.com/package/box2d-es6 (the lib by itself)
     */// Prepare for 90% of this extensions code: the box2D_es6 lib.
+
+  'use strict';
 
   let Box2D = {};
 
