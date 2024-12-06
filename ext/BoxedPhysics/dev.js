@@ -1062,70 +1062,57 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       bodies[id] = body;
     }
 
+    // body.layers
+
     setObjectLayer({ NAME, LAYERS }) {
       var body = bodies[NAME];
       if (!body) return '';
-  
-      body.layers = body.layers || "1";
-      LAYERS = LAYERS || body.layers;
-  
-      var layers = LAYERS.toString().split(' ').map(Number);
+    
+      LAYERS = LAYERS.toString();
+      var layers = LAYERS.split(' ').map(Number);
       if (!layers.length) return '';
-  
+    
+      var positiveLayers = [];
+      var negativeLayers = [];
+    
+      layers.forEach(layer => {
+        if (layer < 0) {
+          negativeLayers.push(layer);
+        } else {
+          positiveLayers.push(layer);
+        }
+      });
+    
+      console.log(`Setting layers for object: ${NAME}`);
+      console.log(`Positive layers: ${positiveLayers}`);
+      console.log(`Negative layers: ${negativeLayers}`);
+    
+      body.layers = layers;
+    
       var categoryBits = 0;
       var maskBits = 0;
-      var negativeLayers = [];
-  
-      layers.forEach(layer => {
-          if (layer > 0) {
-              categoryBits |= 1 << (layer - 1);
-              maskBits |= 1 << (layer - 1);
-          } else if (layer < 0) {
-              negativeLayers.push(layer);
-          }
+    
+      positiveLayers.forEach(layer => {
+        categoryBits += Math.pow(2, layer - 1);
+        maskBits += Math.pow(2, layer - 1);
       });
-  
+    
+      console.log(`Category bits (positive layers): ${categoryBits}`);
+      console.log(`Mask bits (positive layers): ${maskBits}`);
+    
       var fixture = body.GetFixtureList();
       while (fixture) {
-          var filter = fixture.GetFilterData();
-          filter.categoryBits = categoryBits;
-          filter.maskBits = maskBits;
-          fixture.SetFilterData(filter);
-          fixture = fixture.GetNext();
+        var filter = fixture.GetFilterData();
+    
+        filter.categoryBits = categoryBits;
+        filter.maskBits = maskBits;
+    
+        fixture.SetFilterData(filter);
+        fixture = fixture.GetNext();
       }
-  
+    
       body.SetAwake(true);
-      body.layers = LAYERS;
-  
-      for (var otherName in bodies) {
-          if (otherName !== NAME) {
-              var otherBody = bodies[otherName];
-              var otherLayers = otherBody.layers || "1";
-              var otherNegativeLayers = [];
-  
-              otherLayers.toString().split(' ').map(Number).forEach(layer => {
-                  if (layer < 0) {
-                      otherNegativeLayers.push(layer);
-                  }
-              });
-  
-              var fixture = otherBody.GetFixtureList();
-              while (fixture) {
-                  var otherFilter = fixture.GetFilterData();
-                  var mask = maskBits;
-                  if (negativeLayers.some(layer => otherNegativeLayers.includes(layer))) {
-                      mask = 0; 
-                  }
-                  otherFilter.maskBits = mask;
-                  fixture.SetFilterData(otherFilter);
-                  fixture = fixture.GetNext();
-              }
-  
-              otherBody.SetAwake(true);
-          }
-      }
-  }
-  
+    }
 
     createNoCollideSet({ NAMES }) {
       noCollideSeq += 1;
@@ -1579,10 +1566,42 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     stepSimulation() {
       var secondsimspeed = Math.abs(simspeed + 30);
       if (secondsimspeed == 0) secondsimspeed = 1 ;
-
+    
+      var bodiesList = bodies;
+      for (var name in bodiesList) {
+        var body = bodiesList[name];
+        if (!body) continue;
+    
+        var layers = body.layers || ["1"];
+        var negativeLayers = layers.filter(layer => layer < 0);
+    
+        if (negativeLayers.length > 0) {
+          var fixture = body.GetFixtureList();
+          while (fixture) {
+            var filter = fixture.GetFilterData();
+    
+            var excludeFromCategoryBits = 0;
+            var excludeFromMaskBits = 0;
+    
+            negativeLayers.forEach(layer => {
+              excludeFromCategoryBits += Math.pow(2, Math.abs(layer) - 1);
+              excludeFromMaskBits += Math.pow(2, Math.abs(layer) - 1);
+            });
+    
+            filter.categoryBits &= ~excludeFromCategoryBits;
+            filter.maskBits &= ~excludeFromMaskBits;
+    
+            fixture.SetFilterData(filter);
+            fixture = fixture.GetNext();
+          }
+        }
+      }
+    
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
     }
+
+    // body.layers
   }
 
   /* Incoming ugly hack
