@@ -11,7 +11,8 @@
         "iconText": "Major bugs have been found, and are currently being fixed",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
+            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
         "tags": ["finished"],
         "hidden": false
