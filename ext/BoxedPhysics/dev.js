@@ -866,19 +866,19 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     }
 
     reload() {
-      let contact = b2Dworld.getContactList();
+      let contact = b2Dworld.GetContactList(); 
       while (contact) {
           b2Dworld.destroyContact(contact);
           contact = contact.getNext();
       }
   
-      let body = b2Dworld.getBodyList();
+      let body = b2Dworld.getBodies(); 
       while (body) {
           body.setAwake(true);
           body = body.getNext();
       }
     }
-
+  
     rotatePoint(args) {
       var radians = args.ANGLE * Math.PI / 180;
       var cos = Math.cos(radians);
