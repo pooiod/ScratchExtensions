@@ -263,7 +263,7 @@
     },
     {
         "id": "PageOpener",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "Page Opener",
         "description": "A simple extension to open websites.",
         "created": "Dec 5, 2024",
