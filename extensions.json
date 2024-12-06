@@ -215,7 +215,7 @@
     },
     {
         "id": "CharacterAI",
-        "image": "",
+        "image": "/ext/[id]/cover.png",
         "title": "Chatbots (c.ai)",
         "description": "AI chatbots with the power of <a href=\"https://c.ai\">c.ai</a>",
         "created": "Oct 20, 2023",
