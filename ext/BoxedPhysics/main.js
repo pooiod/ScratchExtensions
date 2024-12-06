@@ -1041,57 +1041,65 @@ while keeping general compatability. (made with box2D js es6) */
     }
 
     createNoCollideSet(args) {
-      if (noCollideSeq > 0) {
-        noCollideSeq = -noCollideSeq;
-      }
-      noCollideSeq -= 1;
-      console.log(noCollideSeq)
-      var bids = args.NAMES.split(' ');
-      for (var i = 0; i < bids.length; i++) {
-        var bid = bids[i];
-        if (bid.length > 0) {
-          var body = bodies[bid];
-          if (body) {
-            var fix = body.GetFixtureList();
-            console.log(body);
-            while (fix) {
-              var fdata = fix.GetFilterData();
-              fdata.groupIndex = noCollideSeq;
-              console.log(noCollideSeq)
-              fix.SetFilterData(fdata);
-              console.log(fix);
-              fix = fix.GetNext();
+      return new Promise((resolve) => {
+        if (noCollideSeq > 0) {
+          noCollideSeq = -noCollideSeq;
+        }
+        noCollideSeq -= 1;
+        console.log(noCollideSeq)
+        var bids = args.NAMES.split(' ');
+        for (var i = 0; i < bids.length; i++) {
+          var bid = bids[i];
+          if (bid.length > 0) {
+            var body = bodies[bid];
+            if (body) {
+              var fix = body.GetFixtureList();
+              console.log(body);
+              while (fix) {
+                var fdata = fix.GetFilterData();
+                fdata.groupIndex = noCollideSeq;
+                console.log(noCollideSeq)
+                fix.SetFilterData(fdata);
+                console.log(fix);
+                fix = fix.GetNext();
+              }
             }
           }
         }
-      }
+        console.log("collision updated")
+        resolve();
+      });
     }
 
     createYesCollideSet(args) {
-      if (noCollideSeq < 0) {
-        noCollideSeq = -noCollideSeq;
-      }
-      noCollideSeq += 1;
-      console.log(noCollideSeq)
-      var bids = args.NAMES.split(' ');
-      for (var i = 0; i < bids.length; i++) {
-        var bid = bids[i];
-        if (bid.length > 0) {
-          var body = bodies[bid];
-          if (body) {
-            var fix = body.GetFixtureList();
-            console.log(body);
-            while (fix) {
-              var fdata = fix.GetFilterData();
-              fdata.groupIndex = noCollideSeq;
-              console.log(noCollideSeq)
-              fix.SetFilterData(fdata);
-              console.log(fix);
-              fix = fix.GetNext();
+      return new Promise((resolve) => {
+        if (noCollideSeq < 0) {
+          noCollideSeq = -noCollideSeq;
+        }
+        noCollideSeq += 1;
+        console.log(noCollideSeq)
+        var bids = args.NAMES.split(' ');
+        for (var i = 0; i < bids.length; i++) {
+          var bid = bids[i];
+          if (bid.length > 0) {
+            var body = bodies[bid];
+            if (body) {
+              var fix = body.GetFixtureList();
+              console.log(body);
+              while (fix) {
+                var fdata = fix.GetFilterData();
+                fdata.groupIndex = noCollideSeq;
+                console.log(noCollideSeq)
+                fix.SetFilterData(fdata);
+                console.log(fix);
+                fix = fix.GetNext();
+              }
             }
           }
         }
-      }
+        console.log("collision updated")
+        resolve();
+      });
     }
 
     getobjects() {

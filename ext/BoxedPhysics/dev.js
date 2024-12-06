@@ -1089,62 +1089,73 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       }
     }
 
-    createNoCollideSet(args) {
-      legacymode = true;
-
-      noCollideSeq = noCollideSeq2;
-      if (noCollideSeq > 0) {
-        noCollideSeq = -noCollideSeq;
-      }
-      noCollideSeq -= 1;
-      noCollideSeq2 = noCollideSeq;
-      console.log(noCollideSeq)
-      var bids = args.NAMES.split(' ');
-      for (var i = 0; i < bids.length; i++) {
-        var bid = bids[i];
-        if (bid.length > 0) {
-          var body = bodies[bid];
-          if (body) {
-            var fix = body.GetFixtureList();
-            while (fix) {
-              var fdata = fix.GetFilterData();
-              fdata.groupIndex = noCollideSeq;
-              fix.SetFilterData(fdata);
-              fix = fix.GetNext();
+    async createNoCollideSet(args) {
+      return new Promise((resolve) => {
+        if (noCollideSeq > 0) {
+          noCollideSeq = -noCollideSeq;
+        }
+        noCollideSeq -= 1;
+        console.log(noCollideSeq);
+        var bids = args.NAMES.split(' ');
+        for (var i = 0; i < bids.length; i++) {
+          var bid = bids[i];
+          if (bid.length > 0) {
+            var body = bodies[bid];
+            if (body) {
+              var fix = body.GetFixtureList();
+              console.log(body);
+              while (fix) {
+                var fdata = fix.GetFilterData();
+                fdata.groupIndex = noCollideSeq;
+                console.log(noCollideSeq);
+                fix.SetFilterData(fdata);
+                console.log(fix);
+                fix = fix.GetNext();
+              }
+              const position = body.GetPosition();
+              var desiredPosition = new b2Vec2(position.x+0.1, position.y+0.1);
+              body.SetPosition(desiredPosition);
+              body.SetAwake(true);
             }
           }
         }
-      }
+        console.log("collision updated");
+        resolve();
+      });
     }
-
-    createYesCollideSet(args) {
-      legacymode = true;
-      
-      noCollideSeq = noCollideSeq2;
-      if (noCollideSeq < 0) {
-        noCollideSeq = -noCollideSeq;
-      }
-      noCollideSeq += 1;
-      noCollideSeq2 = noCollideSeq;
-      console.log(noCollideSeq)
-      var bids = args.NAMES.split(' ');
-      for (var i = 0; i < bids.length; i++) {
-        var bid = bids[i];
-        if (bid.length > 0) {
-          var body = bodies[bid];
-          if (body) {
-            var fix = body.GetFixtureList();
-            while (fix) {
-              var fdata = fix.GetFilterData();
-              fdata.groupIndex = noCollideSeq;
-              fix.SetFilterData(fdata);
-              fix = fix.GetNext();
+    
+    async createYesCollideSet(args) {
+      return new Promise((resolve) => {
+        if (noCollideSeq < 0) {
+          noCollideSeq = -noCollideSeq;
+        }
+        noCollideSeq += 1;
+        console.log(noCollideSeq);
+        var bids = args.NAMES.split(' ');
+        for (var i = 0; i < bids.length; i++) {
+          var bid = bids[i];
+          if (bid.length > 0) {
+            var body = bodies[bid];
+            if (body) {
+              var fix = body.GetFixtureList();
+              console.log(body);
+              while (fix) {
+                var fdata = fix.GetFilterData();
+                fdata.groupIndex = noCollideSeq;
+                console.log(noCollideSeq);
+                fix.SetFilterData(fdata);
+                console.log(fix);
+                fix = fix.GetNext();
+              }
             }
+            body.SetAwake(true);
           }
         }
-      }
+        console.log("collision updated");
+        resolve();
+      });
     }
-
+    
     getobjects() {
       var bodynames = [];
       for (var bodyName in bodies) {
@@ -1248,7 +1259,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
       var desiredPosition = new b2Vec2(args.X / b2Dzoom, args.Y / b2Dzoom);
       body.SetPosition(desiredPosition);
-      body.SetAwake(true)
+      body.SetAwake(true);
     }
 
     rotateto(args) {
@@ -1257,7 +1268,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
       var desiredRotation = (180 - args.ROT - 90) * toRad;
       body.SetAngle(desiredRotation);
-      body.SetAwake(true)
+      body.SetAwake(true);
     }
 
 
