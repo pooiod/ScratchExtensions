@@ -7,8 +7,8 @@
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
         "created": "Apr 15, 2024",
         "subtext": "",
-        "icon": "",
-        "iconText": "",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "Major bugs have been found, and are currently being fixed",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
