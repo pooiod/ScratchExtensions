@@ -12,7 +12,8 @@
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
+            { "text": "Example projects", "color": "#cbe0f2", "link": "/ext/[id]/examples" }
         ],
         "tags": ["finished"],
         "hidden": false
