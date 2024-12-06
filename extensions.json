@@ -100,6 +100,22 @@
         "hidden": false
     },
     {
+        "id": "ScratchBlocks",
+        "image": "/ext/[id]/cover.svg",
+        "title": "ScratchBlocks",
+        "description": "Generate blocks in the Scratch3, or Scratch2 format.",
+        "created": "Apr 05, 2024",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "hidden": false
+    },
+    {
         "id": "Dictation",
         "image": "/ext/[id]/cover.svg",
         "title": "Dictation",
@@ -129,22 +145,6 @@
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
         "tags": ["unfinished"],
-        "hidden": false
-    },
-    {
-        "id": "ScratchBlocks",
-        "image": "/ext/[id]/cover.svg",
-        "title": "ScratchBlocks",
-        "description": "Generate blocks in the Scratch3, or Scratch2 format.",
-        "created": "Apr 05, 2024",
-        "subtext": "",
-        "icon": "",
-        "iconText": "",
-        "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ],
-        "tags": ["finished"],
         "hidden": false
     },
     {
