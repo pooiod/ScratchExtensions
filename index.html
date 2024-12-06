@@ -206,7 +206,7 @@
             }
 
             .search-bar {
-                filter: invert(100%);
+                filter: invert(1);
             }
 
             .card {
@@ -330,7 +330,7 @@
                 const buttonsHTML = card.buttons.map(button => `
                     <a href="${button.link.replace(/\[id\]/g, card.id)}" 
                     class="card-button" 
-                    style="background-color: ${lightenHexColor(button.color, 90)}; border: solid 1px ${button.color}">
+                    style="background-color: ${window.matchMedia('(prefers-color-scheme: dark)')?lightenHexColor(button.color, 10):lightenHexColor(button.color, 90)}; border: solid 1px ${button.color}">
                     ${button.text.replace(/ /g, '&nbsp;')}
                     </a>
                 `).join('');
