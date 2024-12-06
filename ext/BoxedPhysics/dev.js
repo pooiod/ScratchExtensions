@@ -39,7 +39,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
   var bodyCategoryBits = 1;
   var bodyMaskBits = 1;
-  var noCollideSeq = 0;
+  var noCollideSeq = 682;
 
   const toRad = Math.PI / 180;
 
@@ -528,7 +528,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'init',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Make world, scale 1m: [SCALE]  gravity: [GRAVITY]  scene: [SCENE]',
+            text: 'Make world, scale 1m: [SCALE]  gravity: [GRAVITY]  wind: [WIND]  scene: [SCENE]',
             arguments: {
               SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -537,6 +537,10 @@ but has since deviated to be its own thing. (made with box2D js es6) */
               GRAVITY: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: -10,
+              },
+              WIND: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
               },
               SCENE: {
                 type: Scratch.ArgumentType.STRING,
@@ -796,7 +800,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef;
 
       b2Dworld = new b2World(
-        new b2Vec2(0, args.GRAVITY) // args.GRAVITY (10)
+        new b2Vec2(args.WIND, args.GRAVITY) // args.GRAVITY (10)
         , true                     // allow sleep (for performance)
       );
 
@@ -853,12 +857,26 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
       categorySeq = 0;
       bodyCategoryBits = 1;
-      noCollideSeq = 0;
+      noCollideSeq = 839;
 
       bodyDef.type = b2Body.b2_dynamicBody;
 
       fixDef.shape = new b2CircleShape; // Default shape is circle 100
       fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+    }
+
+    reload() {
+      let contact = b2Dworld.getContactList();
+      while (contact) {
+        b2Dworld.destroyContact(contact);
+        contact = contact.getNext();
+      }
+  
+      let body = b2Dworld.getBodyList();
+      while (body) {
+        body.setAwake(true);
+        body = body.getNext();
+      }
     }
 
     rotatePoint(args) {
@@ -1113,7 +1131,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         fixture = fixture.GetNext();
       }
     
-      body.SetAwake(true);
+      this.reload();
     }
 
     createNoCollideSet({ NAMES }) {
