@@ -10,8 +10,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "11/26/2024";
-  var publishedUpdateIndex = 12;
+  var b2Dupdated = "12/06/2024";
+  var publishedUpdateIndex = 13;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -22,7 +22,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
   var physdebugmode = false;
   var wipblocks = physdebugmode;
-  var legacymode = true;
+  var legacymode = false;
 
   var positerations = 10;
   var veliterations = 10;
@@ -52,9 +52,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime
 
-      // this.turbowarp = window.location.href.indexOf('turbowarp.') > -1;
-
-      this.docs = Scratch.extensions.isPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics' : 'https://pooiod7.neocities.org/markdown/#/projects/scratch/extensions/other/markdown/box2D';
+      this.docs = Scratch.extensions.isPenguinMod? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
+      'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
       
       this.vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
@@ -80,7 +79,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'setBodyAttrs',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Define Type [BODYTYPE]  Density [DENSITY]  Friction [FRICTION]  Bounce [BOUNCE]',
+            text: 'Define base, Type: [BODYTYPE] Density: [DENSITY] Friction: [FRICTION] Bounce: [BOUNCE]',
             arguments: {
               BODYTYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -104,7 +103,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'defineCircle',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Define Circle, size: [SIZE]',
+            text: 'Define Circle, Size: [SIZE]',
             arguments: {
               SIZE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -115,7 +114,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'defineRect',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Define Box, width: [WIDTH] height: [HEIGHT]',
+            text: 'Define Box, Width: [WIDTH] Height: [HEIGHT]',
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -130,7 +129,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'definePoly',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Define polygon, points: [POINTS]',
+            text: 'Define polygon, Points: [POINTS]',
             arguments: {
               POINTS: {
                 type: Scratch.ArgumentType.STRING,
@@ -142,12 +141,12 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             opcode: 'difineCostume',
             blockType: Scratch.BlockType.COMMAND,
             filter: [Scratch.TargetType.SPRITE],
-            text: 'Define polygon as this costume', // https://github.com/PenguinMod/PenguinMod-ExtensionsGallery/issues/237
+            text: 'Define polygon as this costume',
           },
           {
             opcode: 'placeBody',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Make object [NAME] at x: [X]  y: [Y]  dir: [DIR]',
+            text: 'Make object [NAME] at X: [X]  y: [Y]  Dir: [DIR]',
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -221,7 +220,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'applyForceToBody',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Apply [FORCETYPE] to object [NAME] at x: [X]  y: [Y]  power: [POWER]  dir: [DIR]',
+            text: 'Apply [FORCETYPE] to object [NAME] at X: [X]  Y: [Y] with power [POWER] in direction [DIR]',
             arguments: {
               FORCETYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -273,7 +272,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'changevel',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set Velocity of object [NAME] to x [X] y [Y] dir [DIR]',
+            text: 'Set Velocity of object [NAME] to X: [X] Y: [Y] Dir: [DIR]',
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -296,7 +295,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'moveto',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Move object [NAME] to x [X] y [Y]',
+            text: 'Move object [NAME] to X: [X] Y: [Y]',
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -383,7 +382,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'defineSpring',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Define Spring, Length: [LENGTH]  Damping: [DAMPING]  Freq: [FREQ]',
+            text: 'Define Spring, Length: [LENGTH] Damping: [DAMPING] Freq: [FREQ]',
             arguments: {
               LENGTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -471,6 +470,11 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             },
           },
           {
+            opcode: 'destroyJoints',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Destroy every joint',
+          },
+          {
             opcode: 'setJointAttr',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Set [JOINTATTR] of joint [JOINTID] to [VALUE]',
@@ -524,11 +528,17 @@ but has since deviated to be its own thing. (made with box2D js es6) */
               },
             },
           },
+          {
+            opcode: 'getjoints',
+            disableMonitor: true,
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'All joints',
+          },
           { blockType: Scratch.BlockType.LABEL, text: "World functions" }, // --- World functions --
           {
             opcode: 'init',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Make world, scale 1m: [SCALE]  gravity: [GRAVITY]  wind: [WIND]  scene: [SCENE]',
+            text: 'Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]',
             arguments: {
               SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -552,7 +562,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'physoptions',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set physics position iterations: [POS] velocity iterations: [VEL] continuous physics: [CONPHYS] warm starting: [WARMSTART]',
+            text: 'Set physics options, Position iterations: [POS] Velocity iterations: [VEL] Continuous physics: [CONPHYS] Warm starting: [WARMSTART]',
             arguments: {
               POS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -570,6 +580,21 @@ but has since deviated to be its own thing. (made with box2D js es6) */
                 type: Scratch.ArgumentType.BOOLEAN,
                 defaultValue: true,
               },
+            },
+          },
+          {
+            opcode: 'setWorldForces',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Set world options, gravity: [GRAVITY] wind: [WIND]',
+            arguments: {
+              GRAVITY: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              WIND: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: -10,
+              }
             },
           },
           {
@@ -865,18 +890,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
     }
 
-    reload() {
-      let contact = b2Dworld.GetContactList(); 
-      while (contact) {
-          b2Dworld.destroyContact(contact);
-          contact = contact.getNext();
-      }
-  
-      let body = b2Dworld.getBodies(); 
-      while (body) {
-          body.setAwake(true);
-          body = body.getNext();
-      }
+    setWorldForces(args) {
+      b2Dworld.SetGravity(new Box2D.Common.Math.b2Vec2(args.WIND, args.GRAVITY));
     }
   
     rotatePoint(args) {
@@ -1110,15 +1125,25 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       });
 
       if (negativeLayers.length > 1) console.warn("Only one negative layer can be enabled at a time.");
-      negativeLayers.forEach(layer => {
+      if (negativeLayers.length > 0) {
+        negativeLayers.forEach(layer => {
+          var fix = body.GetFixtureList();
+          while (fix) {
+            var fdata = fix.GetFilterData();
+            fdata.groupIndex = layer;
+            fix.SetFilterData(fdata);
+            fix = fix.GetNext();
+          }
+        });
+      } else {
         var fix = body.GetFixtureList();
         while (fix) {
           var fdata = fix.GetFilterData();
-          fdata.groupIndex = layer;
+          fdata.groupIndex = 1;
           fix.SetFilterData(fdata);
           fix = fix.GetNext();
         }
-      });
+      }
     
       var fixture = body.GetFixtureList();
       while (fixture) {
@@ -1131,9 +1156,11 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         fixture = fixture.GetNext();
       }
     
-      this.reload();
+      body.SetAwake(true);
     }
 
+    // Collision groups have been depricated for being too buggy
+    // These blocks just set the object layers now
     createNoCollideSet({ NAMES }) {
       noCollideSeq += 1;
       NAMES = NAMES.toString().split(' ');
@@ -1142,7 +1169,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         this.setObjectLayer({ NAME: NAME, LAYERS: "1 -" + noCollideSeq });
       });
     }
-    
     createYesCollideSet({ NAMES }) {
       NAMES = NAMES.toString().split(' ');
       if (!NAMES.length) return '';
@@ -1232,13 +1258,13 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         case 'Tension':
           var force = 0;
           var contact = body.GetContactList();
-          while (contact) { // Loop through the contacts
-            var impulse = contact.impulse; // Get the impulse object
-            var normalImpulse = impulse.normalImpulses[0]; // Get the normal impulse
-            var tangentImpulse = impulse.tangentImpulses[0]; // Get the tangent impulse
-            var impulseMagnitude = Math.sqrt(normalImpulse * normalImpulse + tangentImpulse * tangentImpulse); // Calculate the impulse magnitude
-            force += impulseMagnitude; // Add the impulse magnitude to the force
-            contact = contact.next; // Move to the next contact
+          while (contact) {
+            var impulse = contact.impulse;
+            var normalImpulse = impulse.normalImpulses[0];
+            var tangentImpulse = impulse.tangentImpulses[0];
+            var impulseMagnitude = Math.sqrt(normalImpulse * normalImpulse + tangentImpulse * tangentImpulse);
+            force += impulseMagnitude;
+            contact = contact.next;
           }
           // console.log("The force applied to the object by other objects is " + force + " N");
           return force;
@@ -1265,7 +1291,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       body.SetAngle(desiredRotation);
       body.SetAwake(true);
     }
-
 
     getBodyCB(fixture) {
       if (fixture.GetBody().GetType() != b2Body.b2_staticBody) {
@@ -1408,6 +1433,28 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       prb2djl = args.LOW;
     }
 
+    getjoints() {
+      var jointnames = [];
+      for (var jointName in joints) {
+        if (joints.hasOwnProperty(jointName)) {
+          if (jointnames.length > 0) {
+            jointnames.push(" " + jointName);
+          } else {
+            jointnames.push(jointName);
+          }
+        }
+      }
+      return Scratch.Cast.toString(jointnames);
+    }
+
+    destroyJoints() {
+      for (var jointName in joints) {
+        if (joints.hasOwnProperty(jointName)) {
+          this.destroyJoint({ JOINTID : jointName });
+        }
+      }
+    }
+
     createJointOfType(args) {
       var jName = args.JOINTID;
       var typ = args.JOINTTYPE;
@@ -1418,7 +1465,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       var x2 = args.X2;
       var y2 = args.Y2;
 
-      if (jName.length > 0) this.destroyJoint(jName);
+      if (jName.length > 0) this.destroyJoint({ JOINTID : jName});
 
       if (bodyID == '') bodyID = null;
       if (bodyID2 == '') bodyID2 = null;
@@ -1468,6 +1515,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           md.bodyB = body2;
           md.localAnchorA = { x: x / b2Dzoom, y: y / b2Dzoom };
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
+          const angleDifference = body2.GetAngle() - body.GetAngle();
+          md.referenceAngle = angleDifference;
           break;
 
         case 'Mouse':
