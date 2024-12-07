@@ -1,4 +1,4 @@
-# HTML Canvas
+# Boxed Physics
 [!js-document.title="Boxed Physics docs"!]
 ---
 
