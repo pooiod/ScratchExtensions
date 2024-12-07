@@ -52,7 +52,9 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime
 
-      this.docs = Scratch.extensions.isPenguinMod? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
+      // this.onPenguinMod = Scratch.extensions.isPenguinMod;
+      this.isFromPenguinMod = false
+      this.docs = this.isFromPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
       'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
       
       this.vm.runtime.on('PROJECT_LOADED', () => {
@@ -585,15 +587,15 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'setWorldForces',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Set world options, gravity: [GRAVITY] wind: [WIND]',
+            text: 'Set world options, Gravity: [GRAVITY] Wind: [WIND]',
             arguments: {
               GRAVITY: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: -10,
               },
               WIND: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: -10,
+                defaultValue: 0,
               }
             },
           },
@@ -757,7 +759,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             hideFromPalette: !wipblocks,
             blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-            text: "Upcoming blocks (can brake projects)"
+            text: "Upcoming blocks (project corruption warning)"
           },
           {
             opcode: 'ispoly',
@@ -804,8 +806,10 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         return this.docs;
       } else if (args = "lastupdated") {
         return b2Dupdated;
+      } else if (args = "fromPenguinMod") {
+        return this.isFromPenguinMod;
       } else {
-        return '["version", "lib", "maker", "base", "docs", "lastupdated"]';
+        return '["version", "lib", "maker", "base", "docs", "lastupdated", "fromPenguinMod"]';
       }
     }
 
@@ -891,7 +895,11 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     }
 
     setWorldForces(args) {
-      b2Dworld.SetGravity(new Box2D.Common.Math.b2Vec2(args.WIND, args.GRAVITY));
+      b2Dworld.SetGravity(new b2Vec2(args.WIND, args.GRAVITY));
+      for (var body in bodies) {
+        body = bodies[body]
+        body.SetAwake(true);
+      }
     }
   
     rotatePoint(args) {
@@ -954,7 +962,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
       body.SetLinearVelocity(new b2Vec2(args.X, args.Y));
       body.SetAngularVelocity(args.DIR);
-      body.SetAwake(true)
+      body.SetAwake(true);
     }
 
     setBodyAttrs(args) {
