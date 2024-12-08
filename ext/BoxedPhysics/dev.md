@@ -10,7 +10,7 @@ Boxed Pysics is an implementation the Box2D physics engine that allows for the u
 ---
 
 ## Starting a world
-When using the Boxed Physics extension, you always need to initialise the environment when starting the project. to do this, you can use the `<p class="scratch3">Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]</p>` block.
+When using the Boxed Physics extension, you always need to initialise the environment when starting the project. to do this, you can use the <p class="scratch3">Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]</p> block.
 
 ```scratch3
 when gf clicked
