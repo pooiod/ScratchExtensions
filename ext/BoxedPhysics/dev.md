@@ -114,13 +114,15 @@ Destroy every object :: #2cb0c0 //This will also remove all joints
 ```
 
 ### Moving objects
-The most basic way to move objects is to directly set the position.
+The most basic way to move objects is to directly set the position and rotation.
 
 ```scratch3
 when gf clicked
 forever
-    set [x v] to ((5) * ([sin v] of ((timer) * (70))))
-    set [y v] to ((5) * ([cos v] of ((timer) * (50))))
+    set [x v] to ((50) * ([sin v] of ((timer) * (70))))
+    set [y v] to ((50) * ([cos v] of ((timer) * (50))))
+    set [r v] to ((90) * ([cos v] of ((timer) * (100))))
     Move object [Object1] to X: (X) Y: (Y) :: #2cb0c0
+    Set rotation of object [Object1] to (r) :: #2cb0c0
 end
 ```
