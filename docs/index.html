@@ -214,8 +214,7 @@
 				const img = scratch.getAttribute('img') || '';
 
 				const iframe = document.createElement('iframe');
-				// iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`; // this just crashes :(
-				iframe.src = `https://studio.penguinmod.com/fullscreen.html?project_url=${proj}`;
+				iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`; // this just crashes :(
 
 				scratch.replaceWith(iframe);
 			});
