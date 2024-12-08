@@ -199,6 +199,14 @@
 			scratchblocks.module.renderMatching(".scratch3", {
 				style: "scratch3",
 			});
+
+			document.querySelectorAll('light').forEach(el => {
+				const p = document.createElement('p');
+				p.style.color = '#7a7a7a';
+				p.style.display = 'inline-block';
+				p.innerHTML = el.innerHTML;
+				el.replaceWith(p);
+			});
 			
 			console.log('Markdown content successfully rendered.');
 		}

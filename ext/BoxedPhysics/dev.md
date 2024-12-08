@@ -18,7 +18,7 @@ Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage v]
 ```
 
 Scene is the type of containment to keep objects within the stage:
-- semi-closed stage: Keeps sprites from going off the bottom and sides. <p style="color: #7a7a7a; display: inline-block;">(allows for infinite-ish up movement)</p>
+- semi-closed stage: Keeps sprites from going off the bottom and sides. <light>(allows for infinite-ish up movement)</light>
 - closed stage: Keeps sprites from going off the bottom, sides, or top.
 - opened stage: Keeps sprites from going off the bottom.
 - nothing: Removes all walls so objects can go wherever they want.
