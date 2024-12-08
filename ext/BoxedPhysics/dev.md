@@ -10,11 +10,11 @@ Boxed Pysics is an implementation the Box2D physics engine that allows for the u
 ---
 
 ## Starting a world
-When using the Boxed Physics extension, you always need to initialise the environment when starting the project. to do this, you can use the <p class="scratch3">Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]</p> block.
+When using the Boxed Physics extension, you always need to initialise the environment when starting the project. to do this, you can use the `Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]` block.
 
 ```scratch3
 when gf clicked
-Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage] :: #2cb0c0
+Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage] :: #2cb0c0 // skibidi
 ```
 
 Scene is the type of containment to keep objects within the stage:
