@@ -154,6 +154,15 @@
 	</script>
 
 	<script>
+		var currentMarkdown = "";
+		
+		function updateVars(vars) {
+			currentMarkdown = currentMarkdown.replace(/\[([^\]]+)\]/g, (match, varName) => {
+				return vars[varName] !== undefined ? vars[varName] : match;
+			});
+			parseMarkdown(currentMarkdown);
+		}
+
 		function parseMarkdown(markdownText) {
 			console.log(markdownText);
 
@@ -176,6 +185,8 @@
 			const html = converter.makeHtml(markdownText);
 			const markdownContent = document.getElementById('markdown-content');
 			markdownContent.innerHTML = html;
+
+			currentMarkdown = markdownText;
 			
 			document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
 
