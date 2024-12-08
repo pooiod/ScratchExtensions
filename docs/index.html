@@ -208,6 +208,7 @@
 				el.replaceWith(p);
 			});
 
+			// ex use: <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22"/>
 			document.querySelectorAll('scratch').forEach(function(scratch) {
 				const proj = scratch.getAttribute('src') || '';
 
@@ -216,7 +217,7 @@
 				iframe.style.width = "600px";
 				iframe.style.height = "500px";
 				iframe.style.border = "none";
-				iframe.style.borderRadius = "5px";
+				iframe.style.borderRadius = "15px";
 
 				scratch.replaceWith(iframe);
 			});

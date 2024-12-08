@@ -24,5 +24,3 @@ Scene is the type of containment to keep objects within the stage:
 - nothing: Removes all walls so objects can go wherever they want.
 
 <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22"/>
-
-e
