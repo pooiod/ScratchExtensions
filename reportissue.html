@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report an issue</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            height: 100vh;
+        }
+        header {
+            background-color: #f0fff0;
+            padding: 20px;
+            margin-top: 0px;
+            text-align: center;
+            border-bottom: 1px solid #c7e9c0;
+        }
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .container {
+            padding: 20px;
+            padding-top: 5px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        ul li {
+            background-color: #f5f9fa;
+            border: 1px solid #d4e6ec;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        ul li strong {
+            color: #d9534f;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .submit-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #34c759;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 4px;
+            border: 2px solid #34c759;
+            text-align: center;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        .submit-btn:hover {
+            background-color: #2faa4a;
+        }
+        
+        #toolbar {
+                padding: 10px;
+                background: #fff;
+                border-bottom: 1px solid #dadada;
+                z-index: 1;
+        }
+        #toolbar a {
+                text-decoration: none;
+                color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <header id="head">
+        <h1>Pooiod7's Extension Issue Reporter</h1>
+    </header>
+    <div id="toolbar" style="display: none;">
+        <a href="/">&#x2190; Home</a>
+    </div>
+    <script>
+      if (window.location.hash == "#/new") {
+        document.getElementById("toolbar").style.display = "block";
+        document.getElementById("head").style.display = "none";
+      }
+    </script>
+    <div class="container">
+        <p>Before submitting an issue, ensure it doesn't fall into one of the following categories:</p>
+        <ul>
+            <li>Issues caused by other extensions interacting with my extensions.</li>
+            <li>Issues from misuse of the extension <br><sub>(refer to the documentation to ensure proper usage).</sub></li>
+            <li>Problems with debug blocks. <br><sub>These are for <strong>internal use only</strong> and may be removed at any time without notice.</sub></li>
+            <li>Previously reported issues <br><sub>(check the list <a href="https://github.com/pooiod/ScratchExtensions/issues" target="_blank">here</a>).</sub></li>
+        </ul>
+        <p>If your issue doesn't match any of these, you're ready to start requesting a change!</p>
+        <a class="submit-btn" href="https://github.com/pooiod/ScratchExtensions/issues/new" target="_blank">Create a request</a>
+    </div>
+</body>
+</html>
