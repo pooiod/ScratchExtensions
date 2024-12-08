@@ -10,8 +10,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "12/06/2024";
-  var publishedUpdateIndex = 13;
+  var b2Dupdated = "12/08/2024";
+  var publishedUpdateIndex = 15;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -180,7 +180,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
               },
             },
           },
-          {
+          { // I know this opcode is spelled wrong
             opcode: 'destroyBodys',
             blockType: Scratch.BlockType.COMMAND,
             text: 'Destroy every object',
@@ -1200,6 +1200,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     }
 
     destroyBodys() {
+      this.destroyJoints();
       for (var bodyName in bodies) {
         if (bodies.hasOwnProperty(bodyName)) {
           this.destroyBody({NAME:bodyName});

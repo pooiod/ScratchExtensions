@@ -94,3 +94,19 @@ Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0
 Dеfine base, Type: [static v] Density: [0.1] Friction: [0.5] Bounce: [2] :: #2cb0c0
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
+
+---
+
+## Modifying objects
+Once you have created a world and populated it with objects, you are probably going to want to interact with said objects.
+
+Let's start simple. Deleting an object. <br>
+There are two ways of deleting objects. You can use the `Destroy object [NAME]` to remove one object, or you can nuke all objects with the `Destroy every object` block.
+
+```scratch3
+when I recive [Destroy Object1 v]
+Destroy object [Object1] :: #2cb0c0
+
+when I recive [Nuke everything! v]
+Destroy every object :: #2cb0c0 //This will also remove all joints
+```
