@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fullscreen Iframe with Toggle Button</title>
+    <title>PenguinMod Embed</title>
     <style>
         body, html {
             margin: 0;
@@ -32,26 +33,14 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         var projectUrl = urlParams.get('url');
+        var edit = urlParams.get('edit');
 
-        if (!projectUrl) {
-            projectUrl = "https://yeetyourfiles.lol/download/762f3-41w409-aa504-cb0fefb4g995c";
-        }
+        // if (!projectUrl) {
+        //     projectUrl = "https://yeetyourfiles.lol/download/762f3-41w409-aa504-cb0fefb4g995c";
+        // }
 
-		document.getElementById('iframe').src = `https://studio.penguinmod.com/embed.html?project_url=${encodeURIComponent(projectUrl)}`;
-
-        const iframe = document.getElementById('iframe');
-        const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
-        const fullscreenIcon = document.getElementById('fullscreenIcon');
-
-        toggleFullscreenBtn.addEventListener('click', () => {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-                fullscreenIcon.innerText = '⛶';
-            } else {
-                document.body.requestFullscreen();
-                fullscreenIcon.innerText = '⛶';
-            }
-        });
+        var type = edit ? "editor" : "embde";
+		document.getElementById('iframe').src = `https://studio.penguinmod.com/${type}.html?project_url=${encodeURIComponent(projectUrl)}`;
     </script>
 
 </body>

@@ -209,16 +209,24 @@
 				el.replaceWith(p);
 			});
 
-			// ex: <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22"/>
+			// ex: <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22" editor="false"/>
 			document.querySelectorAll('scratch').forEach(function(scratch) {
 				const proj = scratch.getAttribute('src') || '';
+				const edit = scratch.getAttribute('editor') || false;
 
 				const iframe = document.createElement('iframe');
-				iframe.src = `/view/player?url=${proj}`;
-				iframe.style.width = "600px";
-				iframe.style.height = "500px";
+				iframe.src = `/view/player?url=${proj}&edit=${edit}`;
+				if(edit) {
+					iframe.style.width = "100%";
+					iframe.style.height = "1000px";
+					iframe.style.borderRadius = "5px";
+				} else {
+					iframe.style.width = "600px";
+					iframe.style.height = "500px";
+					iframe.style.borderRadius = "10px";
+				}
+
 				iframe.style.border = "none";
-				iframe.style.borderRadius = "10px";
 
 				scratch.replaceWith(iframe);
 			});
