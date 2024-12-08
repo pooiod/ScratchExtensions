@@ -4,8 +4,8 @@
 
 Boxed Pysics is an implementation the Box2D physics engine that allows for the use of joints, springs, sliders, and other complex physics interactions within your projects.
 
-<!-- > This documentation is new, and I may have over looked something.
-> Report any issues issues [here](/reportissue).  -->
+<!-- > This documentation has recently been redone, and I may have over looked something.
+> Please report any issues [here](/reportissue).  -->
 
 ---
 
@@ -98,8 +98,10 @@ Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ---
 
 ## Modifying objects
-Once you have created a world and populated it with objects, you are probably going to want to interact with said objects.
+Once you have created a world and populated it with objects, you are probably going to want to interact with said objects. <br>
+Boxed Physics has many blocks that you can use to interact with the objects you create.
 
+### Destroying objects
 Let's start simple. Deleting an object. <br>
 There are two ways of deleting objects. You can use the `Destroy object [NAME]` to remove one object, or you can nuke all objects with the `Destroy every object` block.
 
@@ -110,3 +112,6 @@ Destroy object [Object1] :: #2cb0c0
 when I receive [Nuke everything! v]
 Destroy every object :: #2cb0c0 //This will also remove all joints
 ```
+
+### Moving objects
+The most basic way to move objects is to directly set the position.
