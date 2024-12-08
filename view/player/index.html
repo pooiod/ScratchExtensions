@@ -50,7 +50,8 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const projectUrl = urlParams.get('url');
+        var projectUrl = urlParams.get('url');
+		projectUrl = "https://yeetyourfiles.lol/download/1a934e2d-7623-4109-aa04-cb0fefb4995c"
 
         if (projectUrl) {
             document.getElementById('iframe').src = `https://studio.penguinmod.com/fullscreen.html?project_url=${encodeURIComponent(projectUrl)}`;
