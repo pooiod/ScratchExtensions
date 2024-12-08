@@ -30,6 +30,6 @@ While not everything can be changed, you can add gravity and wind at runtime, wi
 ```scratch3
 when gf clicked
 forever
-    Set world options, Gravity: [-10] Wind: [(5 * ([sin v] of (timer * (70))))] :: #2cb0c0
+    Set world options, Gravity: (-10) Wind: ((5 * ([sin v] of (timer * (70))))) :: #2cb0c0
 end
 ```
