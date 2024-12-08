@@ -45,7 +45,7 @@ Starting off, let's make a basic box.
 
 ```scratch3
 when gf clicked
-\Define Box, Width: [100] Height: [100] :: #2cb0c0
+Define Box, Width: [100] Height: [100] :: #2cb0c0
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
 
