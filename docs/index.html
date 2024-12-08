@@ -204,11 +204,12 @@
 				const p = document.createElement('p');
 				p.style.color = '#7a7a7a';
 				p.style.display = 'inline-block';
+				p.style.margin = "0px";
 				p.innerHTML = el.innerHTML;
 				el.replaceWith(p);
 			});
 
-			// ex use: <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22"/>
+			// ex: <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22"/>
 			document.querySelectorAll('scratch').forEach(function(scratch) {
 				const proj = scratch.getAttribute('src') || '';
 

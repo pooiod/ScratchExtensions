@@ -24,7 +24,7 @@ Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage v]
 ```
 
 After you have created a world, you may still want to change some things.
-While not everything can be changed, you can add gravity and wind at runtime, without needint to make a new world.
+While not everything can be changed, you can always change gravity and wind at runtime, without need to make a new world.
 
 
 ```scratch3
@@ -32,4 +32,19 @@ when gf clicked
 forever
     Set world options, Gravity: (-10) Wind: ((5) * ([sin v] of ((timer) * (70)))) :: #2cb0c0
 end
+```
+
+---
+
+## Creating your first object
+Once you have created your world, you may want to add some objects to it.
+Objects in BoxedPhysics are invisible hitboxes that move around with physics.
+This means that you can't tell what you have created without testing it.
+
+Starting off, let's make a basic box.
+
+```scratch3
+when gf clicked
+Define Box, Width: [100] Height: [100] :: #2cb0c0
+Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
