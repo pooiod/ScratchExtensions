@@ -210,11 +210,9 @@
 
 			document.querySelectorAll('scratch').forEach(function(scratch) {
 				const proj = scratch.getAttribute('src') || '';
-				const name = scratch.getAttribute('name') || '';
-				const img = scratch.getAttribute('img') || '';
 
 				const iframe = document.createElement('iframe');
-				iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`;
+				iframe.src = `/view/player?url=${proj}`;
 				iframe.style.width = "600px";
 				iframe.style.height = "500px";
 				iframe.style.border = "none";

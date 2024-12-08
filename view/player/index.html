@@ -32,13 +32,12 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         var projectUrl = urlParams.get('url');
-        projectUrl = "https://yeetyourfiles.lol/download/1a934e2d-7623-4109-aa04-cb0fefb4995c";
 
-        if (projectUrl) {
-            document.getElementById('iframe').src = `https://studio.penguinmod.com/embed.html?project_url=${encodeURIComponent(projectUrl)}`;
-        } else {
-            alert('No project URL provided in the query parameter!');
+        if (!projectUrl) {
+            projectUrl = "https://yeetyourfiles.lol/download/762f3-41w409-aa504-cb0fefb4g995c";
         }
+
+		document.getElementById('iframe').src = `https://studio.penguinmod.com/embed.html?project_url=${encodeURIComponent(projectUrl)}`;
 
         const iframe = document.getElementById('iframe');
         const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
