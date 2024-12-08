@@ -14,11 +14,11 @@ When using the Boxed Physics extension, you always need to initialise the enviro
 
 ```scratch3
 when gf clicked
-Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage] :: #2cb0c0 // skibidi
+Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage v] :: #2cb0c0 // skibidi
 ```
 
 Scene is the type of containment to keep objects within the stage:
-- semi-closed stage: Keeps sprites from going off the bottom and sides. (allows for indefinite up movement)
+- semi-closed stage: Keeps sprites from going off the bottom and sides. <p style="color: #7a7a7a;">(allows for infinite-ish up movement)</p>
 - closed stage: Keeps sprites from going off the bottom, sides, or top.
 - opened stage: Keeps sprites from going off the bottom.
 - nothing: Removes all walls so objects can go wherever they want.
