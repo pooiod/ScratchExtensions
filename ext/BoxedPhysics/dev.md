@@ -43,6 +43,7 @@ This means that you can't tell what you have created without testing it.
 
 Starting off, let's make a basic box.
 
+<!-- Replaced "e" with "е" to prevent the define blocks from becoming function define blocks. -->
 ```scratch3
 when gf clicked
 Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
@@ -59,4 +60,27 @@ Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 Make object [Object2] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 Make object [Object3] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 Make object [Object4] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+```
+
+You can also create other shapes too, like pollygons, and circles.
+
+```scratch3
+when gf clicked
+Dеfine Circle, Size: [100] :: #2cb0c0
+Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+
+when gf clicked
+Dеfine polygon as this costume :: #2cb0c0 //Does not allow for holes in shapes
+Make object [Object2] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+```
+
+You are able to make any shape imaginable _(as long as it's 2D)_.
+
+A more advanced way of making pollygons is to use the `Define polygon, Points: [POINTS]` block. <br>
+This block takes in a list of x and y values `(x y   x y)` and creates a shape.
+
+```scratch3
+when gf clicked
+Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 //Triangle
+Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
