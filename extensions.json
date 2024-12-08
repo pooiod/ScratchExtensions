@@ -119,7 +119,7 @@
     },
     {
         "id": "RaccFacts",
-        "image": "/ext/[id]/cover.svg",
+        "image": "",
         "title": "Racoon Facts",
         "description": "Get random information on racoons.",
         "created": "Dec 8, 2024",
