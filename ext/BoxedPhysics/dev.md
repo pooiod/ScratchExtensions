@@ -48,3 +48,15 @@ when gf clicked
 Define Box, Width: [100] Height: [100] :: #2cb0c0
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
+
+The first thing you might notice is that we used two blocks to make this object.
+Objects in BoxedPhysics are build one block at a time. This also means you can create a large ammout of common objects all at once.
+
+```scratch3
+when gf clicked
+Define Box, Width: [100] Height: [100] :: #2cb0c0
+Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+Make object [Object2] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+Make object [Object3] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+Make object [Object4] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+```
