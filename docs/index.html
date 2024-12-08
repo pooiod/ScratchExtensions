@@ -214,7 +214,11 @@
 				const img = scratch.getAttribute('img') || '';
 
 				const iframe = document.createElement('iframe');
-				iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`; // this just crashes :(
+				iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`;
+				iframe.style.width = "600px";
+				iframe.style.height = "500px";
+				iframe.style.border = "none";
+				iframe.style.borderRadius = "5px";
 
 				scratch.replaceWith(iframe);
 			});

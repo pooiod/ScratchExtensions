@@ -74,10 +74,10 @@
         toggleFullscreenBtn.addEventListener('click', () => {
             if (document.fullscreenElement) {
                 document.exitFullscreen();
-                fullscreenIcon.innerText = '🔲'; // Change icon when exiting fullscreen
+                fullscreenIcon.innerText = '⛶';
             } else {
-                iframe.requestFullscreen();
-                fullscreenIcon.innerText = '⛶'; // Change icon when entering fullscreen
+                document.body.requestFullscreen();
+                fullscreenIcon.innerText = '⛶';
             }
         });
     </script>
