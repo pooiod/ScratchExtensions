@@ -208,14 +208,14 @@
 				el.replaceWith(p);
 			});
 
-			// Do not use the project loader yet, it just crashes.
 			document.querySelectorAll('scratch').forEach(function(scratch) {
 				const proj = scratch.getAttribute('src') || '';
 				const name = scratch.getAttribute('name') || '';
 				const img = scratch.getAttribute('img') || '';
 
 				const iframe = document.createElement('iframe');
-				iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`;
+				// iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`; // this just crashes :(
+				iframe.src = `https://studio.penguinmod.com/fullscreen.html?project_url=${proj}`;
 
 				scratch.replaceWith(iframe);
 			});
