@@ -39,7 +39,6 @@ end
 ## Creating your first object
 Once you have created your world, you may want to add some objects to it.
 Objects in BoxedPhysics are invisible hitboxes that move around with physics.
-This means that you can't tell what you have created without testing it.
 
 Starting off, let's make a basic box.
 
@@ -82,5 +81,20 @@ This block takes in a list of x and y values `(x y   x y)` and creates a shape.
 ```scratch3
 when gf clicked
 Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 //Triangle
+Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+```
+
+"But what if I want to change how bouncy an object is?" I hear you asking.
+For this, you need the `Define base, Type: [BODYTYPE] Density: [DENSITY] Friction: [FRICTION] Bounce: [BOUNCE]` block.
+
+This block can go before or after the shape defining blocks.
+It allows you to to things like make an object that is super bouncy.
+
+The cool thing about this block, is that it's also how you make static objects.
+
+```scratch3
+when gf clicked //Makes an immovable triangle that is bouncy
+Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0
+Dеfine base, Type: [static v] Density: [0.1] Friction: [0.5] Bounce: [0.8] :: #2cb0c0
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
