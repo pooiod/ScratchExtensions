@@ -104,9 +104,9 @@ Let's start simple. Deleting an object. <br>
 There are two ways of deleting objects. You can use the `Destroy object [NAME]` to remove one object, or you can nuke all objects with the `Destroy every object` block.
 
 ```scratch3
-When I recive [Destroy Object1 v]
+when I receive [Destroy Object1 v]
 Destroy object [Object1] :: #2cb0c0
 
-When I recive [Nuke everything! v]
+when I receive [Nuke everything! v]
 Destroy every object :: #2cb0c0 //This will also remove all joints
 ```
