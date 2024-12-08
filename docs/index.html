@@ -208,6 +208,7 @@
 				el.replaceWith(p);
 			});
 
+			// Do not use the project loader yet, it just crashes.
 			document.querySelectorAll('scratch').forEach(function(scratch) {
 				const proj = scratch.getAttribute('src') || '';
 				const name = scratch.getAttribute('name') || '';
