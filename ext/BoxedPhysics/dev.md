@@ -45,7 +45,7 @@ Starting off, let's make a basic box.
 
 ```scratch3
 when gf clicked
-Define Box, Width: [100] Height: [100] :: block #2cb0c0
+Define Box, Width: [100] Height: [100] :: #2cb0c0
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
 
@@ -54,11 +54,9 @@ Objects in BoxedPhysics are build one block at a time. This also means you can c
 
 ```scratch3
 when gf clicked
-Define Box, Width: [100] Height: [100] :: #2cb0c0 stack
+Define Box, Width: [100] Height: [100] :: #2cb0c0}
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 Make object [Object2] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 Make object [Object3] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 Make object [Object4] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
-
-<scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22" editor="true"/>
