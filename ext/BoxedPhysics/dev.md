@@ -84,7 +84,7 @@ Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 //Triangle
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
 ```
 
-"But what if I want to change how bouncy an object is?" I hear you asking.
+*"But what if I want to change how bouncy an object is?"* I hear you asking.
 For this, you need the `Define base, Type: [BODYTYPE] Density: [DENSITY] Friction: [FRICTION] Bounce: [BOUNCE]` block. <br>
 This block can go before or after the shape defining blocks, and it allows you to do things like make an object that is super bouncy, or an object that is static.
 
