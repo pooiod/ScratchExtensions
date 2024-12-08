@@ -12,15 +12,24 @@ Boxed Pysics is an implementation the Box2D physics engine that allows for the u
 ## Starting a world
 When using the Boxed Physics extension, you always need to initialise the environment when starting the project. to do this, you can use the `Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]` block.
 
-```scratch3
-when gf clicked
-Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage v] :: #2cb0c0
-```
-
-Scene is the type of containment to keep objects within the stage:
+The scene is the type of containment to keep objects within the stage:
 - semi-closed stage: Keeps sprites from going off the bottom and sides. <light>(allows for infinite-ish up movement)</light>
 - closed stage: Keeps sprites from going off the bottom, sides, or top.
 - opened stage: Keeps sprites from going off the bottom.
 - nothing: Removes all walls so objects can go wherever they want.
 
-<scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22"/>
+```scratch3
+when gf clicked
+Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage v] :: #2cb0c0
+```
+
+After you have created a world, you may still want to change some things.
+While not everything can be changed, you can add gravity and wind at runtime, without needint to make a new world.
+
+
+```scratch3
+when gf clicked
+forever
+    Set world options, Gravity: [-10] Wind: [(5 * ([sin v] of (timer * (70))))] :: #2cb0c0
+end
+```
