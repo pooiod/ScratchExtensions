@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fullscreen Iframe with Toggle Button</title>
     <style>
-        /* Make sure the body takes the full height */
         body, html {
             margin: 0;
             padding: 0;
@@ -16,7 +15,6 @@
             align-items: center;
             overflow: hidden;
         }
-        /* The iframe takes the full screen */
         iframe {
             position: fixed;
             top: 0;
@@ -25,11 +23,10 @@
             height: 100%;
             border: none;
         }
-        /* The button is fixed in the top right corner */
         .fullscreen-btn {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 5px;
+            right: 5px;
             background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
@@ -38,7 +35,6 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        /* Icon styling */
         .fullscreen-btn i {
             font-size: 18px;
         }
@@ -46,27 +42,22 @@
 </head>
 <body>
 
-    <!-- The fullscreen iframe -->
     <iframe id="iframe" src="" allowfullscreen></iframe>
 
-    <!-- Button to toggle fullscreen -->
     <button class="fullscreen-btn" id="toggleFullscreen">
-        <i id="fullscreenIcon">🔲</i> <!-- You can use different icons -->
+        <i id="fullscreenIcon">⛶</i>
     </button>
 
     <script>
-        // Get the project URL from the current page URL query parameter
         const urlParams = new URLSearchParams(window.location.search);
         const projectUrl = urlParams.get('url');
 
-        // Set the iframe's src to the project URL
         if (projectUrl) {
             document.getElementById('iframe').src = `https://studio.penguinmod.com/fullscreen.html?project_url=${encodeURIComponent(projectUrl)}`;
         } else {
             alert('No project URL provided in the query parameter!');
         }
 
-        // Toggle fullscreen function
         const iframe = document.getElementById('iframe');
         const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
         const fullscreenIcon = document.getElementById('fullscreenIcon');
