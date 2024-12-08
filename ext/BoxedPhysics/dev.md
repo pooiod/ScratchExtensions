@@ -9,7 +9,7 @@ Boxed Pysics is an implementation the Box2D physics engine that allows for the u
 
 ---
 
-## Starting a world
+## Working with worlds
 When using the Boxed Physics extension, you always need to initialise the environment when starting the project. to do this, you can use the `Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]` block.
 
 The scene is the type of containment to keep objects within the stage:
