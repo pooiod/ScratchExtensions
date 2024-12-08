@@ -22,3 +22,5 @@ Scene is the type of containment to keep objects within the stage:
 - closed stage: Keeps sprites from going off the bottom, sides, or top.
 - opened stage: Keeps sprites from going off the bottom.
 - nothing: Removes all walls so objects can go wherever they want.
+
+<scratch proj="https://yeetyourfiles.lol/download/1a934e2d-7623-4109-aa04-cb0fefb4995c"></scratch>

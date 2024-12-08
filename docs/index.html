@@ -207,6 +207,17 @@
 				p.innerHTML = el.innerHTML;
 				el.replaceWith(p);
 			});
+
+			document.querySelectorAll('scratch').forEach(function(scratch) {
+				const proj = scratch.getAttribute('proj') || '';
+				const name = scratch.getAttribute('name') || '';
+				const img = scratch.getAttribute('img') || '';
+
+				const iframe = document.createElement('iframe');
+				iframe.src = `/view/player?url=${proj}&name=${name}&img=${img}`;
+
+				scratch.replaceWith(iframe);
+			});
 			
 			console.log('Markdown content successfully rendered.');
 		}
