@@ -126,3 +126,25 @@ forever
     Set rotation of object [Object1] to (r) :: #2cb0c0
 end
 ```
+
+Boxed Physics has two ways of moving objects with velocity. <br>
+You can use the direct set method, or the impulse method.
+
+Directally setting velocity allows you to do things like take all you objects and save the velocity,
+to then resume its motion later with the set velocity block. ([example](examples))
+
+```scratch3
+when [space v] key pressed
+Set Velocity of object [Object1] to X: [10] Y: [10] Dir: [5] :: #2cb0c0
+```
+
+But if you are doing something less complex, it's generally better to use the impulse blocks. <br>
+These blocks allow you to apply impulses onto objects.
+
+```scratch3
+when gf clicked
+forever
+    Apply Angular Impulse to object [Wheel1] power: [20] :: #2cb0c0
+    Apply [World Impulse v] to object [Wheel1] at X: [0] Y: [0] with power [10] in direction [90] :: #2cb0c0
+end
+```

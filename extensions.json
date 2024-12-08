@@ -118,6 +118,22 @@
         "hidden": false
     },
     {
+        "id": "RaccFacts",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Racoon Facts",
+        "description": "Get random information on racoons.",
+        "created": "Dec 8, 2024",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["joke"],
+        "hidden": true
+    },
+    {
         "id": "Dictation",
         "image": "/ext/[id]/cover.svg",
         "title": "Dictation",

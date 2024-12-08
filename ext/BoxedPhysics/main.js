@@ -222,7 +222,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           {
             opcode: 'applyForceToBody',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Apply [FORCETYPE] to object [NAME] at X: [X]  Y: [Y] with power [POWER] in direction [DIR]',
+            text: 'Apply [FORCETYPE] to object [NAME] at X: [X] Y: [Y] with power [POWER] in direction [DIR]',
             arguments: {
               FORCETYPE: {
                 type: Scratch.ArgumentType.STRING,
