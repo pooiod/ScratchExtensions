@@ -1,3 +1,5 @@
+// Random racoon extension because why not. (made by pooiod7)
+
 (function(Scratch) {
     'use strict';
 
