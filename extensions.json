@@ -7,7 +7,7 @@
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
         "created": "Apr 15, 2024",
         "subtext": "",
-        "icon": "",
+        "icon2": "/extras/images/icons/update.svg",
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
@@ -124,7 +124,7 @@
         "description": "Get random information on racoons.",
         "created": "Dec 8, 2024",
         "subtext": "",
-        "icon": "",
+        "icon": "/extras/images/icons/new.svg",
         "iconText": "",
         "unsandboxed": false,
         "buttons": [
