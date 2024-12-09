@@ -160,4 +160,4 @@ while the `World Impulse` option is meant for movement over time (like pushing a
 
 ## Making joints
 
-<scratch src=""/>
+<scratch src="" editor="false"/>

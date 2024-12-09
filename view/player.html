@@ -34,6 +34,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         var projectUrl = urlParams.get('url');
         var edit = urlParams.get('edit');
+        alert(edit)
 
         if (!projectUrl) {
             projectUrl = "/view/NotLoaded.pmp";
