@@ -158,6 +158,10 @@
             border: none;
         }
 
+        #wobble {
+            animation: wobble 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
         .card-icon2 {
             position: absolute;
             top: 0;
@@ -205,6 +209,15 @@
             }
             100% {
                 transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @keyframes wobble {
+            0% {
+                transform: rotate(-10deg);
+            }
+            100% {
+                transform: rotate(10deg);
             }
         }
 
@@ -392,7 +405,7 @@
                 `).join('');
 
                 const iconHTML = card.icon ? `
-                    <div class="card-icon" title="${card.iconText}">
+                    <div class="card-icon" title="${card.iconText}" id="${card.icon.includes("new.svg")||card.icon.includes("update.svg")?"wobble":""}">
                         <img src="${card.icon}" alt="Warning Icon">
                     </div>
                 ` : '';
