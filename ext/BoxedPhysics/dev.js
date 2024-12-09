@@ -496,9 +496,10 @@ but has since deviated to be its own thing. (made with box2D js es6) */
               },
             },
           },
-          {
+          { // broke for some reason
             opcode: 'setJointTarget',
             blockType: Scratch.BlockType.COMMAND,
+            hideFromPalette: !wipblocks,
             text: 'Set mouse joint target [JOINTID] to x: [X]  y: [Y]',
             arguments: {
               JOINTID: {
@@ -782,7 +783,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake'],
           ForceType: ['Impulse', 'World Impulse'],
           AngForceType: ['Impulse'],
-          JointType: ['Rotating', 'Spring', 'Weld', 'Slider', 'Mouse'],
+          JointType: ['Rotating', 'Spring', 'Weld', 'Slider'/*, 'Mouse'*/],
           JointAttr: ['Motor On', 'Motor Speed', 'Max Torque', 'Limits On', 'Lower Limit', 'Upper Limit'],
           JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'Tension'],
           xyp: ['x', 'y', 'point'],

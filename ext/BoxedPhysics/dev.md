@@ -160,6 +160,6 @@ while the `World Impulse` option is meant for movement over time (like pushing a
 
 ## Making joints
 
-> Try this demo to try all the types of joints
+> Experiment with all the joint types in this demo to see what they do.
 
 <demo src="/ext/BoxedPhysics/examples/Joints.pmp" editor="false" />
