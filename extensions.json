@@ -131,7 +131,7 @@
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
         "tags": ["joke"],
-        "hidden": true
+        "hidden": false
     },
     {
         "id": "Dictation",
