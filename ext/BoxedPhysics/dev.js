@@ -842,7 +842,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
       bodyDef = new b2BodyDef;
 
-      if (args.SCENE == 'closed stage' || args.SCENE == 'stage') {
+      if (args.SCENE == 'stage' || args.SCENE == 'semi-closed stage') {
         bodyDef.type = b2Body.b2_staticBody;
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(250 / b2Dzoom, 10 / b2Dzoom);
@@ -861,7 +861,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
         fixDef.shape.SetAsBox(9999999, 10 / b2Dzoom);
         bodyDef.position.Set(0, -190 / b2Dzoom);
         b2Dworld.CreateBody(bodyDef).CreateFixture(fixDef);
-      } else if (args.SCENE == 'boxed stage' || args.SCENE == 'semi-closed stage') {
+      } else if (args.SCENE == 'boxed stage' || args.SCENE == 'closed stage') {
         bodyDef.type = b2Body.b2_staticBody;
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(250 / b2Dzoom, 10 / b2Dzoom);
