@@ -160,6 +160,5 @@ while the `World Impulse` option is meant for movement over time (like pushing a
 
 ## Making joints
 
-> Try 
-
-<demo src="" editor="false" />
+> Try this demo to try all the types of joints
+<demo src="/view/NotLoaded.pmp" editor="false" />
