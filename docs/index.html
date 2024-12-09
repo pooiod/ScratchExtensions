@@ -228,7 +228,7 @@
 				const autostart = player.getAttribute('autostart') == true;
 
 				const iframe = document.createElement('iframe');
-				iframe.src = `/view/player?url=${proj}&edit=${edit}&autostart=${autostart}`;
+				iframe.src = `/view/player?url=${proj}&edit=${edit}`;
 				if(edit) {
 					iframe.style.width = "100%";
 					iframe.style.height = "calc(100vh - 70px)";
