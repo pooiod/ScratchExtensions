@@ -1706,7 +1706,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     a2j.parseUInt = v => Math.abs(parseInt(v));
   }))(Box2D);
 
-  // #TODO remove assignments from global namespace
   const Vector = Array;
   const Vector_a2j_Number = Box2D.NVector;
   // package structure

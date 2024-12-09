@@ -2,7 +2,8 @@
 [!js-document.title="Boxed Physics docs"!]
 ---
 
-Boxed Pysics is an implementation the Box2D physics engine that allows for the use of joints, springs, sliders, and other complex physics interactions within your projects.
+Boxed Pysics is an implementation the Box2D physics engine that allows for the use of joints, springs, sliders, and other complex physics interactions within your projects. <br>
+This documentation will guide you through the process of using Boxed Physics.
 
 <!-- > This documentation has recently been redone, and I may have over looked something.
 > Please report any issues [here](/reportissue).  -->
@@ -148,3 +149,13 @@ forever
     Apply [World Impulse v] to object [Wheel1] at X: [0] Y: [0] with power [10] in direction [90] :: #2cb0c0
 end
 ```
+
+Rotational impulses are simple, just a number for power, but positional impulses are a little more complex.
+Positional impulses can be one of two types: `World Impulse` or `Impulse`.
+
+The `Impulse` option is meant for quick movements (like jumping)
+while the `World Impulse` option is meant for movement over time (like pushing a wheel).
+
+---
+
+![](https://miro.medium.com/v2/resize:fit:1400/1*jawvdT075iVWC3tloEwuWA.gif)
