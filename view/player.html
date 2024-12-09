@@ -44,7 +44,7 @@
             projectUrl = "https://p7scratchextensions.pages.dev" + projectUrl;
         }
 
-        var type = edit ? "editor" : "embed";
+        var type = edit == true ? "editor" : "embed";
 		document.getElementById('iframe').src = `https://studio.penguinmod.com/${type}.html?project_url=${encodeURIComponent(projectUrl)}`;
     </script>
 
