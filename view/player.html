@@ -35,9 +35,13 @@
         var projectUrl = urlParams.get('url');
         var edit = urlParams.get('edit');
 
-        // if (!projectUrl) {
-        //     projectUrl = "https://yeetyourfiles.lol/download/762f3-41w409-aa504-cb0fefb4g995c";
-        // }
+        if (!projectUrl) {
+            projectUrl = "/view/NotLoaded.pmp";
+        }
+
+        if (projectUrl.startsWith("/")) {
+            projectUrl = "https://p7scratchextensions.pages.dev" + projectUrl;
+        }
 
         var type = edit ? "editor" : "embde";
 		document.getElementById('iframe').src = `https://studio.penguinmod.com/${type}.html?project_url=${encodeURIComponent(projectUrl)}`;

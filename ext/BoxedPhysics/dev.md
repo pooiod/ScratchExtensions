@@ -158,4 +158,6 @@ while the `World Impulse` option is meant for movement over time (like pushing a
 
 ---
 
-![](https://miro.medium.com/v2/resize:fit:1400/1*jawvdT075iVWC3tloEwuWA.gif)
+## Making joints
+
+<scratch src=""/>
