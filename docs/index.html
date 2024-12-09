@@ -224,7 +224,7 @@
 			// ex: <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22" editor="false"/>
 			document.querySelectorAll('scratch').forEach(function(scratch) {
 				const proj = scratch.getAttribute('src') || '';
-				const edit = scratch.getAttribute('editor') || false;
+				const edit = scratch.getAttribute('editor') == true;
 
 				const iframe = document.createElement('iframe');
 				iframe.src = `/view/player?url=${proj}&edit=${edit}`;
