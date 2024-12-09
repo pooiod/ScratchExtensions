@@ -221,11 +221,11 @@
 				el.replaceWith(p);
 			});
 
-			// ex: <scratch src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22" editor="false" />
-			document.querySelectorAll('scratch').forEach(function(scratch) {
-				const proj = scratch.getAttribute('src') || '';
-				const edit = scratch.getAttribute('editor') == true;
-				const autostart = scratch.getAttribute('autostart') == true;
+			// ex: <demo src="https://yeetyourfiles.lol/download/6d2a0510-fdd6-4101-aa2c-530878786f22" editor="false" />
+			document.querySelectorAll('demo').forEach(function(player) {
+				const proj = player.getAttribute('src') || '';
+				const edit = player.getAttribute('editor') == true;
+				const autostart = player.getAttribute('autostart') == true;
 
 				const iframe = document.createElement('iframe');
 				iframe.src = `/view/player?url=${proj}&edit=${edit}&autostart=${autostart}`;
@@ -241,7 +241,7 @@
 
 				iframe.style.border = "none";
 
-				scratch.replaceWith(iframe);
+				player.replaceWith(iframe);
 			});
 			
 			console.log('Markdown content successfully rendered.');
