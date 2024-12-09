@@ -24,6 +24,7 @@
                         opcode: 'getRandomFact',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Random racoon fact as [TYPE]',
+                        disableMonitor: true,
                         arguments: {
                             TYPE: {
                                 type: Scratch.ArgumentType.STRING,
@@ -40,18 +41,43 @@
                     {
                         opcode: 'getRandomImage',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Random racoon image'
+                        text: 'Random racoon image',
+                        disableMonitor: true
+                    },
+                    {
+                        opcode: 'getRandomVideo',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Random racoon video',
+                        disableMonitor: true
+                    },
+                    {
+                        opcode: 'racoonOfThe',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Racoon of the [TIME]',
+                        disableMonitor: true,
+                        arguments: {
+                            TIME: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'time',
+                                defaultValue: 'day',
+                            },
+                        }
                     },
                     {
                         opcode: 'getWikiInfo',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Wiki info on racoons'
+                        text: 'Wiki info on racoons',
+                        disableMonitor: true
                     }
                 ],
                 menus: {
                     type: {
                         acceptReporters: true,
                         items: ['text', 'json']
+                    },
+                    time: {
+                        acceptReporters: true,
+                        items: ['day', 'hour']
                     }
                 }
             };
@@ -59,13 +85,15 @@
 
         async getRandomFact(args) {
             try {
-                const response = await fetch('https://some-random-api.com/animal/Raccoon');
-                const data = await response.json();
                 if (args.TYPE == "json") {
+                    const response = await fetch('https://some-random-api.com/animal/Raccoon');
+                    const data = await response.json();
                     if (!data) return 'Could not fetch fact.';
                     return JSON.stringify(data);
                 } else {
-                    return data.fact || 'Could not fetch fact.';
+                    const response = await fetch('https://api.racc.lol/v1/fact');
+                    const data = await response.json();
+                    return data.data.fact || 'Could not fetch fact.';
                 }
             } catch (e) {
                 // return 'Error fetching online fact.';
@@ -80,9 +108,29 @@
 
         async getRandomImage() {
             try {
-                const response = await fetch('https://some-random-api.com/img/Raccoon');
+                const response = await fetch('https://api.racc.lol/v1/raccoon?json=true');
                 const data = await response.json();
-                return data.link || 'Error fetching image.';
+                return data.data.url || 'Error fetching image.';
+            } catch (e) {
+                return 'Error fetching image.';
+            }
+        }
+
+        async getRandomVideo() {
+            try {
+                const response = await fetch('https://api.racc.lol/v1/video?json=true');
+                const data = await response.json();
+                return data.data.url || 'Error fetching image.';
+            } catch (e) {
+                return 'Error fetching image.';
+            }
+        }
+
+        async racoonOfThe(args) {
+            try {
+                const response = await fetch(`https://api.racc.lol/v1/${args.TIME=="day"?"raccoftheday":"racchour"}?json=true`);
+                const data = await response.json();
+                return data.data.url || 'Error fetching image.';
             } catch (e) {
                 return 'Error fetching image.';
             }
