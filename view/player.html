@@ -33,8 +33,6 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         var projectUrl = urlParams.get('url');
-        var edit = urlParams.get('edit');
-        var autostart = urlParams.get('autostart');
 
         if (!projectUrl) {
             projectUrl = "/view/NotLoaded.pmp";
@@ -44,8 +42,8 @@
             projectUrl = "https://p7scratchextensions.pages.dev" + projectUrl;
         }
 
-        var type = edit == true ? "editor" : "embed";
-		document.getElementById('iframe').src = `https://studio.penguinmod.com/${type}.html?${autostart?"autostart=true&":""}project_url=${encodeURIComponent(projectUrl)}`;
+        var type = edit == urlParams.get('edit') ? "editor" : "embed";
+		document.getElementById('iframe').src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart')?"autostart=true&":""}project_url=${encodeURIComponent(projectUrl)}`;
     </script>
 </body>
 </html>
