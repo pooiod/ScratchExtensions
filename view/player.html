@@ -42,7 +42,7 @@
             projectUrl = "https://p7scratchextensions.pages.dev" + projectUrl;
         }
 
-        var type = urlParams.get('edit') ? "editor" : "embed";
+        var type = urlParams.get('edit') == true ? "editor" : "embed";
 		document.getElementById('iframe').src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart')?"autostart=true&":""}project_url=${encodeURIComponent(projectUrl)}`;
     </script>
 </body>
