@@ -126,7 +126,7 @@
         "subtext": "",
         "icon": "",
         "iconText": "",
-        "unsandboxed": true,
+        "unsandboxed": false,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
