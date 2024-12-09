@@ -158,10 +158,6 @@
             border: none;
         }
 
-        #wobble {
-            animation: wobble 1s ease-in-out infinite;
-        }
-
         .card-icon2 {
             position: absolute;
             top: 0;
@@ -212,15 +208,18 @@
             }
         }
 
+        #wobble {
+            animation: wobble 2s ease-in-out infinite;
+        }
         @keyframes wobble {
             0% {
-                transform: rotate(-10deg);
+                transform: rotate(-5deg);
             }
             50% {
-                transform: rotate(10deg);
+                transform: rotate(5deg);
             }
             100% {
-                transform: rotate(-10deg);
+                transform: rotate(-5deg);
             }
         }
 
@@ -408,8 +407,8 @@
                 `).join('');
 
                 const iconHTML = card.icon ? `
-                    <div class="card-icon" title="${card.iconText}" id="${card.icon.includes("new.svg")||card.icon.includes("update.svg")?"wobble":""}">
-                        <img src="${card.icon}" alt="Warning Icon">
+                    <div class="card-icon" title="${card.iconText}">
+                        <img src="${card.icon}" alt="Icon" id="${card.icon.includes("new.svg")||card.icon.includes("update.svg")?"wobble":""}">
                     </div>
                 ` : '';
 
