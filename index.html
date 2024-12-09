@@ -405,7 +405,7 @@
 
                 const iconHTML = card.icon ? `
                     <div class="card-icon" title="${card.iconText}">
-                        <img src="${card.icon}" alt="Icon" id="${card.icon.includes("new.svg")||card.icon.includes("update.svg")?"wobble":""}" ${card.icon.includes("new.svg")||card.icon.includes("update.svg")?`onclidk='.getElementById("search").value == "is:new"'`:""}>
+                        <img src="${card.icon}" alt="Icon" id="${card.icon.includes("new.svg")||card.icon.includes("update.svg")?"wobble":""}" ${card.icon.includes("new.svg")||card.icon.includes("update.svg")?`onclick='.getElementById("search").value == "is:new"'`:""}>
                     </div>
                 ` : '';
 
