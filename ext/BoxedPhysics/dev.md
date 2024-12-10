@@ -184,6 +184,6 @@ Not all joints require a pre-define block though, like weld joints.
 
 ```scratch3
 when gf clicked
-Dеfine Spring, Length: [100] Damping: [0.7] Freq: [5]
+Dеfine Spring, Length: [100] Damping: [0.7] Freq: [5] :: #2cb0c0
 Create Joint [Joint1] of type [Spring v] between [Object1] at [0] [0] and [Object2] at [0] [0] :: #2cb0c0
 ```
