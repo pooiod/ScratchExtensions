@@ -1,12 +1,13 @@
 # Boxed Physics
 [!js-document.title="Boxed Physics docs"!]
+<!-- Boxed Physics uses the Box2D JS physics engine -->
 ---
 
 Boxed Pysics is an implementation the Box2D physics engine that allows for the use of joints, springs, sliders, and other complex physics interactions within your projects. <br>
 This documentation will guide you through the process of using Boxed Physics.
 
-<!-- > This documentation has recently been redone, and I may have over looked something.
-> Please report any issues [here](/reportissue).  -->
+> This documentation has recently been redone, and I may have over looked something.
+> Please report any issues [here](/reportissue).
 
 ---
 
@@ -35,6 +36,8 @@ forever
 end
 ```
 
+You can also use slow motion with the `Set slow motion to [VALUE]` block.
+
 ---
 
 ## Creating your first object
@@ -48,6 +51,9 @@ Starting off, let's make a basic box.
 when gf clicked
 Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
 Make object [Object1] at X: [0]  y: [0]  Dir: [90] :: #2cb0c0
+forever
+    Step Simulation :: #2cb0c0 //Don't forget to use this block for every physics tick
+end
 ```
 
 The first thing you might notice is that we used two blocks to make this object.
@@ -186,4 +192,46 @@ Not all joints require a pre-define block though, like weld joints.
 when gf clicked
 Dеfine Spring, Length: [100] Damping: [0.7] Freq: [5] :: #2cb0c0
 Create Joint [Joint1] of type [Spring v] between [Object1] at [0] [0] and [Object2] at [0] [0] :: #2cb0c0
+
+when gf clicked
+Create Joint [Joint2] of type [Weld v] between [Object3] at [0] [0] and [Object4] at [0] [0] :: #2cb0c0
+```
+
+Each joint has a multitude of properties that you can get, and others that you can set with the `Set [JOINTATTR] of joint [JOINTID] to [VALUE]` and `Get [JOINTATTRREAD] of joint: [JOINTID]` blocks.
+
+get:
+- Angle
+- Speed
+- Motor Torque
+- Reaction Torque
+- Tension
+
+set:
+- Motor On
+- Motor Speed
+- Max Torque
+- Limits On
+- Lower Limit
+- Upper Limit'
+
+---
+
+## More performance
+Boxed Physics also has some functions to change performance.
+
+```scratch3
+when gf clicked
+Set physics options, Position iterations: [10] Velocity iterations: [10] Continuous physics: <true :: #5EC15D> Warm starting: <true :: #5EC15D> :: #2cb0c0
+```
+
+---
+
+## Math
+Boxed Physics also has a few blocks for performing math related functions.
+
+```scratch3
+(Get [x v] from point x [10] y [-10] rotated by [90] :: #2cb0c0)
+(Get rotation from x [0] y [0] to x [10] y [15] :: #2cb0c0)
+(Magnitude of x [5] y [3] :: #2cb0c0)
+(Distance between x [0] y [0] and x [-20] y [10] :: #2cb0c0)
 ```
