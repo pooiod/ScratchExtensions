@@ -50,7 +50,7 @@ when gf clicked
 Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
 Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 forever
-    Step Simulation :: #2cb0c0 // Remember to run this block every tick
+    Step Simulation :: #2cb0c0 //Remember to run this block every tick
 end
 ```
 
