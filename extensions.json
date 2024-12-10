@@ -6,10 +6,10 @@
         "title": "Boxed Physics",
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
         "created": "Apr 15, 2024",
-        "subtext": "Recent bug fixes and new documentation",
+        "subtext": "",
         "icon": "/extras/images/icons/update.svg",
         "updated": true,
-        "iconText": "",
+        "iconText": "Recent bug fixes and new documentation",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
