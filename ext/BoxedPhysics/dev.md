@@ -3,6 +3,7 @@
 <!-- Boxed Physics uses the Box2D JS physics engine -->
 ---
 
+<!-- Don't change this intro paragraph -->
 Boxed Pysics is an implementation the Box2D physics engine that allows for the use of joints, springs, sliders, and other complex physics interactions within your projects. <br>
 This documentation will guide you through the process of using Boxed Physics.
 
@@ -199,6 +200,8 @@ Create Joint [Joint2] of type [Weld v] between [Object3] at [0] [0] and [Object4
 
 Each joint has a multitude of properties that you can get, and others that you can set with the `Set [JOINTATTR] of joint [JOINTID] to [VALUE]` and `Get [JOINTATTRREAD] of joint: [JOINTID]` blocks.
 
+<!-- Re-work this section -->
+
 get:
 - Angle
 - Speed
@@ -219,6 +222,8 @@ set:
 ## More performance
 Boxed Physics also has some functions to change performance.
 
+<!-- Section too short, bad description -->
+
 ```scratch3
 when gf clicked
 Set physics options, Position iterations: [10] Velocity iterations: [10] Continuous physics: <true :: #5EC15D> Warm starting: <true :: #5EC15D> :: #2cb0c0
@@ -228,6 +233,8 @@ Set physics options, Position iterations: [10] Velocity iterations: [10] Continu
 
 ## Math
 Boxed Physics also has a few blocks for performing math related functions.
+
+<!-- This section must be re-done with descriptions of the blocks -->
 
 ```scratch3
 (Get [x v] from point x [10] y [-10] rotated by [90] :: #2cb0c0)
