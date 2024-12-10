@@ -156,10 +156,34 @@ Positional impulses can be one of two types: `World Impulse` or `Impulse`.
 The `Impulse` option is meant for quick movements (like jumping)
 while the `World Impulse` option is meant for movement over time (like pushing a wheel).
 
+The damping of each object can also be changed with the `Set [BODYATTR] of object [NAME] to [VALUE]` block.
+
+```scratch3
+when gf clicked
+Set [damping v] of object [Object1] to [0.1] :: #2cb0c0
+```
+
 ---
 
 ## Making joints
+Boxed Physics allows you to connect objects togeather using joints.
+There are many joints to choose from, here is a list of all of them.
+
+- Rotating
+- Spring
+- Weld
+- Slider
+<!-- - Mouse (commented out due to not working yet) -->
 
 > Experiment with all the joint types in this demo to see what they do.
 
 <demo src="/ext/BoxedPhysics/examples/Joints.pmp" editor="false" />
+
+Jonts are made like objects, with a define type, then a create block.
+Not all joints require a pre-define block though, like weld joints.
+
+```scratch3
+when gf clicked
+Define Spring, Length: [100] Damping: [0.7] Freq: [5]
+Create Joint [Joint1] of type [Spring v] between [Object1] at [0] [0] and [Object2] at [0] [0] :: #2cb0c0
+```
