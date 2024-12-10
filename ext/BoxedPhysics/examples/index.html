@@ -1,38 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon</title>
+    <title>Pooiod7's project examples - BoxedPhysics</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #eaf7e7;
+            background-color: #fff;
+            color: #333;
         }
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin: 0px;
+            margin-bottom: 40px;
+            padding: 30px;
+            background-color: #f0fff1;
+            border-bottom: #cfecd1 1px solid;
+            color: rgb(24, 32, 23);
+        }
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .project-card {
+            background: #fcfeff;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+        }
+        .project-card img {
+            width: 100%;
+            object-fit: cover;
+            border-bottom: 2px solid #f1f1f1;
+        }
+        .project-content {
+            padding: 20px;
             text-align: center;
         }
-        .subtitle {
-            font-size: 1.2rem;
-            color: #555;
-            margin-top: 20px;
+        .project-title {
+            font-size: 1.6em;
+            color: #333;
+            margin: 0;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
-        img {
-            max-width: 300px;
-            margin: 0 auto;
+        .project-description {
+            font-size: 1em;
+            color: #666;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .project-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #6C63FF;
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .project-link:hover {
+            background-color: #5a54d9;
+        }
+        @media screen and (max-width: 1024px) {
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <h1>BoxedPhysics examples</h1>
     <div class="container">
-        <img src="https://p7scratchextensions.pages.dev/extras/images/ErrorPageAxolotl.svg" alt="Yikes!">
-        <p class="subtitle">Oops! This page isn't ready yet. Check back later to see what we've built!</p>
+        <div id="projectGrid" class="project-grid"></div>
     </div>
+    <script>
+        const projects = [
+            {
+                "title": "Demo Joints",
+                "description": "An example project showing all available joint types",
+                "image": "https://i.ibb.co/c8j0zK7/Screenshot-2024-12-10-11-52-40-AM.png",
+                "link": "https://studio.penguinmod.com/fullscreen.html?project_url=https://p7scratchextensions.pages.dev/ext/BoxedPhysics/examples/Joints.pmp"
+            }
+        ];
+
+        const projectGrid = document.getElementById('projectGrid');
+        projects.forEach(project => {
+            const projectCard = document.createElement('div');
+            projectCard.classList.add('project-card');
+            projectCard.innerHTML = `
+                <img src="${project.image}" alt="${project.title}">
+                <div class="project-content">
+                    <h2 class="project-title">${project.title}</h2>
+                    <p class="project-description">${project.description}</p>
+                    <a href="${project.link}" class="project-link" target="_blank">View Project</a>
+                </div>
+            `;
+            projectGrid.appendChild(projectCard);
+        });
+    </script>
 </body>
 </html>
