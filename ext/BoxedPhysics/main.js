@@ -5,13 +5,14 @@
 // Original: Griffpatch
 // License: zlib
 
+// Report issues with this extension at https://p7scratchextensions.pages.dev/reportissue
 /* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
 but has since deviated to be its own thing. (made with box2D js es6) */
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "12/08/2024";
-  var publishedUpdateIndex = 15;
+  var b2Dupdated = "12/10/2024";
+  var publishedUpdateIndex = 17;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -52,9 +53,11 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime
 
-      // this.onPenguinMod = Scratch.extensions.isPenguinMod;
-      this.isFromPenguinMod = false
-      this.docs = this.isFromPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
+      this.isFromPenguinMod = false;
+      this.onPenguinMod = Scratch.extensions.isPenguinMod;
+
+      this.origin = "https://p7scratchextensions.pages.dev/#BoxedPhysics";
+      this.docs = this.isFromPenguinMod && this.onPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
       'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
       
       this.vm.runtime.on('PROJECT_LOADED', () => {
@@ -793,24 +796,26 @@ but has since deviated to be its own thing. (made with box2D js es6) */
     }
 
     // this is not a commonly used fucntion, but it is nice to have.
-    get_debug(args) {
-      try { args = args.VAL } catch (error) { args = args; }
-      if (args == "version") {
+    get_debug(input) {
+      try { input = input.VAL } catch (error) { input = input; }
+      if (input == "version") {
         return publishedUpdateIndex;
-      } else if (args == "lib") {
+      } else if (input == "lib") {
         return "Box2D JS es6 (Uli Hecht's port of Box2D flash)";
-      } else if (args === "maker") {
+      } else if (input === "maker") {
         return "pooiod7";
-      } else if (args === "base") {
+      } else if (input === "base") {
         return "Box2D Physics by griffpatch for ScratchX (Scratch 2.0)";
-      } else if (args === "docs") {
+      } else if (input === "docs") {
         return this.docs;
-      } else if (args = "lastupdated") {
+      } else if (input = "lastupdated") {
         return b2Dupdated;
-      } else if (args = "fromPenguinMod") {
+      } else if (input = "fromPenguinMod") {
         return this.isFromPenguinMod;
+      } else if (input = "origin") {
+        return this.origin;
       } else {
-        return '["version", "lib", "maker", "base", "docs", "lastupdated", "fromPenguinMod"]';
+        return '["version", "lib", "maker", "base", "docs", "lastupdated", "fromPenguinMod", "origin"]';
       }
     }
 
