@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,9 +13,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
             overflow: hidden;
         }
-        iframe {
+        #load-button {
+            padding: 20px 40px;
+            background: #007bff;
+            color: white;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        #load-button:hover {
+            background: #0056b3;
+        }
+        #iframe {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -27,23 +42,24 @@
     </style>
 </head>
 <body>
-
-    <iframe id="iframe" src="" allowfullscreen></iframe>
+    <button id="load-button">Click to Load Demo</button>
+    <iframe id="iframe"></iframe>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        var projectUrl = urlParams.get('url');
+        document.getElementById('load-button').addEventListener('click', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            var projectUrl = urlParams.get('url') || "/view/NotLoaded.pmp";
 
-        if (!projectUrl) {
-            projectUrl = "/view/NotLoaded.pmp";
-        }
+            if (projectUrl.startsWith("/")) {
+                projectUrl = "https://p7scratchextensions.pages.dev" + projectUrl;
+            }
 
-        if (projectUrl.startsWith("/")) {
-            projectUrl = "https://p7scratchextensions.pages.dev" + projectUrl;
-        }
-
-        var type = urlParams.get('edit') == true ? "editor" : "embed";
-		document.getElementById('iframe').src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart')?"autostart=true&":""}project_url=${encodeURIComponent(projectUrl)}`;
+            const type = urlParams.get('edit') === "true" ? "editor" : "embed";
+            const iframe = document.getElementById('iframe');
+            iframe.src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart') ? "autostart=true&" : ""}project_url=${encodeURIComponent(projectUrl)}`;
+            iframe.style.display = "block";
+            this.style.display = "none";
+        });
     </script>
 </body>
 </html>
