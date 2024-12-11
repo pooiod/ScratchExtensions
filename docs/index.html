@@ -229,6 +229,8 @@
 
 				const iframe = document.createElement('iframe');
 				iframe.src = `/view/player?url=${proj}&edit=${edit}`;
+				iframe.style.border = "none";
+
 				if(edit) {
 					iframe.style.width = "100%";
 					iframe.style.height = "calc(100vh - 70px)";
@@ -239,9 +241,16 @@
 					iframe.style.borderRadius = "10px";
 				}
 
-				iframe.style.border = "none";
+				const observer = new IntersectionObserver(function(entries, obs) {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							player.replaceWith(iframe);
+							obs.disconnect();
+						}
+					});
+				}, { threshold: 0.1 });
 
-				player.replaceWith(iframe);
+				observer.observe(player);
 			});
 			
 			console.log('Markdown content successfully rendered.');

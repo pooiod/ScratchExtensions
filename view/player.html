@@ -13,7 +13,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #f0f0f0;
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
@@ -42,11 +41,11 @@
     </style>
 </head>
 <body>
-    <button id="load-button">Click to Load Demo</button>
+    <!-- <button id="load-button">Click to Load Demo</button> -->
     <iframe id="iframe"></iframe>
 
     <script>
-        document.getElementById('load-button').addEventListener('click', function() {
+        // document.getElementById('load-button').addEventListener('click', function() {
             const urlParams = new URLSearchParams(window.location.search);
             var projectUrl = urlParams.get('url') || "/view/NotLoaded.pmp";
 
@@ -59,7 +58,7 @@
             iframe.src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart') ? "autostart=true&" : ""}project_url=${encodeURIComponent(projectUrl)}`;
             iframe.style.display = "block";
             this.style.display = "none";
-        });
+        // });
     </script>
 </body>
 </html>
