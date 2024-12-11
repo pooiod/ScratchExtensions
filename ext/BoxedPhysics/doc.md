@@ -11,7 +11,8 @@ This documentation will guide you through the process of using Boxed Physics.
 ---
 
 ## Working with Worlds
-When using the Boxed Physics extension, you must initialize the physics environment before starting your project. To do this, use the `Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]` block.
+When using Boxed Physics, you must initialize the environment before starting your project.
+To do this, you can use the `Make world, Scale 1m: [SCALE] Gravity: [GRAVITY] Wind: [WIND] Scene: [SCENE]` block.
 
 > Note: the environment is initialised to the default every time the project starts, but it's good practice to use this block every flag click anyways
 
@@ -45,6 +46,9 @@ Additionally, you can enable slow motion using the `Set slow motion to [VALUE]` 
 Objects in Boxed Physics are invisible physics-based hitboxes. To add an object, define its shape and attributes, and then create it in the world.
 
 ### Basic Box Example
+The first thing you might notice is that we used two blocks to make this object.
+Objects in BoxedPhysics are build one block at a time. This also means you can create a large ammout of common objects all at once.
+
 ```scratch3
 when gf clicked
 Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
@@ -52,10 +56,7 @@ Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 forever
     Step Simulation :: #2cb0c0 //Remember to run this block every tick
 end
-```
 
-You can create multiple objects efficiently:
-```scratch3
 when gf clicked
 Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
 set [index v] to (0)
@@ -68,14 +69,20 @@ end
 ### Other Shapes
 
 #### Circles
+Circles are super simple. Just define a circle of a size, and make the object.
+
 ```scratch3
 Dеfine Circle, Size: [100] :: #2cb0c0
 Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
 #### Polygons
+Polygons are the most complex object type, having the ability to match almost any shape you want.
+
 1. **Costume-based:** Directly convert the current costume into a polygon (no holes).
 2. **Point-based:** Define polygons with a list of coordinates.
+
+![](/ext/BoxedPhysics/PhysicsPointDifference.svg)
 
 ```scratch3
 Dеfine polygon as this costume :: #2cb0c0
