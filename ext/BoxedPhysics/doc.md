@@ -5,7 +5,7 @@
 Boxed Physics is an implementation of the Box2D physics engine that allows for the use of joints, springs, sliders, and other complex physics interactions within your projects. <br>
 This documentation will guide you through the process of using Boxed Physics.
 
-> This documentation has recently been redone, and I may have overlooked something.
+> This documentation has recently been redone, and I may have overlooked something. <br>
 > Please report any issues [here](/reportissue).
 
 ---
@@ -156,7 +156,7 @@ You can create many types of joints, including:
 - Spring
 - Weld
 - Slider
-<!-- - Mouse (commented out due to not working yet) -->
+<!-- - Mouse -->
 
 
 ```scratch3
