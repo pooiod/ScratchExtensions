@@ -328,7 +328,7 @@
     <script>
         let cardsData = ["/extensions.json"];
 
-        if (window.location.pathname !== "/") {
+        if (window.location.pathname !== "/" && !(window.location.hostname.includes('web.archive.org'))) {
             document.body.innerHTML = '';
 
             const container = document.createElement('div');
