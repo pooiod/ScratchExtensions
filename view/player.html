@@ -50,7 +50,7 @@
             var projectUrl = urlParams.get('url') || "/view/NotLoaded.pmp";
 
             if (projectUrl.startsWith("/")) {
-                projectUrl = "https://p7scratchextensions.pages.dev" + projectUrl;
+                projectUrl = window.location.origin + projectUrl;
             }
 
             const type = urlParams.get('edit') === "true" ? "editor" : "embed";
