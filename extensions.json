@@ -305,7 +305,7 @@
         "description": "A simple extension to open websites.",
         "created": "Dec 5, 2024",
         "subtext": "",
-        "icon": "/extras/images/icons/release.png",
+        "icon": "/extras/images/icons/release.svg",
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
