@@ -303,7 +303,7 @@
 
             const noticeDiv = document.createElement('div');
             noticeDiv.classList.add('notice');
-            noticeDiv.textContent = `Error: ${event.message}`;
+            noticeDiv.textContent = `${event.message}`;
 
             const header = document.querySelector('header');
             if (header) {
@@ -329,6 +329,10 @@
 
     <script>
         let cardsData = ["/extensions.json"];
+
+        if(!window.location.origin.includes('p7scratchextensions.pages.dev')) {
+            console.error("You are on a mirror site, please be cautious about using extension links");
+        }
 
         if (window.location.pathname !== "/" && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
             document.body.innerHTML = '';
