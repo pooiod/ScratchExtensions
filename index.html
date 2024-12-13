@@ -293,9 +293,7 @@
         Please enable JavaScript to use this site
     </div></noscript>
     <script>
-        window.addEventListener('error', function(event) {
-            if (event.message == "Script error.") return;
-
+        function showWarning(message) {
             const existingNotice = document.querySelector('.notice');
             if (existingNotice) {
                 existingNotice.remove();
@@ -303,7 +301,7 @@
 
             const noticeDiv = document.createElement('div');
             noticeDiv.classList.add('notice');
-            noticeDiv.textContent = `${event.message}`;
+            noticeDiv.textContent = message;
 
             const header = document.querySelector('header');
             if (header) {
@@ -311,6 +309,11 @@
             } else {
                 document.body.appendChild(noticeDiv);
             }
+        }
+        
+        window.addEventListener('error', function(event) {
+            if (event.message == "Script error.") return;
+            showWarning(`${event.message}`);
         });
     </script>
 
@@ -331,7 +334,7 @@
         let cardsData = ["/extensions.json"];
 
         if(!window.location.origin.includes('p7scratchextensions.pages.dev')) {
-            console.error("You are on a mirror site, please be cautious about using extension links");
+            showWarning("You are on a mirror site, please be cautious about using extension links");
         }
 
         if (window.location.pathname !== "/" && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
