@@ -147,7 +147,7 @@
                 const extensionBlob = await extensionResponse.blob();
                 var extensionDataUri = window.location.origin + urlParams.get('ext');
 
-                if (extensionDataUri.includes('dev.js') || urlParams.get('local')) {
+                if (extensionDataUri.includes('dev.js') || urlParams.get('local') || (!window.location.origin.includes('p7scratchextensions.pages.dev') && window.confirm("Do you want to use an auto updating build of this extension?"))) {
                     extensionDataUri = await blobToDataUri(extensionBlob);
                 }
 
