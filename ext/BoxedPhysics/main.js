@@ -1060,12 +1060,6 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       fixDef.shape = new b2PolygonShape;
       var points = args.POINTS;
 
-      // this feature does not work yet :( 
-      if (points.charAt(0) === '<') {
-        console.warn("svg object conversion is not yet supported, use [Define costume]");
-        //points = this.svgtopoints(points);
-      }
-
       try {
         var pts = points.split(' ');
         for (var i = 0; i < pts.length; i++) {
