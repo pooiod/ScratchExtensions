@@ -92,7 +92,7 @@ Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 // Triangle
 Make object [Object3] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
-You can also show a visual for any point based object here:
+Point-based objects simply take an array of "x y" values seperated by 3 spaces. You can visualise any point-based polygon here:
 
 <demo src="/ext/BoxedPhysics/examples/BoxedPhysics point render system.pmp" editor="false" />
 
