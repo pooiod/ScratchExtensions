@@ -1047,9 +1047,115 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       }
     }
 
-    svgtopoints(svg) {
-      console.error("no svg support yet");
-      return;
+    svgtopoints(svgString) {
+      function parseTransform(transform) {
+          const matrixRegex = /matrix\(([^)]+)\)/;
+          const rotateRegex = /rotate\((-?\d+(?:\.\d+)?)[\s,]+(-?\d+(?:\.\d+)?)?[\s,]+(-?\d+(?:\.\d+)?)?\)/;
+          const matchMatrix = transform.match(matrixRegex);
+          const matchRotate = transform.match(rotateRegex);
+
+          if (matchMatrix) {
+              const values = matchMatrix[1].split(',').map(parseFloat);
+              return values.length === 6 ? values : [1, 0, 0, 1, 0, 0];
+          }
+
+          if (matchRotate) {
+              const angle = parseFloat(matchRotate[1]) * (Math.PI / 180);
+              const cx = parseFloat(matchRotate[2] || 0);
+              const cy = parseFloat(matchRotate[3] || 0);
+              const cos = Math.cos(angle);
+              const sin = Math.sin(angle);
+              return [
+                  cos, sin,
+                  -sin, cos,
+                  cx - cos * cx + sin * cy,
+                  cy - sin * cx - cos * cy
+              ];
+          }
+
+          return [1, 0, 0, 1, 0, 0];
+      }
+
+      function applyTransform(x, y, transform) {
+          const [a, b, c, d, e, f] = transform;
+          return [a * x + c * y + e, b * x + d * y + f];
+      }
+
+      function calculateConvexHull(points) {
+          points.sort(([x1, y1], [x2, y2]) => x1 - x2 || y1 - y2);
+          const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+          const lower = [];
+          for (const p of points) {
+              while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+              lower.push(p);
+          }
+          const upper = [];
+          for (const p of points.reverse()) {
+              while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+              upper.push(p);
+          }
+          upper.pop();
+          lower.pop();
+          return lower.concat(upper);
+      }
+
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+      const elements = svgDoc.querySelectorAll('line, rect, circle, ellipse, polyline, polygon, path');
+      const pointsList = [];
+
+      elements.forEach(el => {
+          const transform = parseTransform(el.getAttribute('transform') || '');
+          if (el.tagName === 'line') {
+              const x1 = parseFloat(el.getAttribute('x1') || 0);
+              const y1 = parseFloat(el.getAttribute('y1') || 0);
+              const x2 = parseFloat(el.getAttribute('x2') || 0);
+              const y2 = parseFloat(el.getAttribute('y2') || 0);
+              pointsList.push(applyTransform(x1, -y1, transform), applyTransform(x2, -y2, transform));
+          } else if (el.tagName === 'rect') {
+              const x = parseFloat(el.getAttribute('x') || 0);
+              const y = parseFloat(el.getAttribute('y') || 0);
+              const width = parseFloat(el.getAttribute('width') || 0);
+              const height = parseFloat(el.getAttribute('height') || 0);
+              pointsList.push(applyTransform(x, -y, transform), applyTransform(x + width, -y, transform), applyTransform(x + width, -(y + height), transform), applyTransform(x, -(y + height), transform));
+          } else if (el.tagName === 'circle') {
+              const cx = parseFloat(el.getAttribute('cx') || 0);
+              const cy = parseFloat(el.getAttribute('cy') || 0);
+              const r = parseFloat(el.getAttribute('r') || 0);
+              for (let i = 0; i < 360; i += 30) {
+                  const angle = (i * Math.PI) / 180;
+                  pointsList.push(applyTransform(cx + r * Math.cos(angle), -(cy + r * Math.sin(angle)), transform));
+              }
+          } else if (el.tagName === 'ellipse') {
+              const cx = parseFloat(el.getAttribute('cx') || 0);
+              const cy = parseFloat(el.getAttribute('cy') || 0);
+              const rx = parseFloat(el.getAttribute('rx') || 0);
+              const ry = parseFloat(el.getAttribute('ry') || 0);
+              for (let i = 0; i < 360; i += 30) {
+                  const angle = (i * Math.PI) / 180;
+                  pointsList.push(applyTransform(cx + rx * Math.cos(angle), -(cy + ry * Math.sin(angle)), transform));
+              }
+          } else if (el.tagName === 'polyline' || el.tagName === 'polygon') {
+              const points = el.getAttribute('points') || '';
+              points.split(/\s+/).forEach((coord, i, arr) => {
+                  if (i % 2 === 0) {
+                      pointsList.push(applyTransform(parseFloat(coord), -parseFloat(arr[i + 1]), transform));
+                  }
+              });
+          } else if (el.tagName === 'path') {
+              const path = el.getAttribute('d') || '';
+              const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+              pathElement.setAttribute('d', path);
+              const length = pathElement.getTotalLength();
+              for (let i = 0; i <= length; i += 5) {
+                  const point = pathElement.getPointAtLength(i);
+                  pointsList.push(applyTransform(point.x, -point.y, transform));
+              }
+          }
+      });
+
+      const hull = calculateConvexHull(pointsList);
+      return hull.map(([x, y]) => `${x} ${y}`).join('   ');
     }
 
     ispoly(args) { // wip
@@ -1060,10 +1166,8 @@ but has since deviated to be its own thing. (made with box2D js es6) */
       fixDef.shape = new b2PolygonShape;
       var points = args.POINTS;
 
-      // this feature does not work yet :( 
       if (points.charAt(0) === '<') {
-        console.warn("svg object conversion is not yet supported, use [Define costume]");
-        //points = this.svgtopoints(points);
+        points = this.svgtopoints(points);
       }
 
       try {
