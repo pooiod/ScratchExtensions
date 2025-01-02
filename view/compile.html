@@ -221,8 +221,8 @@
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-                    const fileId = response.fileId;
-                    const downloadUrl = `https://yeetyourfiles.lol/download/${fileId}`;
+                    const fileId = response.fileUrl;
+                    const downloadUrl = `https://yeetyourfiles.lol${fileId}`;
 
                     statusText("Opening project");
 
