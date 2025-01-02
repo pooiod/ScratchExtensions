@@ -190,6 +190,7 @@
 
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
+                statusText("Did you know: " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
                 uploadFile(updatedZipBlob);
             } catch (error) {
                 console.error('Error processing the project:', error);
@@ -208,7 +209,7 @@
         }
 
         function uploadFile(file) {
-            statusText("Starting project servers");
+            // statusText("Starting project servers");
             var didknow = setInterval(function(){
                 statusText("Did you know: " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
             }, 1000);
