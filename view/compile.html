@@ -191,7 +191,9 @@
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
                 statusText("Did you know: " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
-                uploadFile(updatedZipBlob);
+                setTimeout(function(){
+                    ploadFile(updatedZipBlob);
+                }, 1000);
             } catch (error) {
                 console.error('Error processing the project:', error);
                 alert(error);
