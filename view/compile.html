@@ -111,8 +111,21 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
+        var didyouknow = [
+            "You can search \"include:hidden\" to show my broken / discontinued extensions",
+            "<b>Elementl images</b> was originally made for <b>Video Sharing</b>",
+            "<b>Racoon Facts</b> was inspired by CATS (an ext by G1nX)",
+            "<b>Super Storage</b> was made because snap closed the free file api endpoint",
+            "<b>Page Opener</b> started as a one-off internal extension",
+            "<b>Text to Speech</b> is based on a ScratchX extension by Sayamindu Dasgupta",
+            "<b>Dictation</b> was based on a ScratchX extension found in the source code of Snail IDE",
+            "<b>SVG Text</b> is based on the svg text import feature on PenguinPaint (a now dead paint program)",
+            "<b>Boxed Physics</b> was originally based on the Box2D Physics extension for ScratchX by Griffpatch",
+            "<b>HTML Canvas</b> gets its name from an old penguinmod extension",
+            "<b>Video Sharing</b> was originally called \"Screen Sharing\""
+        ];
         function statusText(txt) {
-            document.getElementById("loader_message-container").innerText = txt + "…";
+            document.getElementById("loader_message-container").innerHTML = txt + "…";
         }
         async function canYeet() {
             try {
@@ -196,8 +209,12 @@
 
         function uploadFile(file) {
             statusText("Starting project servers");
+            var didknow = setInterval(function(){
+                statusText("Did you know: " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
+            }, 1000);
 
             if (!file) {
+                clearInterval(didknow);
                 alert('No file.');
                 window.close();
                 return;
@@ -226,11 +243,13 @@
                     const fileId = response.fileUrl;
                     const downloadUrl = `https://yeetyourfiles.lol${fileId}`;
 
+                    clearInterval(didknow);
                     statusText("Opening project");
 
                     const url = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(downloadUrl)}`;
                     window.location.href = url;
                 } else {
+                    clearInterval(didknow);
                     console.error('Upload failed with status:', xhr.status);
                     alert('Load failed. Please try again.');
                     window.close();
@@ -238,6 +257,7 @@
             };
 
             xhr.onerror = function() {
+                clearInterval(didknow);
                 console.error('An error occurred during the file upload.');
                 alert('An error occurred. Please try again.');
                 window.close();
