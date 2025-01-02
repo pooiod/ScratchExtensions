@@ -1,4 +1,4 @@
-// Elemental Images (v2.2.0) by pooiod7
+// Elemental Images (v2.3.0) by pooiod7
 
 (function (Scratch) {
 	'use strict';
@@ -22,6 +22,7 @@
 			this.idCounter = 0;
 			this.stagewidth = 480;
 			this.stageheight = 360;
+			this.canvas = Scratch.vm.runtime.renderer.canvas;
 		}
 
 		getInfo() {
@@ -142,7 +143,24 @@
 							},
 							FILTER: {
 								type: Scratch.ArgumentType.STRING,
+								menu: 'RENDERING_MENU',
 								defaultValue: 'blur(1px)',
+							},
+						},
+					},
+					{
+						opcode: 'setImageFit',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set Image [ID] Fit to [FIT]',
+						arguments: {
+							ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'image1',
+							},
+							FIT: {
+								type: Scratch.ArgumentType.STRING,
+								menu: 'FIT_MENU',
+								defaultValue: 'fill',
 							},
 						},
 					},
@@ -248,6 +266,10 @@
 						acceptReporters: false,
 						items: ['auto', 'crisp-edges', 'pixelated'],
 					},
+					FIT_MENU: {
+						acceptReporters: false,
+						items: ['fill', 'contain', 'cover', 'none', 'scale-down'],
+					},
 				},
 			};
 		}
@@ -257,6 +279,7 @@
 		updatesizevars() {
 			this.stagewidth = Scratch.vm.runtime.stageWidth;
 			this.stageheight = Scratch.vm.runtime.stageHeight;
+			this.canvas = Scratch.vm.runtime.renderer.canvas;
 		}
 
 		deleteImage({ ID }) {
@@ -291,7 +314,7 @@
 			imageElement.style.width = 20 + '%';
 			imageElement.style.height = 28 + '%';
 
-			const stage = document.querySelector('canvas');
+			const stage = this.canvas;
 			if (stage) {
 				stage.parentElement.appendChild(imageElement);
 				imageElements[ID] = imageElement;
@@ -310,6 +333,8 @@
 
 		setImagePosition({ ID, X, Y }) {
 			const imageElement = imageElements[ID];
+			X -= (this.getImageWidth({ ID:ID })/2);
+			Y -= (this.getImageHeight({ ID:ID })/2);
 
 			this.updatesizevars();
 
@@ -345,6 +370,13 @@
 			}
 		}
 
+		setImageFit({ ID, FIT }) {
+			const imageElement = imageElements[ID];
+			if (imageElement) {
+				imageElement.style.objectFit = FIT;
+			}
+		}
+
 		setImageRendering({ ID, RENDERING }) {
 			const imageElement = imageElements[ID];
 			if (imageElement) {
@@ -368,7 +400,7 @@
 			this.updatesizevars();
 
 			if (imageElement) {
-				const stage = document.querySelector('canvas');
+				const stage = this.canvas;
 				if (stage) {
 					const stageRect = stage.getBoundingClientRect();
 					const imageRect = imageElement.getBoundingClientRect();
@@ -385,7 +417,7 @@
 			this.updatesizevars();
 
 			if (imageElement) {
-				const stage = document.querySelector('canvas');
+				const stage = this.canvas;
 				if (stage) {
 					const stageRect = stage.getBoundingClientRect();
 					const imageRect = imageElement.getBoundingClientRect();
@@ -402,7 +434,7 @@
 			this.updatesizevars();
 
 			if (imageElement) {
-				const stage = document.querySelector('canvas');
+				const stage = this.canvas;
 				if (stage) {
 					const stageRect = stage.getBoundingClientRect();
 					const imageRect = imageElement.getBoundingClientRect();
@@ -419,7 +451,7 @@
 			this.updatesizevars();
 
 			if (imageElement) {
-			const stage = document.querySelector('canvas');
+			const stage = this.canvas;
 				if (stage) {
 					const stageRect = stage.getBoundingClientRect();
 					const imageRect = imageElement.getBoundingClientRect();
@@ -457,4 +489,4 @@
 })(Scratch);
 
 // The first image you will see
-var defaultpng = "https://cdn2.scratch.mit.edu/get_image/user/30177353_60x60.png";
+var defaultpng = "https://cdn2.scratch.mit.edu/get_image/user/30177353_600x600.png";
