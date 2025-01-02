@@ -1,4 +1,4 @@
-// Elemental Images (v2.3.0) by pooiod7
+// Elemental Images (v2.3.1) by pooiod7
 
 (function (Scratch) {
 	'use strict';
@@ -143,7 +143,6 @@
 							},
 							FILTER: {
 								type: Scratch.ArgumentType.STRING,
-								menu: 'RENDERING_MENU',
 								defaultValue: 'blur(1px)',
 							},
 						},
