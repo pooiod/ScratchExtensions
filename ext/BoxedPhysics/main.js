@@ -11,7 +11,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "12/10/2024";
+  var b2Dupdated = "01/02/2025";
   var publishedUpdateIndex = 17;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -748,6 +748,19 @@ but has since deviated to be its own thing. (made with box2D js es6) */
             text: "Debug blocks (can brake projects)"
           }, // the ids on any of the following can change, so it's YOUR fault if you use them and your project brakes
           {
+            opcode: 'ignore',
+            hideFromPalette: !wipblocks && !physdebugmode,
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'the ids on any of the following blocks can change or be removed, so it\'s YOUR fault if you use them and your project brakes [VALUE]',
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+          },
+          
+          {
             opcode: 'get_debug',
             hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.REPORTER,
@@ -779,7 +792,7 @@ but has since deviated to be its own thing. (made with box2D js es6) */
           },
         ],
         menus: {
-          sceneType: ['semi-closed stage', 'closed stage', 'opened stage', 'nothing'],
+          sceneType: ['semi-closed stage', 'boxed stage', 'opened stage', 'nothing'],
           BodyTypePK: ['dynamic', 'static'],
           BodyTypePK2: ['dynamic', 'static', 'any'],
           bodyAttr: ['damping', 'rotational damping'],
