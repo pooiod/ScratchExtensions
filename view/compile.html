@@ -112,7 +112,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
         var didyouknow = [
-            "You can search \"include:hidden\" to show my broken / discontinued extensions",
+            "you can search \"include:hidden\" to show my broken / discontinued extensions",
             "<b>Elementl images</b> was originally made for <b>Video Sharing</b>",
             "<b>Racoon Facts</b> was inspired by CATS (an ext by G1nX)",
             "<b>Super Storage</b> was made because snap closed the free file api endpoint",
@@ -138,6 +138,11 @@
                 return false;
             }
         }
+
+        window.addEventListener('error', function(event) {
+            if (event.message == "Script error.") return;
+            alert(event.message);
+        });
 
         // canYeet().then(isReachable => {
         //     if (isReachable) {
@@ -190,7 +195,7 @@
 
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
-                statusText("Did you know: " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
+                statusText("Did you know, " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
                 setTimeout(function(){
                     uploadFile(updatedZipBlob);
                 }, 1000);

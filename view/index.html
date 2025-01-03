@@ -213,6 +213,11 @@
 </head>
 <body>
     <script>
+        window.addEventListener('error', function(event) {
+            if (event.message == "Script error.") return;
+            showNotification(event.message, "#ffd6d6", 3000);
+        });
+        
         function share(link) {
             var extid = window.location.hash.slice(2).replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
             try {
