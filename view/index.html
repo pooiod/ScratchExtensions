@@ -279,11 +279,12 @@
                     borderWidth = 10;
                 }
                 notification.style.borderWidth = borderWidth + "px";
+                existingNotification.remove();
+                existingNotification.style.borderWidth = "0px";
                 document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
                     notif.style.bottom = `${10 + index * 50}px`;
                 });
-                offset = document.querySelectorAll('.stacked-notification').length-1 * 50;
-                existingNotification.remove();
+                offset = document.querySelectorAll('.stacked-notification').length * 50;
                 notification.style.opacity = '1';
                 notification.style.bottom = `${10 + offset}px`;
             } else {
@@ -297,7 +298,7 @@
                 notification.style.opacity = '0';
                 notification.style.borderWidth = "1px";
                 setTimeout(() => {
-                    if (notification) {
+                    if (notification.style.borderWidth != "0px") {
                         notification.remove();
                         document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
                             notif.style.bottom = `${10 + index * 50}px`;
