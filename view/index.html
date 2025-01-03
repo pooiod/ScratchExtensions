@@ -277,7 +277,9 @@ function showNotification(message, color, time) {
 
     if (existingNotification) {
         notification.style.borderWidth = (existingNotification.style.borderWidth.replace("px","") + 0.1) + "px";
-        notification.style.borderWidth = Math.min(parseInt(notification.style.borderWidth), 10) + 'px';
+        if (existingNotification.style.borderWidth.replace("px","") > 10) {
+            notification.style.borderWidth = "10px";
+        }
         existingNotification.remove();
         notification.style.opacity = '1';
         notification.style.bottom = `${10}px`;
