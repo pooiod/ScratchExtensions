@@ -226,6 +226,7 @@
                     console.log('Error sharing:', error);
                     if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                         navigator.clipboard.writeText(link);
+                        showNotification("Text copied to clipboard", "#ededed", 1000)
                     } else {
                         window.open(link)
                     }
@@ -249,65 +250,62 @@
             }
         }
 
+        function showNotification(message, color, time) {
+            let existingNotification = Array.from(document.querySelectorAll('.stacked-notification'))
+                .find(notif => notif.textContent === message);
 
+            let notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.backgroundColor = color;
+            notification.style.color = '#000';
+            notification.style.padding = '10px 20px';
+            notification.style.border = '1px solid #ccc';
+            notification.style.borderRadius = '5px';
+            notification.style.zIndex = '9999999999999999';
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out, border 0.5s ease-in-out';
+            notification.style.fontSize = '16px';
 
-function showNotification(message, color, time) {
-    let existingNotification = Array.from(document.querySelectorAll('.stacked-notification'))
-        .find(notif => notif.textContent === message);
+            let offset = document.querySelectorAll('.stacked-notification').length * 50;
+            notification.classList.add('stacked-notification');
+            document.body.appendChild(notification);
 
-    let notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.position = 'fixed';
-    notification.style.left = '50%';
-    notification.style.transform = 'translateX(-50%)';
-    notification.style.backgroundColor = color;
-    notification.style.color = '#000';
-    notification.style.padding = '10px 20px';
-    notification.style.border = '1px solid #ccc';
-    notification.style.borderRadius = '5px';
-    notification.style.zIndex = '9999999999999999';
-    notification.style.opacity = '0';
-    notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out, border 0.5s ease-in-out';
-    notification.style.fontSize = '16px';
-
-    let offset = document.querySelectorAll('.stacked-notification').length * 50;
-    notification.classList.add('stacked-notification');
-    document.body.appendChild(notification);
-
-    if (existingNotification) {
-        let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 1;
-        if (borderWidth > 10) {
-            borderWidth = 10;
-        }
-        notification.style.borderWidth = borderWidth + "px";
-        existingNotification.remove();
-        document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
-            notif.style.bottom = `${10 + index * 50}px`;
-        });
-        offset = document.querySelectorAll('.stacked-notification').length * 50;
-        notification.style.opacity = '1';
-        notification.style.bottom = `${10 + offset}px`;
-    } else {
-        notification.style.bottom = `${10 + offset}px`;
-        setTimeout(() => {
-            notification.style.opacity = '1';
-        }, 10);
-    }
-
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.borderWidth = "1px";
-        setTimeout(() => {
-            if (notification) {
-                notification.remove();
+            if (existingNotification) {
+                let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 1;
+                if (borderWidth > 10) {
+                    borderWidth = 10;
+                }
+                notification.style.borderWidth = borderWidth + "px";
+                existingNotification.remove();
                 document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
                     notif.style.bottom = `${10 + index * 50}px`;
                 });
+                offset = document.querySelectorAll('.stacked-notification').length * 50;
+                notification.style.opacity = '1';
+                notification.style.bottom = `${10 + offset}px`;
+            } else {
+                notification.style.bottom = `${10 + offset}px`;
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                }, 10);
             }
-        }, 500);
-    }, time || 2000);
-}
 
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.borderWidth = "1px";
+                setTimeout(() => {
+                    if (notification) {
+                        notification.remove();
+                        document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
+                            notif.style.bottom = `${10 + index * 50}px`;
+                        });
+                    }
+                }, 500);
+            }, time || 2000);
+        }
     </script>
     <div id="toolbar">
         <a style="float: left;" href="/">&#x2190; View more extensions</a>
