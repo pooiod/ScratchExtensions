@@ -276,7 +276,7 @@ function showNotification(message, color, time) {
     document.body.appendChild(notification);
 
     if (existingNotification) {
-        let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 0.1;
+        let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 1;
         if (borderWidth > 10) {
             borderWidth = 10;
         }
