@@ -287,7 +287,7 @@
                 existingNotification.remove();
                 notification.style.opacity = '1';
                 notification.style.bottom = `${10 + offset}px`;
-                print(offset)
+                console.log(offset, document.querySelectorAll('.stacked-notification').length)
             } else {
                 notification.style.bottom = `${10 + offset}px`;
                 setTimeout(() => {
