@@ -451,9 +451,9 @@
                     cardsData = await response.json();
                     document.getElementById("loader").remove();
 
+                    document.querySelector(".footer").innerHTML = footerHTML;
                     if (window.location.search.includes('?q=')) {
                         const query = new URLSearchParams(window.location.search).get('q');
-                        document.getElementById('search').value = query;
                         filterCards();
                     } else {
                         renderCards();
@@ -476,10 +476,10 @@
             }
 
             function filterCards() {
+                document.querySelector(".footer").innerHTML = footerHTML;
+
                 const query = document.getElementById('search').value.toLowerCase().replace("include:hidden", "");
                 const filters = query.split(/\s+/);
-
-                document.querySelector(".footer").innerHTML = footerHTML;
                 
                 let filteredData = cardsData.filter(card => {
                     let includeCard = true;
