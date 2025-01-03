@@ -256,61 +256,45 @@ function showNotification(message, color, time) {
         .find(notif => notif.textContent === message);
 
     if (existingNotification) {
-        let currentBorder = parseInt(existingNotification.style.border.split('px')[0], 10) || 1;
-        let newBorder = Math.min(currentBorder + 1, 10);
-        existingNotification.style.border = `${newBorder}px solid #ccc`;
-        existingNotification.style.transition = 'none';
-        existingNotification.style.opacity = '1';
-
-        setTimeout(() => {
-            existingNotification.style.opacity = '0';
-            setTimeout(() => {
-                if (existingNotification) {
-                    existingNotification.remove();
-                    document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
-                        notif.style.bottom = `${10 + index * 50}px`;
-                    });
-                }
-            }, 500);
-        }, (time || 2000));
-    } else {
-        let notification = document.createElement('div');
-        notification.textContent = message;
-        notification.style.position = 'fixed';
-        notification.style.left = '50%';
-        notification.style.transform = 'translateX(-50%)';
-        notification.style.backgroundColor = color;
-        notification.style.color = '#000';
-        notification.style.padding = '10px 20px';
-        notification.style.border = '1px solid #ccc';
-        notification.style.borderRadius = '5px';
-        notification.style.zIndex = '9999999999999999';
-        notification.style.opacity = '0';
-        notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out';
-        notification.style.fontSize = '16px';
-
-        const notifications = document.querySelectorAll('.stacked-notification');
-        let offset = notifications.length * 50;
-        notification.style.bottom = `${10 + offset}px`;
-        notification.classList.add('stacked-notification');
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.style.opacity = '1';
-        }, 10);
-
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => {
-                if (notification) {
-                    notification.remove();
-                    document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
-                        notif.style.bottom = `${10 + index * 50}px`;
-                    });
-                }
-            }, 500);
-        }, time || 2000);
+        existingNotification.remove();
     }
+
+    let notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.position = 'fixed';
+    notification.style.left = '50%';
+    notification.style.transform = 'translateX(-50%)';
+    notification.style.backgroundColor = color;
+    notification.style.color = '#000';
+    notification.style.padding = '10px 20px';
+    notification.style.border = '1px solid #ccc';
+    notification.style.borderRadius = '5px';
+    notification.style.zIndex = '9999999999999999';
+    notification.style.opacity = '0';
+    notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out';
+    notification.style.fontSize = '16px';
+
+    const notifications = document.querySelectorAll('.stacked-notification');
+    let offset = notifications.length * 50;
+    notification.style.bottom = `${10 + offset}px`;
+    notification.classList.add('stacked-notification');
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 10);
+
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification) {
+                notification.remove();
+                document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
+                    notif.style.bottom = `${10 + index * 50}px`;
+                });
+            }
+        }, 500);
+    }, time || 2000);
 }
 
     </script>
