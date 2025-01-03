@@ -538,7 +538,7 @@
                     const noResultsMessage = document.createElement('div');
                     noResultsMessage.textContent = 'No results found';
                     container.appendChild(noResultsMessage);
-                    if (!query.includes('is:hidden')) {
+                    if (!query.includes('is:hidden') && !document.getElementById('search').value.toLowerCase().includes('include:hidden')) {
                         document.querySelector(".footer").innerHTML = `Didn't find what you wanted? Try including <a onclick="document.getElementById('search').value += ' include:hidden'">hidden</a> extensions in your search`;
                     }
                 } else {
