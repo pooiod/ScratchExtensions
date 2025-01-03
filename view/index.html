@@ -261,7 +261,7 @@
     notification.style.borderRadius = '5px';
     notification.style.zIndex = '9999999999999999';
     notification.style.opacity = '0';
-    notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out';
+    notification.style.transition = 'opacity 0.5s ease-in-out';
     notification.style.fontSize = '16px';
 
     const notifications = document.querySelectorAll('.stacked-notification');
@@ -274,14 +274,12 @@
         existingNotif.style.transition = 'none';
         existingNotif.style.opacity = '1';
         setTimeout(() => {
-            existingNotif.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out';
+            existingNotif.style.transition = 'opacity 0.5s ease-in-out';
         }, 10);
-        existingNotif.style.bottom = `${10 + notifications.length * 50}px`;
         return;
     }
 
-    let offset = notifications.length * 50;
-    notification.style.bottom = `${10 + offset}px`;
+    notification.style.bottom = `${10 + notifications.length * 50}px`;
     notification.classList.add('stacked-notification');
     document.body.appendChild(notification);
 
@@ -293,9 +291,6 @@
         notification.style.opacity = '0';
         setTimeout(() => {
             notification.remove();
-            document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
-                notif.style.bottom = `${10 + index * 50}px`;
-            });
         }, 500);
     }, time || 2000);
 }
