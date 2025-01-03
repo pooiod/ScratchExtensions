@@ -276,10 +276,11 @@ function showNotification(message, color, time) {
     document.body.appendChild(notification);
 
     if (existingNotification) {
-        notification.style.borderWidth = (existingNotification.style.borderWidth.replace("px","") + 0.1) + "px";
-        if (existingNotification.style.borderWidth.replace("px","") > 10) {
-            notification.style.borderWidth = "10px";
+        let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 0.1;
+        if (borderWidth > 10) {
+            borderWidth = 10;
         }
+        notification.style.borderWidth = borderWidth + "px";
         existingNotification.remove();
         notification.style.opacity = '1';
         notification.style.bottom = `${10}px`;
