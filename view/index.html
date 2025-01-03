@@ -277,6 +277,7 @@ function showNotification(message, color, time) {
     document.body.appendChild(notification);
 
     if (existingNotification) {
+        notification.style.borderWidth = existingNotification.style.borderWidth + 1;
         existingNotification.remove();
         notification.style.opacity = '1';
     } else {
