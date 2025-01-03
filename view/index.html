@@ -275,8 +275,8 @@
 
             if (existingNotification) {
                 let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 0.5;
-                if (borderWidth > 10) {
-                    borderWidth = 10;
+                if (borderWidth > 5) {
+                    borderWidth = 5;
                 }
                 notification.style.borderWidth = borderWidth + "px";
                 existingNotification.style.borderWidth = "0px";
