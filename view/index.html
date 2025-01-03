@@ -243,9 +243,47 @@
         function copy(txt) {
             if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 navigator.clipboard.writeText(txt);
+                showNotification("Text copied to clipboard", "#ededed", 1000)
             } else {
                 editor.setValue(txt);
             }
+        }
+        function showNotification(message, color, time) {
+            let notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.left = '50%';
+            notification.style.transform = 'translateX(-50%)';
+            notification.style.backgroundColor = color;
+            notification.style.color = '#000';
+            notification.style.padding = '10px 20px';
+            notification.style.border = '1px solid #ccc';
+            notification.style.borderRadius = '5px';
+            notification.style.zIndex = '9999999999999999';
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out';
+            notification.style.fontSize = '16px';
+        
+            const notifications = document.querySelectorAll('.stacked-notification');
+            let offset = notifications.length * 50;
+            notification.style.bottom = `${10 + offset}px`;
+            notification.classList.add('stacked-notification');
+            document.body.appendChild(notification);
+        
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+        
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                    const remainingNotifications = document.querySelectorAll('.stacked-notification');
+                    remainingNotifications.forEach((notif, index) => {
+                        notif.style.bottom = `${10 + index * 50}px`;
+                    });
+                }, 500);
+            }, time || 2000);
         }
     </script>
     <div id="toolbar">
