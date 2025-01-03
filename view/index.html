@@ -281,6 +281,9 @@ function showNotification(message, color, time) {
         }
         notification.style.borderWidth = borderWidth + "px";
         existingNotification.remove();
+        document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
+            notif.style.bottom = `${10 + index * 50}px`;
+        });
         offset = document.querySelectorAll('.stacked-notification').length * 50;
         notification.style.opacity = '1';
         notification.style.bottom = `${10 + offset}px`;
