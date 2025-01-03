@@ -535,7 +535,7 @@
                 container.innerHTML = '';
 
                 if (!query.includes('is:hidden') && !document.getElementById('search').value.toLowerCase().includes('include:hidden')) {
-                    if (false) {
+                    if (filteredData.filter(filter => !filter.hidden).length === 0) {
                         const noResultsMessage = document.createElement('div');
                         noResultsMessage.textContent = 'No results found';
                         container.appendChild(noResultsMessage);
