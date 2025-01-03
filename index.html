@@ -372,8 +372,7 @@
         
         window.addEventListener('error', function(event) {
             if (event.message == "Script error.") return;
-            showWarning(`${event.message}`);
-            showNotification("Text copied to clipboard", "#ffd6d6", 1000);
+            showNotification(event.message, "#ffd6d6", 1000);
         });
     </script>
 
