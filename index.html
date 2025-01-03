@@ -332,6 +332,7 @@
 
     <script>
         let cardsData = ["/extensions.json"];
+        let footerHTML = document.querySelector(".footer").innerHTML;
 
         if(!window.location.origin.includes('p7scratchextensions.pages.dev')) {
             showWarning("You are on a mirror site, please be cautious about using links here, as this site may go down without warning! You can go to my full site <a href=\"https://p7scratchextensions.pages.dev\">here</a>.");
@@ -477,6 +478,8 @@
             function filterCards() {
                 const query = document.getElementById('search').value.toLowerCase().replace("include:hidden", "");
                 const filters = query.split(/\s+/);
+
+                document.querySelector(".footer").innerHTML = footerHTML;
                 
                 let filteredData = cardsData.filter(card => {
                     let includeCard = true;
@@ -535,6 +538,9 @@
                     const noResultsMessage = document.createElement('div');
                     noResultsMessage.textContent = 'No results found';
                     container.appendChild(noResultsMessage);
+                    if (!query.includes('is:hidden')) {
+                        document.querySelector(".footer").innerHTML = `Didn't find what you wanted? Try including <a onclick="document.getElementById('search').value += ' include:hidden'">hidden</a> extensions in your search`;
+                    }
                 } else {
                     filteredData.forEach(card => {
                         container.appendChild(createCard(card, query.includes('is:hidden') || document.getElementById('search').value.toLowerCase().includes('include:hidden')));
