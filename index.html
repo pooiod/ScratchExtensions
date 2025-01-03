@@ -540,7 +540,9 @@
                         noResultsMessage.textContent = 'No results found';
                         container.appendChild(noResultsMessage);
                     }
-                    document.querySelector(".footer").innerHTML = `Didn't find what you wanted? Try including <a onclick="document.getElementById('search').value += ' include:hidden'">hidden</a> extensions in your search`;
+                    if (document.getElementById('search').value) {
+                        document.querySelector(".footer").innerHTML = `Didn't find what you wanted? Try including <a onclick="document.getElementById('search').value += ' include:hidden'">hidden</a> extensions in your search`;
+                    }
                 }
 
                 if (filteredData.length === 0) {
