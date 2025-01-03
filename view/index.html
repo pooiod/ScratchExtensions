@@ -276,13 +276,13 @@
         
             setTimeout(() => {
                 notification.style.opacity = '0';
+                const remainingNotifications = document.querySelectorAll('.stacked-notification');
+                remainingNotifications.forEach((notif, index) => {
+                    notif.style.bottom = `${10 + index * 50}px`;
+                });
                 setTimeout(() => {
                     notification.remove();
-                    const remainingNotifications = document.querySelectorAll('.stacked-notification');
-                    remainingNotifications.forEach((notif, index) => {
-                        notif.style.bottom = `${10 + index * 50}px`;
-                    });
-                }, 100);
+                }, 500);
             }, time || 2000);
         }
     </script>
