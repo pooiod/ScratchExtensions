@@ -226,7 +226,7 @@
                     console.log('Error sharing:', error);
                     if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                         navigator.clipboard.writeText(link);
-                        showNotification("Text copied to clipboard", "#ededed", 1000)
+                        showNotification("Text copied to clipboard", "#ededed", 1000);
                     } else {
                         window.open(link)
                     }
@@ -244,7 +244,7 @@
         function copy(txt) {
             if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 navigator.clipboard.writeText(txt);
-                showNotification("Text copied to clipboard", "#ededed", 1000)
+                showNotification("Text copied to clipboard", "#ededed", 1000);
             } else {
                 editor.setValue(txt);
             }
@@ -274,7 +274,7 @@
             document.body.appendChild(notification);
 
             if (existingNotification) {
-                let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 1;
+                let borderWidth = parseFloat(existingNotification.style.borderWidth.replace("px", "")) + 0.5;
                 if (borderWidth > 10) {
                     borderWidth = 10;
                 }
