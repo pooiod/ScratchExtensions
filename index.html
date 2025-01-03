@@ -541,7 +541,7 @@
                         container.appendChild(noResultsMessage);
                     }
                     if (document.getElementById('search').value) {
-                        document.querySelector(".footer").innerHTML = `Didn't find what you wanted? Try including <a onclick="document.getElementById('search').value += ' include:hidden'">hidden</a> extensions in your search`;
+                        document.querySelector(".footer").innerHTML = `Didn't find what you wanted? Try including <a onclick="document.getElementById('search').value += ' include:hidden'; filterCards();" style='text-decoration: underline;'>hidden</a> extensions in your search`;
                     }
                 }
 
