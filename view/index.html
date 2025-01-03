@@ -293,6 +293,7 @@ function showNotification(message, color, time) {
 
     setTimeout(() => {
         notification.style.opacity = '0';
+        notification.style.bottom = `${5 + offset}px`;
         notification.style.borderWidth = "1px";
         setTimeout(() => {
             if (notification) {
