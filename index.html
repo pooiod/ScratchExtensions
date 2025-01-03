@@ -547,8 +547,8 @@
 
                 if (filteredData.length === 0) {
                     const noResultsMessage = document.createElement('div');
-                    noResultsMessage.textContent = 'No results found';
-                    container.appendChild(noResultsMessage);
+                    container.textContent = 'No results found';
+                    // container.appendChild(noResultsMessage);
                 } else {
                     filteredData.forEach(card => {
                         container.appendChild(createCard(card, query.includes('is:hidden') || document.getElementById('search').value.toLowerCase().includes('include:hidden')));
