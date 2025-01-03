@@ -267,7 +267,7 @@ function showNotification(message, color, time) {
     notification.style.borderRadius = '5px';
     notification.style.zIndex = '9999999999999999';
     notification.style.opacity = '0';
-    notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out';
+    notification.style.transition = 'opacity 0.5s ease-in-out, bottom 0.5s ease-in-out, border 0.5s ease-in-out';
     notification.style.fontSize = '16px';
 
     const notifications = document.querySelectorAll('.stacked-notification');
@@ -293,6 +293,7 @@ function showNotification(message, color, time) {
 
     setTimeout(() => {
         notification.style.opacity = '0';
+        notification.style.borderWidth = "1px";
         setTimeout(() => {
             if (notification) {
                 notification.remove();
