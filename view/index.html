@@ -278,8 +278,7 @@
                 notification.style.opacity = '0';
                 setTimeout(() => {
                     notification.remove();
-                    const remainingNotifications = document.querySelectorAll('.stacked-notification');
-                    remainingNotifications.forEach((notif, index) => {
+                    document.querySelectorAll('.stacked-notification').forEach((notif, index) => {
                         notif.style.bottom = `${10 + index * 50}px`;
                     });
                 }, 500);
