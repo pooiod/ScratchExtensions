@@ -285,6 +285,7 @@ function showNotification(message, color, time) {
         notification.style.opacity = '1';
         notification.style.bottom = `${10}px`;
     } else {
+        offset -= 50;
         notification.style.bottom = `${10 + offset}px`;
         setTimeout(() => {
             notification.style.opacity = '1';
