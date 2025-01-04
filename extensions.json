@@ -140,7 +140,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
-        "tags": ["joke"],
+        "tags": ["finished", "joke"],
         "type": ["sandboxed"],
         "hidden": false
     },
@@ -332,5 +332,23 @@
         "tags": ["finished"],
         "type": ["sandboxed"],
         "hidden": false
+    },
+    {
+        "id": "AIhorde",
+        "image": "",
+        "title": "AI Horde",
+        "description": "",
+        "created": "Jan 4, 2025",
+        "subtext": "",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
+            { "text": "View progress", "color": "#cbe0f2", "link": "/docs/#/[id]/todo" }
+        ],
+        "tags": ["unfinished"],
+        "type": ["unsandboxed"],
+        "hidden": true
     }
 ]

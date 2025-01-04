@@ -1,0 +1,405 @@
+# A list of all endpoints on stablehorde.net and what is currently supported in this extension
+
+> api docs can be found [here](https://stablehorde.net/api/).
+
+- [ ] **PARAMETERS** `/v2/collection_by_name/{collection_name}` - Seeks an style collection by name and displays its information
+
+- [ ] **GET** `/v2/collection_by_name/{collection_name}` - Seeks an style collection by name and displays its information
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/collections` - Creates a new style collection
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/collections` - Displays all existing collections
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `sort`: How to sort returned styles. 'popular' sorts by usage and 'age' sorts by date added.
+  - [ ] `page`: Which page of results to return. Each page has 25 styles.
+  - [ ] `type`: Filter by type. Accepts either 'image', 'text' or 'all'.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/collections/{collection_id}` - Modifies an existing style collection
+
+- [ ] **DELETE** `/v2/collections/{collection_id}` - Deletes a style collection
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PATCH** `/v2/collections/{collection_id}` - Modifies an existing style collection
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/collections/{collection_id}` - Displays information about a single style collection
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/documents/privacy` - Privacy Policy
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `format`: html or markdown
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/documents/sponsors` - Sponsors
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `format`: html or markdown
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/documents/terms` - Terms and Conditions
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `format`: html or markdown
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PUT** `/v2/filters` - Moderator Only: Add a new regex filter
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/filters` - Moderator Only: Check The suspicion of the provided prompt
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/filters` - Moderator Only: A List all filters, or filtered by the query
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `filter_type`: The filter type.
+  - [ ] `contains`: Only return filter containing this word.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/filters/regex` - Moderator Only: A List all filters, or filtered by the query
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `filter_type`: The filter type.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/filters/{filter_id}` - No description
+
+- [ ] **DELETE** `/v2/filters/{filter_id}` - Moderator Only: Delete a regex filter
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PATCH** `/v2/filters/{filter_id}` - Moderator Only: Modify an existing regex filter
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/filters/{filter_id}` - Moderator Only: Display a single filter
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/find_user` - Lookup user details based on their API key
+  - [ ] `apikey`: User API key we're looking for.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/generate/async` - Initiate an Asynchronous request to generate images
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/generate/check/{id}` - No description
+
+- [ ] **GET** `/v2/generate/check/{id}` - Retrieve the status of an Asynchronous generation request without images
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/generate/pop` - Check if there are generation requests queued for fulfillment
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/generate/rate/{id}` - No description
+
+- [ ] **POST** `/v2/generate/rate/{id}` - Submit aesthetic ratings for generated images to be used by LAION and Stability
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/generate/status/{id}` - No description
+
+- [ ] **DELETE** `/v2/generate/status/{id}` - Cancel an unfinished request
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/generate/status/{id}` - Retrieve the full status of an Asynchronous generation request
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/generate/submit` - Submit a generated image
+  - [ ] `apikey`: The worker's owner API key.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/generate/text/async` - Initiate an Asynchronous request to generate text
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/generate/text/pop` - Check if there are generation requests queued for fulfillment
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/generate/text/status/{id}` - No description
+
+- [ ] **DELETE** `/v2/generate/text/status/{id}` - Cancel an unfinished request
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/generate/text/status/{id}` - Retrieve the full status of an Asynchronous generation request
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/generate/text/submit` - Submit generated text
+  - [ ] `apikey`: The worker's owner API key.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/interrogate/async` - Initiate an Asynchronous request to interrogate an image
+  - [ ] `apikey`: A User API key
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/interrogate/pop` - Check if there are interrogation requests queued for fulfillment
+  - [ ] `apikey`: The API Key corresponding to a registered user
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/interrogate/status/{id}` - No description
+
+- [ ] **DELETE** `/v2/interrogate/status/{id}` - Cancel an unfinished interrogation request
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/interrogate/status/{id}` - Retrieve the full status of an interrogation request
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/interrogate/submit` - Submit the results of an interrogated image
+  - [ ] `apikey`: The worker's owner API key
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/kudos/award` - Awards Kudos to registed user
+  - [ ] `apikey`: The sending user's API key.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/kudos/transfer` - Transfer Kudos to another registed user
+  - [ ] `apikey`: The sending user's API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/operations/block_worker_ipaddr/{worker_id}` - No description
+
+- [ ] **DELETE** `/v2/operations/block_worker_ipaddr/{worker_id}` - Remove a worker's IP block
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PUT** `/v2/operations/block_worker_ipaddr/{worker_id}` - Block worker's from a specific IP for 24 hours
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **DELETE** `/v2/operations/ipaddr` - Remove an IP from timeout
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/operations/ipaddr` - Add an IP or CIDR to timeout
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/operations/ipaddr` - Return all existing IP Block timeouts
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/operations/ipaddr/{ipaddr}` - No description
+
+- [ ] **GET** `/v2/operations/ipaddr/{ipaddr}` - Check if an IP or CIDR is in timeout
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PUT** `/v2/sharedkeys` - Create a new SharedKey for this user
+  - [ ] `apikey`: User API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/sharedkeys/{sharedkey_id}` - No description
+
+- [ ] **DELETE** `/v2/sharedkeys/{sharedkey_id}` - Delete an existing SharedKey for this user
+  - [ ] `apikey`: User API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PATCH** `/v2/sharedkeys/{sharedkey_id}` - Modify an existing Shared Key
+  - [ ] `apikey`: User API key.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/sharedkeys/{sharedkey_id}` - Get details about an existing Shared Key
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/stats/img/models` - Details how many images were generated per model for the past day, month and total
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `model_state`: If 'known', only show stats for known models in the model reference. If 'custom' only show stats for custom models. If 'all' shows stats for all models.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/stats/img/totals` - Details how many images have been generated in the past minux,hour,day,month and total
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/stats/text/models` - Details how many texts were generated per model for the past day, month and total
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/stats/text/totals` - Details how many texts have been generated in the past minux,hour,day,month and total
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/status/heartbeat` - If this loads, this node is available
+  - [ ] `Client-Agent`: The client name and version.
+- [ ] **GET** `/v2/status/models` - Returns a list of models active currently in this horde
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `type`: Filter the models by type (image or text).
+  - [ ] `min_count`: Filter only models that have at least this amount of threads serving.
+  - [ ] `max_count`: Filter the models that have at most this amount of threads serving.
+  - [ ] `model_state`: If 'known', only show stats for known models in the model reference. If 'custom' only show stats for custom models. If 'all' shows stats for all models.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/status/models/{model_name}` - No description
+
+- [ ] **GET** `/v2/status/models/{model_name}` - Returns all the statistics of a specific model in this horde
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PUT** `/v2/status/modes` - Change Horde Modes
+  - [ ] `apikey`: The Admin API key.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/status/modes` - Horde Maintenance Mode Status
+  - [ ] `apikey`: The Admin or Owner API key.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/status/news` - Read the latest happenings on the horde
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/status/performance` - Details about the current performance of this Horde
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/styles/image` - Creates a new image style
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/styles/image` - Retrieves information about all image styles
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `sort`: How to sort returned styles. 'popular' sorts by usage and 'age' sorts by date added.
+  - [ ] `page`: Which page of results to return. Each page has 25 styles.
+  - [ ] `tag`: If included, will only return styles with this tag
+  - [ ] `model`: If included, will only return styles using this model
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/styles/image/{style_id}` - No description
+
+- [ ] **DELETE** `/v2/styles/image/{style_id}` - Deletes an image style
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PATCH** `/v2/styles/image/{style_id}` - Modifies an image style
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/styles/image/{style_id}` - Displays information about an image style
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/styles/image/{style_id}/example` - No description
+
+- [ ] **POST** `/v2/styles/image/{style_id}/example` - Creates an image style example
+  - [ ] `apikey`: A User API key
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/styles/image/{style_id}/example/{example_id}` - No description
+
+- [ ] **DELETE** `/v2/styles/image/{style_id}/example/{example_id}` - Deletes an image style example
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PATCH** `/v2/styles/image/{style_id}/example/{example_id}` - Modified an existing image style example
+  - [ ] `apikey`: A User API key
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/styles/image_by_name/{style_name}` - No description
+
+- [ ] **GET** `/v2/styles/image_by_name/{style_name}` - Seeks an image style by name and displays its information
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/styles/text` - Creates a new text style
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/styles/text` - Retrieves information about all text styles
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `sort`: How to sort returned styles. 'popular' sorts by usage and 'age' sorts by date added.
+  - [ ] `page`: Which page of results to return. Each page has 25 styles.
+  - [ ] `tag`: If included, will only return styles with this tag
+  - [ ] `model`: If included, will only return styles using this model
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/styles/text/{style_id}` - No description
+
+- [ ] **DELETE** `/v2/styles/text/{style_id}` - Deletes a text style
+  - [ ] `apikey`: A mod API key.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PATCH** `/v2/styles/text/{style_id}` - Modifies a text style
+  - [ ] `apikey`: The API Key corresponding to a registered user.
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/styles/text/{style_id}` - Displays information about a single text style
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/styles/text_by_name/{style_name}` - No description
+
+- [ ] **GET** `/v2/styles/text_by_name/{style_name}` - Seeks a text style by name and displays its information
+  - [ ] `Client-Agent`: The client name and version
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **POST** `/v2/teams` - Create a new team
+  - [ ] `apikey`: A User API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/teams` - A List with the details of all teams
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/teams/{team_id}` - No description
+
+- [ ] **DELETE** `/v2/teams/{team_id}` - Delete the team entry
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `apikey`: The Moderator or Owner API key.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PATCH** `/v2/teams/{team_id}` - Update a Team's information
+  - [ ] `apikey`: The Moderator or Creator API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/teams/{team_id}` - Details of a worker Team
+  - [ ] `apikey`: The Moderator or Owner API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/users` - A List with the details and statistic of all registered users
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `page`: Which page of results to return. Each page has 25 users.
+  - [ ] `sort`: How to sort the returned list.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/users/{user_id}` - No description
+
+- [ ] **PUT** `/v2/users/{user_id}` - Endpoint for horde admins to perform operations on users
+  - [ ] `apikey`: The Admin API .
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/users/{user_id}` - Details and statistics about a specific user
+  - [ ] `apikey`: The Admin, Mod or Owner API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/workers` - A List with the details of all registered and active workers
+  - [ ] `apikey`: A Moderator API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `type`: Filter the workers by type (image, text or interrogation).
+  - [ ] `name`: Find a worker by name (case insensitive).
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/workers/name/{worker_name}` - No description
+
+- [ ] **GET** `/v2/workers/name/{worker_name}` - Details of a registered worker
+  - [ ] `apikey`: The Moderator or Owner API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **PARAMETERS** `/v2/workers/{worker_id}` - No description
+
+- [ ] **PUT** `/v2/workers/{worker_id}` - No description
+  - [ ] `apikey`: The Moderator or Owner API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `payload`: undefined
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **DELETE** `/v2/workers/{worker_id}` - Delete the worker entry
+  - [ ] `apikey`: The Moderator or Owner API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
+- [ ] **GET** `/v2/workers/{worker_id}` - Details of a registered worker
+  - [ ] `apikey`: The Moderator or Owner API key.
+  - [ ] `Client-Agent`: The client name and version.
+  - [ ] `X-Fields`: An optional fields mask
