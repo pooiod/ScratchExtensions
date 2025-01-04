@@ -7,10 +7,8 @@
         throw new Error('This extension must run unsandboxed');
     }
 
-    class extexample {
-        constructor() {
-            this.thing = 0;
-        }
+    class p7TheHordeAI {
+        constructor() {}
 
         getInfo() {
             return {
@@ -36,5 +34,5 @@
             console.log(args);
         }
     }
-    Scratch.extensions.register(new extexample());
+    Scratch.extensions.register(new p7TheHordeAI());
 })(Scratch);

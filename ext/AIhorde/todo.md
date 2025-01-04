@@ -1,6 +1,6 @@
 # A list of all endpoints on stablehorde.net and what is currently supported in this extension
 
-> api docs can be found [here](https://stablehorde.net/api/).
+> this file was auto-generated from the api docs that can be found [here](https://stablehorde.net/api/).
 
 - [ ] **PARAMETERS** `/v2/collection_by_name/{collection_name}` - Seeks an style collection by name and displays its information
 
