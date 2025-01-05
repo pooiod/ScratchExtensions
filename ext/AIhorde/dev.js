@@ -64,14 +64,14 @@
         }
         
         getmodels({TYPE}) {
-            return fetch(`${this.base}/v2/status/models?type=${TYPE}`)
+            return Scratch.fetch(`${this.base}/v2/status/models?type=${TYPE}`)
                 .then((res) => res.json())
                 .then((dat) => JSON.stringify(dat))
                 .catch((err) => err.message);
         }
         
         apiStatus({TYPE}) {
-            return fetch(`${this.base}/v2/status/heartbeat`)
+            return Scratch.fetch(`${this.base}/v2/status/heartbeat`)
                 .then((res) => res.json())
                 .then((dat) => JSON.stringify(dat))
                 .catch((err) => err.message);
