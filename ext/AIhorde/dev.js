@@ -8,7 +8,10 @@
     }
 
     class p7TheHordeAI {
-        constructor() {}
+        constructor() {
+            this.base = "//stablehorde.net/api";
+            this.key = "0000000000";
+        }
 
         getInfo() {
             return {
@@ -16,23 +19,50 @@
                 name: 'AI Horde',
                 blocks: [
                     {
-                        opcode: 'func',
+                        opcode: 'setKey',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'a block [VAL]',
+                        text: 'Set api key to [KEY]',
                         arguments: {
-                            VAL: {
+                            KEY: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'REEEEEEEEEE',
+                                defaultValue: '0000000000',
+                            },
+                        },
+                    },
+
+
+                    {
+                        opcode: 'getmodels',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get all [TYPE] models',
+                        arguments: {
+                            TYPE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'text',
+                                menu: 'ModelTypes',
                             },
                         },
                     }
-                ]
+                ],
+                menus: {
+					ModelTypes: {
+						acceptReporters: false,
+						items: ['text', 'image'],
+					}
+				},
             };
         }
-        
-        func(args) {
-            console.log(args);
+
+        setKey({KEY}) {
+            this.key = KEY;
         }
+        
+        getmodels({TYPE}) {
+            return fetch(`${this.base}/v2/status/models?type=${TYPE}`)
+                .then((res) => res.json())
+                .then((dat) => JSON.stringify(dat))
+                .catch((err) => err.message);
+        }        
     }
     Scratch.extensions.register(new p7TheHordeAI());
 })(Scratch);

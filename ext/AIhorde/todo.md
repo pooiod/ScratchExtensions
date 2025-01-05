@@ -232,7 +232,7 @@
   - [ ] `X-Fields`: An optional fields mask
 - [ ] **GET** `/v2/status/heartbeat` - If this loads, this node is available
   - [ ] `Client-Agent`: The client name and version.
-- [ ] **GET** `/v2/status/models` - Returns a list of models active currently in this horde
+- [x] **GET** `/v2/status/models` - Returns a list of models active currently in this horde
   - [ ] `Client-Agent`: The client name and version.
   - [ ] `type`: Filter the models by type (image or text).
   - [ ] `min_count`: Filter only models that have at least this amount of threads serving.
