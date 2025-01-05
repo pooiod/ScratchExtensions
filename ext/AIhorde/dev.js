@@ -42,6 +42,12 @@
                                 menu: 'ModelTypes',
                             },
                         },
+                    },
+
+                    {
+                        opcode: 'apiStatus',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get api status',
                     }
                 ],
                 menus: {
@@ -62,7 +68,14 @@
                 .then((res) => res.json())
                 .then((dat) => JSON.stringify(dat))
                 .catch((err) => err.message);
-        }        
+        }
+        
+        apiStatus({TYPE}) {
+            return fetch(`${this.base}/v2/status/heartbeat`)
+                .then((res) => res.json())
+                .then((dat) => JSON.stringify(dat))
+                .catch((err) => err.message);
+        }
     }
     Scratch.extensions.register(new p7TheHordeAI());
 })(Scratch);

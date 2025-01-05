@@ -230,7 +230,7 @@
 - [ ] **GET** `/v2/stats/text/totals` - Details how many texts have been generated in the past minux,hour,day,month and total
   - [ ] `Client-Agent`: The client name and version
   - [ ] `X-Fields`: An optional fields mask
-- [ ] **GET** `/v2/status/heartbeat` - If this loads, this node is available
+- [x] **GET** `/v2/status/heartbeat` - If this loads, this node is available
   - [ ] `Client-Agent`: The client name and version.
 - [x] **GET** `/v2/status/models` - Returns a list of models active currently in this horde
   - [ ] `Client-Agent`: The client name and version.
