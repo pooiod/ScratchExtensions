@@ -7,7 +7,8 @@
 
 // Report issues with this extension at https://p7scratchextensions.pages.dev/reportissue
 /* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
-but has since deviated to be its own thing. (made with box2D js es6) */
+but has since deviated to be its own thing. (made with box2D js es6)
+*/// You can find a direct port here: https://p7scratchextensions.pages.dev/view/#/BoxedPhysics/griffpatch.js
 
 (function(Scratch) {
   'use strict';
