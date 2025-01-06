@@ -440,7 +440,7 @@
                     if (!response.ok) throw new Error('File not found');
                     var code = await response.text();
                     if (code.includes("Sorry, the page you are looking for could not be loaded due to an internal server error.")) {
-                        code = "// This build does not exist";
+                        code = "// This file does not exist";
                         document.getElementById("yeet").style.display = "none";
                         document.getElementById("direct").style.display = "none";
                         document.getElementById("share").style.display = "none";
@@ -456,7 +456,7 @@
                 document.getElementById("yeet").style.display = "none";
                 document.getElementById("direct").style.display = "none";
                 document.getElementById("share").style.display = "none";
-                editor.setValue('// No file');
+                editor.setValue('// No file specified');
                 window.location.href = "/";
             }
         }
