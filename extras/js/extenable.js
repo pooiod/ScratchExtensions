@@ -30,7 +30,7 @@ if (window.location.hostname === 'studio.penguinmod.com') {
     let clicks = 0;
 
     let interval = setInterval(() => {
-        if (checks >= 100) {
+        if (checks >= 1000) {
             clearInterval(interval);
             return;
         }
@@ -49,5 +49,5 @@ if (window.location.hostname === 'studio.penguinmod.com') {
             }
         }
         checks++;
-    }, 1000);
+    }, 100);
 }
