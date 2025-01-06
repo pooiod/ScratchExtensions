@@ -16,7 +16,12 @@
       const targetSpan = Array.from(document.querySelectorAll('span'))
       .find(span => span.textContent.trim() === 'PenguinMod Extra Extensions');
 
-      if (targetSpan && !document.querySelector('#p7extensionslist')) {
+      if (document.querySelector('#p7extensionslist')) {
+        document.querySelector('#p7extensionslist').remove();
+      }
+
+      if (targetSpan && Array.from(document.querySelectorAll('span'))
+        .find(span => span.textContent.trim() === 'TurboWarp Extension Gallery')) {
         const parentElement = targetSpan.closest('span').parentElement.parentElement;
 
         const newHTML = `
