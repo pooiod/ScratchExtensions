@@ -208,5 +208,5 @@ Boxed Physics also includes some math blocks for convenience:
 Need more help?
 Try some example projects [here](https://p7scratchextensions.pages.dev/ext/BoxedPhysics/examples).
 
-> Looking for a way to load old ScratchX projects using Griffpatch's Box2D extension?
-> Try using <a href="/view/#/BoxedPhysics/griffpatch.js">this</a>.
+<!-- > Looking for a way to load old ScratchX projects using Griffpatch's Box2D extension?
+> Try using <a href="/view/#/BoxedPhysics/griffpatch.js">this</a>. -->
