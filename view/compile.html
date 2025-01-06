@@ -91,6 +91,9 @@
             width: 0;
             background-color: white;
         }
+        a {
+            color: inherit;
+        }
     </style>
 </head>
 <body>
@@ -113,16 +116,16 @@
     <script>
         var didyouknow = [
             "you can search \"include:hidden\" to show my broken / discontinued extensions",
-            "<b>Elementl images</b> was originally made for <b>Video Sharing</b>",
-            "<b>Racoon Facts</b> was inspired by CATS (an ext by G1nX)",
-            "<b>Super Storage</b> was made because snap closed the free file api endpoint",
-            "<b>Page Opener</b> started as a one-off internal extension",
-            "<b>Text to Speech</b> is based on a ScratchX extension by Sayamindu Dasgupta",
-            "<b>Dictation</b> was based on a ScratchX extension found in the source code of Snail IDE",
-            "<b>SVG Text</b> is based on the svg text import feature on PenguinPaint (a now dead paint program)",
-            "<b>Boxed Physics</b> was originally based on the Box2D Physics extension for ScratchX by Griffpatch",
-            "<b>HTML Canvas</b> gets its name from an old penguinmod extension",
-            "<b>Video Sharing</b> was originally called \"Screen Sharing\""
+            "<a href='/#ElementalImages'>Elemental images</a> was originally made for <a href='/#VideoSharing'>Video Sharing</a>",
+            "<a href='/#RaccFacts'>Racoon Facts</a> was inspired by <b>CATS</b> (an extension by G1nX)",
+            "<a href='/#SuperStorage'>Super Storage</a> was made because snap closed the free file api endpoint",
+            "<a href='/#PageOpener'>Page Opener</a> started as a one-off internal extension",
+            "<a href='/#BasicTTS'>Text to Speech</a> is based on a ScratchX extension by Sayamindu Dasgupta",
+            "<a href='/#Dictation'>Dictation</a> was based on a ScratchX extension found in the Snail IDE source code", // I couldn't find the file
+            "<a href='/#SVGtext'>SVG Text</a> is based on the svg text import feature on <a href='https://github.com/pooiod/Penguin-Paint'>PenguinPaint</a> (a now dead paint program)",
+            "<a href='/#BoxedPhysics'>Boxed Physics</a> was originally based on the <a href='/view/#/BoxedPhysics/griffpatch.js'>Box2D Physics</a> extension for ScratchX by Griffpatch",
+            "<a href='/#HTMLcanvas'>HTML Canvas</a> gets its name from an old penguinmod extension",
+            "<a href='/#VideoSharing'>Video Sharing</a> was originally called \"Screen Sharing\""
         ];
         function statusText(txt) {
             document.getElementById("loader_message-container").innerHTML = txt + "…";
