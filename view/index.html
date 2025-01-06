@@ -337,7 +337,8 @@
                 const response = await fetch("https://yeetyourfiles.lol/", {
                     method: "HEAD",
                 });
-                return response.ok;
+                return response.ok && !window.location.hostname.includes('archive.org');
+                // archive.org is an archival site, and doesn't work with file uploads
             } catch (error) {
                 console.error("Error fetching URL:", error);
                 return false;

@@ -394,9 +394,14 @@
         let footerHTML = document.querySelector(".footer").innerHTML;
 
         if(!window.location.origin.includes('p7scratchextensions.pages.dev')) {
-            showWarning("You are on a mirror site, please be cautious about using links here, as this site may go down without warning! You can go to my full site <a href=\"https://p7scratchextensions.pages.dev\">here</a>.");
+            if (window.location.hostname.includes('archive.org')) {
+                showWarning("This is an archived version of p7scratchextensions.pages.dev");
+            } else {
+                showWarning("You are on a mirror site, please be cautious about using links here, as this site may go down without warning! You can go to my full site <a href=\"https://p7scratchextensions.pages.dev\">here</a>.");
+            }
         }
 
+        // Error pages are removed for compatability with things like archive.org
         if (window.location.pathname !== "/" && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
             document.body.innerHTML = '';
 

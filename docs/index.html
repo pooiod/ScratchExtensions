@@ -182,7 +182,7 @@
 			if (matches) {
 				matches.forEach(match => {
 					const jsCode = match.slice(5, -2);
-					markdownText = markdownText.replace(match, ''); // Remove the JS code from the string
+					markdownText = markdownText.replace(match, '');
 					try {
 						eval(jsCode);
 					} catch (error) {
@@ -202,15 +202,23 @@
 			
 			document.getElementById("loading-bar").setAttribute("style", "opacity: 0;");
 
-			Prism.highlightAll();
+			if (typeof Prism !== 'undefined') {
+				Prism.highlightAll();
+			} else {
+				console.warn("Unable to load code highlighter");
+			}
 			
-			scratchblocks.init();
-			scratchblocks.module.renderMatching(".scratch2", {
-				style: "scratch2",
-			});
-			scratchblocks.module.renderMatching(".scratch3", {
-				style: "scratch3",
-			});
+			if (typeof scratchblocks !== 'undefined') {
+				scratchblocks.init();
+				scratchblocks.module.renderMatching(".scratch2", {
+					style: "scratch2",
+				});
+				scratchblocks.module.renderMatching(".scratch3", {
+					style: "scratch3",
+				});
+			} else {
+				console.warn("Unable to load scratchblocks");
+			}
 
 			document.querySelectorAll('light').forEach(el => {
 				const p = document.createElement('p');
