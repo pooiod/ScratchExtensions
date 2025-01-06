@@ -1,4 +1,4 @@
-// Archival of Griffpatch's Box2D physics extension (for ScratchX) but remade to be compatable with Turbowarp that keeps as close to the originl as possible
+// Archival of Griffpatch's Box2D physics extension (for ScratchX) but re-worked slightly to be compatable with Turbowarp
 // Original can be found at: http://griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js
 // Example of use: https://studio.penguinmod.com/fullscreen.html?project_url=https://p7scratchextensions.pages.dev/ext/BoxedPhysics/examples/Box2D%20car%20scratch3%20port.sb3
 // Archived and updated by pooiod7
