@@ -154,8 +154,11 @@
         //         console.log("Can't yeet right now :(");
         //     }
         // });
+
         window.onload = async function() {
             try {
+                statusText("Did you know, " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const extensionUrl = urlParams.get('ext');
                 const extId = urlParams.get('ext').split('/')[2];
@@ -164,14 +167,16 @@
                     throw new Error("Missing 'extension' or 'extId' in URL parameters.");
                 }
 
-                statusText("Downloading base project files");
+                // statusText("Downloading base project files");
 
                 const extensionResponse = await fetch(extensionUrl);
                 const extensionBlob = await extensionResponse.blob();
                 var extensionDataUri = window.location.origin + urlParams.get('ext');
 
-                if (extensionDataUri.includes('dev.js') || urlParams.get('local') || (!window.location.origin.includes('p7scratchextensions.pages.dev') && window.confirm("Do you want to use an auto updating build of this extension?"))) {
-                    extensionDataUri = await blobToDataUri(extensionBlob);
+                if (!extensionDataUri.includes('main.js') || urlParams.get('local') || (!window.location.origin.includes('p7scratchextensions.pages.dev') && window.confirm("Want to use a static build of this extension? (will not brake if this mirror goes down)"))) {
+                    if (!urlParams.get('online')) {
+                        extensionDataUri = await blobToDataUri(extensionBlob);
+                    }
                 }
 
                 const zipUrl = 'Project.zip';
@@ -179,14 +184,14 @@
                 const zipBlob = await zipResponse.blob();
                 const zip = await JSZip.loadAsync(zipBlob);
 
-                statusText("Looking for project.json");
+                // statusText("Looking for project.json");
 
                 const files = Object.keys(zip.files);
                 for (let fileName of files) {
                     const file = zip.file(fileName);
 
                     if (fileName === 'project.json') {
-                        statusText("Injecting extension");
+                        // statusText("Injecting extension");
                         let projectJson = await file.async('string');
                         projectJson = projectJson
                             .replace(/\[EXTURL\]/g, extensionDataUri)
@@ -198,7 +203,6 @@
 
                 const updatedZipBlob = await zip.generateAsync({ type: 'blob' });
 
-                statusText("Did you know, " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
                 setTimeout(function(){
                     uploadFile(updatedZipBlob);
                 }, 1000);
@@ -222,7 +226,7 @@
             // statusText("Starting project servers");
             var didknow = setInterval(function(){
                 statusText("Did you know: " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
-            }, 1000);
+            }, 3000);
 
             if (!file) {
                 clearInterval(didknow);
@@ -262,7 +266,7 @@
                 } else {
                     clearInterval(didknow);
                     console.error('Upload failed with status:', xhr.status);
-                    alert('Load failed. Please try again.');
+                    alert('Load failed. Please check yeetyourfiles.lol and try again.');
                     window.close();
                 }
             };
@@ -270,7 +274,7 @@
             xhr.onerror = function() {
                 clearInterval(didknow);
                 console.error('An error occurred during the file upload.');
-                alert('An error occurred. Please try again.');
+                alert('An error occurred. Please try again later.');
                 window.close();
             };
 

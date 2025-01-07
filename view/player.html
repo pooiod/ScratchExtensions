@@ -45,7 +45,20 @@
     <iframe id="iframe"></iframe>
 
     <script>
-        // document.getElementById('load-button').addEventListener('click', function() {
+        const loadingText = document.createElement('p');
+        loadingText.textContent = 'Loading demo...';
+        loadingText.style.position = 'fixed';
+        loadingText.style.top = '50%';
+        loadingText.style.left = '50%';
+        loadingText.style.transform = 'translate(-50%, -50%)';
+        loadingText.style.zIndex = '-1';
+        document.body.appendChild(loadingText);
+
+        setTimeout(() => {
+            loadingText.textContent = 'Demo failed to load';
+        }, 10000);
+
+        if (true) { // document.getElementById('load-button').addEventListener('click', function() {
             const urlParams = new URLSearchParams(window.location.search);
             var projectUrl = urlParams.get('url') || "/view/NotLoaded.pmp";
 
@@ -58,7 +71,7 @@
             iframe.src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart') ? "autostart=true&" : ""}project_url=${encodeURIComponent(projectUrl)}`;
             iframe.style.display = "block";
             this.style.display = "none";
-        // });
+        }//);
     </script>
 </body>
 </html>
