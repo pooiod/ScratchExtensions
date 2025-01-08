@@ -11,8 +11,8 @@
         constructor() {
             this.base = "//stablehorde.net/api";
             this.key = "0000000000";
-            this.allow_downgrade = true;
-            this.source_image = "";
+            this.allow_downgrade = false;
+            this.source_image = false;
             this.img_strength = 1;
         }
 
@@ -106,7 +106,7 @@
                         arguments: {
                             PROMPT: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'An orange cat jumping over a blue dog',
+                                defaultValue: 'An orange cat in space',
                             },
                             MODEL: {
                                 type: Scratch.ArgumentType.STRING,
@@ -226,10 +226,10 @@
                               "strength": this.img_strength
                             }
                         ]:[],
-                        allow_downgrade: this.allow_downgrade
+                        allow_downgrade: this.allow_downgrade || MODEL == "any"
                     })
                 });
-                this.source_image = [];
+                this.source_image = false;
                 const data = await response.json();
                 return data.id;
             } catch (error) {
@@ -263,7 +263,7 @@
 
         async startImageGen({PROMPT, MODEL, CONFIG}) {
             try {
-                const response = await fetch(`${this.base}/v2/generate/async`, {
+                const response = await Scratch.fetch(`${this.base}/v2/generate/async`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -282,10 +282,10 @@
                               "strength": this.img_strength
                             }
                         ]:[],
-                        allow_downgrade: this.allow_downgrade
+                        allow_downgrade: this.allow_downgrade || MODEL == "any"
                     })
                 });
-                this.source_image = [];
+                this.source_image = false;
                 const data = await response.json();
                 return data.id;
             } catch (error) {
