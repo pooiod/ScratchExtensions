@@ -334,9 +334,9 @@
         "hidden": false
     },
     {
-        "id": "AIhorde",
+        "id": "KoboldAI",
         "image": "",
-        "title": "AI Horde",
+        "title": "Kobold AI",
         "description": "Crowdsourced AI",
         "created": "Jan 4, 2025",
         "subtext": "",
@@ -344,8 +344,7 @@
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
-            { "text": "View progress", "color": "#cbe0f2", "link": "/docs/#/[id]/todo" }
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
         "tags": ["unfinished"],
         "type": ["unsandboxed"],
