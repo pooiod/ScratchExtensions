@@ -7,37 +7,13 @@
         throw new Error('This extension must run unsandboxed');
     }
 
-    function mergeJSON(json1, json2) {
-        if (typeof json2 === 'string') {
-            try {
-                json2 = JSON.parse(`{${json2}}`);
-            } catch {
-                return json1;
-            }
-        }
-    
-        if (typeof json2 !== 'object' || json2 === null) {
-            return json1;
-        }
-    
-        let result = { ...json1 };
-        for (let key in json2) {
-            if (Array.isArray(json2[key]) && Array.isArray(json1[key])) {
-                result[key] = [...json2[key]];
-            } else if (typeof json2[key] === 'object' && typeof json1[key] === 'object') {
-                result[key] = mergeJSON(json1[key], json2[key]);
-            } else {
-                result[key] = json2[key];
-            }
-        }
-        return result;
-    }
-
     class p7KoboldAI {
         constructor() {
             this.base = "//stablehorde.net/api";
             this.key = "0000000000";
-            this.allow_downgrade = true
+            this.allow_downgrade = true;
+            this.source_image = "";
+            this.img_strength = 1;
         }
 
         getInfo() {
@@ -174,6 +150,37 @@
             };
         }
 
+        mergeJSON(json1, json2) {
+            if (typeof json2 === 'string') {
+                try {
+                    json2 = JSON.parse(`{${json2}}`);
+                } catch {
+                    return json1;
+                }
+            }
+    
+            if (json.img && Array.isArray(json.img) && json.img.length === 2) {
+                this.source_image = json.img[0];
+                this.img_strength = json.img[1];
+            }        
+        
+            if (typeof json2 !== 'object' || json2 === null) {
+                return json1;
+            }
+        
+            let result = { ...json1 };
+            for (let key in json2) {
+                if (Array.isArray(json2[key]) && Array.isArray(json1[key])) {
+                    result[key] = [...json2[key]];
+                } else if (typeof json2[key] === 'object' && typeof json1[key] === 'object') {
+                    result[key] = mergeJSON(json1[key], json2[key]);
+                } else {
+                    result[key] = json2[key];
+                }
+            }
+            return result;
+        }
+
         setKey({KEY}) {
             this.key = KEY;
         }
@@ -209,13 +216,20 @@
                     },
                     body: JSON.stringify({
                         prompt: PROMPT,
-                        params: mergeJSON({
+                        params: this.mergeJSON({
                             n: 1,
                             models: [MODEL]
                         }, CONFIG),
+                        "extra_source_images": this.source_image?[
+                            {
+                              "image": this.source_image,
+                              "strength": this.img_strength
+                            }
+                        ]:[],
                         allow_downgrade: this.allow_downgrade
                     })
                 });
+                this.source_image = [];
                 const data = await response.json();
                 return data.id;
             } catch (error) {
@@ -257,14 +271,21 @@
                     },
                     body: JSON.stringify({
                         prompt: PROMPT,
-                        params: mergeJSON({
+                        params: this.mergeJSON({
                             n: 1,
                             censor_nsfw: true,
                             models: [MODEL]
                         }, CONFIG),
+                        "extra_source_images": this.source_image?[
+                            {
+                              "image": this.source_image,
+                              "strength": this.img_strength
+                            }
+                        ]:[],
                         allow_downgrade: this.allow_downgrade
                     })
                 });
+                this.source_image = [];
                 const data = await response.json();
                 return data.id;
             } catch (error) {
