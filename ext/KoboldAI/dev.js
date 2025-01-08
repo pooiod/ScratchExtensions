@@ -37,6 +37,7 @@
         constructor() {
             this.base = "//stablehorde.net/api";
             this.key = "0000000000";
+            this.allow_downgrade = true
         }
 
         getInfo() {
@@ -55,6 +56,18 @@
                             },
                         },
                     },
+
+                    {
+                        opcode: 'apiStatus',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get api status',
+                    },
+                    {
+                        opcode: 'apiPerformance',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get api performance',
+                    },
+                    
                     {
                         opcode: 'getmodels',
                         blockType: Scratch.BlockType.REPORTER,
@@ -67,16 +80,7 @@
                             },
                         },
                     },
-                    {
-                        opcode: 'apiPerformance',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get api status',
-                    },
-                    {
-                        opcode: 'apiPerformance',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get api performance',
-                    },
+
                     {
                         opcode: 'startTextGen',
                         blockType: Scratch.BlockType.REPORTER,
@@ -84,7 +88,7 @@
                         arguments: {
                             PROMPT: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'The quick orange fox jumped over the lazy dog, then the dog responded',
+                                defaultValue: 'The quick orange cat jumped over the lazy dog. The dog then responded by',
                             },
                             MODEL: {
                                 type: Scratch.ArgumentType.STRING,
@@ -92,7 +96,7 @@
                             },
                             CONFIG: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'max_context_length: 1024, singleline: false, temperature: 5, max_length: 150,',
+                                defaultValue: 'max_context_length: 1024, singleline: false, temperature: 5, max_length: 150',
                             },
                         },
                     },
@@ -111,6 +115,48 @@
                         opcode: 'getTextGen',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Get text from generation [ID]',
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'ID',
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: 'startImageGen',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Start image generation [PROMPT] from model [MODEL] with config [CONFIG]',
+                        arguments: {
+                            PROMPT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'An orange cat jumping over a blue dog',
+                            },
+                            MODEL: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'any',
+                            },
+                            CONFIG: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'height: 512, width: 512, transparent: false',
+                            },
+                        },
+                    },
+                    {
+                        opcode: 'getImageGenStatus',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get status of image generation [ID]',
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'ID',
+                            },
+                        },
+                    },
+                    {
+                        opcode: 'getImageGen',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get image from generation [ID]',
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
@@ -155,7 +201,7 @@
 
         async startTextGen({PROMPT, MODEL, CONFIG}) {
             try {
-                const response = await fetch(`${this.base}/v2/generate/text/async`, {
+                const response = await Scratch.fetch(`${this.base}/v2/generate/text/async`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -166,7 +212,8 @@
                         params: mergeJSON({
                             n: 1,
                             models: [MODEL]
-                        }, CONFIG)
+                        }, CONFIG),
+                        allow_downgrade: this.allow_downgrade
                     })
                 });
                 const data = await response.json();
@@ -192,6 +239,55 @@
                         return JSON.stringify(dat.generations);
                     } else {
                         return dat.generations[0].text;
+                    }
+                } else {
+                    return ""
+                }
+            })
+            .catch((err) => err.message);
+        }
+
+        async startImageGen({PROMPT, MODEL, CONFIG}) {
+            try {
+                const response = await fetch(`${this.base}/v2/generate/async`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': this.key
+                    },
+                    body: JSON.stringify({
+                        prompt: PROMPT,
+                        params: mergeJSON({
+                            n: 1,
+                            censor_nsfw: true,
+                            models: [MODEL]
+                        }, CONFIG),
+                        allow_downgrade: this.allow_downgrade
+                    })
+                });
+                const data = await response.json();
+                return data.id;
+            } catch (error) {
+                return error;
+            }
+        }
+
+        async getImageGenStatus({ID}) {
+            return Scratch.fetch(`${this.base}/v2/generate/status/${ID}`)
+            .then((res) => res.json())
+            .then((dat) => JSON.stringify(dat))
+            .catch((err) => err.message);
+        }
+
+        async getImageGen({ID}) {
+            return Scratch.fetch(`${this.base}/v2/generate/status/${ID}`)
+            .then((res) => res.json())
+            .then((dat) => {
+                if (dat.generations && dat.generations.length > 0) {
+                    if (dat.generations && dat.generations.length > 1) {
+                        return JSON.stringify(dat.generations);
+                    } else {
+                        return dat.generations[0].img;
                     }
                 } else {
                     return ""
