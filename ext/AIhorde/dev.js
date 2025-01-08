@@ -1,4 +1,4 @@
-// AI Horde extension
+// This extension is super early in development. DO NOT USE!
 
 (function(Scratch) {
     'use strict';
@@ -29,8 +29,6 @@
                             },
                         },
                     },
-
-
                     {
                         opcode: 'getmodels',
                         blockType: Scratch.BlockType.REPORTER,
@@ -43,11 +41,15 @@
                             },
                         },
                     },
-
                     {
-                        opcode: 'apiStatus',
+                        opcode: 'apiPerformance',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Get api status',
+                    },
+                    {
+                        opcode: 'apiPerformance',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get api performance',
                     }
                 ],
                 menus: {
@@ -70,12 +72,21 @@
                 .catch((err) => err.message);
         }
         
-        apiStatus({TYPE}) {
+        apiStatus() {
             return Scratch.fetch(`${this.base}/v2/status/heartbeat`)
+                .then((res) => res.json())
+                .then((dat) => JSON.stringify(dat))
+                .catch((err) => err.message);
+        }
+
+        apiPerformance() {
+            return Scratch.fetch(`${this.base}/v2/status/performance`)
                 .then((res) => res.json())
                 .then((dat) => JSON.stringify(dat))
                 .catch((err) => err.message);
         }
     }
     Scratch.extensions.register(new p7TheHordeAI());
+
+    alert("Early dev extension, only use for testing");
 })(Scratch);
