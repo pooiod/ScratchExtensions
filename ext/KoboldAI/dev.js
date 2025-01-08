@@ -1,10 +1,36 @@
-// This extension is super early in development. DO NOT USE!
+// This extension is super early in development
 
 (function(Scratch) {
     'use strict';
 
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('This extension must run unsandboxed');
+    }
+
+    function mergeJSON(json1, json2) {
+        if (typeof json2 === 'string') {
+            try {
+                json2 = JSON.parse(`{${json2}}`);
+            } catch {
+                return json1;
+            }
+        }
+    
+        if (typeof json2 !== 'object' || json2 === null) {
+            return json1;
+        }
+    
+        let result = { ...json1 };
+        for (let key in json2) {
+            if (Array.isArray(json2[key]) && Array.isArray(json1[key])) {
+                result[key] = [...json2[key]];
+            } else if (typeof json2[key] === 'object' && typeof json1[key] === 'object') {
+                result[key] = mergeJSON(json1[key], json2[key]);
+            } else {
+                result[key] = json2[key];
+            }
+        }
+        return result;
     }
 
     class p7KoboldAI {
@@ -54,15 +80,19 @@
                     {
                         opcode: 'startTextGen',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Start text generation [PROMPT] with model [MODEL]',
+                        text: 'Start text generation [PROMPT] from model [MODEL] with config [CONFIG]',
                         arguments: {
                             PROMPT: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'Hello',
+                                defaultValue: 'The quick orange fox jumped over the lazy dog, then the dog responded',
                             },
                             MODEL: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '',
+                                defaultValue: 'any',
+                            },
+                            CONFIG: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'max_context_length: 1024, singleline: false, temperature: 5, max_length: 150,',
                             },
                         },
                     },
@@ -123,7 +153,7 @@
                 .catch((err) => err.message);
         }
 
-        async startTextGen({PROMPT, MODEL, DATA}) {
+        async startTextGen({PROMPT, MODEL, CONFIG}) {
             try {
                 const response = await fetch(`${this.base}/v2/generate/text/async`, {
                     method: 'POST',
@@ -133,20 +163,10 @@
                     },
                     body: JSON.stringify({
                         prompt: PROMPT,
-                        params: {
+                        params: mergeJSON({
                             n: 1,
-                            max_context_length: 1024,
-                            singleline: false,
-                            // temperature: 5,
-                            // max_length: 150,
-                            // extra_source_images: [
-                            //     {
-                            //       image: "string",
-                            //       strength: 1
-                            //     }
-                            // ],
                             models: [MODEL]
-                        }
+                        }, CONFIG)
                     })
                 });
                 const data = await response.json();
