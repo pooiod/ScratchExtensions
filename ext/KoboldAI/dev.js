@@ -43,6 +43,18 @@
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Get api performance',
                     },
+
+                    {
+                        opcode: 'getUserData',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get data from user [KEY]',
+                        arguments: {
+                            KEY: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '0000000000',
+                            },
+                        },
+                    },
                     
                     {
                         opcode: 'getmodels',
@@ -183,6 +195,18 @@
 
         setKey({KEY}) {
             this.key = KEY;
+        }
+
+        async getUserData({KEY}) {
+            return Scratch.fetch(`${this.base}/v2/find_user`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': KEY
+                }
+            })
+            .then((res) => res.json())
+            .then((dat) => JSON.stringify(dat))
+            .catch((err) => err.message);
         }
         
         async getmodels({TYPE}) {
