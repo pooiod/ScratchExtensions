@@ -393,10 +393,13 @@
 
         getListInFormat({LIST, FORMAT}, util) {
             var data = this.getList(LIST, util);
+            if (!data) {
+                return "";
+            }
             if (false) {
 
             } else {
-                return JSON.stringify(data);
+                return JSON.stringify(data.value);
             }
         }
     }
