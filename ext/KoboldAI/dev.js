@@ -163,16 +163,16 @@
                         text: 'Format [LIST] as [FORMAT]',
                         disableMonitor: true,
                         arguments: {
-                          LIST: {
-                            type: Scratch.ArgumentType.STRING,
-                            menu: "lists",
-                          },
-                          FORMAT: {
-                            type: Scratch.ArgumentType.STRING,
-                            menu: "formats",
-                          },
+                            LIST: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "lists",
+                            },
+                            FORMAT: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "formats",
+                            },
                         },
-                      },
+                    },
                 ],
                 menus: {
                     lists: {
@@ -186,7 +186,7 @@
 					},
                     formats: {
 						acceptReporters: false,
-						items: ['chat', 'array'],
+						items: ['chat'],
 					},
 				},
             };
@@ -389,6 +389,15 @@
                 }
             })
             .catch((err) => err.message);
+        }
+
+        getListInFormat({LIST, FORMAT}, util) {
+            var data = this.getList(LIST, util);
+            if (false) {
+
+            } else {
+                return JSON.stringify(data);
+            }
         }
     }
     Scratch.extensions.register(new p7KoboldAI());
