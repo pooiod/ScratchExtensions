@@ -162,6 +162,23 @@
         "hidden": false
     },
     {
+        "id": "SimpleGPT3",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Simple GPT3",
+        "description": "A simple extension to interact with GPT3",
+        "created": "Jul 18, 2024",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": false,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["sandboxed"],
+        "hidden": false
+    },
+    {
         "id": "ScrollUtilities",
         "image": "/ext/[id]/cover.svg",
         "title": "Scroll Utilities",
