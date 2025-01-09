@@ -78,7 +78,7 @@
                         arguments: {
                             PROMPT: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'The quick orange cat jumped over the lazy dog. The dog then responded by',
+                                defaultValue: 'The quick orange cat jumped over the lazy dog. The dog then ',
                             },
                             MODEL: {
                                 type: Scratch.ArgumentType.STRING,
@@ -156,6 +156,10 @@
                     },
                 ],
                 menus: {
+                    lists: {
+                        acceptReporters: true,
+                        items: "getLists"
+                    },
 					ModelTypes: {
 						acceptReporters: false,
 						items: ['text', 'image'],
@@ -193,6 +197,26 @@
                 }
             }
             return result;
+        }
+
+        getLists() {
+            const globalLists = Object.values(
+                vm.runtime.getTargetForStage().variables
+            ).filter((x) => x.type == "list");
+            const localLists = Object.values(vm.editingTarget.variables).filter(
+                (x) => x.type == "list"
+            );
+            const uniqueLists = [...new Set([...globalLists, ...localLists])];
+            if (uniqueLists.length === 0) return [{ text: "make a list", value: "make a list" }];
+            return uniqueLists.map((i) => ({ text: i.name, value: i.id }));
+        }
+
+        getList(list, util) {
+            const byId = util.target.lookupVariableById(list);
+            if (byId && byId.type === "list") return (byId);
+            const byName = util.target.lookupVariableByNameAndType(list, "list");
+            if (byName) return (byName);
+            return;
         }
 
         setKey({KEY}) {
