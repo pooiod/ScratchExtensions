@@ -20,6 +20,8 @@
             return {
                 id: 'p7KoboldAI',
                 name: 'Kobold AI',
+                color1: '#47ba1e',
+                color2: '#40a31c',
                 blocks: [
                     {
                         opcode: 'setKey',
