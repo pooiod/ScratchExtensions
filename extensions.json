@@ -352,13 +352,13 @@
     },
     {
         "id": "KoboldAI",
-        "image": "",
+        "image": "/ext/[id]/cover.svg",
         "title": "Kobold AI",
         "description": "Crowdsourced AI",
         "created": "Jan 4, 2025",
         "subtext": "",
         "icon": "/extras/images/icons/wip.png",
-        "iconText": "This extension is in development, and may be changed frequently",
+        "iconText": "This extension is in development, please do not use it yet",
         "unsandboxed": true,
         "buttons": [
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
