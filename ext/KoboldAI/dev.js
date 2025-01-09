@@ -14,6 +14,23 @@
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
+            this.beeforePrompt = `System: You are KoboldAI, an AI assistant created by pooiod7 and hosted on the horde.
+Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
+You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
+
+Key instructions:
+- Be helpful and direct
+- Provide clear and comprehensive answers
+- Maintain honesty and transparency
+- Avoid generating harmful content
+- Protect user privacy
+- Acknowledge when you're uncertain
+- Aim to be objective
+- Refuse inappropriate requests
+
+User: [userprompt]
+
+Assistant: `;
         }
 
         getInfo() {
@@ -158,14 +175,14 @@
                     },
 
                     {
-                        opcode: 'getListInFormat',
+                        opcode: 'formatMessage',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Format [LIST] as [FORMAT]',
+                        text: 'Format [PROMPT] as format [FORMAT]',
                         disableMonitor: true,
                         arguments: {
-                            LIST: {
+                            PROMPT: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: "lists",
+                                defaultValue: 'Hello, what is your name?',
                             },
                             FORMAT: {
                                 type: Scratch.ArgumentType.STRING,
@@ -186,7 +203,7 @@
 					},
                     formats: {
 						acceptReporters: false,
-						items: ['chat'],
+						items: ['Single message'],
 					},
 				},
             };
@@ -289,7 +306,7 @@
                         'apikey': this.key
                     },
                     body: JSON.stringify({
-                        prompt: PROMPT,
+                        prompt: PROMPT.replace("\\n", "\n"),
                         params: this.mergeJSON({
                             n: 1,
                             models: [MODEL]
@@ -391,16 +408,12 @@
             .catch((err) => err.message);
         }
 
-        getListInFormat({LIST, FORMAT}, util) {
-            var data = this.getList(LIST, util);
-            if (!data) {
-                return "";
-            }
-            if (false) {
+        trimResponse({PROMPT, FORMAT}, util) {
+            return "";
+        }
 
-            } else {
-                return JSON.stringify(data.value);
-            }
+        formatMessage({PROMPT, FORMAT}, util) {
+            return "";
         }
     }
     Scratch.extensions.register(new p7KoboldAI());
