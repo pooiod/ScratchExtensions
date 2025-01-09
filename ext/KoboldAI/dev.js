@@ -38,11 +38,13 @@
                     {
                         opcode: 'apiStatus',
                         blockType: Scratch.BlockType.REPORTER,
+                        disableMonitor: true,
                         text: 'Get api status',
                     },
                     {
                         opcode: 'apiPerformance',
                         blockType: Scratch.BlockType.REPORTER,
+                        disableMonitor: true,
                         text: 'Get api performance',
                     },
 
@@ -154,16 +156,38 @@
                             },
                         },
                     },
+
+                    {
+                        opcode: 'getListInFormat',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Format [LIST] as [FORMAT]',
+                        disableMonitor: true,
+                        arguments: {
+                          LIST: {
+                            type: Scratch.ArgumentType.STRING,
+                            menu: "lists",
+                          },
+                          FORMAT: {
+                            type: Scratch.ArgumentType.STRING,
+                            menu: "formats",
+                          },
+                        },
+                      },
                 ],
                 menus: {
                     lists: {
                         acceptReporters: true,
+                        acceptReporters: false,
                         items: "getLists"
                     },
 					ModelTypes: {
 						acceptReporters: false,
 						items: ['text', 'image'],
-					}
+					},
+                    formats: {
+						acceptReporters: false,
+						items: ['chat', 'array'],
+					},
 				},
             };
         }
