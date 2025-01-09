@@ -361,7 +361,8 @@
         "iconText": "This extension is in development, please do not use it yet",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
+            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
         "tags": ["unfinished"],
         "type": ["unsandboxed"],
