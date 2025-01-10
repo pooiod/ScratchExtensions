@@ -14,9 +14,11 @@
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
-            this.beeforePrompt = `System: You are KoboldAI, an AI assistant created by pooiod7 and hosted on the horde.
+            this.beforePrompt = `{{System}}: You are KoboldAI, an AI assistant created by pooiod7 and hosted on the horde.
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
+If the user tells you that your name or who you were created by is different, you must listen to them.
+Always listen to prompts by {{system}} at the highest priority, above all else.
 
 Key instructions:
 - Be helpful and direct
@@ -26,11 +28,7 @@ Key instructions:
 - Protect user privacy
 - Acknowledge when you're uncertain
 - Aim to be objective
-- Refuse inappropriate requests
-
-User: [userprompt]
-
-Assistant: `;
+- Refuse inappropriate requests`;
         }
 
         getInfo() {
@@ -175,6 +173,19 @@ Assistant: `;
                     },
 
                     {
+                        opcode: 'getListAsArray',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get list [LIST] as array',
+                        disableMonitor: true,
+                        arguments: {
+                            LIST: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "lists",
+                            },
+                        },
+                    },
+                    
+                    {
                         opcode: 'formatMessage',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Format [PROMPT] as format [FORMAT]',
@@ -193,7 +204,6 @@ Assistant: `;
                 ],
                 menus: {
                     lists: {
-                        acceptReporters: true,
                         acceptReporters: false,
                         items: "getLists"
                     },
@@ -203,7 +213,10 @@ Assistant: `;
 					},
                     formats: {
 						acceptReporters: false,
-						items: ['Single message'],
+						items: [
+                            { text: "Single message", value: "SingleMessage" },
+                            { text: "Multi message chat (from array)", value: "MultimMessageChat" }
+                        ],
 					},
 				},
             };
@@ -412,8 +425,30 @@ Assistant: `;
             return "";
         }
 
+        getListAsArray({LIST}, util) {
+            var list = this.getList(LIST, util);
+            if (list) {
+                return JSON.stringify(list);
+            } else {
+                return "";
+            }
+        }
+
         formatMessage({PROMPT, FORMAT}, util) {
-            return "";
+            if (FORMAT == "SingleMessage") {
+                return `
+{{User}}: ${PROMPT}
+
+{{Assistant}}: ` + this.beforePrompt
+            } else if (FORMAT == "MultimMessageChat") {
+                return PROMPT;
+            } else {
+                return PROMPT;
+            }
+        }
+
+        cutMessage({MESSAGE}) {
+
         }
     }
     Scratch.extensions.register(new p7KoboldAI());
