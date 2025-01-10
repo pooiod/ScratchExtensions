@@ -428,7 +428,7 @@ Key instructions:
         getListAsArray({LIST}, util) {
             var list = this.getList(LIST, util);
             if (list) {
-                return JSON.stringify(list);
+                return JSON.stringify(list.value);
             } else {
                 return "";
             }
