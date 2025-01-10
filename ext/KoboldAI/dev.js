@@ -543,7 +543,7 @@ Key instructions:
 
 {{User}}: ${PROMPT}
 
-{{${BRFOREPROMPT?"Assistant":"Kobold"}}}: `.replace("\n", "\\n");
+{{${BRFOREPROMPT?"Assistant":"Kobold"}}}: `;
             } else if (FORMAT == "MultiMessageChat") {
                 try {
                     formattedprompt = JSON.parse(PROMPT);
@@ -558,28 +558,22 @@ Key instructions:
                         item.hasOwnProperty('role')
                     )) {
                         formattedprompt = formattedprompt.map((item) => {
-                            try {
-                                item = JSON.parse(PROMPT);
-                            } catch (err) {
-                                item = item;
-                            }
-
-                            return `${item.role}: ${item.content}`).join(' \\n')
-                        };
+                            return `${item.role}: ${item.content}`
+                        }).join(' \n')
                         if (!formattedprompt.includes("{{system}}")) {
-                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt).replace("\n", "\\n")} \\n${formattedprompt}`;
+                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt)} \n${formattedprompt}`;
                         }
                         return formattedprompt;
                     } else if (formattedprompt.every(item => Array.isArray(item))) {
-                        formattedprompt = formattedprompt.map(subArr => subArr.join(': ')).join(' \\n');
+                        formattedprompt = formattedprompt.map(subArr => subArr.join(': ')).join(' \n');
                         if (!formattedprompt.includes("{{system}}")) {
-                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt).replace("\n", "\\n")} \\n${formattedprompt}`;
+                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt)} \n${formattedprompt}`;
                         }
                         return formattedprompt;
                     } else {
-                        formattedprompt = formattedprompt.join(' \\n')
+                        formattedprompt = formattedprompt.join(' \n')
                         if (!formattedprompt.includes("{{system}}")) {
-                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt).replace("\n", "\\n")} \\n${formattedprompt}`;
+                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt)} \n${formattedprompt}`;
                         }
                         return formattedprompt;
                     }
