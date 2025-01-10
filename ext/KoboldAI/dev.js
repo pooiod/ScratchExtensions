@@ -1,4 +1,4 @@
-// This extension is super early in development
+// This extension is in development
 
 (function(Scratch) {
     'use strict';
@@ -14,7 +14,7 @@
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
-            this.beforePrompt = `{{System}}: You are KoboldAI, an AI chat bot created by pooiod7 and hosted on the horde.
+            this.beforePrompt = `{{System}}: You are KoboldAI, an AI kobold chat bot created by pooiod7 and hosted on the horde.
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
 If the user tells you that your name or who you were created by is different, you must listen to them.
@@ -37,19 +37,10 @@ Key instructions:
                 name: 'Kobold AI',
                 color1: '#47ba1e',
                 color2: '#40a31c',
+                // menuIconURI: menuIconURI,
+                docsURI: "https://example.com",
                 blocks: [
-                    {
-                        opcode: 'setKey',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set api key to [KEY]',
-                        arguments: {
-                            KEY: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '0000000000',
-                            },
-                        },
-                    },
-
+                    { blockType: Scratch.BlockType.LABEL, text: "API Status" },
                     {
                         opcode: 'apiStatus',
                         blockType: Scratch.BlockType.REPORTER,
@@ -62,7 +53,19 @@ Key instructions:
                         disableMonitor: true,
                         text: 'Get api performance',
                     },
+                    {
+                        opcode: 'apiModeStatus',
+                        blockType: Scratch.BlockType.REPORTER,
+                        disableMonitor: true,
+                        text: 'Get api mode status',
+                    },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "User Interactions" },
+                    {
+                        opcode: 'getUsers',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get all users',
+                    },
                     {
                         opcode: 'getUserData',
                         blockType: Scratch.BlockType.REPORTER,
@@ -74,7 +77,36 @@ Key instructions:
                             },
                         },
                     },
+
+                    {
+                        opcode: 'getWorkers',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get all workers',
+                    },
+                    {
+                        opcode: 'getWorkerData',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get data from worker [ID]',
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '',
+                            },
+                        },
+                    },
                     
+                    { blockType: Scratch.BlockType.LABEL, text: "Model Configuration" },
+                    {
+                        opcode: 'setKey',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set api key to [KEY]',
+                        arguments: {
+                            KEY: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '0000000000',
+                            },
+                        },
+                    },
                     {
                         opcode: 'getmodels',
                         blockType: Scratch.BlockType.REPORTER,
@@ -87,7 +119,14 @@ Key instructions:
                             },
                         },
                     },
+                    {
+                        opcode: 'getDefaultBeforePrompt',
+                        blockType: Scratch.BlockType.REPORTER,
+                        disableMonitor: true,
+                        text: 'Get default before prompt',
+                    },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Text Generation" },
                     {
                         opcode: 'startTextGen',
                         blockType: Scratch.BlockType.REPORTER,
@@ -130,6 +169,59 @@ Key instructions:
                         },
                     },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Text Formatting" },
+                    {
+                        opcode: 'getListAsArray',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get list [LIST] as array',
+                        disableMonitor: true,
+                        arguments: {
+                            LIST: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "lists",
+                            },
+                        },
+                    },
+                    
+                    {
+                        opcode: 'formatMessage',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Format [PROMPT] as format [FORMAT], with before prompt [BRFOREPROMPT]',
+                        disableMonitor: true,
+                        arguments: {
+                            PROMPT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Hello, what is your name?',
+                            },
+                            FORMAT: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "formats",
+                            },
+                            BRFOREPROMPT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "default",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: 'cutMessage',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Cut message [MESSAGE] and keep roles [ROLES]',
+                        disableMonitor: true,
+                        arguments: {
+                            MESSAGE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'include an ai message here',
+                            },
+                            ROLES: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Kobold, Assistant',
+                            },
+                        },
+                    },
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Image Generation" },
                     {
                         opcode: 'startImageGen',
                         blockType: Scratch.BlockType.REPORTER,
@@ -171,36 +263,6 @@ Key instructions:
                             },
                         },
                     },
-
-                    {
-                        opcode: 'getListAsArray',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get list [LIST] as array',
-                        disableMonitor: true,
-                        arguments: {
-                            LIST: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: "lists",
-                            },
-                        },
-                    },
-                    
-                    {
-                        opcode: 'formatMessage',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Format [PROMPT] as format [FORMAT]',
-                        disableMonitor: true,
-                        arguments: {
-                            PROMPT: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'Hello, what is your name?',
-                            },
-                            FORMAT: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: "formats",
-                            },
-                        },
-                    },
                 ],
                 menus: {
                     lists: {
@@ -215,7 +277,7 @@ Key instructions:
 						acceptReporters: false,
 						items: [
                             { text: "Single message", value: "SingleMessage" },
-                            { text: "Multi message chat (from array)", value: "MultimMessageChat" }
+                            { text: "Multi message chat (from array)", value: "MultiMessageChat" }
                         ],
 					},
 				},
@@ -277,6 +339,13 @@ Key instructions:
             this.key = KEY;
         }
 
+        async getUsers() {
+            return Scratch.fetch(`${this.base}`)
+                .then((res) => res.json())
+                .then((dat) => JSON.stringify(dat))
+                .catch((err) => err.message);
+        }
+
         async getUserData({KEY}) {
             return Scratch.fetch(`${this.base}/v2/find_user`, {
                 headers: {
@@ -288,6 +357,28 @@ Key instructions:
             .then((dat) => JSON.stringify(dat))
             .catch((err) => err.message);
         }
+
+        async getWorkers() {
+            return Scratch.fetch(`${this.base}/v2/workers`)
+                .then((res) => res.json())
+                .then((dat) => JSON.stringify(dat))
+                .catch((err) => err.message);
+        }
+        
+        async getWorkerData({ID}) {
+            return Scratch.fetch(`${this.base}/v2/workers/${ID}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((res) => res.json())
+            .then((dat) => JSON.stringify(dat))
+            .catch((err) => err.message);
+        }
+
+        getDefaultBeforePrompt() {
+            return this.beforePrompt;
+        }
         
         async getmodels({TYPE}) {
             return Scratch.fetch(`${this.base}/v2/status/models?type=${TYPE}`)
@@ -298,6 +389,13 @@ Key instructions:
         
         async apiStatus() {
             return Scratch.fetch(`${this.base}/v2/status/heartbeat`)
+                .then((res) => res.json())
+                .then((dat) => JSON.stringify(dat))
+                .catch((err) => err.message);
+        }
+
+        async apiModeStatus() {
+            return Scratch.fetch(`${this.base}/v2/status/modes`)
                 .then((res) => res.json())
                 .then((dat) => JSON.stringify(dat))
                 .catch((err) => err.message);
@@ -354,9 +452,9 @@ Key instructions:
             .then((dat) => {
                 if (dat.generations && dat.generations.length > 0) {
                     if (dat.generations && dat.generations.length > 1) {
-                        return JSON.stringify(dat.generations);
+                        return JSON.stringify(dat.generations).replace("\n", "\\n");
                     } else {
-                        return dat.generations[0].text;
+                        return dat.generations[0].text.replace("\n", "\\n");
                     }
                 } else {
                     return ""
@@ -421,10 +519,6 @@ Key instructions:
             .catch((err) => err.message);
         }
 
-        trimResponse({PROMPT, FORMAT}, util) {
-            return "";
-        }
-
         getListAsArray({LIST}, util) {
             var list = this.getList(LIST, util);
             if (list) {
@@ -434,23 +528,111 @@ Key instructions:
             }
         }
 
-        formatMessage({PROMPT, FORMAT}, util) {
+        formatMessage({PROMPT, FORMAT, BRFOREPROMPT}, util) {
+            var formattedprompt = null;
+            if (BRFOREPROMPT == "default") {
+                BRFOREPROMPT = false;
+            } else {
+                if (!BRFOREPROMPT.startsWith("{{System}}")) {
+                    BRFOREPROMPT = "{{System}}: " + BRFOREPROMPT;
+                }
+            }
+
             if (FORMAT == "SingleMessage") {
-                return `${this.beforePrompt}
+                return `${BRFOREPROMPT || this.beforePrompt}
 
 {{User}}: ${PROMPT}
 
-{{Kobold}}: `
-            } else if (FORMAT == "MultimMessageChat") {
-                return PROMPT;
+{{${BRFOREPROMPT?"Assistant":"Kobold"}}}: `.replace("\n", "\\n");
+            } else if (FORMAT == "MultiMessageChat") {
+                try {
+                    formattedprompt = JSON.parse(PROMPT);
+                } catch (err) {
+                    formattedprompt = null;
+                }
+                
+                if (Array.isArray(formattedprompt)) {
+                    if (formattedprompt.every(item =>
+                        item && typeof item === 'object' &&
+                        item.hasOwnProperty('content') &&
+                        item.hasOwnProperty('role')
+                    )) {
+                        formattedprompt = formattedprompt.map(item => `${item.role}: ${item.content}`).join(' \\n');
+                        if (!formattedprompt.includes("{{system}}")) {
+                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt).replace("\n", "\\n")} \\n${formattedprompt}`;
+                        }
+                        return formattedprompt;
+                    } else if (formattedprompt.every(item => Array.isArray(item))) {
+                        formattedprompt = formattedprompt.map(subArr => subArr.join(': ')).join(' \\n');
+                        if (!formattedprompt.includes("{{system}}")) {
+                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt).replace("\n", "\\n")} \\n${formattedprompt}`;
+                        }
+                        return formattedprompt;
+                    } else {
+                        formattedprompt = formattedprompt.join(' \\n')
+                        if (!formattedprompt.includes("{{system}}")) {
+                            formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt).replace("\n", "\\n")} \\n${formattedprompt}`;
+                        }
+                        return formattedprompt;
+                    }
+                } else {
+                    return "Error: message array format incorrect"
+                }                
             } else {
                 return PROMPT;
             }
         }
 
-        
         cutMessage({MESSAGE, ROLES}) {
+            const rolesArray = ROLES.toLowerCase().split(",").map(role => role.trim());
+            let result = "";
+        
+            const parts = MESSAGE.split(/({{[^}]+}}:)/);
+            for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
+                if (part.startsWith("{{") && part.endsWith("}}:")) {
+                    const role = part.slice(2, -2).split(":")[0].toLowerCase().trim();
+                    if (!rolesArray.includes(role)) {
+                        break;
+                    }
+                }
+                result += part;
+            }
 
+            if (!result || ROLES.toLowerCase() === "any" || result == MESSAGE) {
+                const punctuation = /[\]\}\.\>\/\?%\@\!\*\|\~]$/;
+                const minLength = 5;
+              
+                let trimmedMessage = MESSAGE.replace(/\n/g, ' ').trim();
+                
+                if (punctuation.test(trimmedMessage)) {
+                  return trimmedMessage;
+                }
+              
+                const lastValidIndex = Math.max(
+                  trimmedMessage.lastIndexOf(']'),
+                  trimmedMessage.lastIndexOf('}'),
+                  trimmedMessage.lastIndexOf('.'),
+                  trimmedMessage.lastIndexOf('>'),
+                  trimmedMessage.lastIndexOf('?'),
+                  trimmedMessage.lastIndexOf('/'),
+                  trimmedMessage.lastIndexOf('%'),
+                  trimmedMessage.lastIndexOf('@'),
+                  trimmedMessage.lastIndexOf('!'),
+                  trimmedMessage.lastIndexOf('*'),
+                  trimmedMessage.lastIndexOf('|'),
+                  trimmedMessage.lastIndexOf('~')
+                );
+              
+                if (lastValidIndex === -1 || trimmedMessage.length - lastValidIndex < minLength) {
+                  return MESSAGE.trim();
+                }
+              
+                trimmedMessage = trimmedMessage.slice(0, lastValidIndex + 1);
+                return trimmedMessage;
+            }
+        
+            return result.trim();
         }
     }
     Scratch.extensions.register(new p7KoboldAI());
