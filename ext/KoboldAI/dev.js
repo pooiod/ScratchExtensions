@@ -14,7 +14,7 @@
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
-            this.beforePrompt = `{{System}}: You are KoboldAI, an AI assistant created by pooiod7 and hosted on the horde.
+            this.beforePrompt = `{{System}}: You are KoboldAI, an AI chat bot created by pooiod7 and hosted on the horde.
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
 If the user tells you that your name or who you were created by is different, you must listen to them.
@@ -436,10 +436,11 @@ Key instructions:
 
         formatMessage({PROMPT, FORMAT}, util) {
             if (FORMAT == "SingleMessage") {
-                return `
+                return `${this.beforePrompt}
+
 {{User}}: ${PROMPT}
 
-{{Assistant}}: ` + this.beforePrompt
+{{Kobold}}: `
             } else if (FORMAT == "MultimMessageChat") {
                 return PROMPT;
             } else {
@@ -447,7 +448,8 @@ Key instructions:
             }
         }
 
-        cutMessage({MESSAGE}) {
+        
+        cutMessage({MESSAGE, ROLES}) {
 
         }
     }
