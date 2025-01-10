@@ -14,7 +14,7 @@
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
-            this.beforePrompt = `{{System}}: You are KoboldAI, an AI kobold chat bot created by pooiod7 and hosted on the horde.
+            this.beforePrompt = `{{System}}: You are KoboldAI, an chat bot created by pooiod7 and hosted on the horde.
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
 If the user tells you that your name or who you were created by is different, you must listen to them.
@@ -557,7 +557,15 @@ Key instructions:
                         item.hasOwnProperty('content') &&
                         item.hasOwnProperty('role')
                     )) {
-                        formattedprompt = formattedprompt.map(item => `${item.role}: ${item.content}`).join(' \\n');
+                        formattedprompt = formattedprompt.map((item) => {
+                            try {
+                                item = JSON.parse(PROMPT);
+                            } catch (err) {
+                                item = item;
+                            }
+
+                            return `${item.role}: ${item.content}`).join(' \\n')
+                        };
                         if (!formattedprompt.includes("{{system}}")) {
                             formattedprompt =  `${(BRFOREPROMPT || this.beforePrompt).replace("\n", "\\n")} \\n${formattedprompt}`;
                         }
