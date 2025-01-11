@@ -1,11 +1,7 @@
-// This extension is in development
+// Kobold AI by pooiod7 (wip)
 
 (function(Scratch) {
     'use strict';
-
-    // if (!Scratch.extensions.unsandboxed) {
-    //     throw new Error('This extension must run unsandboxed');
-    // }
 
     class p7KoboldAI {
         constructor() {
@@ -38,7 +34,7 @@ Key instructions:
                 color1: '#47ba1e',
                 color2: '#40a31c',
                 // menuIconURI: menuIconURI,
-                docsURI: "https://example.com",
+                docsURI: "https://p7scratchextensions.pages.dev/docs/#/KoboldAI",
                 blocks: [
                     { blockType: Scratch.BlockType.LABEL, text: "API Status" },
                     {
