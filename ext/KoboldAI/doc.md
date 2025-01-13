@@ -1,9 +1,9 @@
 # Kobold AI
-[!js-document.title="Kobold AI Documentation (wip)"!]
+[!js-document.title="Kobold AI Documentation"!]
 ---
 
 Kobold AI is an extension that allows you to generate text and images for free, using the power of crowdsourced AI on the horde. <br>
-This documentation will help you understand the functions in Kobold AI, and how to best work with the models.
+This documentation will help you understand the functions in Kobold AI, and how to best work with the provided models.
 
 > Note: this extension is best used along with an extension to handle JSON.
 > I recommend [this one](https://extensions.turbowarp.org/Skyhigh173/json.js) from Skyhigh173.
@@ -62,7 +62,7 @@ By separating the user's input from the assistant's responses, the model can kee
 Then you can add the start of the Assistant's response and pass it in to be generated.
 Adding the start of a response to the prompt forces the AI to generate a response for that character.
 ```scratch3
-	set [ID v] to (Start text generation (join (Format (get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249) (join (join [{{User}}: ] (username)) [{{Kobold}}: ])) from model [any] with config [temperature: 5, max_length: 150] :: #44c249)
+	set [ID v] to (Start text generation (join (Format (get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249) (join (join [{{User}}: ] (username)) [{{Kobold}}: ])) from model [any] with config [temperature: 5, max_length: 150] :: #44c249) //Add "{{Kobold}}: " to force the ai to respond for that character
 	add (join [{{User}}: ] (answer)) to [messages v] //Add user message to history
 	wait until <(value of [done] in (Get status of text generation (ID) :: #44c249) :: #3271D0) = [true]>
     add (join [{{Kobold}}: ] (Get text from generation (ID) :: #44c249)) to [messages v]
@@ -72,7 +72,7 @@ But the AI seems to like responding as the user afterwards, and getting cut off.
 This is because the only job it has is to continue text, and it will keep doing that unless told not to.
 To account for this, we can cut the response message so it doesn't include anything we don't want
 ```scratch3
-	set [ID v] to (Start text generation (join (Format (get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249) (join (join [{{User}}: ] (username)) [{{Kobold}}: ])) from model [any] with config [temperature: 5, max_length: 150] :: #44c249) //Add "{{Kobold}}: " to force the ai to respond for that character
+	set [ID v] to (Start text generation (join (Format (get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249) (join (join [{{User}}: ] (username)) [{{Kobold}}: ])) from model [any] with config [temperature: 5, max_length: 150] :: #44c249)
 	add (join [{{User}}: ] (answer)) to [messages v] //Add user message to history
 	wait until <(value of [done] in (Get status of text generation (ID) :: #44c249) :: #3271D0) = [true]>
     add (join [{{Kobold}}: ] (Cut message (Get text from generation (ID) :: #44c249) and keep roles [Kobold, Assistant] :: #44c249)) to [messages v]
@@ -80,7 +80,8 @@ To account for this, we can cut the response message so it doesn't include anyth
 
 > Note: the "stop_sequence" pram can also be used for this
 
-After that, we can make some supporting ui code, and finish with a basic chatbot
+After that, we can make some supporting ui code, and finish with a basic chatbot.
+You can try this demo for yourself [here](https://studio.penguinmod.com/fullscreen.html?project_url=https://p7scratchextensions.pages.dev/ext/KoboldAI/examples/Basic.sb3).
 ```scratch3
 when gf clicked :: cat
 delete all of [messages v]
