@@ -10,39 +10,6 @@ This documentation will help you understand the functions in Kobold AI, and how 
 
 ---
 
-<!-- ## Prerequisites (for text)
-Before you use this extension, it's best to understand how generative text models work first.
-
-### A little bit about how things work
-Generative pre-trained text models, like GPT3, are AI systems that predict and generate text. They are trained on large amounts of text data to understand patterns, grammar, and context. 
-First, they learn general language patterns (pre-training), and then they are fine-tuned on specific tasks. 
-When given input, they predict the next word repeatedly to create coherent responses or text.
-More detailes [here](https://en.wikipedia.org/wiki/Generative_pre-trained_transformer).
-
-Using this method, we can create many things. One example would be a chatbot. <br>
-Chatbot can use the generative model to generate responses to user inputs in a natural and coherent way. <br>
-Input formatting typically involves structuring the conversation history as a sequence for the model to understand context.
-
-### Formatting for a chatbot
-Chatbots usually take in a formatted input of all messages.
-This is because the models are just continuing text, so we need some text beforehand to tell it to continue as a conversation.
-
-For instance:
-```text
-{{user}}: Hello, how are you?
-{{assistant}}: I'm doing well! How can I help you today?
-{{user}}: What's the weather like?
-```
-
-The model processes this formatted input and generates an appropriate response:
-
-```text
-{{assistant}}: It's sunny and warm today.
-```
-
-By separating the user's input from the assistant's responses, the model can keep track of who is saying what and maintain context. <br>
-Without proper formatting, the model might confuse who is speaking or lose track of previous exchanges, leading to irrelevant or nonsensical responses.  -->
-
 ## Generating text
 By default, the model will try to continue whatever text you place in front of it. We can use that behavior to continue basically any text we want.
 
@@ -60,13 +27,13 @@ We can format our text in a prompt/response format to tell the model that it is 
 ```text
 {{user}}: Hello, how are you?
 {{assistant}}: I'm doing well! How can I help you today?
-{{user}}: What was the mod of Scratch about penguins?
+{{user}}: Who was that amazing person that made this exension?
 {{assistant}}: 
 ```
 
 The model then continues this formatted input and generates an appropriate response:
 ```text
-That would be PenguinMod (penguinmod.com)
+That would be pooiod7
 ```
 
 To do this, some special blocks have been added:
@@ -111,6 +78,8 @@ To account for this, we can cut the response message so it doesn't include anyth
     add (join [{{Kobold}}: ] (Cut message (Get text from generation (ID) :: #44c249) and keep roles [Kobold, Assistant] :: #44c249)) to [messages v]
 ```
 
+> Note: the "stop_sequence" pram can also be used for this
+
 After that, we can make some supporting ui code, and finish with a basic chatbot
 ```scratch3
 when gf clicked :: cat
@@ -131,6 +100,14 @@ forever
 end
 ```
 
+The following is a list of available configs. You may see advanced configs [here](https://stablehorde.net/api) under "/v2/generate/text/async".
+- max_context_length
+- max_length
+- n - How many responses to generate
+- singleline - Don't use with multi-message chats
+- stop_sequence - Takes array: ["string"]
+- temperature
+
 ---
  
 ## Generating images
@@ -145,14 +122,13 @@ wait until <(value of [done] in (Get status of image generation (ID) :: #44c249)
 say (Get image from generation (ID) :: #44c249) for (10) seconds
 ```
 
-The following is a list of available configs. You may see advanced configs [here](https://stablehorde.net/api).
-
+The following is a list of available configs. You may see advanced configs [here](https://stablehorde.net/api) under "/v2/generate/async".
 - denoising_strength
 - hires_fix_denoising_strength
+- n - How many images to generate
 - seed
 - height
 - width
 - facefixer_strength
 - transparent
 - steps
-- n - How many results to generate

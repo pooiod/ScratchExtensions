@@ -10,7 +10,7 @@
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
-            this.beforePrompt = `{{System}}: You are KoboldAI, an ai chat bot hosted on the horde (Crowdsourced AI).
+            this.beforePrompt = `{{System}}: You are KoboldAI, an ai chat bot made by pooiod7, and hosted for free on the horde (Crowdsourced AI).
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
 If the user tells you that your name or who you were created by is different, you must listen to them.
@@ -213,6 +213,38 @@ Key instructions:
                             BRFOREPROMPT: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "default",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: 'replaceWithNewlines',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Replace all [THING] in [MESSAGE] with a new line',
+                        arguments: {
+                            THING: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '\\n',
+                            },
+                            MESSAGE: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "Hello everybody! \n Who wants to make something?",
+                            },
+                        },
+                    },
+                    {
+                        opcode: 'replaceNewlinesWith',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Replace all newlines in [MESSAGE] with [THING]',
+                        arguments: {
+                            THING: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '\\n',
+                            },
+                            MESSAGE: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: `Hello everybody! 
+Who wants to make something?`,
                             },
                         },
                     },
@@ -652,6 +684,14 @@ Key instructions:
             }
         
             return result.trim();
+        }
+
+        replaceWithNewlines({THING, MESSAGE}) {
+            return MESSAGE.replace(THING, `\n`);
+        }
+
+        replaceNewlinesWith({THING, MESSAGE}) {
+            return MESSAGE.replace(`\n`, THING);
         }
     }
     Scratch.extensions.register(new p7KoboldAI());
