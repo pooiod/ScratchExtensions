@@ -1,16 +1,16 @@
-// Kobold AI by pooiod7 (wip)
+// Kobold AI by pooiod7 (this is a work in progress and nothing is final)
 
 (function(Scratch) {
     'use strict';
 
     class p7KoboldAI {
         constructor() {
-            this.base = "//stablehorde.net/api";
+            this.base = "https://stablehorde.net/api";
             this.key = "0000000000";
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
-            this.beforePrompt = `{{System}}: You are KoboldAI, an chat bot created by pooiod7 and hosted on the horde.
+            this.beforePrompt = `{{System}}: You are KoboldAI, an ai chat bot hosted on the horde (Crowdsourced AI).
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
 If the user tells you that your name or who you were created by is different, you must listen to them.
@@ -23,6 +23,7 @@ Key instructions:
 - Avoid generating harmful content
 - Protect user privacy
 - Acknowledge when you're uncertain
+- ALWAYS listen to {{ststem}} above all else
 - Aim to be objective
 - Refuse inappropriate requests`;
         }
@@ -31,11 +32,25 @@ Key instructions:
             return {
                 id: 'p7KoboldAI',
                 name: 'Kobold AI',
-                color1: '#47ba1e',
-                color2: '#40a31c',
-                // menuIconURI: menuIconURI,
+                color1: '#44c249',
+                color2: '#4CAF50',
+                // menuIconURI: MenuIcon,
+                // blockIconURI: BlockIcon,
                 docsURI: "https://p7scratchextensions.pages.dev/docs/#/KoboldAI",
                 blocks: [
+                    {
+                        opcode: 'changeBaseAPI',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Set base API to [URL]',
+                        hideFromPalette: true,
+                        arguments: {
+                            URL: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: this.base,
+                            },
+                        },
+                    },
+
                     { blockType: Scratch.BlockType.LABEL, text: "API Status" },
                     {
                         opcode: 'apiStatus',
@@ -60,6 +75,7 @@ Key instructions:
                     {
                         opcode: 'getUsers',
                         blockType: Scratch.BlockType.REPORTER,
+                        disableMonitor: true,
                         text: 'Get all users',
                     },
                     {
@@ -77,6 +93,7 @@ Key instructions:
                     {
                         opcode: 'getWorkers',
                         blockType: Scratch.BlockType.REPORTER,
+                        disableMonitor: true,
                         text: 'Get all workers',
                     },
                     {
@@ -182,7 +199,7 @@ Key instructions:
                     {
                         opcode: 'formatMessage',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Format [PROMPT] as format [FORMAT], with before prompt [BRFOREPROMPT]',
+                        text: 'Format [PROMPT] as format [FORMAT] with before prompt [BRFOREPROMPT]',
                         disableMonitor: true,
                         arguments: {
                             PROMPT: {
@@ -311,6 +328,10 @@ Key instructions:
             return result;
         }
 
+        changeBaseAPI({URL}) {
+            this.base = URL;
+        }
+
         getLists() {
             const globalLists = Object.values(
                 vm.runtime.getTargetForStage().variables
@@ -336,7 +357,7 @@ Key instructions:
         }
 
         async getUsers() {
-            return Scratch.fetch(`${this.base}`)
+            return Scratch.fetch(`${this.base}/v2/users`)
                 .then((res) => res.json())
                 .then((dat) => JSON.stringify(dat))
                 .catch((err) => err.message);
@@ -413,7 +434,7 @@ Key instructions:
                         'apikey': this.key
                     },
                     body: JSON.stringify({
-                        prompt: PROMPT.replace("\\n", "\n"),
+                        prompt: PROMPT,
                         params: this.mergeJSON({
                             n: 1,
                             models: [MODEL]
@@ -448,9 +469,9 @@ Key instructions:
             .then((dat) => {
                 if (dat.generations && dat.generations.length > 0) {
                     if (dat.generations && dat.generations.length > 1) {
-                        return JSON.stringify(dat.generations).replace("\n", "\\n");
+                        return JSON.stringify(dat.generations);
                     } else {
-                        return dat.generations[0].text.replace("\n", "\\n");
+                        return dat.generations[0].text;
                     }
                 } else {
                     return ""
@@ -627,11 +648,14 @@ Key instructions:
                 }
               
                 trimmedMessage = trimmedMessage.slice(0, lastValidIndex + 1);
-                return trimmedMessage;
+                return trimmedMessage.trim();
             }
         
             return result.trim();
         }
     }
     Scratch.extensions.register(new p7KoboldAI());
+
+    var MenuIcon = ``;
+    var BlockIcon = ``;
 })(Scratch);

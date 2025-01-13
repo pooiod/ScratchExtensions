@@ -13,7 +13,7 @@ When you want to make an element, you use the `Make element` block, and then set
 This is self explanitory until you start using the more complex elements.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make element [div v] with id [element1] :: #6164ff
 Set content of [#element1] to [Hello, world!] :: #6164ff
 ```
@@ -25,7 +25,7 @@ Some elements are more interesting, like &#060;iframe> elements.
 Iframe elements will work like normal elements with setcontent, but they have the added bonus of supporting urls. 
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make element [iframe v] with id [element1] :: #6164ff
 Set content of [#element1] to [https://example.com/] :: #6164ff
 ```
@@ -42,7 +42,7 @@ Although, unlike iframes, images can be set directly from costumes.
 > Vector fonts will not be loaded, and all text will have the "Times New Roman" font
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make element [img v] with id [element1] :: #6164ff
 Set image of element [#element1] to [Costume1 v] :: #6164ff
 ```
@@ -56,7 +56,7 @@ When using audio elements _(or video elements)_, you will need to include a &#06
 You can do this with the `Set parent` block.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make element [audio v] with id [sound1] :: #6164ff
 Make element [source v] with id [sound1] :: #6164ff
 Set content of [#source1] to [https://pm-bapi.vercel.app/buauauau.mp3] :: #6164ff
@@ -72,7 +72,7 @@ A href is the targat for elements that link outside of the current page. Some el
 To set it, you will need to use the `Set property` block.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make element [img v] with id [element1] :: #6164ff
 Set content of [#element1] to [Click me to go to example.com] :: #6164ff
 Set property [href] of [#element1] to [https://example.com/] :: #6164ff
@@ -86,7 +86,7 @@ This extension also allows you to modify the styling of any element with just a 
 Starting with the `Set style` block
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make element [p v] with id [element1] :: #6164ff
 Set content of [#element1] to [Hello, world!] :: #6164ff
 Set [backgroundColor] of [#element1] to [yellow] :: #6164ff
@@ -102,7 +102,7 @@ end
 You can also add css files to the page with the `Add css` block.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Add css [body { background-color: yellow; }] with id [style1] :: #6164ff
 Add css [https://pooiod7.neocities.org/style.css] with id [style2] :: #6164ff
 ```
@@ -114,7 +114,7 @@ It takes a font url, and also some defining css properties about the font.
 > "font-family" is required, and is the name of the font to be used in css
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Add font [https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf] with properties [font-family: 'Sono'] and id [SonoFont] :: #6164ff
 ```
 
@@ -124,7 +124,7 @@ Add font [https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf] with prop
 Changing the styles of elements is usually instant, but you can change that, and add animatons by using the `Set transition` block. Most style properties can be animated with this.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make element [p v] with id [element1] :: #6164ff
 Set content of [#element1] to [Hello, world!] :: #6164ff
 Set [backgroundColor] of [#element1] to [red] :: #6164ff
@@ -146,7 +146,7 @@ To change this, you can simply use the `Set interaction` block.
 > Please note that this will disable interactions with the scratch stage while enabled
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Set interaction with HTML to [true v] :: #6164ff
 ```
 

@@ -24,7 +24,7 @@ The scene type determines the containment type for your physics world:
 - **Nothing:** Removes all walls, allowing objects to move freely.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage v] :: #2cb0c0
 ```
 
@@ -32,7 +32,7 @@ Make world, Scale 1m: [50] Gravity: [-10] Wind: [0] Scene: [semi-closed stage v]
 Once the world is created, you can modify gravity and wind dynamically without creating a new world.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 forever
     Set world options, Gravity: (-10) Wind: ((5) * ([sin v] of ((timer) * (70)))) :: #2cb0c0
 end
@@ -50,14 +50,14 @@ The first thing you might notice is that we used two blocks to make this object.
 Objects in BoxedPhysics are build one block at a time. This also means you can create a large ammout of common objects all at once.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
 Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 forever
     Step Simulation :: #2cb0c0 //Remember to run this block every tick
 end
 
-when gf clicked
+when gf clicked :: cat
 Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
 set [index v] to (0)
 repeat (4)
@@ -102,7 +102,7 @@ Customize objects with the `Define base` block:
 - **Density, Friction, Bounce** Control physical properties like weight, surface interaction, and bounciness.
 
 ```scratch3
-when gf clicked // Super bouncy imovable triangle
+when gf clicked :: cat // Super bouncy imovable triangle
 Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0
 Dеfine base, Type: [static v] Density: [0.1] Friction: [0.5] Bounce: [2] :: #2cb0c0
 Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
@@ -116,7 +116,7 @@ Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 The damping of each object can also be changed with the `Set [BODYATTR] of object [NAME] to [VALUE]` block.
 
 ```scratch3
-when gf clicked
+when gf clicked :: cat
 Set [damping v] of object [Object1] to [0.1] :: #2cb0c0
 ```
 
