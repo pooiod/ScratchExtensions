@@ -60,14 +60,14 @@ We can format our text in a prompt/response format to tell the model that it is 
 ```text
 {{user}}: Hello, how are you?
 {{assistant}}: I'm doing well! How can I help you today?
-{{user}}: What's the weather like?
+{{user}}: What was the mod of Scratch about penguins?
 {{assistant}}: 
 ```
 
 The model then continues this formatted input and generates an appropriate response:
 
 ```text
-It's sunny and warm today.
+That would be PenguinMod (penguinmod.com)
 ```
 
 To do this, some special blocks have been added:
@@ -77,7 +77,25 @@ To do this, some special blocks have been added:
 (Cut message [super cool message] and keep roles [Assistant] :: #44c249) //Cuts a generated message so the AI doesn't respond for the user
 ```
 
-Code demo:
+## Making a chatbot
+To make a simple chatbot, you need to do some extra work.
+This extension doesn't come with a full set of chatbot data managing blocks, so most of it is for you to handle.
+
+To start, you can take a prompt and an array, and format it into a chat
+
+```scratch3
+(Format (get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249)
+```
+
+Then take the array, and add the user's prompt to it
+```scratch3
+(join (Format (get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249) (join [{{User}}: ] (username)))
+```
+
+Then you can add the start of the Assistant's response and pass it in to be generated
+```scratch3
+	(Start text generation (join (Format (get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249) (join (join [{{User}}: ] (username)) [{{Kobold}}: ])) from model [any] with config [temperature: 5, max_length: 150] :: #44c249)
+```
 
 ```scratch3
 when gf clicked :: cat
