@@ -1,4 +1,4 @@
-// Kobold AI by pooiod7 (this is a work in progress and nothing is final)
+// Kobold AI by pooiod7 (this is a work in progress)
 
 (function(Scratch) {
     'use strict';
@@ -220,7 +220,7 @@ Key instructions:
                     {
                         opcode: 'replaceWithNewlines',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Replace all [THING] in [MESSAGE] with a new line',
+                        text: 'Replace all [THING] in [MESSAGE] with line breaks',
                         arguments: {
                             THING: {
                                 type: Scratch.ArgumentType.STRING,
@@ -228,14 +228,14 @@ Key instructions:
                             },
                             MESSAGE: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: "Hello everybody! \n Who wants to make something?",
+                                defaultValue: 'Hello everybody! \n Who wants to make something?',
                             },
                         },
                     },
                     {
                         opcode: 'replaceNewlinesWith',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Replace all newlines in [MESSAGE] with [THING]',
+                        text: 'Replace all line breaks in [MESSAGE] with [THING]',
                         arguments: {
                             THING: {
                                 type: Scratch.ArgumentType.STRING,
@@ -243,7 +243,7 @@ Key instructions:
                             },
                             MESSAGE: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: `Hello everybody! 
+                                defaultValue: `Hello everybody! 
 Who wants to make something?`,
                             },
                         },
@@ -253,7 +253,6 @@ Who wants to make something?`,
                         opcode: 'cutMessage',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Cut message [MESSAGE] and keep roles [ROLES]',
-                        disableMonitor: true,
                         arguments: {
                             MESSAGE: {
                                 type: Scratch.ArgumentType.STRING,
