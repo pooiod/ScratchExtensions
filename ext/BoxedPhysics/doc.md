@@ -208,4 +208,4 @@ Boxed Physics also includes some math blocks for convenience:
 Need more help?
 Try some example projects [here](https://p7scratchextensions.pages.dev/ext/BoxedPhysics/examples).
 
-<p style="color: #7a7a7a; bottom: 3px; width: 500px;" hidden>Looking for a way to load old ScratchX projects using Griffpatch's Box2D extension? Try using <a href="/view/#/BoxedPhysics/griffpatch.js">this</a></p>
+<p style="color: #7a7a7a; bottom: 3px; width: 500px;"><br>Looking for a way to load old ScratchX projects using Griffpatch's Box2D extension? Try using <a href="/view/#/BoxedPhysics/griffpatch.js">this</a> extension. <br>(Load the extension in penguinmod, then load the sbx project</p>
