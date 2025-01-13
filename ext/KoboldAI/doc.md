@@ -40,12 +40,15 @@ The model processes this formatted input and generates an appropriate response:
 {{assistant}}: It's sunny and warm today.
 ```
 
+By separating the user's input from the assistant's responses, the model can keep track of who is saying what and maintain context. <br>
+Without proper formatting, the model might confuse who is speaking or lose track of previous exchanges, leading to irrelevant or nonsensical responses. 
+
 ---
 
 ## Generating images
 Generating images with Kobold AI is about the same as text, but without all the formatting.
 Simply use the `Start image generation [PROMPT] from model [MODEL] with config [CONFIG]` block to start a generation, 
-then use the `Get image from generation [ID]` block to obtin the url of a finished image.
+then use the `Get image from generation [ID]` block to obtain the url of a finished image.
 
 ```scratch3
 when gf clicked :: cat
@@ -53,3 +56,15 @@ set [ID v] to (Start image generation [An orange cat in space] from model [any] 
 wait until <(value of [done] in (Get status of image generation (ID) :: #44c249) :: #3271D0) = [true]>
 say (Get image from generation (ID) :: #44c249) for (10) seconds
 ```
+
+The following is a list of available configs. You may see advanced configs [here](https://stablehorde.net/api).
+
+- denoising_strength
+- hires_fix_denoising_strength
+- seed
+- height
+- width
+- facefixer_strength
+- transparent
+- steps
+- n - How many results to generate
