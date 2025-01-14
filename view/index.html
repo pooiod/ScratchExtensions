@@ -498,15 +498,15 @@
                 var currentcard = cardsData.find(item => item.id === id);
 
                 if (!currentcard.unsandboxed) {
-                    const newElement = document.createElement('a');
-                    newElement.style.float = 'left';
-                    newElement.setAttribute('link', '[turbowarp]?extension=https://p7scratchextensions.pages.dev[file]');
-                    newElement.setAttribute('target', '_blank');
-                    newElement.id = 'turbowarp';
-                    newElement.textContent = 'Open in TurboWarp';
+                    var turbowarpElement = document.createElement('a');
+                    turbowarpElement.style.float = 'left';
+                    turbowarpElement.setAttribute('link', '[turbowarp]?extension=https://p7scratchextensions.pages.dev[file]');
+                    turbowarpElement.setAttribute('target', '_blank');
+                    turbowarpElement.id = 'turbowarp';
+                    turbowarpElement.textContent = 'Open in TurboWarp';
 
-                    const yeetElement = document.getElementById('yeet');
-                    yeetElement.parentNode.insertBefore(newElement, yeetElement.nextSibling);
+                    var yeetElement = document.getElementById('yeet');
+                    yeetElement.parentNode.insertBefore(turbowarpElement, yeetElement.nextSibling);
 
                 //     document.getElementById("yeet").removeAttribute("hidden");
                 //     document.getElementById("yeet").setAttribute('link', 'https://mirror.turbowarp.xyz?extension=https://p7scratchextensions.pages.dev[file]');
