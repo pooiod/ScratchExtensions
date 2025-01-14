@@ -497,6 +497,7 @@
                 cardsData = await response.json();
                 var currentcard = cardsData.find(item => item.id === id);
 
+                alert(currentcard.unsandboxed)
                 if (!currentcard.unsandboxed) {
                     var turbowarpElement = document.createElement('a');
                     turbowarpElement.style.float = 'left';
