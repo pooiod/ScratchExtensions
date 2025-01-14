@@ -29,7 +29,7 @@
         "created": "Jan 4, 2025",
         "subtext": "",
         "icon": "/extras/images/icons/new.svg",
-        "iconText": "",
+        "iconText": "This is a new extension, please report any bugs",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
@@ -186,15 +186,15 @@
         "description": "A simple extension to interact with GPT3",
         "created": "Jul 18, 2024",
         "subtext": "",
-        "icon": "",
-        "iconText": "",
+        "icon": "https://cdn-icons-png.flaticon.com/512/4275/4275215.png",
+        "iconText": "The api for this extension is currently down.",
         "unsandboxed": false,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
         "tags": ["finished"],
         "type": ["sandboxed"],
-        "hidden": false
+        "hidden": true
     },
     {
         "id": "ScrollUtilities",
