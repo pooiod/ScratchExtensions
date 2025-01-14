@@ -376,7 +376,7 @@
                     resolve(true);
                     isSiteBlocked = true;
                     document.body.removeChild(iframe);
-                }, 3000);
+                }, 7000);
 
                 iframe.onload = () => {
                     const messageListener = (event) => {
@@ -505,16 +505,24 @@
                 //     document.getElementById("yeet").innerText = "Open in Turbowarp";
                 }
 
-                isBlocked().then(
-                    function() {
-                        document.querySelectorAll('a[link]').forEach(a => {
-                            a.href = a.getAttribute('link')
-                                .replace(/\[file\]/g, filePath)
-                                .replace(/\[id\]/g, id)
-                                .replace(/\[turbowarp\]/g, isSiteBlocked?"https://mirror.turbowarp.xyz":"https://turbowarp.org/editor");
-                        });
+                document.querySelectorAll('a[link]').forEach(a => {
+                    if (a.getAttribute('link').includes("[turbowarp]")) {
+                        var link = a.getAttribute('link').includes("[turbowarp]");
+                        isBlocked().then((result)=>{
+                            if (result) {
+                                a.href = link
+                                    .replace(/\[file\]/g, filePath)
+                                    .replace(/\[id\]/g, id)
+                                    .replace(/\[turbowarp\]/g, "https://mirror.turbowarp.xyz");
+                            }
+                        })
                     }
-                )
+
+                    a.href = a.getAttribute('link')
+                        .replace(/\[file\]/g, filePath)
+                        .replace(/\[id\]/g, id)
+                        .replace(/\[turbowarp\]/g, "https://turbowarp.org/editor");
+                });
 
                 try {
                     const response = await fetch(filePath);
