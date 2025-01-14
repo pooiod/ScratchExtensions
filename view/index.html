@@ -376,11 +376,11 @@
                     resolve(true);
                     isSiteBlocked = true;
                     document.body.removeChild(iframe);
-                }, 1000);
+                }, 1500);
 
                 iframe.onload = () => {
                     const messageListener = (event) => {
-                        if (event.origin === 'https://pooiod7.neocities.org' && event.data === 'supercooliframeloadedsupercool') {
+                        if (vent.data === 'supercooliframeloadedsupercool') {
                             clearTimeout(timeout);
                             window.removeEventListener('message', messageListener);
                             resolve(false);
