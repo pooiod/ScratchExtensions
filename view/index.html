@@ -371,10 +371,13 @@
                 iframe.style.border = 'none';
                 iframe.style.position = 'absolute';
                 iframe.style.visibility = 'hidden';
+
+                console.log("get status");
                 
                 let timeout = setTimeout(() => {
                     resolve(true);
                     isSiteBlocked = true;
+                    console.log("blocked");
                     document.body.removeChild(iframe);
                 }, 7000);
 
@@ -384,6 +387,7 @@
                             clearTimeout(timeout);
                             window.removeEventListener('message', messageListener);
                             resolve(false);
+                            console.log("unblocked");
                             document.body.removeChild(iframe);
                         }
                     };
