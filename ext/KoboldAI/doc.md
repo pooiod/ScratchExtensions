@@ -38,7 +38,7 @@ That would be pooiod7
 
 To do this, some special blocks have been added:
 ```scratch3
-(@list Get list [my super cool list v] as array :: #44c249) //Gets any list as an array
+(@list Get list [my super cool list v] as array :: #44c249) //Gets any list as an array (only works unsandboxed)
 (@list Format [Hello, what is your name?] as format [Single message v] with before prompt [default] :: #44c249) //Formats a message for chat, or an array into a conversation
 (@list Cut message [super cool message] and keep roles [Assistant] :: #44c249) //Cuts a generated message so the AI doesn't respond for the user
 ```
@@ -51,6 +51,7 @@ To start, you can take a prompt and an array, and format it into a chat. <br>
 Without proper formatting, the model might confuse who is speaking or lose track of previous exchanges, leading to nonsensical responses. 
 ```scratch3
 (@list Format (@list get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249)
+//Note: the get list block only works unsandboxed
 ```
 
 Then take the array, and add the user's prompt to it. <br>
