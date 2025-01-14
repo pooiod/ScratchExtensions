@@ -331,7 +331,6 @@
         <a style="float: left;" link="[file]" target="_blank" id="direct" onclick="event.preventDefault(); copy(this.href);">Copy link to file</a>
 
         <a style="float: left;" link="compile?ext=[file]" target="_blank" id="yeet" hidden>Open in PenguinMod</a>
-        <a style="float: left;" link="[turbowarp]?extension=https://p7scratchextensions.pages.dev[file]" target="_blank" id="turbowarp" style="opacity: 0" hidden>Open in TurboWarp</a>
         
         <a style="float: right;" target="_blank" link="/#[id]" onclick="event.preventDefault(); share(this.href);" id="share">Share extension</a>
         <a style="float: right;" link="#/[id]/dev.js" id="buildswap" hidden>View dev build</a>
@@ -499,13 +498,19 @@
                 var currentcard = cardsData.find(item => item.id === id);
 
                 if (!currentcard.unsandboxed) {
-                    document.getElementById('turbowarp').removeAttribute('hidden');
-                    document.getElementById('turbowarp').style.opacity = "100%";
+                    const newElement = document.createElement('a');
+                    newElement.style.float = 'left';
+                    newElement.setAttribute('link', '[turbowarp]?extension=https://p7scratchextensions.pages.dev[file]');
+                    newElement.setAttribute('target', '_blank');
+                    newElement.id = 'turbowarp';
+                    newElement.textContent = 'Open in TurboWarp';
+
+                    const yeetElement = document.getElementById('yeet');
+                    yeetElement.parentNode.insertBefore(newElement, yeetElement.nextSibling);
+
                 //     document.getElementById("yeet").removeAttribute("hidden");
                 //     document.getElementById("yeet").setAttribute('link', 'https://mirror.turbowarp.xyz?extension=https://p7scratchextensions.pages.dev[file]');
                 //     document.getElementById("yeet").innerText = "Open in Turbowarp";
-                } else {
-                    document.getElementById('turbowarp').remove();
                 }
 
                 document.querySelectorAll('a[link]').forEach(a => {
