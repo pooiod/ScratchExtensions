@@ -101,7 +101,7 @@ forever
 end
 ```
 
-The following is a list of available configs. You may see advanced configs [here](https://stablehorde.net/api) under "/v2/generate/text/async".
+A few config prams will be listed here. You may see advanced configs [here](//stablehorde.net/api) under "/v2/generate/text/async".
 - max_context_length
 - max_length
 - n - How many responses to generate
@@ -123,7 +123,7 @@ wait until <(value of [done] in (Get status of image generation (ID) :: #44c249)
 say (Get image from generation (ID) :: #44c249) for (10) seconds
 ```
 
-The following is a list of available configs. You may see advanced configs [here](https://stablehorde.net/api) under "/v2/generate/async".
+A few config prams will be listed here. You may see advanced configs [here](//stablehorde.net/api) under "/v2/generate/async".
 - denoising_strength
 - hires_fix_denoising_strength
 - n - How many images to generate

@@ -22,6 +22,24 @@
         "hidden": false
     },
     {
+        "id": "KoboldAI",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Kobold AI",
+        "description": "Generate text and images for free with the power of <a href='//stablehorde.net'>The Horde</a>",
+        "created": "Jan 4, 2025",
+        "subtext": "",
+        "icon": "/extras/images/icons/new.png",
+        "iconText": "",
+        "unsandboxed": false,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
+            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["sandboxed"],
+        "hidden": false
+    },
+    {
         "id": "HTMLcanvas",
         "image": "/ext/[id]/cover.svg",
         "title": "HTML Canvas",
@@ -349,23 +367,5 @@
         "tags": ["finished"],
         "type": ["sandboxed"],
         "hidden": false
-    },
-    {
-        "id": "KoboldAI",
-        "image": "/ext/[id]/cover.svg",
-        "title": "Kobold AI",
-        "description": "Crowdsourced AI",
-        "created": "Jan 4, 2025",
-        "subtext": "",
-        "icon": "/extras/images/icons/wip.png",
-        "iconText": "This extension is in development, please do not use it yet",
-        "unsandboxed": true,
-        "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
-        ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
-        "hidden": true
     }
 ]

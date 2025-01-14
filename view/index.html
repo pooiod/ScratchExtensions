@@ -328,7 +328,7 @@
     </script>
     <div id="toolbar">
         <a style="float: left;" href="/">&#x2190; View more extensions</a>
-        <a style="float: left;" link="[file]" target="_blank" id="direct" onclick="event.preventDefault(); copy(this.href);">Copy direct link</a>
+        <a style="float: left;" link="[file]" target="_blank" id="direct" onclick="event.preventDefault(); copy(this.href);">Copy link to file</a>
 
         <a style="float: left;" link="compile?ext=[file]" target="_blank" id="yeet" hidden>Open in PenguinMod</a>
         
@@ -427,7 +427,7 @@
                 if (hash.endsWith('.js')) {
                     // document.getElementById("buildswap").innerText = "View stable build";
                     // document.getElementById("buildswap").setAttribute("link", `#/[id]`);
-                    document.getElementById("direct").style.display = "none";
+                    // document.getElementById("direct").style.display = "none";
                 }
 
                 const response = await fetch(cardsData[0]);
