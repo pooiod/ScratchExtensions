@@ -380,7 +380,7 @@
 
                 iframe.onload = () => {
                     const messageListener = (event) => {
-                        if (vent.data === 'supercooliframeloadedsupercool') {
+                        if (event.data === 'supercooliframeloadedsupercool') {
                             clearTimeout(timeout);
                             window.removeEventListener('message', messageListener);
                             resolve(false);
