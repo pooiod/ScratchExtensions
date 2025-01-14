@@ -371,8 +371,6 @@
                 iframe.style.border = 'none';
                 iframe.style.position = 'absolute';
                 iframe.style.visibility = 'hidden';
-
-                console.log("get status");
                 
                 let timeout = setTimeout(() => {
                     resolve(true);
@@ -387,7 +385,6 @@
                             clearTimeout(timeout);
                             window.removeEventListener('message', messageListener);
                             resolve(false);
-                            console.log("unblocked");
                             document.body.removeChild(iframe);
                         }
                     };
@@ -511,7 +508,7 @@
 
                 document.querySelectorAll('a[link]').forEach(a => {
                     if (a.getAttribute('link').includes("[turbowarp]")) {
-                        var link = a.getAttribute('link').includes("[turbowarp]");
+                        var link = a.getAttribute('link');
                         isBlocked().then((result)=>{
                             if (result) {
                                 a.href = link
