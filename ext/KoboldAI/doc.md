@@ -81,7 +81,7 @@ To account for this, we can cut the response message so it doesn't include anyth
 > Note: the "stop_sequence" pram can also be used for this
 
 After that, we can make some supporting ui code, and finish with a basic chatbot.
-You can try this demo for yourself [here](https://studio.penguinmod.com/fullscreen.html?project_url=https://p7scratchextensions.pages.dev/ext/KoboldAI/examples/Basic.sb3).
+You can try this demo for yourself [here](https://studio.penguinmod.com/fullscreen.html?project_url=https://p7scratchextensions.pages.dev/ext/KoboldAI/examples/simple.pmp).
 ```scratch3
 when gf clicked :: cat
 delete all of [messages v]
