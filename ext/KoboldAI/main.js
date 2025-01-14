@@ -1,4 +1,8 @@
-// Kobold AI by pooiod7
+// Name: Kobold AI
+// ID: P7KoboldAI
+// Description: Generate text and images for free with the power of The Horde
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// License: zlib
 
 (function(Scratch) {
     'use strict';
@@ -34,7 +38,7 @@ Key instructions:
 
         getInfo() {
             return {
-                id: 'p7KoboldAI',
+                id: 'P7KoboldAI',
                 name: 'Kobold AI',
                 color1: '#44c249',
                 color2: '#4CAF50',
