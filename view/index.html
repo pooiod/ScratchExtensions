@@ -486,6 +486,8 @@
                     fileExists(filePath.replace("main", "dev")).then((buildexists)=>{
                         if (buildexists) {
                             document.getElementById("buildswap").removeAttribute('hidden');
+                        } else {
+                            document.getElementById("buildswap").remove();
                         }
                     });
                 }
