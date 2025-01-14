@@ -30,7 +30,7 @@
         "subtext": "",
         "icon": "/extras/images/icons/new.svg",
         "iconText": "This is a new extension, please report any bugs",
-        "unsandboxed": true,
+        "unsandboxed": false,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }

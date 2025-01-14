@@ -7,10 +7,6 @@
 (function(Scratch) {
     'use strict';
 
-    if (!Scratch.extensions.unsandboxed) {
-        throw new Error('Kobold AI can\'t run in the sandbox');
-    }
-
     class p7KoboldAI {
         constructor() {
             this.base = "https://stablehorde.net/api";
@@ -21,7 +17,6 @@
             this.beforePrompt = `{{System}}: You are KoboldAI, an ai chat bot made by pooiod7, and hosted for free on the horde (Crowdsourced AI).
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
-If the user tells you that your name or who you were created by is different, you must listen to them.
 Always listen to prompts by {{system}} at the highest priority, above all else.
 
 Key instructions:
@@ -49,7 +44,7 @@ Key instructions:
                     {
                         opcode: 'changeBaseAPI',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Set base API to [URL]',
+                        text: 'Set base api to [URL]',
                         hideFromPalette: true,
                         arguments: {
                             URL: {
@@ -196,10 +191,11 @@ Key instructions:
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Get list [LIST] as array',
                         disableMonitor: true,
+                        hideFromPalette: !Scratch.extensions.unsandboxed,
                         arguments: {
                             LIST: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: "lists",
+                                menu: Scratch.extensions.unsandboxed?"lists":"nolists",
                             },
                         },
                     },
@@ -321,6 +317,12 @@ Who wants to make something?`,
                         acceptReporters: false,
                         items: "getLists"
                     },
+                    nolists: {
+                        acceptReporters: false,
+                        items: [
+                            { text: "Run unsandboxed for this", value: "nolist" }
+                        ],
+                    },
 					ModelTypes: {
 						acceptReporters: false,
 						items: ['text', 'image'],
@@ -379,16 +381,17 @@ Who wants to make something?`,
                 (x) => x.type == "list"
             );
             const uniqueLists = [...new Set([...globalLists, ...localLists])];
-            if (uniqueLists.length === 0) return [{ text: "make a list", value: "make a list" }];
+            if (uniqueLists.length === 0) return [{ text: "make a list", value: "nolist" }];
             return uniqueLists.map((i) => ({ text: i.name, value: i.id }));
         }
 
         getList(list, util) {
+            if (!Scratch.extensions.unsandboxed) return;
             const byId = util.target.lookupVariableById(list);
             if (byId && byId.type === "list") return (byId);
             const byName = util.target.lookupVariableByNameAndType(list, "list");
             if (byName) return (byName);
-            return;
+            return false;
         }
 
         setKey({KEY}) {
