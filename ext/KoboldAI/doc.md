@@ -50,8 +50,7 @@ This extension doesn't come with a full set of chatbot data managing blocks, so 
 To start, you can take a prompt and an array, and format it into a chat. <br>
 Without proper formatting, the model might confuse who is speaking or lose track of previous exchanges, leading to nonsensical responses. 
 ```scratch3
-(@list Format (@list get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249)
-//Note: the get list block only works unsandboxed
+(@list Format (@list get list [messages v] as array :: #44c249) as format [Multi message chat v] with before prompt [default] :: #44c249) //The get list block only works unsandboxed
 ```
 
 Then take the array, and add the user's prompt to it. <br>
