@@ -375,7 +375,6 @@
                 let timeout = setTimeout(() => {
                     resolve(true);
                     isSiteBlocked = true;
-                    console.log("blocked");
                     document.body.removeChild(iframe);
                 }, 7000);
 
@@ -500,7 +499,7 @@
                 var currentcard = cardsData.find(item => item.id === id);
 
                 if (!currentcard.unsandboxed) {
-                    document.getElementById('turbowarp').removeAttribute('hidden');
+                    // document.getElementById('turbowarp').removeAttribute('hidden');
                 //     document.getElementById("yeet").removeAttribute("hidden");
                 //     document.getElementById("yeet").setAttribute('link', 'https://mirror.turbowarp.xyz?extension=https://p7scratchextensions.pages.dev[file]');
                 //     document.getElementById("yeet").innerText = "Open in Turbowarp";
