@@ -1,19 +1,12 @@
 // Name: Boxed Plysics
 // ID: P7BoxPhys
-// Description: An implementation the Box2D physics engine with support for joints, springs, sliders, and more.
+// Description: An implementation the matter.js physics engine with support for joints, springs, sliders, and more.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
-// Original: Griffpatch
 // License: zlib
-
-// Report issues with this extension at https://p7scratchextensions.pages.dev/reportissue
-/* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
-but has since deviated to be its own thing. (made with box2D js es6)
-*/// You can find a direct port here: https://p7scratchextensions.pages.dev/view/#/BoxedPhysics/griffpatch.js
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "01/02/2025";
-  var publishedUpdateIndex = 17;
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
