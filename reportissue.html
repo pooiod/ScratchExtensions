@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pooiod7's issue reporter</title>
+    <title>Pooiod7's issue report page</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -55,7 +55,7 @@
         a:hover {
             text-decoration: underline;
         }
-        .submit-btn {
+        .open-btn {
             display: inline-block;
             padding: 10px 20px;
             background-color: #34c759;
@@ -67,7 +67,7 @@
             font-size: 16px;
             margin-top: 5px;
         }
-        .submit-btn:hover {
+        .open-btn:hover {
             background-color: #2faa4a;
         }
         
@@ -110,11 +110,11 @@
             a:hover {
                 color: #99c0ff;
             }
-            .submit-btn {
+            .open-btn {
                 background-color: #3a863e;
                 border-color: #47a24a;
             }
-            .submit-btn:hover {
+            .open-btn:hover {
                 background-color: #2d7430;
             }
             #toolbar {
@@ -135,10 +135,10 @@
         <a href="/">&#x2190; Home</a>
     </div>
     <script>
-      if (window.location.hash == "#new") {
-        document.getElementById("toolbar").style.display = "block";
-        document.getElementById("head").style.display = "none";
-      }
+        if (window.location.hash == "#new") {
+            document.getElementById("toolbar").style.display = "block";
+            document.getElementById("head").style.display = "none";
+        }
     </script>
     <div class="container">
         <p>Before reporting an issue, ensure it doesn't fall into one of the following categories:</p>
@@ -150,7 +150,7 @@
             <li>Issues that have already been reported. <br><sub>(check the list <a href="https://github.com/pooiod/ScratchExtensions/issues" target="_blank">here</a>).</sub></li>
         </ul>
         <p>If your issue doesn't match any of these, you're ready to start making a report!</p>
-        <a class="submit-btn" href="https://github.com/pooiod/ScratchExtensions/issues/new">Report an issue</a>
+        <a class="open-btn" href="https://github.com/pooiod/ScratchExtensions/issues/new">Report an issue</a>
     </div>
 </body>
 </html>

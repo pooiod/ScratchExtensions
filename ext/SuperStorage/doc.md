@@ -153,7 +153,7 @@ The **get all cookie names** block returns a list of all cookie names as a JSON 
 Use the **set cookie [KEY] to [VALUE] with expiration [DATE]** block to create or modify a cookie with a specific key, value, and optional expiration date. If no date is provided, the cookie will expire when the browser is closed <light>(usually)</light>.
 
 ```scratch3
-set cookie [hello] to [Hello, World] with expiration [] :: #31b3d4
+set cookie [hello] to [Hello, World] with expiration [yes] :: #31b3d4
 ```
 
 ### Retrieve a Cookie’s Value
