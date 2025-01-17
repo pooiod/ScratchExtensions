@@ -1,7 +1,3 @@
-Sure! Here's the updated version of the documentation, including the detailed explanation of the **file selector** block with the correct use of "types" and "format."
-
----
-
 # SuperStorage Documentation
 
 Welcome to the **SuperStorage** documentation! This extension allows you to easily manage **local** and **online** storage in your projects. You can store data locally on the user's device or on a remote server. Below, we’ll walk through each available block and show you how to use them effectively.
