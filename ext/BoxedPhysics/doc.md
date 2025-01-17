@@ -62,7 +62,7 @@ Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
 set [index v] to (0)
 repeat (4)
     change [index v] by (1)
-    Make object (join [Object] (index)) at X: [random(-100, 100)] y: [random(-100, 100)] Dir: [0] :: #2cb0c0
+    Make object (join [Object] (index)) at X: (pick random (-100) to (100)) y: (pick random (-100) to (100)) Dir: [0] :: #2cb0c0
 end
 ```
 
@@ -120,6 +120,25 @@ when gf clicked :: cat
 Set [damping v] of object [Object1] to [0.1] :: #2cb0c0
 ```
 
+### Collision filtering
+Collision filtering can be done through the layer system with the use of the `Set object [NAME] to be on collision layer [LAYER]` block.
+
+```scratch3
+when gf clicked :: cat
+Set object [Object1] to be on collision layer [1] :: #2cb0c0
+```
+
+Objects can have more than one layer, allowing for objects from other layers to collide with eachother. 
+Objects can also have one negative layer, to explicitly not collide with anything on that layer.
+
+```scratch3
+when gf clicked :: cat
+Set object [Object1] to be on collision layer [1, 2, -3] :: #2cb0c0
+```
+
+> Layers will not change if an object is touching another, 
+> but they will queue up to change the first step the object gets without touching other objects.
+
 ### Destroying Objects
 You can delete individual objects or clear all objects at once.
 ```scratch3
@@ -160,7 +179,7 @@ You can create many types of joints, including:
 - Spring
 - Weld
 - Slider
-<!-- - Mouse -->
+<!-- - Mouse (stopped working for now) -->
 
 
 ```scratch3
