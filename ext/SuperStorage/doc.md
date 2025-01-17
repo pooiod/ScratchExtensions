@@ -1,4 +1,6 @@
 # SuperStorage Documentation
+[!js-document.title="Super Storage Documentation"!]
+---
 
 Welcome to the **SuperStorage** documentation! This extension allows you to easily manage **local** and **online** storage in your projects. You can store data locally on the user's device or on a remote server. Below, we’ll walk through each available block and show you how to use them effectively.
 
