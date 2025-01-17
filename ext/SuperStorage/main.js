@@ -7,6 +7,107 @@
 		throw new Error('This extension must run unsandboxed');
 	}
 
+    if (!Scratch.download) {
+        Scratch.download = function(url, filename) {
+            return new Promise((resolve, reject) => {
+                if (Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined") {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    resolve();
+                } else {
+                    const modal = document.createElement('div');
+                    modal.style.position = 'fixed';
+                    modal.style.top = '0';
+                    modal.style.left = '0';
+                    modal.style.width = '100%';
+                    modal.style.height = '100%';
+                    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+                    modal.style.display = 'flex';
+                    modal.style.alignItems = 'center';
+                    modal.style.justifyContent = 'center';
+                    modal.style.zIndex = '9999';
+        
+                    const modalContent = document.createElement('div');
+                    modalContent.style.backgroundColor = '#fff';
+                    modalContent.style.padding = '40px';
+                    modalContent.style.borderRadius = '8px';
+                    modalContent.style.textAlign = 'center';
+                    modalContent.style.width = '500px';
+        
+                    const message = document.createElement('p');
+                    message.innerHTML = `This project wants to download "<strong>${filename}</strong>" to your computer. <br>This file has not been reviewed for malicious intent.`;
+        
+                    const buttonsContainer = document.createElement('div');
+                    buttonsContainer.style.marginTop = '30px';
+        
+                    const acceptButton = document.createElement('button');
+                    acceptButton.textContent = 'Accept Download';
+                    acceptButton.style.marginRight = '20px';
+                    acceptButton.style.backgroundColor = '#4CAF50';
+                    acceptButton.style.color = 'white';
+                    acceptButton.style.border = 'none';
+                    acceptButton.style.padding = '15px 30px';
+                    acceptButton.style.fontSize = '16px';
+                    acceptButton.style.cursor = 'pointer';
+                    acceptButton.style.borderRadius = '8px';
+                    acceptButton.style.transition = 'background-color 0.3s';
+        
+                    const cancelButton = document.createElement('button');
+                    cancelButton.textContent = 'Reject Download';
+                    cancelButton.style.backgroundColor = '#f44336';
+                    cancelButton.style.color = 'white';
+                    cancelButton.style.border = 'none';
+                    cancelButton.style.padding = '15px 30px';
+                    cancelButton.style.fontSize = '16px';
+                    cancelButton.style.cursor = 'pointer';
+                    cancelButton.style.borderRadius = '8px';
+                    cancelButton.style.transition = 'background-color 0.3s';
+        
+                    buttonsContainer.appendChild(acceptButton);
+                    buttonsContainer.appendChild(cancelButton);
+        
+                    modalContent.appendChild(message);
+                    modalContent.appendChild(buttonsContainer);
+                    modal.appendChild(modalContent);
+                    document.body.appendChild(modal);
+        
+                    acceptButton.addEventListener('mouseover', () => {
+                        acceptButton.style.backgroundColor = '#45a049';
+                    });
+                    acceptButton.addEventListener('mouseout', () => {
+                        acceptButton.style.backgroundColor = '#4CAF50';
+                    });
+                    cancelButton.addEventListener('mouseover', () => {
+                        cancelButton.style.backgroundColor = '#e53935';
+                    });
+                    cancelButton.addEventListener('mouseout', () => {
+                        cancelButton.style.backgroundColor = '#f44336';
+                    });
+        
+                    acceptButton.addEventListener('click', () => {
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        document.body.removeChild(modal);
+                        resolve();
+                    });
+        
+                    cancelButton.addEventListener('click', () => {
+                        document.body.removeChild(modal);
+                        reject();
+                    });
+                }
+            });
+        }        
+    }
+
 	class SuperStorage {
 		constructor() {
 			this.currentServer = "https://storage-ext.penguinmod.com/";
