@@ -2,7 +2,7 @@
 (function(Scratch) {
     'use strict';
 
-    if (!Scratch.extensions.unsandboxed) { // comment this out for a sandboxed ext
+    if (!Scratch.extensions.unsandboxed) {
         throw new Error('This extension must run unsandboxed');
     }
 

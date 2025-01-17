@@ -1,40 +1,44 @@
-# SuperStorage
-[!js-document.title="Super Storage docs"!]
+Sure! Here's the updated version of the documentation, including the detailed explanation of the **file selector** block with the correct use of "types" and "format."
 
-The **SuperStorage** extension provides a way to manage both **local** and **online storage** in your projects. With this extension, you can store and retrieve data locally on a user's device, or store it on a remote server. This guide covers all the available blocks and their usage.
+---
+
+# SuperStorage Documentation
+
+Welcome to the **SuperStorage** documentation! This extension allows you to easily manage **local** and **online** storage in your projects. You can store data locally on the user's device or on a remote server. Below, we’ll walk through each available block and show you how to use them effectively.
 
 ---
 
 ## Local Storage
 
-Local storage blocks allow you to save data directly to the user's device (via browser local storage). The following blocks are available for interacting with local storage.
+Local storage lets you save data directly on the user's device via the browser's local storage system. Use the following blocks to manage this data:
 
-### **get local [key]**  
-Retrieves the value associated with the specified local storage key.
-Just provide a key name, and it will return its content.
+### Retrieve Data from Local Storage
+
+The **get local [key]** block retrieves the value stored under a specific key in local storage. Provide the key, and it will return the saved content.
 
 ```scratch3
 (get local [save data] :: #31b3d4)
 ```
 
-### **set local [key] to [value]**  
-Sets a value in local storage for the given key.
-Just provide a key name, and it will save your chosen content to that key.
+### Store Data in Local Storage
+
+The **set local [key] to [value]** block saves data under a specific key in local storage. Just specify the key and the value you want to store.
 
 ```scratch3
 set local [save data] to [data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAEpJREFUKFOdkFEKACAIQ+f9D20sUqZUUH45fajTUMObttCZACCkmkzWorGDYtjsEVTomHewnZjSv8Hr6uJu3cxaMfr8Hn2FGspBA/gaFwffFgUWAAAAAElFTkSuQmCC] :: #31b3d4
 ```
 
-### **delete local [key]**  
-Deletes the specified key and its associated value from local storage.  
-Just prvide a key name, and it will be wiped from existance.
+### Delete Data from Local Storage
+
+To remove data from local storage, use the **delete local [key]** block. Simply provide the key, and it will delete the associated value.
 
 ```scratch3
 delete local [save data] :: #31b3d4
 ```
 
-### **get all local stored names**  
-Retrieves a list of all the keys currently stored in local storage.  
+### Get All Local Storage Keys
+
+The **get all local stored names** block retrieves a list of all the keys that are currently stored in local storage. This is useful for checking what data is available.
 
 ```scratch3
 (get all local stored names :: #31b3d4)
@@ -44,51 +48,59 @@ Retrieves a list of all the keys currently stored in local storage.
 
 ## Online Storage
 
-Online storage allows you to interact with data stored on a remote server. Use the following blocks for managing server-side storage.
+Online storage allows you to store and retrieve data from a remote server. Here are the blocks you’ll need:
 
-### **waiting for server to respond?**  
-Checks if the server has responded to a storage request. This block can be used to determine whether data retrieval or saving is still pending.  
-Returns a boolean value indicating whether the server is responding to something.
+### Check If the Server is Online
+
+The **can connect to server?** block checks if the server is available to respond to storage requests. It returns a boolean value indicating whether the server is online.
+
+```scratch3
+<can connect to server? :: #31b3d4>
+```
+
+### Check if the Server is Responding
+
+Use the **waiting for server to respond?** block to determine if the server has responded to a storage request. It will return a boolean value indicating whether the server is still processing or has completed the request.
 
 ```scratch3
 <waiting for server to respond? :: #31b3d4>
 ```
 
-### **server failed to respond?**  
-Checks if the server request has failed. This block can be used to handle server errors gracefully.  
-Returns a boolean value indicating whether the server request has failed.
+### Handle Server Failures
+
+The **server failed to respond?** block helps you check if the server failed to respond to a request. This is important for error handling when the server is not accessible.
 
 ```scratch3
 <server failed to respond? :: #31b3d4>
 ```
 
-### **server error**  
-Returns a text value when the server returns an error response. This block can be used to handle errors like server downtime or failed requests.
-Best when paured with the `server failed to respond?` block.
+### Retrieve Server Error Messages
+
+The **server error** block returns an error message if the server fails to process the request. This is useful for troubleshooting.
 
 ```scratch3
 (server error :: #31b3d4)
 ```
 
-### **get server [key]**  
-Retrieves a value from the server associated with the specified key.  
-Works like `get local [key]` but with an online server.
+### Retrieve Data from the Server
+
+To retrieve data from the server, use the **get server [key]** block. Just like **get local [key]**, this will fetch the data stored under the specified key but from the remote server.
 
 ```scratch3
 (get server [save data] :: #31b3d4)
 ```
 
-### **set server [key] to [value]**  
-Sets a value on the server under the specified key.  
-Works like `set local [key] to [data]` but with an online server.
+### Store Data on the Server
+
+The **set server [key] to [value]** block saves data on the server under the specified key. This works similarly to the local storage block, but the data is stored remotely.
 
 ```scratch3
 set server [save data] to [data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAEtJREFUKFOdkMEOADAEQ+v/P3pLZRpkDpuT6osoQ63VtIVWA4BQ1mQ0C+MGxTL3CGZo7DvYTpRc3+CU2jeWdOdmzor3/J78ihxIizZwEhYHj2iVjAAAAABJRU5ErkJggg==] :: #31b3d4
 ```
 
-### **delete server [key]**  
-Deletes the specified key and its associated value from the server.  
-Works like `delete local [key]` but with an online server.
+### Delete Data from the Server
+
+The **delete server [key]** block removes data from the server under the specified key.
 
 ```scratch3
 delete server [save data] :: #31b3d4
@@ -96,11 +108,68 @@ delete server [save data] :: #31b3d4
 
 ---
 
-## Additional Notes
+## Device Storage
 
-- **Performance Considerations**: When using online storage, make sure to account for the time it may take for the server to respond.
-- **Data Persistence**: Data stored locally is saved only on the user's device and may not persist across different sessions or devices. Use online storage for cross-session persistence.
-- **Server Errors**: Handle server errors gracefully by using the `server error` block. This can help provide users with feedback in case the server is unavailable.
+Device storage allows users to pick files from their device. Here’s how to interact with device files:
 
+### Open a File Selector
 
-<p style="color: #7a7a7a; bottom: 3px; width: 500px;" hidden>Documentation by pooiod7</p>
+The **open file selector for types [types] as [format]** block opens a file selector, allowing users to pick files from their device. You can specify the file formats to accept (e.g., text files, JSON). You can also specify the format in which you want the file returned. Available options include **raw**, **data uri**, and **hex**.
+
+```scratch3
+open file selector for types [text, json] as [raw v] :: #31b3d4
+```
+
+### Download Text Data as a File
+
+The **download [input] as [filename]** block allows you to download text input as a file. You simply provide the content you want to save and the desired filename.
+
+```scratch3
+download [Hello, World] as [hello.txt] :: #31b3d4
+```
+
+### Download File from a Data URI
+
+For non-text files, you can download them from a data URI using the **download file from data URI [url] as [filename]** block. This is useful for files like images or videos.
+
+```scratch3
+download file from data URI [data:text/plain;base64,SGVsbG8sIHdvcmxkIQ==] as [hello.txt] :: #31b3d4
+```
+
+---
+
+## Cookies
+
+Cookies are typically used for temporary data, such as session information. Here’s how to manage cookies:
+
+### Retrieve All Cookie Names
+
+The **get all cookie names** block returns a list of all cookie names as a JSON array.
+
+```scratch3
+(get all cookie names :: #31b3d4)
+```
+
+### Set or Change a Cookie
+
+Use the **set cookie [KEY] to [VALUE] with expiration [DATE]** block to create or modify a cookie with a specific key, value, and optional expiration date. If no date is provided, the cookie will expire when the browser is closed <light>(usually)</light>.
+
+```scratch3
+set cookie [hello] to [Hello, World] with expiration [] :: #31b3d4
+```
+
+### Retrieve a Cookie’s Value
+
+The **get cookie value for [KEY]** block retrieves the value of a specific cookie. If the cookie doesn’t exist, it returns nothing.
+
+```scratch3
+get cookie value for [hello] :: #31b3d4
+```
+
+### Remove a Cookie
+
+To remove a cookie, use the **remove cookie [KEY]** block. It will delete the specified cookie.
+
+```scratch3
+remove cookie [hello] :: #31b3d4
+```
