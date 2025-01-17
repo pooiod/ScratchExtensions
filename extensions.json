@@ -220,8 +220,8 @@
         "description": "Store and retrieve data locally on device, or remotely on a server.",
         "created": "Nov 13, 2024",
         "subtext": "",
-        "icon": "",
-        "iconText": "",
+        "icon": "/extras/images/icons/update.svg",
+        "iconText": "New blocks for device files and cookies",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
