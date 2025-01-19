@@ -1,6 +1,6 @@
 (function(Scratch) {
     'use strict';
-  
+
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('This extension must run unsandboxed');
     }
@@ -76,7 +76,7 @@
     };
 
     addImageButton(
-        '//p7scratchextensions.pages.dev//extras/images/icons/AddTextIcon.svg',
+        '//p7scratchextensions.pages.dev/extras/images/icons/AddTextIcon.svg',
         async () => {
             const overlay = document.createElement('div');
             overlay.style.position = 'fixed';
@@ -127,15 +127,12 @@
     );
 
     class p7SVGtext {
-        constructor() {
-        }
-
         getInfo() {
             return {
                 id: 'p7SVGtext',
                 name: 'SVG Text',
                 blocks: [
-                    // { blockType: Scratch.BlockType.LABEL, text: "" },
+                    { blockType: Scratch.BlockType.LABEL, text: "penguinpaint.statichost.app" },
                 ]
             };
         }

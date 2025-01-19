@@ -99,7 +99,7 @@
         "created": "Dec 4, 2024",
         "subtext": "An addidtion to the editor",
         "icon": "/extras/images/icons/addon.png",
-        "iconText": "This extension adds editor functions and not blocks",
+        "iconText": "This extension is based on the svg text feature on <a href=\"https://penguinpaint.statichost.app\">PenguinPaint</a>",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
@@ -108,7 +108,7 @@
         "tags": ["finished"],
         "type": ["unsandboxed", "addon", "editor"],
         "noblocks": true,
-        "hidden": false
+        "hidden": true
     },
     {
         "id": "Ace",
