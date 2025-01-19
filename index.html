@@ -511,9 +511,10 @@
                     </div>
                 `;
 
+                var PenguinPaint = "https://penguinpaint.statichost.app/?size=700x400&import=";
                 cardDiv.innerHTML = `
                     ${iconHTML}
-                    <img src="${imageURL}" alt="${card.title}">
+                    <img src="${imageURL}" alt="${card.title}" onclick="window.open(\`${PenguinPaint}${encodeURIComponent(this.src)}\`, '_blank');">
                     <div class="card-content">
                         ${sandboxStatusIconHTML}
                         <div class="card-title">${card.title}</div>
