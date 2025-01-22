@@ -279,8 +279,9 @@ var App = /** @class */ (function () {
         try {
             xhr.open('get', _this.fontlinks, true);
             setTimeout(function() {
-                xhr.abort();
                 xhr.onerror();
+                xhr.abort();
+                console.error("Unable to load google fonts");
             }, 10000);
             xhr.onloadend = function () {
                 try {
@@ -301,6 +302,7 @@ var App = /** @class */ (function () {
                     _this.renderCurrent();
                     
                     document.getElementById("googlefont").removeAttribute("hidden");
+                    document.getElementById("svg-render").removeAttribute("hidden");
                     document.getElementById("content").removeAttribute("hidden");
                     document.getElementById("loadingspinner").remove();
                 } catch(err) {
@@ -345,6 +347,7 @@ var App = /** @class */ (function () {
             _this.handleEvents();
             _this.readQueryParams();
             _this.renderCurrent();
+            document.getElementById("svg-render").removeAttribute("hidden");
         };
         xhr.send();
     };
@@ -389,11 +392,15 @@ var App = /** @class */ (function () {
     };
     return App;
 }());
-var app = new App();
-window.onload = function () {
-    app.init();
-    app.getGoogleFonts();
-};
+try {
+    var app = new App();
+    window.onload = function () {
+        app.init();
+        app.getGoogleFonts();
+    };
+} catch(err) {
+    alert(err);
+}
 /**
  * Creates and returns a new debounced version of the passed function that will
  * postpone its execution until after wait milliseconds have elapsed since the last time it was invoked.
@@ -507,7 +514,7 @@ function debounce(callback, wait) {
 
         #svg-render {
             margin-top: 2rem;
-            width: calc(100vw - 70px);
+            width: calc(100vw - 77px);
             padding: 5px;
             position: sticky;
             bottom: 5px;
