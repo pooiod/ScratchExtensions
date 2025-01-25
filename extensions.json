@@ -186,7 +186,7 @@
         "description": "A simple extension to interact with GPT3",
         "created": "Jul 18, 2024",
         "subtext": "",
-        "icon": "https://cdn-icons-png.flaticon.com/512/4275/4275215.png",
+        "icon!": "https://cdn-icons-png.flaticon.com/512/4275/4275215.png",
         "iconText": "The api for this extension is currently down.",
         "unsandboxed": false,
         "buttons": [
@@ -194,7 +194,7 @@
         ],
         "tags": ["finished"],
         "type": ["sandboxed"],
-        "hidden": true
+        "hidden": false
     },
     {
         "id": "ScrollUtilities",
