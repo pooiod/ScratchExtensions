@@ -186,8 +186,8 @@
         "description": "A simple extension to interact with GPT3",
         "created": "Jul 18, 2024",
         "subtext": "",
-        "icon!": "https://cdn-icons-png.flaticon.com/512/4275/4275215.png",
-        "iconText": "The api for this extension is currently down.",
+        "icon": "https://cdn-icons-png.flaticon.com/512/4275/4275215.png",
+        "iconText": "The default API will go down sometimes",
         "unsandboxed": false,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
