@@ -224,12 +224,15 @@
                 const hash = window.location.hash.slice(2);
                 const id = hash.replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
 
-                var newfilePath = `${id}/${file}${file.includes(".")?"":".js"}`;
+                var newfilePath = `${id}/#/${file}${file.includes(".")?"":".js"}`;
 
                 ActionBarPlus.util.showLoader();
                 fileExists(`/ext/${newfilePath}`).then((buildexists)=>{
                     if (buildexists) {
                         window.location.href = newfilePath;
+                        setTimeout(() => {
+                            ActionBarPlus.util.hideLoader();
+                        }, 1000);
                     } else {
                         ActionBarPlus.util.hideLoader();
                         ActionBarPlus.util.notify(`${file} could not be found for this extension`, "error");
