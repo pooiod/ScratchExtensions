@@ -230,6 +230,7 @@
                 fileExists(`/ext/${newfilePath}`).then((buildexists)=>{
                     if (buildexists) {
                         window.location.href = newfilePath;
+                        window.location.reload();
                         setTimeout(() => {
                             ActionBarPlus.util.hideLoader();
                         }, 1000);
