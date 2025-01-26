@@ -219,21 +219,23 @@
         });
 
         window.OnActionBarPlusLoad = (ActionBarPlus) => {
-            const hash = window.location.hash.slice(2);
-            const id = hash.replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
             window.ActionBarPlus = ActionBarPlus;
-            window.ActionBarPlus.commands.add("open ext file _", function([file]) {
-                        var newfilePath = `${id}/${file}${file.includes(".")?"":".js"}`;
-                        ActionBarPlus.util.showLoader();
-                        fileExists(`/ext/${newfilePath}`).then((buildexists)=>{
-                            if (buildexists) {
-                                window.location.href = newfilePath;
-                            } else {
-                                ActionBarPlus.util.hideLoader();
-                                ActionBarPlus.util.notify(`${file} could not be found for this extension`, "error");
-                            }
-                        });
-                    }, "find an open any build for this extension");
+            window.ActionBarPlus.commands.add("open build _", function([file]) {
+                const hash = window.location.hash.slice(2);
+                const id = hash.replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
+
+                var newfilePath = `${id}/${file}${file.includes(".")?"":".js"}`;
+
+                ActionBarPlus.util.showLoader();
+                fileExists(`/ext/${newfilePath}`).then((buildexists)=>{
+                    if (buildexists) {
+                        window.location.href = newfilePath;
+                    } else {
+                        ActionBarPlus.util.hideLoader();
+                        ActionBarPlus.util.notify(`${file} could not be found for this extension`, "error");
+                    }
+                });
+            }, "find an open any build for this extension");
             console.log("ActionBarPlus registered");
         }
         
