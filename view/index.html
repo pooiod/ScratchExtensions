@@ -217,6 +217,10 @@
             if (event.message == "Script error.") return;
             showNotification(event.message, "#ffd6d6", 3000);
         });
+
+        window.OnActionBarPlusLoad = (ActionBarPlus) => {
+            window.ActionBarPlus = ActionBarPlus;
+        }
         
         function share(link) {
             var extid = window.location.hash.slice(2).replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
