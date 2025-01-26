@@ -236,7 +236,7 @@
                         }, 1000);
                     } else {
                         ActionBarPlus.util.hideLoader();
-                        ActionBarPlus.util.notify(`${file} could not be found for this extension`, "error");
+                        ActionBarPlus.util.notify(`${file}${file.includes(".")?"":".js"} could not be found for this extension`, "error");
                     }
                 });
             }, "find an open any build for this extension");
