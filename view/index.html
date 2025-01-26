@@ -220,6 +220,18 @@
 
         window.OnActionBarPlusLoad = (ActionBarPlus) => {
             window.ActionBarPlus = ActionBarPlus;
+            window.ActionBarPlus.commands.add("open ext file _", function([file]) {
+                        var newfilePath = `${id}/${file}${file.includes(".")?"":".js"}`;
+                        ActionBarPlus.util.showLoader();
+                        fileExists(`/ext/${newfilePath}`).then((buildexists)=>{
+                            if (buildexists) {
+                                window.location.href = newfilePath;
+                            } else {
+                                ActionBarPlus.util.hideLoader();
+                                ActionBarPlus.util.notify(`${file} could not be found for this extension`, "error");
+                            }
+                        });
+                    }, "find an open any build for this extension");
             console.log("ActionBarPlus registered");
         }
         
@@ -486,21 +498,6 @@
                 const filePath = hash.endsWith('.js') ? `/ext/${hash}` : `/ext/${hash}/main.js`;
                 const id = hash.replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
                 editor.setValue('// Loading extension');
-
-                if (window.ActionBarPlus) {
-                    window.ActionBarPlus.commands.add("open ext file _", function([file]) {
-                        var newfilePath = `${id}/${file}${file.includes(".")?"":".js"}`;
-                        ActionBarPlus.util.showLoader();
-                        fileExists(`/ext/${newfilePath}`).then((buildexists)=>{
-                            if (buildexists) {
-                                window.location.href = newfilePath;
-                            } else {
-                                ActionBarPlus.util.hideLoader();
-                                ActionBarPlus.util.notify(`${file} could not be found for this extension`, "error");
-                            }
-                        });
-                    }, "find an open any build for this extension");
-                }
 
                 if (filePath.includes("main.js")) {
                     fileExists(filePath.replace("main", "dev")).then((buildexists)=>{
