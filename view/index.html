@@ -219,6 +219,8 @@
         });
 
         window.OnActionBarPlusLoad = (ActionBarPlus) => {
+            const hash = window.location.hash.slice(2);
+            const id = hash.replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
             window.ActionBarPlus = ActionBarPlus;
             window.ActionBarPlus.commands.add("open ext file _", function([file]) {
                         var newfilePath = `${id}/${file}${file.includes(".")?"":".js"}`;
@@ -503,11 +505,6 @@
                     fileExists(filePath.replace("main", "dev")).then((buildexists)=>{
                         if (buildexists) {
                             document.getElementById("buildswap").removeAttribute('hidden');
-                            if (window.ActionBarPlus) {
-                                window.ActionBarPlus.commands.add("open dev build", function() {
-                                    document.getElementById("buildswap").click();
-                                }, "Opens the dev build for current Scratch extension");
-                            }
                         } else {
                             document.getElementById("buildswap").remove();
                         }
