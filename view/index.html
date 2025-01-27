@@ -218,7 +218,7 @@
             showNotification(event.message, "#ffd6d6", 3000);
         });
 
-        window.ActionBarPlusHook = (ActionBarPlus) => {
+        window.ActionBarPlusHook = function(ActionBarPlus) {
             window.ActionBarPlus = ActionBarPlus;
             window.ActionBarPlus.commands.add("open _ build", function([file]) {
                 const hash = window.location.hash.slice(2);
