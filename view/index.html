@@ -213,11 +213,6 @@
 </head>
 <body>
     <script>
-        window.addEventListener('error', function(event) {
-            if (event.message == "Script error.") return;
-            showNotification(event.message, "#ffd6d6", 3000);
-        });
-
         window.ActionBarPlusHook = function(ActionBarPlus) {
             window.ActionBarPlus = ActionBarPlus;
             window.ActionBarPlus.commands.add("open _ build", function([file]) {
@@ -242,7 +237,14 @@
             }, "find an open any build for this extension");
             console.log("ActionBarPlus registered");
         }
-        
+    </script>
+
+    <script>
+        window.addEventListener('error', function(event) {
+            if (event.message == "Script error.") return;
+            showNotification(event.message, "#ffd6d6", 3000);
+        });
+
         function share(link) {
             var extid = window.location.hash.slice(2).replace(/^\/|\/.*$/g, (match, offset) => offset === 0 ? "" : "");
             try {
