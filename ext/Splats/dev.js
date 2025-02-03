@@ -88,14 +88,14 @@
 					},
 
                     {
-                        opcode: "showSplat",
+                        opcode: "showSplatFrame",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Show splat [ID]",
+                        text: "Show splat frame from [ID]",
                         arguments: {
-                          ID: { // https://extensions.turbowarp.org/dango.png
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: "splat1",
-                          },
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
                         },
                     },
 				]
@@ -141,28 +141,6 @@
             }
         }
 
-        async showSplat(args, util) {
-            const name = "3DsplatSkin";
-            const skinName = `lms-${Cast.toString(name)}`;
-            const url = Cast.toString(args.ID);
-      
-            let oldSkinId = null;
-            if (createdSkins[skinName]) {
-                oldSkinId = createdSkins[skinName];
-            }
-      
-            const skinId = await this._createURLSkin(url);
-            if (!skinId) return;
-            createdSkins[skinName] = skinId;
-      
-            if (oldSkinId) {
-                this._refreshTargetsFromID(oldSkinId, false, skinId);
-                renderer.destroySkin(oldSkinId);
-            }
-      
-            this.setSkin({NAME:name}, util)
-        }
-      
         setSkin(args, util) {
             const skinName = `lms-${Cast.toString(args.NAME)}`;
             if (!createdSkins[skinName]) return;
@@ -217,6 +195,28 @@
                     scene.backgroundBlurriness = 0.5;
                 });
             }
+        }
+
+        async showSplatFrame(args, util) {
+            const name = "3DsplatSkin";
+            const skinName = `lms-${Cast.toString(name)}`;
+            const url = Cast.toString(args.ID);
+      
+            let oldSkinId = null;
+            if (createdSkins[skinName]) {
+                oldSkinId = createdSkins[skinName];
+            }
+      
+            const skinId = await this._createURLSkin(url);
+            if (!skinId) return;
+            createdSkins[skinName] = skinId;
+      
+            if (oldSkinId) {
+                this._refreshTargetsFromID(oldSkinId, false, skinId);
+                renderer.destroySkin(oldSkinId);
+            }
+      
+            this.setSkin({NAME:name}, util)
         }
 	}
 	Scratch.extensions.register(new P7Splats());
