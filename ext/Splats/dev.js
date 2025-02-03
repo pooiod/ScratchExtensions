@@ -54,12 +54,12 @@
             this.splats = {};
 
             this.canvas = document.createElement('canvas');
-            // this.canvas.style.display = 'none';
-            this.canvas.style.position = "fixed";
-            this.canvas.style.top = "0px";
-            this.canvas.style.right = "0px";
-            this.canvas.style.zIndex = "9999999999999";
-            this.canvas.style.border = "1px black solid";
+            this.canvas.style.display = 'none';
+            // this.canvas.style.position = "fixed";
+            // this.canvas.style.top = "0px";
+            // this.canvas.style.right = "0px";
+            // this.canvas.style.zIndex = "9999999999999";
+            // this.canvas.style.border = "1px black solid";
             document.body.appendChild(this.canvas);
 
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
@@ -87,7 +87,7 @@
 						arguments: {
 							MODEL: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: 'bbce804e-3b50-490f-a86f-6e5c4094bac0',
+								defaultValue: 'bbce804e-3b50-490f-a86f-6e5c4094bac0', // 82c1dbf9-d22e-4e8d-bc48-2f29302fde75
 							},
                             ID: {
 								type: Scratch.ArgumentType.STRING,
@@ -205,8 +205,14 @@
             this.splats[ID].camera = new PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
             this.splats[ID].camera.position.set( 0, 0, 2 );
 
+            if (MODEL.startsWith('/')) {
+                MODEL = 'https://lumalabs.ai/capture' + option_source;
+            } else if (!MODEL.startsWith('http')) {
+                MODEL = 'https://lumalabs.ai/capture/' + option_source;
+            }
+
             this.splats[ID].splats = new LumaSplatsThree({
-                source: 'https://lumalabs.ai/capture/2c2f462b-be1a-4d0d-bf74-0975dba73d49',
+                source: MODEL,
                 loadingAnimationEnabled: !!LOADANIM
             });
             this.splats[ID].scene.add(this.splats[ID].splats);
@@ -226,8 +232,8 @@
 
             if (!this.splats[ID]) return;
 
-            this.canvas.width = this.splats[ID].width + "px";
-            this.canvas.height = this.splats[ID].height + "px";
+            this.canvas.width = this.splats[ID].width;
+            this.canvas.height = this.splats[ID].height;
 
             this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
 
