@@ -54,7 +54,12 @@
             this.splats = {};
 
             this.canvas = document.createElement('canvas');
-            this.canvas.style.display = 'none';
+            // this.canvas.style.display = 'none';
+            this.canvas.style.position = "fixed";
+            this.canvas.style.top = "0px";
+            this.canvas.style.right = "0px";
+            this.canvas.style.zIndex = "9999999999999";
+            this.canvas.style.border = "1px black solid";
             document.body.appendChild(this.canvas);
 
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
@@ -80,9 +85,24 @@
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Create splat: Model [MODEL], ID [ID], Width [WIDTH], Height [HEIGHT], Load animation? [LOADANIM]',
 						arguments: {
-							CONFIG: {
+							MODEL: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: 'REEEEEEEEEE',
+								defaultValue: 'bbce804e-3b50-490f-a86f-6e5c4094bac0',
+							},
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'splat1',
+							},
+                            WIDTH: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: Scratch.vm.runtime.stageWidth,
+							},
+                            HEIGHT: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: Scratch.vm.runtime.stageHeight,
+							},
+                            LOADANIM: {
+								type: Scratch.ArgumentType.BOOLEAN,
 							},
 						},
 					},
@@ -167,8 +187,11 @@
         makeSplat({MODEL, ID, WIDTH, HEIGHT, LOADANIM}) {
             this.splats[ID] = {}
 
-            this.canvas.width = WIDTH + "px";
-            this.canvas.height = HEIGHT + "px";
+            // this.canvas.width = WIDTH + "px";
+            // this.canvas.height = HEIGHT + "px";
+
+            this.splats[ID].width = WIDTH;
+            this.splats[ID].height = HEIGHT;
 
             this.splats[ID].render = new WebGLRenderer({
                 canvas: this.canvas,
@@ -189,18 +212,27 @@
             this.splats[ID].scene.add(this.splats[ID].splats);
 
             this.splats[ID].splats.onLoad = () => {
-                splats.captureCubemap(renderer).then((capturedTexture) => {
-                    scene.environment = capturedTexture;
-                    scene.background = capturedTexture;
-                    scene.backgroundBlurriness = 0.5;
+                this.splats[ID].splats.captureCubemap(renderer).then((capturedTexture) => {
+                    this.splats[ID].scene.environment = capturedTexture;
+                    this.splats[ID].scene.background = capturedTexture;
+                    this.splats[ID].scene.backgroundBlurriness = 0.5;
                 });
             }
         }
 
-        async showSplatFrame(args, util) {
+        async showSplatFrame({ ID }, util) {
             const name = "3DsplatSkin";
             const skinName = `lms-${Cast.toString(name)}`;
-            const url = Cast.toString(args.ID);
+
+            if (!this.splats[ID]) return;
+
+            this.canvas.width = this.splats[ID].width + "px";
+            this.canvas.height = this.splats[ID].height + "px";
+
+            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
+
+            const url = this.canvas.toDataURL('image/png');
+            console.log(url)
       
             let oldSkinId = null;
             if (createdSkins[skinName]) {
