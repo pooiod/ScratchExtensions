@@ -27,7 +27,7 @@
 			});
 
 			Scratch.vm.runtime.on('PROJECT_START', () => {
-				canvas = Scratch.vm.runtime.renderer.canvas;
+				this.canvas = Scratch.vm.runtime.renderer.canvas;
 				console.log("project started");
 			});
 

@@ -1,4 +1,4 @@
-// Scratch3 advanced extension template
+// do not use this yet!
 
 (function(Scratch) {
 	'use strict';
@@ -44,22 +44,24 @@
 
 	class P7Splats {
 		constructor() {
-			this.stagewidth = Scratch.vm.runtime.stageWidth;
-			this.stageheight = Scratch.vm.runtime.stageHeight;
 			this.packaged = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
-			this.canvas = Scratch.vm.runtime.renderer.canvas;
+
+            this.splats = {};
+
+            this.canvas = document.createElement('canvas');
+            this.canvas.style.display = 'none';
+            document.body.appendChild(this.canvas);
 
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
-				console.log("project loaded");
+				this.clearSplats();
 			});
 
 			Scratch.vm.runtime.on('PROJECT_START', () => {
-				canvas = Scratch.vm.runtime.renderer.canvas;
-				console.log("project started");
+				this.clearSplats();
 			});
 
 			Scratch.vm.runtime.on('PROJECT_STOP', () => {
-				console.log("project stopped");
+				this.clearSplats();
 			});
 		}
 
@@ -69,9 +71,9 @@
 				name: 'Splats',
 				blocks: [
 					{
-						opcode: 'func',
+						opcode: 'makeSplat',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create splat: Model [MODEL], ID [ID], Width [WIDTH], Height [HEIGHT]',
+						text: 'Create splat: Model [MODEL], ID [ID], Width [WIDTH], Height [HEIGHT], Load animation? [LOADANIM]',
 						arguments: {
 							CONFIG: {
 								type: Scratch.ArgumentType.STRING,
@@ -83,9 +85,40 @@
 			};
 		}
 
-		func(args) {
-			console.log(args);
-		}
+		clearSplats() {}
+
+        makeSplat({MODEL, ID, WIDTH, HEIGHT, LOADANIM}) {
+            this.splats[ID] = {}
+
+            this.canvas.width = WIDTH + "px";
+            this.canvas.height = HEIGHT + "px";
+
+            this.splats[ID].render = new WebGLRenderer({
+                canvas: this.canvas,
+                antialias: false
+            });
+
+            this.splats[ID].render.setSize(WIDTH, HEIGHT, false);
+
+            this.splats[ID].scene = new Scene();
+
+            this.splats[ID].camera = new PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
+            this.splats[ID].camera.position.set( 0, 0, 2 );
+
+            this.splats[ID].splats = new LumaSplatsThree({
+                source: 'https://lumalabs.ai/capture/2c2f462b-be1a-4d0d-bf74-0975dba73d49',
+                loadingAnimationEnabled: true
+            });
+            this.splats[ID].scene.add(this.splats[ID].splats);
+
+            this.splats[ID].splats.onLoad = () => {
+                splats.captureCubemap(renderer).then((capturedTexture) => {
+                    scene.environment = capturedTexture;
+                    scene.background = capturedTexture;
+                    scene.backgroundBlurriness = 0.5;
+                });
+            }
+        }
 	}
 	Scratch.extensions.register(new P7Splats());
 })(Scratch);
