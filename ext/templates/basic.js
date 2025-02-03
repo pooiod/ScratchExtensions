@@ -1,3 +1,4 @@
+// Scratch3 basic extension template
 
 (function(Scratch) {
     'use strict';
@@ -30,7 +31,7 @@
                 ]
             };
         }
-        
+
         func(args) {
             console.log(args);
         }
