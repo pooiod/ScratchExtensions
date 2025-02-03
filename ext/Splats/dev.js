@@ -161,11 +161,11 @@
             }
         }
 
-        setSkin(args, util) {
-            const skinName = `lms-${Cast.toString(args.NAME)}`;
+        setSkin({ NAME, TARGET }, util) {
+            const skinName = `lms-${Cast.toString(NAME)}`;
             if (!createdSkins[skinName]) return;
       
-            const targetName = Cast.toString(args.TARGET);
+            const targetName = Cast.toString(TARGET);
             const target = util.target;
             if (!target) return;
             const drawableID = target.drawableID;
@@ -174,7 +174,7 @@
             renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
         }
       
-        restoreSkin(args, util) {
+        restoreSkin(_, util) {
             const target = util.target;
             if (!target) return;
             target.updateAllDrawableProperties();
@@ -184,7 +184,7 @@
             this.splats = {};
         }
 
-        makeSplat({MODEL, ID, WIDTH, HEIGHT, LOADANIM}) {
+        makeSplat({ MODEL, ID, WIDTH, HEIGHT, LOADANIM }) {
             this.splats[ID] = {}
 
             // this.canvas.width = WIDTH + "px";
@@ -206,9 +206,9 @@
             this.splats[ID].camera.position.set( 0, 0, 2 );
 
             if (MODEL.startsWith('/')) {
-                MODEL = 'https://lumalabs.ai/capture' + option_source;
+                MODEL = 'https://lumalabs.ai/capture' + MODEL;
             } else if (!MODEL.startsWith('http')) {
-                MODEL = 'https://lumalabs.ai/capture/' + option_source;
+                MODEL = 'https://lumalabs.ai/capture/' + MODEL;
             }
 
             this.splats[ID].splats = new LumaSplatsThree({
@@ -217,11 +217,12 @@
             });
             this.splats[ID].scene.add(this.splats[ID].splats);
 
-            this.splats[ID].splats.onLoad = () => {
-                this.splats[ID].splats.captureCubemap(renderer).then((capturedTexture) => {
-                    this.splats[ID].scene.environment = capturedTexture;
-                    this.splats[ID].scene.background = capturedTexture;
-                    this.splats[ID].scene.backgroundBlurriness = 0.5;
+            var id = ID;
+            this.splats[id].splats.onLoad = () => {
+                this.splats[id].splats.captureCubemap(renderer).then((capturedTexture) => {
+                    this.splats[id].scene.environment = capturedTexture;
+                    this.splats[id].scene.background = capturedTexture;
+                    this.splats[id].scene.backgroundBlurriness = 0.5;
                 });
             }
         }
