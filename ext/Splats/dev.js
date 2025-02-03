@@ -7,6 +7,11 @@
 		throw new Error('This extension must run unsandboxed');
 	}
 
+    var createdSkins = [];
+    const runtime = Scratch.vm.runtime;
+    const renderer = runtime.renderer;
+    const Cast = Scratch.Cast;
+
     if (!document.getElementById("SplatImportMap")) {
         const importmap = document.createElement('script');
         importmap.type = 'importmap';
@@ -80,12 +85,106 @@
 								defaultValue: 'REEEEEEEEEE',
 							},
 						},
-					}
+					},
+
+                    {
+                        opcode: "showSplat",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Show splat [ID]",
+                        arguments: {
+                          ID: { // https://extensions.turbowarp.org/dango.png
+                            type: Scratch.ArgumentType.STRING,
+                            defaultValue: "splat1",
+                          },
+                        },
+                    },
 				]
 			};
 		}
 
-		clearSplats() {}
+        async _createURLSkin(URL) {
+            let imageData;
+            if (await Scratch.canFetch(URL)) {
+                imageData = await Scratch.fetch(URL);
+            } else {
+                return;
+            }
+
+            const contentType = imageData.headers.get("Content-Type");
+            if (
+                contentType === "image/png" ||
+                contentType === "image/jpeg" ||
+                contentType === "image/bmp" ||
+                contentType === "image/webp"
+            ) {
+                const output = new Image();
+                output.src = URL;
+                output.crossOrigin = "anonymous";
+                await output.decode();
+                return renderer.createBitmapSkin(output);
+            }
+        }
+
+        _refreshTargetsFromID(skinId, reset, newId) {
+            const drawables = renderer._allDrawables;
+            const skins = renderer._allSkins;
+      
+            for (const target of runtime.targets) {
+                const drawableID = target.drawableID;
+                const targetSkin = drawables[drawableID].skin.id;
+        
+                if (targetSkin === skinId) {
+                    target.updateAllDrawableProperties();
+                    if (!reset)
+                    drawables[drawableID].skin = newId ? skins[newId] : skins[skinId];
+                }
+            }
+        }
+
+        async showSplat(args, util) {
+            const name = "3DsplatSkin";
+            const skinName = `lms-${Cast.toString(name)}`;
+            const url = Cast.toString(args.ID);
+      
+            let oldSkinId = null;
+            if (createdSkins[skinName]) {
+                oldSkinId = createdSkins[skinName];
+            }
+      
+            const skinId = await this._createURLSkin(url);
+            if (!skinId) return;
+            createdSkins[skinName] = skinId;
+      
+            if (oldSkinId) {
+                this._refreshTargetsFromID(oldSkinId, false, skinId);
+                renderer.destroySkin(oldSkinId);
+            }
+      
+            this.setSkin({NAME:name}, util)
+        }
+      
+        setSkin(args, util) {
+            const skinName = `lms-${Cast.toString(args.NAME)}`;
+            if (!createdSkins[skinName]) return;
+      
+            const targetName = Cast.toString(args.TARGET);
+            const target = util.target;
+            if (!target) return;
+            const drawableID = target.drawableID;
+      
+            const skinId = createdSkins[skinName];
+            renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
+        }
+      
+        restoreSkin(args, util) {
+            const target = util.target;
+            if (!target) return;
+            target.updateAllDrawableProperties();
+        }
+
+		clearSplats() {
+            this.splats = {};
+        }
 
         makeSplat({MODEL, ID, WIDTH, HEIGHT, LOADANIM}) {
             this.splats[ID] = {}
@@ -107,7 +206,7 @@
 
             this.splats[ID].splats = new LumaSplatsThree({
                 source: 'https://lumalabs.ai/capture/2c2f462b-be1a-4d0d-bf74-0975dba73d49',
-                loadingAnimationEnabled: true
+                loadingAnimationEnabled: !!LOADANIM
             });
             this.splats[ID].scene.add(this.splats[ID].splats);
 
