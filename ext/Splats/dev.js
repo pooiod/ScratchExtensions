@@ -29,7 +29,7 @@
         SplatWindowImports.type = "module";
         SplatWindowImports.id = "SplatWindowImports";
         SplatWindowImports.innerHTML = `
-    import { WebGLRenderer, PerspectiveCamera, Scene, Color, FogExp2 } from 'three';
+    import { WebGLRenderer, PerspectiveCamera, Scene, Color, FogExp2, Vector3 } from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { LumaSplatsSemantics, LumaSplatsThree } from "@lumaai/luma-web";
     
@@ -38,8 +38,10 @@
     window.Scene = Scene;
     window.Color = Color;
     window.FogExp2 = FogExp2;
+
+    window.Vector3 = Vector3;
     
-    window.OrbitControls = OrbitControls;
+    //window.OrbitControls = OrbitControls;
     
     window.LumaSplatsSemantics = LumaSplatsSemantics;
     window.LumaSplatsThree = LumaSplatsThree;
@@ -52,15 +54,6 @@
 			this.packaged = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
 
             this.splats = {};
-
-            this.canvas = document.createElement('canvas');
-            this.canvas.style.display = 'none';
-            // this.canvas.style.position = "fixed";
-            // this.canvas.style.top = "0px";
-            // this.canvas.style.right = "0px";
-            // this.canvas.style.zIndex = "9999999999999";
-            // this.canvas.style.border = "1px black solid";
-            document.body.appendChild(this.canvas);
 
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
 				this.clearSplats();
@@ -118,62 +111,116 @@
                             },
                         },
                     },
+
+                    {
+                        opcode: "rotateSplatCamera",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Rotate camera for [ID] to x: [X] y: [Y] z: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "2",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "moveSplatCamera",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set position camera of [ID] to x: [X] y: [Y] z: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "2",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "rotateSplatCamera",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set rotation camera of [ID] to pitch: [X] yaw: [Y] roll: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "rotateSplatCameraToLookAt",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set rotation camera of [ID] to look at x: [X] y: [Y] z: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "debugLog",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Debug log",
+                    },
 				]
 			};
 		}
 
-        async _createURLSkin(URL) {
-            let imageData;
-            if (await Scratch.canFetch(URL)) {
-                imageData = await Scratch.fetch(URL);
-            } else {
-                return;
-            }
-
-            const contentType = imageData.headers.get("Content-Type");
-            if (
-                contentType === "image/png" ||
-                contentType === "image/jpeg" ||
-                contentType === "image/bmp" ||
-                contentType === "image/webp"
-            ) {
-                const output = new Image();
-                output.src = URL;
-                output.crossOrigin = "anonymous";
-                await output.decode();
-                return renderer.createBitmapSkin(output);
-            }
+        debugLog() {
+            console.log(this.splats)
         }
 
-        _refreshTargetsFromID(skinId, reset, newId) {
-            const drawables = renderer._allDrawables;
-            const skins = renderer._allSkins;
-      
-            for (const target of runtime.targets) {
-                const drawableID = target.drawableID;
-                const targetSkin = drawables[drawableID].skin.id;
-        
-                if (targetSkin === skinId) {
-                    target.updateAllDrawableProperties();
-                    if (!reset)
-                    drawables[drawableID].skin = newId ? skins[newId] : skins[skinId];
-                }
-            }
-        }
-
-        setSkin({ NAME, TARGET }, util) {
-            const skinName = `lms-${Cast.toString(NAME)}`;
-            if (!createdSkins[skinName]) return;
-      
-            const targetName = Cast.toString(TARGET);
-            const target = util.target;
-            if (!target) return;
-            const drawableID = target.drawableID;
-      
-            const skinId = createdSkins[skinName];
-            renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
-        }
-      
         restoreSkin(_, util) {
             const target = util.target;
             if (!target) return;
@@ -181,20 +228,24 @@
         }
 
 		clearSplats() {
+            document.querySelectorAll('.SplatCanvas3D').forEach(el => el.remove());
             this.splats = {};
         }
 
         makeSplat({ MODEL, ID, WIDTH, HEIGHT, LOADANIM }) {
-            this.splats[ID] = {}
+            if (this.splats[ID]) {
+                this.splats[ID].canvas.remove();
+            } this.splats[ID] = {};
 
-            // this.canvas.width = WIDTH + "px";
-            // this.canvas.height = HEIGHT + "px";
-
-            this.splats[ID].width = WIDTH;
-            this.splats[ID].height = HEIGHT;
+            this.splats[ID].canvas = document.createElement('canvas');
+            this.splats[ID].canvas.style.display = 'none';
+            this.splats[ID].canvas.classList.add("SplatCanvas3D");
+            this.splats[ID].canvas.width = WIDTH;
+            this.splats[ID].canvas.height = HEIGHT;
+            document.body.appendChild(this.splats[ID].canvas);
 
             this.splats[ID].render = new WebGLRenderer({
-                canvas: this.canvas,
+                canvas: this.splats[ID].canvas,
                 antialias: false
             });
 
@@ -203,7 +254,6 @@
             this.splats[ID].scene = new Scene();
 
             this.splats[ID].camera = new PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
-            this.splats[ID].camera.position.set( 0, 0, 2 );
 
             if (MODEL.startsWith('/')) {
                 MODEL = 'https://lumalabs.ai/capture' + MODEL;
@@ -217,45 +267,115 @@
             });
             this.splats[ID].scene.add(this.splats[ID].splats);
 
-            var id = ID;
-            this.splats[id].splats.onLoad = () => {
-                this.splats[id].splats.captureCubemap(renderer).then((capturedTexture) => {
-                    this.splats[id].scene.environment = capturedTexture;
-                    this.splats[id].scene.background = capturedTexture;
-                    this.splats[id].scene.backgroundBlurriness = 0.5;
-                });
-            }
+            this.splats[ID].camera.position.set(0, 0, 2);
+
+            // this.splats[ID].splats.onLoad = () => {
+            //     this.splats[ID].splats.captureCubemap(renderer).then((capturedTexture) => {
+            //         this.splats[ID].scene.environment = capturedTexture;
+            //         this.splats[ID].scene.background = capturedTexture;
+            //         this.splats[ID].scene.backgroundBlurriness = 0.5;
+            //     });
+            // }
+        }
+
+        moveSplatCamera({ ID, X, Y, Z }) {
+            if (!this.splats[ID]) return;
+            this.splats[ID].camera.position.set(X, Y, Z);
+            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
+        }
+
+        rotateSplatCamera({ ID, X, Y, Z }) {
+            if (!this.splats[ID]) return;
+            this.splats[ID].camera.rotation.set(X, Y, Z);
+            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
+        }
+
+        rotateSplatCameraToLookAt({ ID, X, Y, Z }) {
+            if (!this.splats[ID]) return;
+            this.splats[ID].camera.lookAt(new Vector3(X, Y, Z));
+            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
         }
 
         async showSplatFrame({ ID }, util) {
             const name = "3DsplatSkin";
             const skinName = `lms-${Cast.toString(name)}`;
 
-            if (!this.splats[ID]) return;
-
-            this.canvas.width = this.splats[ID].width;
-            this.canvas.height = this.splats[ID].height;
+            if (!this.splats[ID]) {
+                this.restoreSkin(ID, util);
+                return;
+            }
 
             this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
 
-            const url = this.canvas.toDataURL('image/png');
-            console.log(url)
-      
+            const url = this.splats[ID].canvas.toDataURL('image/png');
+
             let oldSkinId = null;
             if (createdSkins[skinName]) {
                 oldSkinId = createdSkins[skinName];
             }
+
+            async function _createURLSkin(URL) {
+                let imageData;
+                if (await Scratch.canFetch(URL)) {
+                    imageData = await Scratch.fetch(URL);
+                } else {
+                    return;
+                }
+    
+                const contentType = imageData.headers.get("Content-Type");
+                if (
+                    contentType === "image/png" ||
+                    contentType === "image/jpeg" ||
+                    contentType === "image/bmp" ||
+                    contentType === "image/webp"
+                ) {
+                    const output = new Image();
+                    output.src = URL;
+                    output.crossOrigin = "anonymous";
+                    await output.decode();
+                    return renderer.createBitmapSkin(output);
+                }
+            }
       
-            const skinId = await this._createURLSkin(url);
+            const skinId = await _createURLSkin(url);
             if (!skinId) return;
             createdSkins[skinName] = skinId;
       
             if (oldSkinId) {
-                this._refreshTargetsFromID(oldSkinId, false, skinId);
+                function _refreshTargetsFromID(skinId, reset, newId) {
+                    const drawables = renderer._allDrawables;
+                    const skins = renderer._allSkins;
+              
+                    for (const target of runtime.targets) {
+                        const drawableID = target.drawableID;
+                        const targetSkin = drawables[drawableID].skin.id;
+                
+                        if (targetSkin === skinId) {
+                            target.updateAllDrawableProperties();
+                            if (!reset)
+                            drawables[drawableID].skin = newId ? skins[newId] : skins[skinId];
+                        }
+                    }
+                }
+
+                _refreshTargetsFromID(oldSkinId, false, skinId);
                 renderer.destroySkin(oldSkinId);
             }
       
-            this.setSkin({NAME:name}, util)
+            function setSkin({ NAME, TARGET }, util) {
+                const skinName = `lms-${Cast.toString(NAME)}`;
+                if (!createdSkins[skinName]) return;
+          
+                const targetName = Cast.toString(TARGET);
+                const target = util.target;
+                if (!target) return;
+                const drawableID = target.drawableID;
+          
+                const skinId = createdSkins[skinName];
+                renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
+            }
+
+            setSkin({NAME:name}, util)
         }
 	}
 	Scratch.extensions.register(new P7Splats());
