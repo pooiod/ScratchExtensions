@@ -187,29 +187,6 @@
                         },
                     },
                     {
-                        opcode: "rotateSplatCamera",
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: "Set rotation camera of [ID] to pitch: [X] yaw: [Y] roll: [Z]",
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "splat1",
-                            },
-                            X: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Y: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Z: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                        },
-                    },
-                    {
                         opcode: "rotateSplatCameraToLookAt",
                         blockType: Scratch.BlockType.COMMAND,
                         text: "Point camera of [ID] to look at x: [X] y: [Y] z: [Z]",
@@ -229,6 +206,22 @@
                             Z: {
                                 type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: "0",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "setSplatCameraFOV",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set fov of camera for [ID] to [FOV]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            FOV: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "75",
                             },
                         },
                     },
@@ -404,6 +397,11 @@
         rotateSplatCameraToLookAt({ ID, X, Y, Z }) {
             if (!this.splats[ID]) return;
             this.splats[ID].camera.lookAt(new Vector3(X, Y, Z));
+        }
+
+        setSplatCameraFOV({ ID, FOV }) {
+            if (!this.splats[ID]) return;
+            this.splats[ID].camera.fov = FOV
         }
 
         setSplatType({ ID, TYPE }) {
