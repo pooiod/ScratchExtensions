@@ -284,6 +284,19 @@
                         },
                     },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Interaction Hooks" },
+                    {
+                        blockType: Scratch.BlockType.HAT,
+                        opcode: 'onSplatLoad',
+                        text: 'When [ID] loads',
+                        isEdgeActivated: true,
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'splat1',
+                            }
+                        }
+                      },
                     {
                         opcode: "jsHookSplat",
                         blockType: Scratch.BlockType.REPORTER,
@@ -362,13 +375,20 @@
 
             this.splats[ID].camera.position.set(0, 0, 2);
 
+            this.splats[ID].loaded = false;
             this.splats[ID].splats.onLoad = () => {
                 this.splats[ID].splats.captureCubemap(this.splats[ID].render).then((capturedTexture) => {
                     this.splats[ID].scene.environment = capturedTexture;
                     this.splats[ID].scene.background = capturedTexture;
                     this.splats[ID].scene.backgroundBlurriness = 0.5;
                 });
+                this.splats[ID].loaded = true;
             }
+        }
+
+        onSplatLoad({ ID }) {
+            if (!this.splats[ID]) return;
+            return this.splats[ID].loaded;
         }
 
         moveSplatCamera({ ID, X, Y, Z }) {
@@ -518,7 +538,7 @@
 
         jsHookSplat({ ID, JS }) {
             if (!this.canscript) {
-                if (!window.confirm("Do you want to allow this project to run JavaScript hooks?")) {
+                if (!window.confirm("Do you want to allow this project to run JavaScript hooks? \n(This will allow it to run any code, including malicious code)")) {
                     return "Error: User denied access to JS hooks";
                 } else {
                     this.canscript = true;
