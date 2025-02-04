@@ -63,6 +63,7 @@
 			return {
 				id: 'P7Splats',
 				name: '3D Splats',
+                color1: '#7b61e8',
 				blocks: [
 					{
 						opcode: 'makeSplat',
