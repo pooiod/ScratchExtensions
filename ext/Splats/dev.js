@@ -283,6 +283,22 @@
                             },
                         },
                     },
+
+                    {
+                        opcode: "jsHookSplat",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Run JavaScript [JS] on splat [ID]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            JS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat.source",
+                            },
+                        },
+                    },
 				],
                 menus: {
                     TypeSplat: {
@@ -334,6 +350,7 @@
                 MODEL = 'https://lumalabs.ai/capture/' + MODEL;
             }
 
+            this.splats[ID].source = MODEL.replace("https://lumalabs.ai/capture/", "");
             this.splats[ID].splats = new LumaSplatsThree({
                 source: MODEL,
                 loadingAnimationEnabled: true,
@@ -497,6 +514,19 @@
                     getSplatColor: COLOR.replace(/\[newline\]/g, "\n"),
                 }
             });
+        }
+
+        jsHookSplat({ ID, JS }) {
+            if (!this.splats[ID]) return "Error: No splat found";
+            var splat = this.splats[ID];
+            var result = "";
+            try {
+                result = eval(JS);
+            } catch(err) {
+                result = err;
+            }
+            this.splats[ID] = splat;
+            return result;
         }
 	}
 	Scratch.extensions.register(new P7Splats());
