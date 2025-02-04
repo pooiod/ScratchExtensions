@@ -1,4 +1,4 @@
-// wprk in progress
+// work in progress
 
 (function(Scratch) {
 	'use strict';
@@ -39,6 +39,7 @@
     window.FogExp2 = FogExp2;
     window.Uniform = Uniform;
 
+    window.THREE = {}
     window.Vector3 = Vector3;
 
     window.LumaSplatsSemantics = LumaSplatsSemantics;
@@ -74,7 +75,7 @@
 					{
 						opcode: 'makeSplat',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create splat: Model [MODEL], ID [ID], Width [WIDTH], Height [HEIGHT], Load animation? [LOADANIM]',
+						text: 'Create splat id: [ID] model: [MODEL] width: [WIDTH] height: [HEIGHT]',
 						arguments: {
 							MODEL: {
 								type: Scratch.ArgumentType.STRING,
@@ -98,6 +99,7 @@
 						},
 					},
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Render Splats" },
                     {
                         opcode: "showSplatFrame",
                         blockType: Scratch.BlockType.COMMAND,
@@ -109,7 +111,6 @@
                             },
                         },
                     },
-
                     {
                         opcode: "getSplatRender",
                         blockType: Scratch.BlockType.REPORTER,
@@ -122,6 +123,12 @@
                         },
                     },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Modify Splats" },
+                    {
+                        opcode: "clearSplats",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Clear all splats",
+                    },
                     {
                         opcode: "setSplatType",
                         blockType: Scratch.BlockType.COMMAND,
@@ -139,30 +146,7 @@
                         },
                     },
 
-                    {
-                        opcode: "rotateSplatCamera",
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: "Rotate camera for [ID] to x: [X] y: [Y] z: [Z]",
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "splat1",
-                            },
-                            X: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Y: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Z: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "2",
-                            },
-                        },
-                    },
-
+                    { blockType: Scratch.BlockType.LABEL, text: "Move Camera" },
                     {
                         opcode: "moveSplatCamera",
                         blockType: Scratch.BlockType.COMMAND,
@@ -186,7 +170,29 @@
                             },
                         },
                     },
-
+                    {
+                        opcode: "rotateSplatCamera",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Rotate camera for [ID] to x: [X] y: [Y] z: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "2",
+                            },
+                        },
+                    },
                     {
                         opcode: "rotateSplatCamera",
                         blockType: Scratch.BlockType.COMMAND,
@@ -210,7 +216,6 @@
                             },
                         },
                     },
-
                     {
                         opcode: "rotateSplatCameraToLookAt",
                         blockType: Scratch.BlockType.COMMAND,
@@ -235,6 +240,7 @@
                         },
                     },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Configure Shaders" },
                     {
                         opcode: "setSplatFog",
                         blockType: Scratch.BlockType.COMMAND,
@@ -254,7 +260,6 @@
                             },
                         },
                     },
-
                     {
                         opcode: "addSplatShader",
                         blockType: Scratch.BlockType.COMMAND,
@@ -306,7 +311,7 @@
             this.splats = {};
         }
 
-        makeSplat({ MODEL, ID, WIDTH, HEIGHT, LOADANIM }) {
+        makeSplat({ MODEL, ID, WIDTH, HEIGHT}) {
             if (this.splats[ID]) {
                 this.splats[ID].canvas.remove();
             } this.splats[ID] = {};
@@ -322,7 +327,8 @@
 
             this.splats[ID].render = new WebGLRenderer({
                 canvas: this.splats[ID].canvas,
-                antialias: false
+                antialias: false,
+                alpha: true
             });
 
             this.splats[ID].render.setSize(WIDTH, HEIGHT, false);
@@ -331,20 +337,20 @@
 
             this.splats[ID].camera = new PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
 
-            if (MODEL.startsWith('/')) {
-                MODEL = 'https://lumalabs.ai/capture' + MODEL;
-            } else if (!MODEL.startsWith('http')) {
+            if (!MODEL.startsWith('http')) {
                 MODEL = 'https://lumalabs.ai/capture/' + MODEL;
             }
 
             this.splats[ID].splats = new LumaSplatsThree({
                 source: MODEL,
-                loadingAnimationEnabled: !!LOADANIM,
+                loadingAnimationEnabled: true,
                 onBeforeRender: () => {
                     this.splats[ID].uniformTime.value = performance.now() / 1000;
                 }
             });
             this.splats[ID].scene.add(this.splats[ID].splats);
+
+            // this.splats[ID].render.setClearColor(0xffffff);
 
             this.splats[ID].camera.position.set(0, 0, 2);
 
@@ -360,29 +366,36 @@
         moveSplatCamera({ ID, X, Y, Z }) {
             if (!this.splats[ID]) return;
             this.splats[ID].camera.position.set(X, Y, Z);
-            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
         }
 
         rotateSplatCamera({ ID, X, Y, Z }) {
             if (!this.splats[ID]) return;
             this.splats[ID].camera.rotation.set(X, Y, Z);
-            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
         }
 
         rotateSplatCameraToLookAt({ ID, X, Y, Z }) {
             if (!this.splats[ID]) return;
             this.splats[ID].camera.lookAt(new Vector3(X, Y, Z));
-            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
         }
 
         setSplatType({ ID, TYPE }) {
             if (!this.splats[ID]) return;
             if (TYPE == "object") {
                 this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.FOREGROUND;
+                this.splats[ID].scene.prevbackground = this.splats[ID].scene.background;
+                this.splats[ID].scene.background = null;
             } else if (TYPE == "full") {
                 this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.ALL;
+                if (this.splats[ID].scene.prevbackground) {
+                    this.splats[ID].scene.background = this.splats[ID].scene.prevbackground;
+                    this.splats[ID].scene.prevbackground = false;
+                }
             } else {
                 this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.BACKGROUND;
+                if (this.splats[ID].scene.prevbackground) {
+                    this.splats[ID].scene.background = this.splats[ID].scene.prevbackground;
+                    this.splats[ID].scene.prevbackground = false;
+                }
             }
         }
 
@@ -399,15 +412,17 @@
         }
 
         async showSplatFrame({ ID }, util) {
-            const name = "3DsplatSkin";
-            const skinName = `lms-${Cast.toString(name)}`;
-
             if (!this.splats[ID]) {
                 this.restoreSkin(ID, util);
                 return;
             }
 
-            const url = this.getSplatRender({ ID : ID });
+            this.showImage({ URL: this.getSplatRender({ ID: ID })}, util);
+        }
+
+        async showImage({ URL }, util) {
+            const name = "3DsplatSkin";
+            const skinName = `lms-${Cast.toString(name)}`;
 
             let oldSkinId = null;
             if (createdSkins[skinName]) {
@@ -437,7 +452,7 @@
                 }
             }
       
-            const skinId = await _createURLSkin(url);
+            const skinId = await _createURLSkin(URL);
             if (!skinId) return;
             createdSkins[skinName] = skinId;
       
