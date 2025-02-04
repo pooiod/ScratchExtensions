@@ -1,4 +1,4 @@
-// do not use this yet!
+// wprk in progress
 
 (function(Scratch) {
 	'use strict';
@@ -29,20 +29,18 @@
         SplatWindowImports.type = "module";
         SplatWindowImports.id = "SplatWindowImports";
         SplatWindowImports.innerHTML = `
-    import { WebGLRenderer, PerspectiveCamera, Scene, Color, FogExp2, Vector3 } from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { WebGLRenderer, PerspectiveCamera, Scene, Color, FogExp2, Vector3, Uniform } from 'three';
     import { LumaSplatsSemantics, LumaSplatsThree } from "@lumaai/luma-web";
-    
+
     window.WebGLRenderer = WebGLRenderer;
     window.PerspectiveCamera = PerspectiveCamera;
     window.Scene = Scene;
     window.Color = Color;
     window.FogExp2 = FogExp2;
+    window.Uniform = Uniform;
 
     window.Vector3 = Vector3;
-    
-    //window.OrbitControls = OrbitControls;
-    
+
     window.LumaSplatsSemantics = LumaSplatsSemantics;
     window.LumaSplatsThree = LumaSplatsThree;
 `;
@@ -108,6 +106,35 @@
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "splat1",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "getSplatRender",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get splat frame from [ID]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "setSplatType",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set type of [ID] to [TYPE]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            TYPE: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "TypeSplat",
+                                defaultValue: "object",
                             },
                         },
                     },
@@ -187,7 +214,7 @@
                     {
                         opcode: "rotateSplatCameraToLookAt",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Set rotation camera of [ID] to look at x: [X] y: [Y] z: [Z]",
+                        text: "Point camera of [ID] to look at x: [X] y: [Y] z: [Z]",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
@@ -209,17 +236,44 @@
                     },
 
                     {
-                        opcode: "debugLog",
+                        opcode: "addSplatShader",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Debug log",
+                        text: "Set shader of [ID] to [TRANSFORM] [COLOR]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            TRANSFORM: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: `(vec3 position, uint layersBitmask) {
+    // sin wave on x-axis in glsl
+    float x = 0.;
+    float z = 0.;
+    float y = sin(position.x * 1.0 + time_s) * 0.1;
+    return mat4(
+        1., 0., 0., 0,
+        0., 1., 0., 0,
+        0., 0., 1., 0,
+        x,  y,  z, 1.
+    );
+}`.replace(/\n/g, "[newline]"),
+                                COLOR: {
+                                    type: Scratch.ArgumentType.STRING,
+                                    defaultValue: "",
+                                },
+                            },
+                        },
                     },
-				]
+				],
+                menus: {
+                    TypeSplat: {
+                        acceptReporters: true,
+                        items: ["object", "full"]
+                    }
+                }
 			};
 		}
-
-        debugLog() {
-            console.log(this.splats)
-        }
 
         restoreSkin(_, util) {
             const target = util.target;
@@ -244,6 +298,8 @@
             this.splats[ID].canvas.height = HEIGHT;
             document.body.appendChild(this.splats[ID].canvas);
 
+            this.splats[ID].uniformTime = new Uniform(0);
+
             this.splats[ID].render = new WebGLRenderer({
                 canvas: this.splats[ID].canvas,
                 antialias: false
@@ -263,19 +319,22 @@
 
             this.splats[ID].splats = new LumaSplatsThree({
                 source: MODEL,
-                loadingAnimationEnabled: !!LOADANIM
+                loadingAnimationEnabled: !!LOADANIM,
+                onBeforeRender: () => {
+                    this.splats[ID].uniformTime.value = performance.now() / 1000;
+                }
             });
             this.splats[ID].scene.add(this.splats[ID].splats);
 
             this.splats[ID].camera.position.set(0, 0, 2);
 
-            // this.splats[ID].splats.onLoad = () => {
-            //     this.splats[ID].splats.captureCubemap(renderer).then((capturedTexture) => {
-            //         this.splats[ID].scene.environment = capturedTexture;
-            //         this.splats[ID].scene.background = capturedTexture;
-            //         this.splats[ID].scene.backgroundBlurriness = 0.5;
-            //     });
-            // }
+            this.splats[ID].splats.onLoad = () => {
+                this.splats[ID].splats.captureCubemap(this.splats[ID].render).then((capturedTexture) => {
+                    this.splats[ID].scene.environment = capturedTexture;
+                    this.splats[ID].scene.background = capturedTexture;
+                    this.splats[ID].scene.backgroundBlurriness = 0.5;
+                });
+            }
         }
 
         moveSplatCamera({ ID, X, Y, Z }) {
@@ -296,6 +355,29 @@
             this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
         }
 
+        setSplatType({ ID, TYPE }) {
+            if (!this.splats[ID]) return;
+            if (TYPE == "object") {
+                this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.FOREGROUND;
+            } else if (TYPE == "full") {
+                this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.ALL;
+            } else {
+                this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.BACKGROUND;
+            }
+        }
+
+        setSplatFog({ ID, COLOR, DISTANCE }) {
+            if (!this.splats[ID]) return;
+            this.splats[ID].scene.fog = new FogExp2(new Color(COLOR).convertLinearToSRGB(), DISTANCE);
+            this.splats[ID].scene.background = this.splats[ID].scene.fog.color;
+        }
+
+        getSplatRender({ ID }) {
+            if (!this.splats[ID]) return;
+            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
+            return this.splats[ID].canvas.toDataURL('image/png');
+        }
+
         async showSplatFrame({ ID }, util) {
             const name = "3DsplatSkin";
             const skinName = `lms-${Cast.toString(name)}`;
@@ -305,9 +387,7 @@
                 return;
             }
 
-            this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
-
-            const url = this.splats[ID].canvas.toDataURL('image/png');
+            const url = this.getSplatRender({ ID : ID });
 
             let oldSkinId = null;
             if (createdSkins[skinName]) {
@@ -376,6 +456,21 @@
             }
 
             setSkin({NAME:name}, util)
+        }
+
+        addSplatShader({ ID, TRANSFORM, COLOR }) {
+            if (!this.splats[ID]) return;
+
+            this.splats[ID].splats.setShaderHooks({
+                vertexShaderHooks: {
+                    additionalUniforms: {
+                        time_s: ['float', this.splats[ID].uniformTime],
+                    },
+
+                    getSplatTransform: TRANSFORM.replace(/\[newline\]/g, "\n"),
+                    getSplatColor: COLOR.replace(/\[newline\]/g, "\n"),
+                }
+            });
         }
 	}
 	Scratch.extensions.register(new P7Splats());
