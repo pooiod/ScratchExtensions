@@ -8,9 +8,6 @@
 	}
 
     var createdSkins = [];
-    const runtime = Scratch.vm.runtime;
-    const renderer = runtime.renderer;
-    const Cast = Scratch.Cast;
 
     if (!document.getElementById("SplatImportMap")) {
         const importmap = document.createElement('script');
@@ -39,7 +36,6 @@
     window.FogExp2 = FogExp2;
     window.Uniform = Uniform;
 
-    window.THREE = {}
     window.Vector3 = Vector3;
 
     window.LumaSplatsSemantics = LumaSplatsSemantics;
@@ -59,10 +55,6 @@
 			});
 
 			Scratch.vm.runtime.on('PROJECT_START', () => {
-				this.clearSplats();
-			});
-
-			Scratch.vm.runtime.on('PROJECT_STOP', () => {
 				this.clearSplats();
 			});
 		}
@@ -294,7 +286,7 @@
                 menus: {
                     TypeSplat: {
                         acceptReporters: true,
-                        items: ["object", "full"]
+                        items: ["object", "full", "background"]
                     }
                 }
 			};
@@ -349,8 +341,6 @@
                 }
             });
             this.splats[ID].scene.add(this.splats[ID].splats);
-
-            // this.splats[ID].render.setClearColor(0xffffff);
 
             this.splats[ID].camera.position.set(0, 0, 2);
 
@@ -422,7 +412,7 @@
 
         async showImage({ URL }, util) {
             const name = "3DsplatSkin";
-            const skinName = `lms-${Cast.toString(name)}`;
+            const skinName = `lms-${Scratch.Cast.toString(name)}`;
 
             let oldSkinId = null;
             if (createdSkins[skinName]) {
@@ -448,7 +438,7 @@
                     output.src = URL;
                     output.crossOrigin = "anonymous";
                     await output.decode();
-                    return renderer.createBitmapSkin(output);
+                    return Scratch.vm.runtime.renderer.createBitmapSkin(output);
                 }
             }
       
@@ -458,10 +448,10 @@
       
             if (oldSkinId) {
                 function _refreshTargetsFromID(skinId, reset, newId) {
-                    const drawables = renderer._allDrawables;
-                    const skins = renderer._allSkins;
+                    const drawables = Scratch.vm.runtime.renderer._allDrawables;
+                    const skins = Scratch.vm.runtime.renderer._allSkins;
               
-                    for (const target of runtime.targets) {
+                    for (const target of Scratch.vm.runtime.targets) {
                         const drawableID = target.drawableID;
                         const targetSkin = drawables[drawableID].skin.id;
                 
@@ -474,20 +464,20 @@
                 }
 
                 _refreshTargetsFromID(oldSkinId, false, skinId);
-                renderer.destroySkin(oldSkinId);
+                Scratch.vm.runtime.renderer.destroySkin(oldSkinId);
             }
       
             function setSkin({ NAME, TARGET }, util) {
-                const skinName = `lms-${Cast.toString(NAME)}`;
+                const skinName = `lms-${Scratch.Cast.toString(NAME)}`;
                 if (!createdSkins[skinName]) return;
           
-                const targetName = Cast.toString(TARGET);
+                const targetName = Scratch.Cast.toString(TARGET);
                 const target = util.target;
                 if (!target) return;
                 const drawableID = target.drawableID;
           
                 const skinId = createdSkins[skinName];
-                renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
+                Scratch.vm.runtime.renderer._allDrawables[drawableID].skin = Scratch.vm.runtime.renderer._allSkins[skinId];
             }
 
             setSkin({NAME:name}, util)
