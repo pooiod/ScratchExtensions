@@ -1,4 +1,4 @@
-// work in progress
+// 3D Splats - an extension for rendering gaussian splats. (made by pooiod7)
 
 (function(Scratch) {
 	'use strict';
@@ -72,7 +72,7 @@
 						arguments: {
 							MODEL: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: 'bbce804e-3b50-490f-a86f-6e5c4094bac0', // 82c1dbf9-d22e-4e8d-bc48-2f29302fde75
+								defaultValue: 'bbce804e-3b50-490f-a86f-6e5c4094bac0',
 							},
                             ID: {
 								type: Scratch.ArgumentType.STRING,
