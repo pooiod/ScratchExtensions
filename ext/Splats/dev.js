@@ -28,6 +28,7 @@
         SplatWindowImports.innerHTML = `
     import { WebGLRenderer, PerspectiveCamera, Scene, Color, FogExp2, Vector3, Uniform } from 'three';
     import { LumaSplatsSemantics, LumaSplatsThree } from "@lumaai/luma-web";
+    import * as THREE from 'three';
 
     window.WebGLRenderer = WebGLRenderer;
     window.PerspectiveCamera = PerspectiveCamera;
@@ -35,8 +36,8 @@
     window.Color = Color;
     window.FogExp2 = FogExp2;
     window.Uniform = Uniform;
-
     window.Vector3 = Vector3;
+    window.THREE = THREE
 
     window.LumaSplatsSemantics = LumaSplatsSemantics;
     window.LumaSplatsThree = LumaSplatsThree;
