@@ -46,7 +46,7 @@
 
 	class P7Splats {
 		constructor() {
-			this.packaged = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
+			this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
 
             this.splats = {};
 
@@ -517,14 +517,26 @@
         }
 
         jsHookSplat({ ID, JS }) {
+            if (!this.canscript) {
+                if (!window.confirm("Do you want to allow this project to run JavaScript hooks?")) {
+                    return "Error: User denied access to JS hooks";
+                } else {
+                    this.canscript = true;
+                }
+            }
+
             if (!this.splats[ID]) return "Error: No splat found";
+            if (!JS.includes("splat")) return "Error: Unused splat";
+
             var splat = this.splats[ID];
             var result = "";
+
             try {
                 result = eval(JS);
             } catch(err) {
                 result = err;
             }
+
             this.splats[ID] = splat;
             return result;
         }
