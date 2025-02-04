@@ -236,6 +236,26 @@
                     },
 
                     {
+                        opcode: "setSplatFog",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set fog of splat [ID] to [COLOR] with distance [DISTANCE]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            COLOR: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "#e0e1ff",
+                            },
+                            DISTANCE: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0.1",
+                            },
+                        },
+                    },
+
+                    {
                         opcode: "addSplatShader",
                         blockType: Scratch.BlockType.COMMAND,
                         text: "Set shader of [ID] to [TRANSFORM] [COLOR]",
@@ -258,10 +278,10 @@
         x,  y,  z, 1.
     );
 }`.replace(/\n/g, "[newline]"),
-                                COLOR: {
-                                    type: Scratch.ArgumentType.STRING,
-                                    defaultValue: "",
-                                },
+                            },
+                            COLOR: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "",
                             },
                         },
                     },
