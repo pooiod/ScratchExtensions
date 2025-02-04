@@ -431,10 +431,11 @@
             this.splats[ID].scene.background = this.splats[ID].scene.fog.color;
         }
 
-        getSplatRender({ ID }) {
+        async getSplatRender({ ID }) {
             if (!this.splats[ID]) return;
             this.splats[ID].render.render(this.splats[ID].scene, this.splats[ID].camera);
-            return this.splats[ID].canvas.toDataURL('image/png');
+            // return this.splats[ID].canvas.toDataURL('image/png');
+            return this.splats[ID].canvas.toDataURL('image/bmp');
         }
 
         async showSplatFrame({ ID }, util) {
@@ -443,12 +444,14 @@
                 return;
             }
 
-            this.showImage({ URL: this.getSplatRender({ ID: ID })}, util);
+            this.showImage({ URL: await this.getSplatRender({ ID: ID })}, util);
         }
 
         async showImage({ URL }, util) {
             const name = "3DsplatSkin";
             const skinName = `lms-${Scratch.Cast.toString(name)}`;
+
+            console.log(URL);
 
             let oldSkinId = null;
             if (createdSkins[skinName]) {
