@@ -69,7 +69,7 @@
 		getInfo() {
 			return {
 				id: 'P7Splats',
-				name: 'Splats',
+				name: '3D Splats',
 				blocks: [
 					{
 						opcode: 'makeSplat',

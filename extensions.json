@@ -92,6 +92,23 @@
         "hidden": false
     },
     {
+        "id": "Splats",
+        "image": "/ext/[id]/cover.svg",
+        "title": "3D Splats",
+        "description": "It's 3D but in scratch",
+        "created": "Feb 4 2025",
+        "subtext": "Work in progress",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        ],
+        "tags": ["unfinished"],
+        "type": ["unsandboxed"],
+        "hidden": true
+    },
+    {
         "id": "SVGtext",
         "image": "/ext/[id]/cover.svg",
         "title": "SVG Text",
