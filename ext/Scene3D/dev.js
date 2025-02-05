@@ -289,25 +289,30 @@ window.Scene3D.func = THREE;`;
 
         makeHelperAxes({ ID, SCENE, SIZE }) {
             if (!Scene3D.scenes[SCENE]) return;
+
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
+            Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
         }
         makeHelperGrid({ ID, SCENE, SIZE, PARTS }) {
             if (!Scene3D.scenes[SCENE]) return;
+
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
+            Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
         }
         makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OX, OY, OZ, DX, DY, DZ }) {
             if (!Scene3D.scenes[SCENE]) return;
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
+            Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
         }
 
         makeBox({ ID, SCENE, WIDTH, HEIGHT, DEPTH }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
-            Scene3D.scenes[SCENE].objects[ID].supported = {"wireframe"};
+            Scene3D.scenes[SCENE].objects[ID].supported = ["wireframe"];
 
             let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial); 
