@@ -109,25 +109,6 @@
         "hidden": true
     },
     {
-        "id": "SVGtext",
-        "image": "/ext/[id]/cover.svg",
-        "title": "SVG Text",
-        "description": "Generate point-based svg text. <br>(new add costume button)",
-        "created": "Dec 4, 2024",
-        "subtext": "An addidtion to the editor",
-        "icon": "/extras/images/icons/addon.png",
-        "iconText": "This extension is based on the svg text feature on <a href=\"https://penguinpaint.statichost.app\">PenguinPaint</a>",
-        "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ],
-        "addon": true,
-        "tags": ["finished"],
-        "type": ["unsandboxed", "addon", "editor"],
-        "noblocks": true,
-        "hidden": true
-    },
-    {
         "id": "Ace",
         "image": "/ext/[id]/cover.png",
         "title": "Ace Editor",
@@ -247,6 +228,23 @@
         "tags": ["unfinished"],
         "type": ["unsandboxed"],
         "hidden": false
+    },
+    {
+        "id": "QuickSkins",
+        "image": "",
+        "title": "Quick Skins",
+        "description": "A simple extension to render images from data uris super quickly",
+        "created": "Feb 4 2025",
+        "subtext": "",
+        "icon": "",
+        "iconText": "T",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": true
     },
     {
         "id": "BasicTTS",
