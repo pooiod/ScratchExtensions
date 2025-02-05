@@ -17,5 +17,21 @@
         "tags": ["finished"],
         "type": ["unsandboxed", "addon", "editor"],
         "noblocks": true
+    },
+    {
+        "id": "CharacterAI",
+        "image": "/ext/[id]/cover.png",
+        "title": "Chatbots (c.ai)",
+        "description": "AI chatbots with the power of <a href=\"https://c.ai\">c.ai</a>",
+        "created": "Oct 20, 2023",
+        "subtext": "Archived due to changes on c.ai making this extension unusable",
+        "icon": "/extras/images/icons/warn.png",
+        "iconText": "This extension is not functioning.",
+        "unsandboxed": false,
+        "buttons": [
+            { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/?/archived/#/[id]/dev.js" }
+        ],
+        "tags": ["unfinished"],
+        "type": ["sandboxed"]
     }
 ]
