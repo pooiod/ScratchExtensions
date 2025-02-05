@@ -13,7 +13,7 @@
         script.id = "WindowImports3D";
         script.innerHTML = `import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
 window.Scene3D = {};
-window.Scene3D.Scenes = {};
+window.Scene3D.scenes = {};
 window.Scene3D.func = THREE;`;
         document.head.appendChild(script);
     }
@@ -22,19 +22,30 @@ window.Scene3D.func = THREE;`;
 		constructor() {
 			this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
 
+            this.baseMaterial = null;
+
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
-				this.clearScenes();
+				this.clearscenes();
 			});
 
 			Scratch.vm.runtime.on('PROJECT_START', () => {
-				this.clearScenes();
+				this.clearscenes();
 			});
+
+            this.getRandomColor = function() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
 		}
 
 		getInfo() {
 			return {
 				id: 'P7Scene3D',
-				name: '3D Scenes',
+				name: '3D scenes',
                 // color1: '',
 				blocks: [
 					{
@@ -109,53 +120,53 @@ window.Scene3D.func = THREE;`;
 			};
 		}
 
-		clearScenes() {
+		clearscenes() {
             document.querySelectorAll('.SceneCanvas3D').forEach(el => el.remove());
-            Scene3D.Scenes = {};
+            Scene3D.scenes = {};
         }
 
         makeScene({ ID, WIDTH, HEIGHT}) {
-            if (Scene3D.Scenes[ID]) {
-                Scene3D.Scenes[ID].canvas.remove();
-            } Scene3D.Scenes[ID] = {};
+            if (Scene3D.scenes[ID]) {
+                Scene3D.scenes[ID].canvas.remove();
+            } Scene3D.scenes[ID] = {};
 
-            Scene3D.Scenes[ID].canvas = document.createElement('canvas');
-            Scene3D.Scenes[ID].canvas.style.display = 'none';
-            Scene3D.Scenes[ID].canvas.classList.add("SceneCanvas3D");
-            Scene3D.Scenes[ID].canvas.width = WIDTH;
-            Scene3D.Scenes[ID].canvas.height = HEIGHT;
-            document.body.appendChild(Scene3D.Scenes[ID].canvas);
+            Scene3D.scenes[ID].canvas = document.createElement('canvas');
+            Scene3D.scenes[ID].canvas.style.display = 'none';
+            Scene3D.scenes[ID].canvas.classList.add("SceneCanvas3D");
+            Scene3D.scenes[ID].canvas.width = WIDTH;
+            Scene3D.scenes[ID].canvas.height = HEIGHT;
+            document.body.appendChild(Scene3D.scenes[ID].canvas);
 
-            Scene3D.Scenes[ID].uniformTime = new Scene3D.func.Uniform(0);
+            Scene3D.scenes[ID].uniformTime = new Scene3D.func.Uniform(0);
 
-            Scene3D.Scenes[ID].render = new Scene3D.func.WebGLRenderer({
-                canvas: Scene3D.Scenes[ID].canvas,
+            Scene3D.scenes[ID].render = new Scene3D.func.WebGLRenderer({
+                canvas: Scene3D.scenes[ID].canvas,
                 antialias: false,
                 alpha: true
             });
 
-            Scene3D.Scenes[ID].render.setSize(WIDTH, HEIGHT, false);
+            Scene3D.scenes[ID].render.setSize(WIDTH, HEIGHT, false);
 
-            Scene3D.Scenes[ID].objects = {};
-            Scene3D.Scenes[ID].world = new Scene3D.func.Scene();
+            Scene3D.scenes[ID].objects = {};
+            Scene3D.scenes[ID].world = new Scene3D.func.Scene();
 
-            Scene3D.Scenes[ID].camera = new Scene3D.func.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
+            Scene3D.scenes[ID].camera = new Scene3D.func.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
 
-            Scene3D.Scenes[ID].camera.position.set(0, 0, 2);
+            Scene3D.scenes[ID].camera.position.set(0, 0, 2);
 
-            Scene3D.Scenes[ID].objects.helper = new Scene3D.func.AxesHelper( 5 );
-            Scene3D.Scenes[ID].world.add(Scene3D.Scenes[ID].objects.helper);
+            Scene3D.scenes[ID].objects.helper = new Scene3D.func.AxesHelper( 5 );
+            Scene3D.scenes[ID].world.add(Scene3D.scenes[ID].objects.helper);
         }
 
         async getSceneRender({ ID, FORMAT }) {
-            if (!Scene3D.Scenes[ID]) return;
-            Scene3D.Scenes[ID].render.render(Scene3D.Scenes[ID].world, Scene3D.Scenes[ID].camera);
-            return Scene3D.Scenes[ID].canvas.toDataURL(`image/${FORMAT || "png"}`);
+            if (!Scene3D.scenes[ID]) return;
+            Scene3D.scenes[ID].render.render(Scene3D.scenes[ID].world, Scene3D.scenes[ID].camera);
+            return Scene3D.scenes[ID].canvas.toDataURL(`image/${FORMAT || "png"}`);
         }
 
         async showSceneFrame({ ID }, util) {
             if (!util.target) return;
-            if (!Scene3D.Scenes[ID]) {
+            if (!Scene3D.scenes[ID]) {
                 util.target.updateAllDrawableProperties();
                 return;
             }
@@ -174,6 +185,17 @@ window.Scene3D.func = THREE;`;
             image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;
         }
 
+        makeBox(args) {
+            var { ID, SCENE, WIDTH, HEIGHT, DEPTH, MATERIAL } = args;
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry( WIDTH, HEIGHT, DEPTH );
+
+            this.baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
+
+            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], Scene3D.scenes[SCENE].objects[MATERIAL] || this.baseMaterial); 
+            Scene3D.scenes[SCENE].world.add(mesh);
+        }
+
         jsHookScene({ ID, JS }) {
             if (!this.canscript) {
                 if (!window.confirm("Do you want to allow this project to run JavaScript hooks? \n(This will allow it to run any code, including malicious code)")) {
@@ -183,10 +205,10 @@ window.Scene3D.func = THREE;`;
                 }
             }
 
-            if (!Scene3D.Scenes[ID]) return "Error: No scene found";
+            if (!Scene3D.scenes[ID]) return "Error: No scene found";
             if (!JS.includes("scene")) return "Error: Unused scene";
 
-            var scene = Scene3D.Scenes[ID];
+            var scene = Scene3D.scenes[ID];
             var result = "";
 
             try {
@@ -195,7 +217,7 @@ window.Scene3D.func = THREE;`;
                 result = err;
             }
 
-            Scene3D.Scenes[ID] = scene;
+            Scene3D.scenes[ID] = scene;
             return result;
         }
 	}
