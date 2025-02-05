@@ -13,6 +13,7 @@
         script.id = "WindowImports3D";
         script.innerHTML = `import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
 window.Scene3D = {};
+window.Scene3D.Scenes = {};
 window.Scene3D.func = THREE;`;
         document.head.appendChild(script);
     }
@@ -20,8 +21,6 @@ window.Scene3D.func = THREE;`;
 	class P7Splats {
 		constructor() {
 			this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
-
-            window.Scene3D.Scenes = {};
 
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
 				this.clearScenes();
@@ -37,7 +36,76 @@ window.Scene3D.func = THREE;`;
 				id: 'P7Scene3D',
 				name: '3D Scenes',
                 // color1: '',
-				blocks: [],
+				blocks: [
+					{
+						opcode: 'makeScene',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Create scene id: [ID] width: [WIDTH] height: [HEIGHT]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+                            WIDTH: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: Scratch.vm.runtime.stageWidth,
+							},
+                            HEIGHT: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: Scratch.vm.runtime.stageHeight,
+							},
+						},
+					},
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Object Creation" },
+					{
+						opcode: 'makeBox',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Create box [ID] with a width of [WIDTH] and a height of [HEIGHT] in scene [SCENE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'box1',
+							},
+                            WIDTH: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: Scratch.vm.runtime.stageWidth,
+							},
+                            HEIGHT: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: Scratch.vm.runtime.stageHeight,
+							},
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Render" },
+                    {
+                        opcode: "showSceneFrame",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Show frame from scene [ID]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getSceneRender",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get frame from scene [ID]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                        },
+                    },
+                ],
 			};
 		}
 
@@ -46,7 +114,7 @@ window.Scene3D.func = THREE;`;
             Scene3D.Scenes = {};
         }
 
-        makeSplat({ ID, WIDTH, HEIGHT}) {
+        makeScene({ ID, WIDTH, HEIGHT}) {
             if (Scene3D.Scenes[ID]) {
                 Scene3D.Scenes[ID].canvas.remove();
             } Scene3D.Scenes[ID] = {};
@@ -58,9 +126,9 @@ window.Scene3D.func = THREE;`;
             Scene3D.Scenes[ID].canvas.height = HEIGHT;
             document.body.appendChild(Scene3D.Scenes[ID].canvas);
 
-            Scene3D.Scenes[ID].uniformTime = new Uniform(0);
+            Scene3D.Scenes[ID].uniformTime = new Scene3D.func.Uniform(0);
 
-            Scene3D.Scenes[ID].render = new WebGLRenderer({
+            Scene3D.Scenes[ID].render = new Scene3D.func.WebGLRenderer({
                 canvas: Scene3D.Scenes[ID].canvas,
                 antialias: false,
                 alpha: true
@@ -68,49 +136,42 @@ window.Scene3D.func = THREE;`;
 
             Scene3D.Scenes[ID].render.setSize(WIDTH, HEIGHT, false);
 
-            Scene3D.Scenes[ID].world = new Scene();
+            Scene3D.Scenes[ID].objects = {};
+            Scene3D.Scenes[ID].world = new Scene3D.func.Scene();
 
-            Scene3D.Scenes[ID].camera = new PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
+            Scene3D.Scenes[ID].camera = new Scene3D.func.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
 
             Scene3D.Scenes[ID].camera.position.set(0, 0, 2);
+
+            Scene3D.Scenes[ID].objects.helper = new Scene3D.func.AxesHelper( 5 );
+            Scene3D.Scenes[ID].world.add(Scene3D.Scenes[ID].objects.helper);
         }
 
         async getSceneRender({ ID, FORMAT }) {
             if (!Scene3D.Scenes[ID]) return;
-            Scene3D.Scenes[ID].render.render(Scene3D.Scenes[ID].scene, Scene3D.Scenes[ID].camera);
+            Scene3D.Scenes[ID].render.render(Scene3D.Scenes[ID].world, Scene3D.Scenes[ID].camera);
             return Scene3D.Scenes[ID].canvas.toDataURL(`image/${FORMAT || "png"}`);
         }
 
         async showSceneFrame({ ID }, util) {
+            if (!util.target) return;
             if (!Scene3D.Scenes[ID]) {
-                const target = util.target;
-                if (!target) return;
-                target.updateAllDrawableProperties();
+                util.target.updateAllDrawableProperties();
                 return;
             }
 
-            var url = await this.getSplatRender({ ID: ID, FORMAT: 'bmp' });
+            const image = new Image();
+            image.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = image.width;
+                canvas.height = image.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(image, 0, 0);
 
-            function setImage(DATAURI, util) {
-                const target = util.target;
-                const drawableID = target.drawableID;
-                const dataURI = DATAURI;
-          
-                const image = new Image();
-                image.onload = () => {
-                    const canvas = document.createElement("canvas");
-                    canvas.width = image.width;
-                    canvas.height = image.height;
-                    const ctx = canvas.getContext("2d");
-                    ctx.drawImage(image, 0, 0);
-
-                    const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
-                    Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
-                };
-                image.src = dataURI;
-            }
-
-            setImage(url, util);
+                const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
+                Scratch.vm.renderer.updateDrawableSkinId(util.target.drawableID, skinId);
+            };
+            image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;
         }
 
         jsHookScene({ ID, JS }) {
