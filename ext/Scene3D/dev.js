@@ -157,7 +157,7 @@ window.Scene3D.func = THREE;`;
 
             scene.camera.position.set(0, 0, 25);
 
-            scene.objects.helper = new Scene3D.func.AxesHelper( 5 );
+            scene.objects.helper = new Scene3D.func.AxesHelper(5);
             scene.world.add(scene.objects.helper);
 
             Scene3D.scenes[ID] = scene;
