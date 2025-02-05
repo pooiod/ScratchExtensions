@@ -399,30 +399,18 @@
         <input type="text" id="search" placeholder="Search extensions..." oninput="filterCards()">
     </div>
 
-    <p hidden>Sorry, the page you are looking for could not be loaded due to an internal server error.</p>
-
     <div class="cards-container" id="cards-container"></div>
     <p id="loader"></p>
 
     <footer class="footer">
-        These extensions are archived and may not work
+        You can go back to the main extensions <a href="/">here</a>.
     </footer>
 
     <script>
         let cardsData = ["/archived.json"];
         let footerHTML = document.querySelector(".footer").innerHTML;
 
-        if(!window.location.origin.includes('p7scratchextensions.pages.dev')) {
-            if (window.location.hostname.includes('archive.org') || window.location.hostname.endsWith('translate.goog')) {
-                // Don't show a warning for archive.org or google translate
-            } else {
-                if (window.location.origin.includes('p7extensions.pages.dev')) {
-                    showWarning("You are on a mirror site, please be cautious about using links here, as this site may go down without warning! You can go to my full site <a href=\"https://p7scratchextensions.pages.dev\">here</a>.");
-                } else {
-                    showWarning("You are on an unofficial mirror or proxy site. Please be cautious about running code from this site as it may have been changed. You can go to my original site at \"p7scratchextensions.pages.dev\".");
-                }
-            }
-        }
+        showWarning("These extensions are archived and may not be functional");
 
         if (false) {} else {
             function createCard(card, showhidden) {

@@ -11,7 +11,7 @@
         "iconText": "This extension is based on the svg text feature on PenguinPaint",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/?/archived/#/[id]" }
         ],
         "addon": true,
         "tags": ["finished"],
