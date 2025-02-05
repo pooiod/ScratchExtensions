@@ -354,7 +354,7 @@
         }
     </script>
     <div id="toolbar">
-        <a style="float: left;" href="/">&#x2190; View more extensions</a>
+        <a style="float: left;" id="back" href="/">&#x2190; View more extensions</a>
         <a style="float: left;" link="[file]" target="_blank" id="direct" onclick="event.preventDefault(); copy(this.href);">Copy link to file</a>
 
         <a style="float: left;" link="compile?ext=[file]" target="_blank" id="yeet" hidden>Open in PenguinMod</a>
@@ -371,7 +371,10 @@
         let customSnippets = { functions: [], variables: [] };
         let cardsData = ["/extensions.json"];
 
-        if (new URLSearchParams(window.location.search).has('/archived/')) cardsData = ["/archived.json"];
+        if (new URLSearchParams(window.location.search).has('/archived/')) {
+            cardsData = ["/archived.json"];
+            document.getElementById("back").href = "/archives";
+        }
 
         async function canYeet() {
             try {
