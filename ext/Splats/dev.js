@@ -7,8 +7,6 @@
 		throw new Error('This extension must run unsandboxed');
 	}
 
-    var createdSkins = [];
-
     if (!document.getElementById("SplatImportMap")) {
         const importmap = document.createElement('script');
         importmap.type = 'importmap';
@@ -445,82 +443,29 @@
                 return;
             }
 
-            this.showImage({ URL: await this.getSplatRender({ ID: ID })}, util);
-        }
+            var url = await this.getSplatRender({ ID: ID });
 
-        async showImage({ URL }, util) {
-            const name = "3DsplatSkin";
-            const skinName = `lms-${Scratch.Cast.toString(name)}`;
-
-            console.log(URL);
-
-            let oldSkinId = null;
-            if (createdSkins[skinName]) {
-                oldSkinId = createdSkins[skinName];
-            }
-
-            async function _createURLSkin(URL) {
-                let imageData;
-                if (await Scratch.canFetch(URL)) {
-                    imageData = await Scratch.fetch(URL);
-                } else {
-                    return;
-                }
-    
-                const contentType = imageData.headers.get("Content-Type");
-                if (
-                    contentType === "image/png" ||
-                    contentType === "image/jpeg" ||
-                    contentType === "image/bmp" ||
-                    contentType === "image/webp"
-                ) {
-                    const output = new Image();
-                    output.src = URL;
-                    output.crossOrigin = "anonymous";
-                    await output.decode();
-                    return Scratch.vm.runtime.renderer.createBitmapSkin(output);
-                }
-            }
-      
-            const skinId = await _createURLSkin(URL);
-            if (!skinId) return;
-            createdSkins[skinName] = skinId;
-      
-            if (oldSkinId) {
-                function _refreshTargetsFromID(skinId, reset, newId) {
-                    const drawables = Scratch.vm.runtime.renderer._allDrawables;
-                    const skins = Scratch.vm.runtime.renderer._allSkins;
-              
-                    for (const target of Scratch.vm.runtime.targets) {
-                        const drawableID = target.drawableID;
-                        const targetSkin = drawables[drawableID].skin.id;
-                
-                        if (targetSkin === skinId) {
-                            target.updateAllDrawableProperties();
-                            if (!reset)
-                            drawables[drawableID].skin = newId ? skins[newId] : skins[skinId];
-                        }
-                    }
-                }
-
-                _refreshTargetsFromID(oldSkinId, false, skinId);
-                Scratch.vm.runtime.renderer.destroySkin(oldSkinId);
-            }
-      
-            function setSkin({ NAME, TARGET }, util) {
-                const skinName = `lms-${Scratch.Cast.toString(NAME)}`;
-                if (!createdSkins[skinName]) return;
-          
-                const targetName = Scratch.Cast.toString(TARGET);
+            // The fastest method I could find
+            function setImage(DATAURI, util) {
                 const target = util.target;
-                if (!target) return;
                 const drawableID = target.drawableID;
+                const dataURI = DATAURI;
           
-                const skinId = createdSkins[skinName];
-                Scratch.vm.runtime.renderer._allDrawables[drawableID].skin = Scratch.vm.runtime.renderer._allSkins[skinId];
+                const image = new Image();
+                image.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(image, 0, 0);
+
+                    const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
+                    Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
+                };
+                image.src = dataURI;
             }
 
-            setSkin({NAME:name}, util)
+            setImage(url, util);
         }
 
         addSplatShader({ ID, TRANSFORM, COLOR }) {
