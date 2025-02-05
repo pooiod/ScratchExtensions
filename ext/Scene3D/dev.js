@@ -22,8 +22,6 @@ window.Scene3D.func = THREE;`;
 		constructor() {
 			this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
 
-            this.baseMaterial = null;
-
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
 				this.clearscenes();
 			});
@@ -72,7 +70,7 @@ window.Scene3D.func = THREE;`;
 					{
 						opcode: 'makeBox',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create box [ID] with a width of [WIDTH] and a height of [HEIGHT] in scene [SCENE]',
+						text: 'Create box [ID] with a width of [WIDTH] and a height of [HEIGHT] and a depth of [DEPTH] in scene [SCENE]',
 						arguments: {
                             ID: {
 								type: Scratch.ArgumentType.STRING,
@@ -80,11 +78,15 @@ window.Scene3D.func = THREE;`;
 							},
                             WIDTH: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: Scratch.vm.runtime.stageWidth,
+								defaultValue: 20,
 							},
                             HEIGHT: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: Scratch.vm.runtime.stageHeight,
+								defaultValue: 20,
+							},
+                            DEPTH: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 20,
 							},
                             SCENE: {
 								type: Scratch.ArgumentType.STRING,
@@ -128,39 +130,42 @@ window.Scene3D.func = THREE;`;
         makeScene({ ID, WIDTH, HEIGHT}) {
             if (Scene3D.scenes[ID]) {
                 Scene3D.scenes[ID].canvas.remove();
-            } Scene3D.scenes[ID] = {};
+            } var scene = {};
 
-            Scene3D.scenes[ID].canvas = document.createElement('canvas');
-            Scene3D.scenes[ID].canvas.style.display = 'none';
-            Scene3D.scenes[ID].canvas.classList.add("SceneCanvas3D");
-            Scene3D.scenes[ID].canvas.width = WIDTH;
-            Scene3D.scenes[ID].canvas.height = HEIGHT;
-            document.body.appendChild(Scene3D.scenes[ID].canvas);
+            scene.canvas = document.createElement('canvas');
+            scene.canvas.style.display = 'none';
+            scene.canvas.classList.add("SceneCanvas3D");
+            scene.canvas.width = WIDTH;
+            scene.canvas.height = HEIGHT;
+            document.body.appendChild(scene.canvas);
 
-            Scene3D.scenes[ID].uniformTime = new Scene3D.func.Uniform(0);
+            scene.uniformTime = new Scene3D.func.Uniform(0);
 
-            Scene3D.scenes[ID].render = new Scene3D.func.WebGLRenderer({
-                canvas: Scene3D.scenes[ID].canvas,
+            scene.renderer = new Scene3D.func.WebGLRenderer({
+                canvas: scene.canvas,
                 antialias: false,
                 alpha: true
             });
 
-            Scene3D.scenes[ID].render.setSize(WIDTH, HEIGHT, false);
+            scene.renderer.setSize(WIDTH, HEIGHT, false);
 
-            Scene3D.scenes[ID].objects = {};
-            Scene3D.scenes[ID].world = new Scene3D.func.Scene();
+            scene.objects = {};
+            scene.materials = {};
+            scene.world = new Scene3D.func.Scene();
 
-            Scene3D.scenes[ID].camera = new Scene3D.func.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
+            scene.camera = new Scene3D.func.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
 
-            Scene3D.scenes[ID].camera.position.set(0, 0, 2);
+            scene.camera.position.set(0, 0, 25);
 
-            Scene3D.scenes[ID].objects.helper = new Scene3D.func.AxesHelper( 5 );
-            Scene3D.scenes[ID].world.add(Scene3D.scenes[ID].objects.helper);
+            scene.objects.helper = new Scene3D.func.AxesHelper( 5 );
+            scene.world.add(scene.objects.helper);
+
+            Scene3D.scenes[ID] = scene;
         }
 
         async getSceneRender({ ID, FORMAT }) {
             if (!Scene3D.scenes[ID]) return;
-            Scene3D.scenes[ID].render.render(Scene3D.scenes[ID].world, Scene3D.scenes[ID].camera);
+            Scene3D.scenes[ID].renderer.render(Scene3D.scenes[ID].world, Scene3D.scenes[ID].camera);
             return Scene3D.scenes[ID].canvas.toDataURL(`image/${FORMAT || "png"}`);
         }
 
@@ -185,14 +190,12 @@ window.Scene3D.func = THREE;`;
             image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;
         }
 
-        makeBox(args) {
-            var { ID, SCENE, WIDTH, HEIGHT, DEPTH, MATERIAL } = args;
+        makeBox({ ID, SCENE, WIDTH, HEIGHT, DEPTH, MATERIAL }) {
             if (!Scene3D.scenes[SCENE]) return;
-            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry( WIDTH, HEIGHT, DEPTH );
+            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
 
-            this.baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
-
-            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], Scene3D.scenes[SCENE].objects[MATERIAL] || this.baseMaterial); 
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
+            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial); 
             Scene3D.scenes[SCENE].world.add(mesh);
         }
 
