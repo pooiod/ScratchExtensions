@@ -8,7 +8,7 @@
         "created": "Dec 4, 2024",
         "subtext": "An addidtion to the editor",
         "icon": "/extras/images/icons/addon.png",
-        "iconText": "This extension is based on the svg text feature on <a href=\"https://penguinpaint.statichost.app\">PenguinPaint</a>",
+        "iconText": "This extension is based on the svg text feature on PenguinPaint",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
