@@ -288,7 +288,7 @@
                                 defaultValue: 'splat1',
                             }
                         }
-                      },
+                    },
                     {
                         opcode: "jsHookSplat",
                         blockType: Scratch.BlockType.REPORTER,

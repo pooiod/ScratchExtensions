@@ -66,6 +66,93 @@ window.Scene3D.func = THREE;`;
 						},
 					},
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Move Camera" },
+                    {
+                        opcode: "moveCamera",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set position camera of [ID] to x: [X] y: [Y] z: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "2",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "rotateCamera",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Rotate camera for [ID] to x: [X] y: [Y] z: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "2",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "rotateCameraToLookAt",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Point camera of [ID] to look at x: [X] y: [Y] z: [Z]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "setCameraFOV",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set fov of camera for [ID] to [FOV]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            FOV: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "75",
+                            },
+                        },
+                    },
+
                     { blockType: Scratch.BlockType.LABEL, text: "Object Creation" },
 					{
 						opcode: 'makeBox',
@@ -118,6 +205,22 @@ window.Scene3D.func = THREE;`;
                             },
                         },
                     },
+
+                    {
+                        opcode: "jsHookScene",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Run JavaScript [JS] on scene [ID]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            JS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene.camera.position.y",
+                            },
+                        },
+                    },
                 ],
 			};
 		}
@@ -155,11 +258,6 @@ window.Scene3D.func = THREE;`;
 
             scene.camera = new Scene3D.func.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
 
-            scene.camera.position.set(0, 0, 25);
-
-            scene.objects.helper = new Scene3D.func.AxesHelper(5);
-            scene.world.add(scene.objects.helper);
-
             Scene3D.scenes[ID] = scene;
         }
 
@@ -168,7 +266,6 @@ window.Scene3D.func = THREE;`;
             Scene3D.scenes[ID].renderer.render(Scene3D.scenes[ID].world, Scene3D.scenes[ID].camera);
             return Scene3D.scenes[ID].canvas.toDataURL(`image/${FORMAT || "png"}`);
         }
-
         async showSceneFrame({ ID }, util) {
             if (!util.target) return;
             if (!Scene3D.scenes[ID]) {
@@ -190,9 +287,27 @@ window.Scene3D.func = THREE;`;
             image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;
         }
 
-        makeBox({ ID, SCENE, WIDTH, HEIGHT, DEPTH, MATERIAL }) {
+        makeHelperAxes({ ID, SCENE, SIZE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
+            Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
+        }
+        makeHelperGrid({ ID, SCENE, SIZE, PARTS }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
+            Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
+        }
+        makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OX, OY, OZ, DX, DY, DZ }) {
+            if (!Scene3D.scenes[SCENE]) return;
+
+            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
+            Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
+        }
+
+        makeBox({ ID, SCENE, WIDTH, HEIGHT, DEPTH }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
+            Scene3D.scenes[SCENE].objects[ID].supported = {"wireframe"};
 
             let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial); 
