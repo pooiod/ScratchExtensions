@@ -31,7 +31,7 @@
 				console.log("project started");
 			});
 
-			Scratch.vm.runtime.on('PROJECT_STOP', () => {
+			Scratch.vm.runtime.on('PROJECT_STOP_ALL', () => {
 				console.log("project stopped");
 			});
 
