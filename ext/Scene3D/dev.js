@@ -23,6 +23,7 @@ window.Scene3D.func = THREE;`;
 			this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
 
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
+                this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
 				this.clearscenes();
 			});
 
@@ -137,21 +138,21 @@ window.Scene3D.func = THREE;`;
                         },
                     },
 
-                    {
-                        opcode: "setCameraFOV",
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: "Set fov of camera for [ID] to [FOV]",
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "scene1",
-                            },
-                            FOV: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "75",
-                            },
-                        },
-                    },
+                    // {
+                    //     opcode: "setCameraFOV",
+                    //     blockType: Scratch.BlockType.COMMAND,
+                    //     text: "Set fov of camera for [ID] to [FOV]",
+                    //     arguments: {
+                    //         ID: {
+                    //             type: Scratch.ArgumentType.STRING,
+                    //             defaultValue: "scene1",
+                    //         },
+                    //         FOV: {
+                    //             type: Scratch.ArgumentType.NUMBER,
+                    //             defaultValue: "75",
+                    //         },
+                    //     },
+                    // },
 
                     { blockType: Scratch.BlockType.LABEL, text: "Object Creation" },
 					{
@@ -194,6 +195,7 @@ window.Scene3D.func = THREE;`;
                             },
                         },
                     },
+
                     {
                         opcode: "getSceneRender",
                         blockType: Scratch.BlockType.REPORTER,
@@ -202,6 +204,27 @@ window.Scene3D.func = THREE;`;
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "scene1",
+                            },
+                        },
+                    },
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Debug" },
+                    {
+                        opcode: "makeHelperAxes",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Make axis helper [ID] with size [SIZE] in scene [SCENE]",
+                        arguments: {
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "AxisHelper",
+                            },
+                            SIZE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "50",
                             },
                         },
                     },
@@ -225,12 +248,14 @@ window.Scene3D.func = THREE;`;
 			};
 		}
 
+        // ----------------------------------- Scenes ----------------------------------- //
+
 		clearscenes() {
             document.querySelectorAll('.SceneCanvas3D').forEach(el => el.remove());
             Scene3D.scenes = {};
         }
 
-        makeScene({ ID, WIDTH, HEIGHT}) {
+        makeScene({ ID, WIDTH, HEIGHT }) {
             if (Scene3D.scenes[ID]) {
                 Scene3D.scenes[ID].canvas.remove();
             } var scene = {};
@@ -261,6 +286,8 @@ window.Scene3D.func = THREE;`;
             Scene3D.scenes[ID] = scene;
         }
 
+        // ----------------------------------- Rendering ----------------------------------- //
+
         async getSceneRender({ ID, FORMAT }) {
             if (!Scene3D.scenes[ID]) return;
             Scene3D.scenes[ID].renderer.render(Scene3D.scenes[ID].world, Scene3D.scenes[ID].camera);
@@ -287,6 +314,30 @@ window.Scene3D.func = THREE;`;
             image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;
         }
 
+        // ----------------------------------- Camera ----------------------------------- //
+
+        moveCamera({ ID, X, Y, Z }) {
+            if (!Scene3D.scenes[ID]) return;
+            Scene3D.scenes[ID].camera.position.set(X, Y, Z);
+        }
+
+        rotateCamera({ ID, X, Y, Z }) {
+            if (!Scene3D.scenes[ID]) return;
+            Scene3D.scenes[ID].camera.rotation.set(X, Y, Z);
+        }
+
+        rotateCameraToLookAt({ ID, X, Y, Z }) {
+            if (!Scene3D.scenes[ID]) return;
+            Scene3D.scenes[ID].camera.lookAt(new Scene3D.func.Vector3(X, Y, Z));
+        }
+
+        setCameraFOV({ ID, FOV }) {
+            if (!Scene3D.scenes[ID]) return;
+            Scene3D.scenes[ID].camera.fov = FOV
+        }
+
+        // ----------------------------------- Helpers ----------------------------------- //
+
         makeHelperAxes({ ID, SCENE, SIZE }) {
             if (!Scene3D.scenes[SCENE]) return;
 
@@ -294,6 +345,7 @@ window.Scene3D.func = THREE;`;
             Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
         }
+
         makeHelperGrid({ ID, SCENE, SIZE, PARTS }) {
             if (!Scene3D.scenes[SCENE]) return;
 
@@ -301,6 +353,7 @@ window.Scene3D.func = THREE;`;
             Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
         }
+
         makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OX, OY, OZ, DX, DY, DZ }) {
             if (!Scene3D.scenes[SCENE]) return;
 
@@ -308,6 +361,8 @@ window.Scene3D.func = THREE;`;
             Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
         }
+
+        // ----------------------------------- Object creaton ----------------------------------- //
 
         makeBox({ ID, SCENE, WIDTH, HEIGHT, DEPTH }) {
             if (!Scene3D.scenes[SCENE]) return;
@@ -318,6 +373,8 @@ window.Scene3D.func = THREE;`;
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial); 
             Scene3D.scenes[SCENE].world.add(mesh);
         }
+
+        // ----------------------------------- extras ----------------------------------- //
 
         jsHookScene({ ID, JS }) {
             if (!this.canscript) {
