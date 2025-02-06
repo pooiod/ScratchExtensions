@@ -365,24 +365,46 @@ window.Scene3D.func = THREE;`;
             if (!Scene3D.scenes[SCENE]) return;
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
+            Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid
             Scene3D.scenes[SCENE].objects[ID].supported = [];
+
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
+
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+            }
         }
 
         makeHelperGrid({ ID, SCENE, SIZE, PARTS }) {
             if (!Scene3D.scenes[SCENE]) return;
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
+            Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid
             Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
+
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+            }
         }
 
         makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OX, OY, OZ, DX, DY, DZ }) {
             if (!Scene3D.scenes[SCENE]) return;
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
+            Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid
             Scene3D.scenes[SCENE].objects[ID].supported = [];
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
+
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+            }
         }
 
         // ----------------------------------- Object creaton ----------------------------------- //
@@ -394,7 +416,14 @@ window.Scene3D.func = THREE;`;
 
             let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial); 
+            Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid
             Scene3D.scenes[SCENE].world.add(mesh);
+
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+            }
         }
 
         // ----------------------------------- extras ----------------------------------- //
