@@ -228,6 +228,29 @@ window.Scene3D.func = THREE;`;
                             },
                         },
                     },
+                    {
+                        opcode: "makeHelperGrid",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Make grid helper [ID] with size [SIZE] and parts [PARTS] in scene [SCENE]",
+                        arguments: {
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "AxisHelper",
+                            },
+                            SIZE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "50",
+                            },
+                            PARTS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "10",
+                            },
+                        },
+                    },
 
                     {
                         opcode: "jsHookScene",
@@ -343,7 +366,7 @@ window.Scene3D.func = THREE;`;
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
             Scene3D.scenes[SCENE].objects[ID].supported = [];
-            Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
+            Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
         }
 
         makeHelperGrid({ ID, SCENE, SIZE, PARTS }) {
@@ -351,7 +374,7 @@ window.Scene3D.func = THREE;`;
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
             Scene3D.scenes[SCENE].objects[ID].supported = [];
-            Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
+            Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
         }
 
         makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OX, OY, OZ, DX, DY, DZ }) {
@@ -359,7 +382,7 @@ window.Scene3D.func = THREE;`;
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
             Scene3D.scenes[SCENE].objects[ID].supported = [];
-            Scene3D.scenes[SCENE].world.add(scene.objects[ID]);
+            Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
         }
 
         // ----------------------------------- Object creaton ----------------------------------- //
