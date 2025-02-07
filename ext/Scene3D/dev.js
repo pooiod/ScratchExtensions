@@ -377,7 +377,7 @@ window.Scene3D.func = THREE;`;
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
-                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
+                delete Scene3D.scenes[SCENE].objects[ID];
             }
         }
 
@@ -397,7 +397,7 @@ window.Scene3D.func = THREE;`;
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
-                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
+                delete Scene3D.scenes[SCENE].objects[ID];
             }
         }
 
@@ -416,7 +416,7 @@ window.Scene3D.func = THREE;`;
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
-                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
+                delete Scene3D.scenes[SCENE].objects[ID];
             }
         }
 
@@ -441,7 +441,7 @@ window.Scene3D.func = THREE;`;
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
-                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
+                delete Scene3D.scenes[SCENE].objects[ID];
             }
         }
 
