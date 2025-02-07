@@ -43,7 +43,7 @@
 
             if (!target) return;
 
-            if (!URL.startsWith("data:")) {
+            if (!DATAURI.startsWith("data:")) {
                 async function imageToDataURI(url) {
                     const response = await fetch(url);
                     const blob = await response.blob();
@@ -54,7 +54,7 @@
                     });
                 }
 
-                URL = await imageToDataURI(URL)
+                DATAURI = await imageToDataURI(DATAURI)
             }
     
             const image = new Image();
