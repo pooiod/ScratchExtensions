@@ -365,18 +365,21 @@ window.Scene3D.func = THREE;`;
 
         // ----------------------------------- Camera ----------------------------------- //
 
-        moveCamera({ ID, X, Y, Z }) {
+        moveCamera({ ID, V3 }) {
             if (!Scene3D.scenes[ID]) return;
+            var [X, Y, Z] = this.vectorToArray(V3);
             Scene3D.scenes[ID].camera.position.set(X, Y, Z);
         }
 
-        rotateCamera({ ID, X, Y, Z }) {
+        rotateCamera({ ID, V3 }) {
             if (!Scene3D.scenes[ID]) return;
+            var [X, Y, Z] = this.vectorToArray(V3);
             Scene3D.scenes[ID].camera.rotation.set(X, Y, Z);
         }
 
-        rotateCameraToLookAt({ ID, X, Y, Z }) {
+        rotateCameraToLookAt({ ID, V3 }) {
             if (!Scene3D.scenes[ID]) return;
+            var [X, Y, Z] = this.vectorToArray(V3);
             Scene3D.scenes[ID].camera.lookAt(new Scene3D.func.Vector3(X, Y, Z));
         }
 
@@ -427,9 +430,11 @@ window.Scene3D.func = THREE;`;
             }
         }
 
-        makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OX, OY, OZ, DX, DY, DZ }) {
+        makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OV3, DV3 }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
+            var [OX, OY, OZ] = this.vectorToArray(OV3);
+            var [DX, DY, DZ] = this.vectorToArray(DV3);
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
             Scene3D.scenes[SCENE].objects[ID].supported = [];
@@ -448,9 +453,11 @@ window.Scene3D.func = THREE;`;
 
         // ----------------------------------- Object creaton ----------------------------------- //
 
-        makeBox({ ID, SCENE, WIDTH, HEIGHT, DEPTH }) {
+        makeBox({ ID, SCENE, V3 }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
+
+            var [WIDTH, HEIGHT, DEPTH] = this.vectorToArray(V3);
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
             Scene3D.scenes[SCENE].objects[ID].supported = ["wireframe"];
@@ -480,6 +487,8 @@ window.Scene3D.func = THREE;`;
 
         moveObject({ ID, SCENE, POS }) {
             if (!Scene3D.scenes[SCENE]) return;
+            var [X, Y, Z] = this.vectorToArray(POS);
+
             // Scene3D.scenes[SCENE].objects[ID]
         }
 
