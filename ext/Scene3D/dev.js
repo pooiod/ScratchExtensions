@@ -7,12 +7,14 @@
 		throw new Error('This extension must run unsandboxed');
 	}
 
+    if (!window.Scene3D) {
+        window.Scene3D = {};
+    }
     if (!document.getElementById("WindowImports3D")) {
         let script = document.createElement("script");
         script.type = "module";
         script.id = "WindowImports3D";
         script.innerHTML = `import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
-window.Scene3D = {};
 window.Scene3D.scenes = {};
 window.Scene3D.func = THREE;`;
         document.head.appendChild(script);
