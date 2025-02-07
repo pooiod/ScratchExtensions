@@ -363,6 +363,7 @@ window.Scene3D.func = THREE;`;
 
         makeHelperAxes({ ID, SCENE, SIZE }) {
             if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -370,16 +371,19 @@ window.Scene3D.func = THREE;`;
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
+            Scene3D.scenes[SCENE].objects[ID].original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
+                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
             }
         }
 
         makeHelperGrid({ ID, SCENE, SIZE, PARTS }) {
             if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -387,27 +391,32 @@ window.Scene3D.func = THREE;`;
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
+            Scene3D.scenes[SCENE].objects[ID].original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
+                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
             }
         }
 
         makeHelperArrow({ ID, SCENE, LENGTH, COLOR, OX, OY, OZ, DX, DY, DZ }) {
             if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
             Scene3D.scenes[SCENE].objects[ID].supported = [];
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
+            Scene3D.scenes[SCENE].objects[ID].original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
+                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
             }
         }
 
@@ -415,12 +424,15 @@ window.Scene3D.func = THREE;`;
 
         makeBox({ ID, SCENE, WIDTH, HEIGHT, DEPTH }) {
             if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
+
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
             Scene3D.scenes[SCENE].objects[ID].supported = ["wireframe"];
 
             let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
 
-            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial); 
+            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
+            mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
 
             Scene3D.scenes[SCENE].world.add(mesh);
 
@@ -429,7 +441,15 @@ window.Scene3D.func = THREE;`;
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
                 Scene3D.scenes[SCENE].world.children = newscene;
+                Scene3D.scenes[SCENE].objects = Scene3D.scenes[SCENE].objects.filter(obj => obj !== Scene3D.scenes[SCENE].objects[ID]);
             }
+        }
+
+        // ----------------------------------- Object modification ----------------------------------- //
+
+        destroyObject({ ID, SCENE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
         }
 
         // ----------------------------------- extras ----------------------------------- //
