@@ -6,7 +6,7 @@
         "title": "SVG Text",
         "description": "Generate point-based svg text. <br>(new add costume button)",
         "created": "Dec 4, 2024",
-        "subtext": "An addidtion to the editor",
+        "subtext": "Archived because I managed to get <a href=\"https://penguinpaint.statichost.app\">PenguinPaint</a> back online",
         "icon": "/extras/images/icons/addon.png",
         "iconText": "This extension is based on the svg text feature on PenguinPaint",
         "unsandboxed": true,
@@ -33,5 +33,21 @@
         ],
         "tags": ["unfinished"],
         "type": ["sandboxed"]
+    },
+    {
+        "id": "ServerData",
+        "image": "/ext/[id]/cover.svg",
+        "title": "ServerData",
+        "description": "Store and retrieve data on <a href=\"https://snap.berkeley.edu/\">snap!</a> servers.",
+        "created": "May 18, 2024",
+        "subtext": "Archived due to the API getting locked",
+        "icon": "https://cdn-icons-png.flaticon.com/512/4275/4275215.png",
+        "iconText": "The api for this extension is currently down.",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/?/archived/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"]
     }
 ]

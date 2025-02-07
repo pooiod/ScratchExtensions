@@ -410,7 +410,10 @@
         let cardsData = ["/archived.json"];
         let footerHTML = document.querySelector(".footer").innerHTML;
 
-        showWarning("These extensions are extensions that I am no-longer supporting. It is generaly not recomended to use them.");
+        // Criteria for an extension getting archived includes:
+        // API going down with no good alternatives, better extensions getting released
+
+        showWarning("These extensions are extensions are archived due to me not supporting them anymore.");
 
         if (false) {} else {
             function createCard(card, showhidden) {
