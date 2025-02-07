@@ -42,6 +42,20 @@
             const drawableID = target.drawableID;
 
             if (!target) return;
+
+            if (!URL.startsWith("data:")) {
+                async function imageToDataURI(url) {
+                    const response = await fetch(url);
+                    const blob = await response.blob();
+                    return new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.readAsDataURL(blob);
+                    });
+                }
+
+                URL = await imageToDataURI(URL)
+            }
     
             const image = new Image();
             image.onload = () => {

@@ -77,63 +77,39 @@ window.Scene3D.func = THREE;`;
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "scene1",
                             },
-                            X: {
+                            V3: {
                                 type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Y: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Z: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "2",
+                                defaultValue: "0, 0, 25",
                             },
                         },
                     },
                     {
                         opcode: "rotateCamera",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Rotate camera for [ID] to x: [X] y: [Y] z: [Z]",
+                        text: "Rotate camera for [ID] to [V3]",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "scene1",
                             },
-                            X: {
+                            V3: {
                                 type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Y: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Z: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "2",
+                                defaultValue: "0, 0, 0",
                             },
                         },
                     },
                     {
                         opcode: "rotateCameraToLookAt",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Point camera of [ID] to look at x: [X] y: [Y] z: [Z]",
+                        text: "Point camera of [ID] to look at [V3]",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "scene1",
                             },
-                            X: {
+                            V3: {
                                 type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Y: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
-                            },
-                            Z: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: "0",
+                                defaultValue: "0, 0, 0",
                             },
                         },
                     },
@@ -158,24 +134,16 @@ window.Scene3D.func = THREE;`;
 					{
 						opcode: 'makeBox',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create box [ID] with a width of [WIDTH] and a height of [HEIGHT] and a depth of [DEPTH] in scene [SCENE]',
+						text: 'Create box [ID] with a size of [V3] in scene [SCENE]',
 						arguments: {
                             ID: {
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: 'box1',
 							},
-                            WIDTH: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: 20,
-							},
-                            HEIGHT: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: 20,
-							},
-                            DEPTH: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: 20,
-							},
+                            V3: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "20, 20, 20",
+                            },
                             SCENE: {
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: 'scene1',
@@ -267,15 +235,73 @@ window.Scene3D.func = THREE;`;
                             },
                         },
                     },
+
+                    {
+                        disableMonitor: true,
+                        opcode: "newVector3",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "vector 3 x:[X] y:[Y] z:[Z]",
+                        arguments: {
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 0,
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 0,
+                            },
+                            Z: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 0,
+                            },
+                        },
+                    },
                 ],
 			};
 		}
+
+        // ----------------------------------- Math ----------------------------------- //
+
+        newVector3({ X, Y, X }) {
+            return `${Scratch.Cast.toNumber(x) || 0}, ${Scratch.Cast.toNumber(y) || 0}, ${Scratch.Cast.toNumber(z) || 0}`
+        }
+
+        vectorToArray(VECTOR) {
+            var length = 0;
+
+            if (VECTOR.constructor === ({}).constructor) {
+                if (VECTOR.V3) {
+                    vector = `[${VECTOR.V3}]`;
+                    length = 3;
+                } else if (VECTOR.V2) {
+                    vector = `[${VECTOR.V2}]`;
+                    length = 2;
+                }
+            } else {
+                vector = `[${VECTOR}]`;
+            }
+
+            try {
+                vector = JSON.parse(vector);
+                if (length != 0 && vector.length != length) {
+                    return;
+                }
+            } catch(err) {
+                return;
+            }
+        }
 
         // ----------------------------------- Scenes ----------------------------------- //
 
 		clearscenes() {
             document.querySelectorAll('.SceneCanvas3D').forEach(el => el.remove());
             Scene3D.scenes = {};
+        }
+
+		clearscene({ ID }) {
+            if (!Scene3D.scenes[ID]) return;
+            Scene3D.scenes[ID].canvas.remove();
+            delete Scene3D.scenes[ID];
         }
 
         makeScene({ ID, WIDTH, HEIGHT }) {
@@ -450,6 +476,11 @@ window.Scene3D.func = THREE;`;
         destroyObject({ ID, SCENE }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
+        }
+
+        moveObject({ ID, SCENE, POS }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            // Scene3D.scenes[SCENE].objects[ID]
         }
 
         // ----------------------------------- extras ----------------------------------- //

@@ -127,82 +127,41 @@
           ],
         };
       }
-  
-      async _createURLSkin(URL) {
-        let imageData;
-        if (await Scratch.canFetch(URL)) {
-          imageData = await Scratch.fetch(URL);
-        } else {
-          return;
-        }
-  
-        const contentType = imageData.headers.get("Content-Type");
-        if (
-          contentType === "image/png" ||
-          contentType === "image/jpeg" ||
-          contentType === "image/bmp" ||
-          contentType === "image/webp"
-        ) {
-          // eslint-disable-next-line no-restricted-syntax
-          const output = new Image();
-          output.src = URL;
-          output.crossOrigin = "anonymous";
-          await output.decode();
-          return renderer.createBitmapSkin(output);
-        }
-      }
-  
-      _refreshTargetsFromID(skinId, reset, newId) {
-        const drawables = renderer._allDrawables;
-        const skins = renderer._allSkins;
-  
-        for (const target of runtime.targets) {
-          const drawableID = target.drawableID;
-          const targetSkin = drawables[drawableID].skin.id;
-  
-          if (targetSkin === skinId) {
-            target.updateAllDrawableProperties();
-            if (!reset)
-              drawables[drawableID].skin = newId ? skins[newId] : skins[skinId];
-          }
-        }
-      }
-  
-      async showimage(args, util) {
-        const name = "vidshareskin";
-        const skinName = `lms-${Cast.toString(name)}`;
-        const url = Cast.toString(args.URL);
-  
-        let oldSkinId = null;
-        if (createdSkins[skinName]) {
-          oldSkinId = createdSkins[skinName];
-        }
-  
-        const skinId = await this._createURLSkin(url);
-        if (!skinId) return;
-        createdSkins[skinName] = skinId;
-  
-        if (oldSkinId) {
-          this._refreshTargetsFromID(oldSkinId, false, skinId);
-          renderer.destroySkin(oldSkinId);
-        }
-  
-        this.setSkin({NAME:name}, util)
-      }
-  
-      setSkin(args, util) {
-        const skinName = `lms-${Cast.toString(args.NAME)}`;
-        if (!createdSkins[skinName]) return;
-  
-        const targetName = Cast.toString(args.TARGET);
+
+      async showimage({ URL }, util) {
         const target = util.target;
-        if (!target) return;
         const drawableID = target.drawableID;
+
+        if (!target) return;
+
+        if (!URL.startsWith("data:")) {
+          async function imageToDataURI(url) {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.readAsDataURL(blob);
+            });
+          }
+
+          URL = await imageToDataURI(URL)
+        }
+
+        const image = new Image();
+        image.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = image.width;
+          canvas.height = image.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(image, 0, 0);
   
-        const skinId = createdSkins[skinName];
-        renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
+          const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
+          Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
+        };
+        image.src = Scratch.Cast.toString(URL);
       }
-  
+
       restoreSkin(args, util) {
         const target = util.target;
         if (!target) return;
