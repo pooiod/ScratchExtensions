@@ -71,14 +71,14 @@ window.Scene3D.func = THREE;`;
                     {
                         opcode: "moveCamera",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Set position camera of [ID] to x: [X] y: [Y] z: [Z]",
+                        text: "Set position camera of [ID] to [POS]",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "scene1",
                             },
-                            V3: {
-                                type: Scratch.ArgumentType.NUMBER,
+                            POS: {
+                                type: Scratch.ArgumentType.STRING,
                                 defaultValue: "0, 0, 25",
                             },
                         },
@@ -93,7 +93,7 @@ window.Scene3D.func = THREE;`;
                                 defaultValue: "scene1",
                             },
                             V3: {
-                                type: Scratch.ArgumentType.NUMBER,
+                                type: Scratch.ArgumentType.STRING,
                                 defaultValue: "0, 0, 0",
                             },
                         },
@@ -108,7 +108,7 @@ window.Scene3D.func = THREE;`;
                                 defaultValue: "scene1",
                             },
                             V3: {
-                                type: Scratch.ArgumentType.NUMBER,
+                                type: Scratch.ArgumentType.STRING,
                                 defaultValue: "0, 0, 0",
                             },
                         },
@@ -141,7 +141,7 @@ window.Scene3D.func = THREE;`;
 								defaultValue: 'box1',
 							},
                             V3: {
-                                type: Scratch.ArgumentType.NUMBER,
+                                type: Scratch.ArgumentType.STRING,
                                 defaultValue: "20, 20, 20",
                             },
                             SCENE: {
@@ -191,7 +191,7 @@ window.Scene3D.func = THREE;`;
                                 defaultValue: "AxisHelper",
                             },
                             SIZE: {
-                                type: Scratch.ArgumentType.STRING,
+                                type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: "50",
                             },
                         },
@@ -210,11 +210,11 @@ window.Scene3D.func = THREE;`;
                                 defaultValue: "AxisHelper",
                             },
                             SIZE: {
-                                type: Scratch.ArgumentType.STRING,
+                                type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: "50",
                             },
                             PARTS: {
-                                type: Scratch.ArgumentType.STRING,
+                                type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: "10",
                             },
                         },
@@ -240,17 +240,17 @@ window.Scene3D.func = THREE;`;
                         disableMonitor: true,
                         opcode: "newVector3",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "vector 3 x:[X] y:[Y] z:[Z]",
+                        text: "vector3 x:[VECX] y:[VECY] z:[VECZ]",
                         arguments: {
-                            X: {
+                            VECX: {
                                 type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: 0,
                             },
-                            Y: {
+                            VECY: {
                                 type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: 0,
                             },
-                            Z: {
+                            VECZ: {
                                 type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: 0,
                             },
@@ -262,30 +262,19 @@ window.Scene3D.func = THREE;`;
 
         // ----------------------------------- Math ----------------------------------- //
 
-        newVector3({ X, Y, X }) {
-            return `${Scratch.Cast.toNumber(x) || 0}, ${Scratch.Cast.toNumber(y) || 0}, ${Scratch.Cast.toNumber(z) || 0}`
+        newVector3(args) {
+            var { VECX, VECY, VECZ } = args;
+            return `${Scratch.Cast.toNumber(VECX) || 0}, ${Scratch.Cast.toNumber(VECY) || 0}, ${Scratch.Cast.toNumber(VECZ) || 0}`;
         }
 
         vectorToArray(VECTOR) {
-            var length = 0;
+            var vector;
 
-            if (VECTOR.constructor === ({}).constructor) {
-                if (VECTOR.V3) {
-                    vector = `[${VECTOR.V3}]`;
-                    length = 3;
-                } else if (VECTOR.V2) {
-                    vector = `[${VECTOR.V2}]`;
-                    length = 2;
-                }
-            } else {
-                vector = `[${VECTOR}]`;
-            }
+            vector = `[${VECTOR}]`;
 
             try {
                 vector = JSON.parse(vector);
-                if (length != 0 && vector.length != length) {
-                    return;
-                }
+                return vector;
             } catch(err) {
                 return;
             }
@@ -365,9 +354,9 @@ window.Scene3D.func = THREE;`;
 
         // ----------------------------------- Camera ----------------------------------- //
 
-        moveCamera({ ID, V3 }) {
+        moveCamera({ ID, POS }) {
             if (!Scene3D.scenes[ID]) return;
-            var [X, Y, Z] = this.vectorToArray(V3);
+            var [X, Y, Z] = this.vectorToArray(POS);
             Scene3D.scenes[ID].camera.position.set(X, Y, Z);
         }
 
