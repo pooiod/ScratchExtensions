@@ -28,8 +28,8 @@
         "description": "Generate text and images for free with the power of <a href='//stablehorde.net'>The Horde</a>",
         "created": "Jan 4, 2025",
         "subtext": "",
-        "icon": "/extras/images/icons/new.svg",
-        "iconText": "This is a new extension, please report any bugs",
+        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "iconText": "This extension uses a third party api that may go down sometimes",
         "unsandboxed": false,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
@@ -167,8 +167,8 @@
         "description": "Get random information on racoons.",
         "created": "Dec 8, 2024",
         "subtext": "",
-        "icon": "",
-        "iconText": "",
+        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "iconText": "This extension uses a third party api that may go down sometimes",
         "new": true,
         "unsandboxed": false,
         "buttons": [
@@ -236,8 +236,8 @@
         "description": "Store and retrieve data locally on device, or remotely on a server.",
         "created": "Nov 13, 2024",
         "subtext": "",
-        "icon": "/extras/images/icons/update.svg",
-        "iconText": "New blocks for device files and cookies",
+        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "iconText": "This extension uses a third party api that may go down sometimes",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
