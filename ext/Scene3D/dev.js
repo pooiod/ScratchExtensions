@@ -10,13 +10,11 @@
     if (!window.Scene3D) {
         window.Scene3D = {};
         window.Scene3D.scenes = {};
-    }
 
-    if (!document.getElementById("WindowImports3D")) {
         let script = document.createElement("script");
         script.type = "text/javascript";
         script.id = "WindowImports3D";
-        script.src = "http://p7scratchextensions.pages.dev/extras/js/three.js";
+        script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
         script.onload = function () {
             window.Scene3D.func = THREE;
             window.Scene3D.func.getRandomColor = function() {
@@ -49,11 +47,11 @@
 			return {
 				id: 'P7Scene3D',
 				name: '3D scenes',
-                color1: '#bae046',
+                color1: '#eb4034',
 				blocks: [
 					{
 						opcode: 'isLoaded',
-						blockType: Scratch.BlockType.COMMAND,
+						blockType: Scratch.BlockType.BOOLEAN,
 						text: 'Scene3D libs loaded',
 					},
 
@@ -180,6 +178,26 @@
                             },
                         },
                     },
+
+					{
+						opcode: 'moveObject',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Move object [ID] in scene [SCENE] to [POS]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            POS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "0, 0, 0",
+                            },
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
 
                     { blockType: Scratch.BlockType.LABEL, text: "Render" }, // -------------------------------------
                     {
@@ -556,7 +574,12 @@
             if (!Scene3D.scenes[SCENE]) return;
             var [X, Y, Z] = this.vectorToArray(POS);
 
-            // Scene3D.scenes[SCENE].objects[ID]
+            var uuid = Scene3D.scenes[SCENE].objects[ID].generated;
+            var obj = Scene3D.scenes[SCENE].world.children.find(o => o.uuid == uuid);
+            if (!obj) return;
+            obj.position.x = X;
+            obj.position.y = Y;
+            obj.position.z = Z;
         }
 
         // ----------------------------------- extras ----------------------------------- //
