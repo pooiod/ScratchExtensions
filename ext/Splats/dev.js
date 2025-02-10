@@ -8,7 +8,7 @@
 	}
 
     if (!document.getElementById("SplatWindowImports")) {
-        // const importMap = document.querySelector('script[type="importmap"]#SplatImportMap');
+        // const importMap = document.getElementById("ThreeImportMap");
         // if (importMap) {
         //     const map = JSON.parse(importMap.textContent);
         //     map.imports["@lumaai/luma-web"] = "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js";
@@ -41,7 +41,7 @@
 					{
 						opcode: 'makeSplat',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create splat id [ID] with model [MODEL] in scene [SCENE]',
+						text: 'Create splat [ID] with model [MODEL] in scene [SCENE]',
 						arguments: {
 							MODEL: {
 								type: Scratch.ArgumentType.STRING,
@@ -62,11 +62,15 @@
                     {
                         opcode: "addSplatShader",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Set shader of [ID] to [TRANSFORM] [COLOR]",
+                        text: "Set shader of [ID] in [SCENE] to [TRANSFORM] [COLOR]",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "splat1",
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
                             },
                             TRANSFORM: {
                                 type: Scratch.ArgumentType.STRING,
@@ -94,13 +98,17 @@
                     {
                         blockType: Scratch.BlockType.HAT,
                         opcode: 'onSplatLoad',
-                        text: 'When [ID] loads',
+                        text: 'When [ID] in scene [SCENE] loads',
                         isEdgeActivated: true,
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: 'splat1',
-                            }
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
                         }
                     }
 				],
@@ -113,19 +121,9 @@
 			};
 		}
 
-        restoreSkin(_, util) {
-            const target = util.target;
-            if (!target) return;
-            target.updateAllDrawableProperties();
-        }
-
-		clearSplats() {
-            document.querySelectorAll('.SplatCanvas3D').forEach(el => el.remove());
-            this.splats = {};
-        }
-
         makeSplat({ MODEL, ID, SCENE }) {
             if (!Scene3D.scenes[SCENE]) return;
+
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
             Scene3D.scenes[SCENE].objects[ID] = {};
 
@@ -150,12 +148,13 @@
 
             Scene3D.scenes[SCENE].objects[ID].loaded = false;
             Scene3D.scenes[SCENE].objects[ID].onLoad = () => {
-                // Scene3D.scenes[SCENE].objects[ID].captureCubemap(Scene3D.scenes[SCENE].renderer).then((capturedTexture) => {
-                //     Scene3D.scenes[SCENE].world.environment = capturedTexture;
-                //     Scene3D.scenes[SCENE].world.background = capturedTexture;
-                //     Scene3D.scenes[SCENE].world.backgroundBlurriness = 0.5;
-                // });
                 Scene3D.scenes[SCENE].objects[ID].loaded = true;
+                Scene3D.scenes[SCENE].objects[ID].captureCubemap(Scene3D.scenes[SCENE].renderer).then((capturedTexture) => {
+                    Scene3D.scenes[SCENE].objects[ID].envtexture = capturedTexture;
+                    // Scene3D.scenes[SCENE].world.environment = capturedTexture;
+                    // Scene3D.scenes[SCENE].world.background = capturedTexture;
+                    // Scene3D.scenes[SCENE].world.backgroundBlurriness = 0.5;
+                });
             }
 
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
@@ -166,39 +165,33 @@
             }
         }
 
-        onSplatLoad({ ID }) {
-            if (!this.splats[ID]) return;
-            return this.splats[ID].loaded;
+        onSplatLoad({ SCENE, ID }) {
+            if (! Scene3D.scenes[SCENE]) return;
+            if (! Scene3D.scenes[SCENE].objects[ID]) return;
+            return Scene3D.scenes[SCENE].objects[ID].loaded;
         }
 
-        setSplatType({ ID, TYPE }) {
-            if (!this.splats[ID]) return;
+        setSplatType({ SCENE, ID, TYPE }) {
+            if (! Scene3D.scenes[SCENE]) return;
+            if (! Scene3D.scenes[SCENE].objects[ID]) return;
+
             if (TYPE == "object") {
-                this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.FOREGROUND;
-                this.splats[ID].scene.prevbackground = this.splats[ID].scene.background;
-                this.splats[ID].scene.background = null;
+                Scene3D.scenes[SCENE].objects[ID].semanticsMask = LumaSplatsSemantics.FOREGROUND;
             } else if (TYPE == "full") {
-                this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.ALL;
-                if (this.splats[ID].scene.prevbackground) {
-                    this.splats[ID].scene.background = this.splats[ID].scene.prevbackground;
-                    this.splats[ID].scene.prevbackground = false;
-                }
+                Scene3D.scenes[SCENE].objects[ID].semanticsMask = LumaSplatsSemantics.ALL;
             } else {
-                this.splats[ID].splats.semanticsMask = LumaSplatsSemantics.BACKGROUND;
-                if (this.splats[ID].scene.prevbackground) {
-                    this.splats[ID].scene.background = this.splats[ID].scene.prevbackground;
-                    this.splats[ID].scene.prevbackground = false;
-                }
+                Scene3D.scenes[SCENE].objects[ID].semanticsMask = LumaSplatsSemantics.BACKGROUND;
             }
         }
 
-        addSplatShader({ ID, TRANSFORM, COLOR }) {
-            if (!this.splats[ID]) return;
+        addSplatShader({ SCENE, ID, TRANSFORM, COLOR }) {
+            if (! Scene3D.scenes[SCENE]) return;
+            if (! Scene3D.scenes[SCENE].objects[ID]) return;
 
-            this.splats[ID].splats.setShaderHooks({
+            Scene3D.scenes[SCENE].objects[ID].splats.setShaderHooks({
                 vertexShaderHooks: {
                     additionalUniforms: {
-                        time_s: ['float', this.splats[ID].uniformTime],
+                        time_s: ['float', Scene3D.scenes[SCENE].uniformTime],
                     },
 
                     getSplatTransform: TRANSFORM.replace(/\[newline\]/g, "\n"),

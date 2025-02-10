@@ -28,10 +28,7 @@
         script.id = "WindowImports3D";
         script.innerHTML = `import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
 window.Scene3D.scenes = {};
-window.Scene3D.func = THREE;
-
-window.LumaSplatsSemantics = LumaSplatsSemantics;
-window.LumaSplatsThree = LumaSplatsThree;`;
+window.Scene3D.func = THREE;`;
         document.head.appendChild(script);
     }
 
@@ -67,7 +64,7 @@ window.LumaSplatsThree = LumaSplatsThree;`;
 					{
 						opcode: 'makeScene',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create scene id: [ID] width: [WIDTH] height: [HEIGHT]',
+						text: 'Create scene [ID] with a resolution of [WIDTH] by [HEIGHT] and anti aliasing [ANTIALIASING]',
 						arguments: {
                             ID: {
 								type: Scratch.ArgumentType.STRING,
@@ -80,6 +77,9 @@ window.LumaSplatsThree = LumaSplatsThree;`;
                             HEIGHT: {
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: Scratch.vm.runtime.stageHeight,
+							},
+                            ANTIALIASING: {
+								type: Scratch.ArgumentType.BOOLEAN,
 							},
 						},
 					},
@@ -172,7 +172,7 @@ window.LumaSplatsThree = LumaSplatsThree;`;
                     {
                         opcode: "showSceneFrame",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Show frame from scene [ID]",
+                        text: "Show frame from scene [ID] on sprite",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
@@ -224,7 +224,7 @@ window.LumaSplatsThree = LumaSplatsThree;`;
                             },
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "AxisHelper",
+                                defaultValue: "GridHelper",
                             },
                             SIZE: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -236,6 +236,48 @@ window.LumaSplatsThree = LumaSplatsThree;`;
                             },
                         },
                     },
+
+                    {
+                        disableMonitor: true,
+                        opcode: "newVector3",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Vector3 x:[VECX] y:[VECY] z:[VECZ]",
+                        arguments: {
+                            VECX: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 0,
+                            },
+                            VECY: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 0,
+                            },
+                            VECZ: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 0,
+                            },
+                        },
+                    },
+                    {
+                        disableMonitor: true,
+                        opcode: "vectorToSingle",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get [PART] from [V3]",
+                        arguments: {
+                            V3: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0, 0, 0",
+                            },
+                            PART: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "x",
+                                menu: "xyz",
+                            },
+                        },
+                    },
+
+
+
+
 
                     {
                         opcode: "jsHookScene",
@@ -252,28 +294,13 @@ window.LumaSplatsThree = LumaSplatsThree;`;
                             },
                         },
                     },
-
-                    {
-                        disableMonitor: true,
-                        opcode: "newVector3",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "vector3 x:[VECX] y:[VECY] z:[VECZ]",
-                        arguments: {
-                            VECX: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 0,
-                            },
-                            VECY: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 0,
-                            },
-                            VECZ: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 0,
-                            },
-                        },
-                    },
                 ],
+                menus: {
+                    xyz: {
+                        acceptReporters: true,
+                        items: ["x", "y", "z"]
+                    }
+                }
 			};
 		}
 
@@ -294,6 +321,24 @@ window.LumaSplatsThree = LumaSplatsThree;`;
                 return vector;
             } catch(err) {
                 return;
+            }
+        }
+
+        vectorToSingle({ V3, PART }) {
+            V3 = vectorToArray(V3);
+            if (!V3) return;
+            switch(expression) {
+                case "x":
+                    return V3[0];
+                    break;
+                case "y":
+                    return V3[1];
+                    break;
+                case "z":
+                    return V3[2];
+                    break;
+                default:
+                    return 0;
             }
         }
 
