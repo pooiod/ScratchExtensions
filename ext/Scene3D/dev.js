@@ -9,26 +9,25 @@
 
     if (!window.Scene3D) {
         window.Scene3D = {};
+        window.Scene3D.scenes = {};
     }
-    if (!document.getElementById("WindowImports3D")) {
-        let importmap = document.createElement('script');
-        importmap.type = 'importmap';
-        importmap.id = "ThreeImportMap";
-        importmap.textContent = JSON.stringify({
-            imports: {
-                "@lumaai/luma-web": "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js",
-                "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
-            }
-        });
-        document.head.appendChild(importmap);
 
+    if (!document.getElementById("WindowImports3D")) {
         let script = document.createElement("script");
-        script.type = "module";
+        script.type = "text/javascript";
         script.id = "WindowImports3D";
-        script.innerHTML = `import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
-window.Scene3D.scenes = {};
-window.Scene3D.func = THREE;`;
+        script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
+        script.onload = function () {
+            window.Scene3D.func = THREE;
+            window.Scene3D.func.getRandomColor = function() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        };
         document.head.appendChild(script);
     }
 
@@ -44,15 +43,6 @@ window.Scene3D.func = THREE;`;
 			Scratch.vm.runtime.on('PROJECT_START', () => {
 				this.clearscenes();
 			});
-
-            this.getRandomColor = function() {
-                var letters = '0123456789ABCDEF';
-                var color = '#';
-                for (var i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
 		}
 
 		getInfo() {
@@ -61,6 +51,12 @@ window.Scene3D.func = THREE;`;
 				name: '3D scenes',
                 // color1: '',
 				blocks: [
+					{
+						opcode: 'isLoaded',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Scene3D libs loaded',
+					},
+
 					{
 						opcode: 'makeScene',
 						blockType: Scratch.BlockType.COMMAND,
@@ -304,6 +300,10 @@ window.Scene3D.func = THREE;`;
 			};
 		}
 
+        isLoaded() {
+            return !!window.Scene3D.func;
+        }
+
         // ----------------------------------- Math ----------------------------------- //
 
         newVector3(args) {
@@ -325,7 +325,7 @@ window.Scene3D.func = THREE;`;
         }
 
         vectorToSingle({ V3, PART }) {
-            V3 = vectorToArray(V3);
+            V3 = this.vectorToArray(V3);
             if (!V3) return;
             switch(expression) {
                 case "x":
@@ -390,6 +390,7 @@ window.Scene3D.func = THREE;`;
 
         async getSceneRender({ ID, FORMAT }) {
             if (!Scene3D.scenes[ID]) return;
+            Scene3D.scenes[ID].uniformTime.value = performance.now() / 1000
             Scene3D.scenes[ID].renderer.render(Scene3D.scenes[ID].world, Scene3D.scenes[ID].camera);
             return Scene3D.scenes[ID].canvas.toDataURL(`image/${FORMAT || "png"}`);
         }
@@ -514,7 +515,7 @@ window.Scene3D.func = THREE;`;
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
             Scene3D.scenes[SCENE].objects[ID].supported = ["wireframe"];
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: this.getRandomColor()});
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;

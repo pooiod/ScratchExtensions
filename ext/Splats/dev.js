@@ -8,13 +8,18 @@
 	}
 
     if (!document.getElementById("SplatWindowImports")) {
-        // const importMap = document.getElementById("ThreeImportMap");
-        // if (importMap) {
-        //     const map = JSON.parse(importMap.textContent);
-        //     map.imports["@lumaai/luma-web"] = "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js";
-        //     importMap.textContent = JSON.stringify(map, null, 2);
-        // }
-        
+        let importmap = document.createElement('script');
+        importmap.type = 'importmap';
+        importmap.id = "ThreeImportMap";
+        importmap.textContent = JSON.stringify({
+            imports: {
+                "@lumaai/luma-web": "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js",
+                "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+            }
+        });
+        document.head.appendChild(importmap);
+
         let SplatWindowImports = document.createElement("script");
         SplatWindowImports.type = "module";
         SplatWindowImports.id = "SplatWindowImports";
@@ -134,9 +139,6 @@
             Scene3D.scenes[SCENE].objects[ID] = new LumaSplatsThree({
                 source: MODEL,
                 loadingAnimationEnabled: true,
-                // onBeforeRender: () => {
-                //     Scene3D.scenes[SCENE].uniformTime.value = performance.now() / 1000;
-                // }
             });
 
             Scene3D.scenes[SCENE].objects[ID].sourcemodel = MODEL.replace("https://lumalabs.ai/capture/", "");
@@ -188,7 +190,7 @@
             if (! Scene3D.scenes[SCENE]) return;
             if (! Scene3D.scenes[SCENE].objects[ID]) return;
 
-            Scene3D.scenes[SCENE].objects[ID].splats.setShaderHooks({
+            Scene3D.scenes[SCENE].objects[ID].setShaderHooks({
                 vertexShaderHooks: {
                     additionalUniforms: {
                         time_s: ['float', Scene3D.scenes[SCENE].uniformTime],
