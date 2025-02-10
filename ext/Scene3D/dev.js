@@ -58,7 +58,7 @@
 					{
 						opcode: 'makeScene',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create scene [ID] with a resolution of [WIDTH] by [HEIGHT] and anti aliasing [ANTIALIASING]',
+						text: 'Create scene [ID] with a resolution of [WIDTH] by [HEIGHT]',
 						arguments: {
                             ID: {
 								type: Scratch.ArgumentType.STRING,
@@ -74,6 +74,24 @@
 							},
                             ANTIALIASING: {
 								type: Scratch.ArgumentType.BOOLEAN,
+							},
+						},
+					},
+
+					{
+						opcode: 'clearscenes',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Delete all scenes',
+					},
+
+					{
+						opcode: 'clearscene',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Delete scene [ID]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
 							},
 						},
 					},
@@ -191,6 +209,46 @@
                             POS: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "0, 0, 0",
+                            },
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
+					{
+						opcode: 'rotateObject',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set scale of object [ID] in scene [SCENE] to [ROTATION]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            ROTATION: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "0, 0, 0",
+                            },
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
+					{
+						opcode: 'scaleObject',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set scale of object [ID] in scene [SCENE] to [SCALE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            SCALE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "2, 2, 2",
                             },
                             SCENE: {
 								type: Scratch.ArgumentType.STRING,
@@ -359,7 +417,7 @@
         vectorToSingle({ V3, PART }) {
             V3 = this.vectorToArray(V3);
             if (!V3) return;
-            switch(expression) {
+            switch(PART) {
                 case "x":
                     return V3[0];
                     break;
@@ -481,7 +539,6 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
-            Scene3D.scenes[SCENE].objects[ID].supported = [];
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
@@ -501,7 +558,6 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
-            Scene3D.scenes[SCENE].objects[ID].supported = [];
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
@@ -522,7 +578,6 @@
             var [DX, DY, DZ] = this.vectorToArray(DV3);
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
-            Scene3D.scenes[SCENE].objects[ID].supported = [];
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
@@ -545,7 +600,6 @@
             var [WIDTH, HEIGHT, DEPTH] = this.vectorToArray(V3);
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
-            Scene3D.scenes[SCENE].objects[ID].supported = ["wireframe"];
 
             let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
 
@@ -572,14 +626,46 @@
 
         moveObject({ ID, SCENE, POS }) {
             if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].objects[ID]) return;
             var [X, Y, Z] = this.vectorToArray(POS);
 
             var uuid = Scene3D.scenes[SCENE].objects[ID].generated;
-            var obj = Scene3D.scenes[SCENE].world.children.find(o => o.uuid == uuid);
+            var obj = Scene3D.scenes[SCENE].world.children.find(objc => objc.uuid == uuid);
             if (!obj) return;
+
             obj.position.x = X;
             obj.position.y = Y;
             obj.position.z = Z;
+        }
+
+        rotateObject({ ID, SCENE, SCALE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].objects[ID]) return;
+            var [X, Y, Z] = this.vectorToArray(SCALE);
+
+            var uuid = Scene3D.scenes[SCENE].objects[ID].generated;
+            var obj = Scene3D.scenes[SCENE].world.children.find(objc => objc.uuid == uuid);
+            if (!obj) return;
+
+            obj.rotation.set(
+                Scene3D.func.MathUtils.degToRad(X),
+                Scene3D.func.MathUtils.degToRad(Y),
+                Scene3D.func.MathUtils.degToRad(Z)
+            );              
+        }
+
+        scaleObject({ ID, SCENE, SCALE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].objects[ID]) return;
+            var [X, Y, Z] = this.vectorToArray(SCALE);
+
+            var uuid = Scene3D.scenes[SCENE].objects[ID].generated;
+            var obj = Scene3D.scenes[SCENE].world.children.find(objc => objc.uuid == uuid);
+            if (!obj) return;
+
+            obj.scale.x = X;
+            obj.scale.y = Y;
+            obj.scale.z = Z;
         }
 
         // ----------------------------------- extras ----------------------------------- //
