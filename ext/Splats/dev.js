@@ -7,24 +7,19 @@
 		throw new Error('This extension must run unsandboxed');
 	}
 
-    if (!document.getElementById("SplatImportMap")) {
-        const importmap = document.createElement('script');
-        importmap.type = 'importmap';
-        importmap.id = "SplatImportMap";
-        importmap.textContent = JSON.stringify({
-            imports: {
-                "@lumaai/luma-web": "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js"
-            }
-        });
-        document.currentScript.after(importmap);
-
+    if (!document.getElementById("SplatWindowImports")) {
+        const importMap = document.querySelector('script[type="importmap"]#SplatImportMap');
+        if (importMap) {
+            const map = JSON.parse(importMap.textContent);
+            map.imports["@lumaai/luma-web"] = "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js";
+            importMap.textContent = JSON.stringify(map, null, 2);
+        }
+        
         let SplatWindowImports = document.createElement("script");
         SplatWindowImports.type = "module";
         SplatWindowImports.id = "SplatWindowImports";
         SplatWindowImports.innerHTML = `
-    import { WebGLRenderer, PerspectiveCamera, Scene, Color, FogExp2, Vector3, Uniform } from 'three';
-    import { LumaSplatsSemantics, LumaSplatsThree } from "@lumaai/luma-web";
-    import * as THREE from 'three';
+    import { LumaSplatsSemantics, LumaSplatsThree } from "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js";
 
     window.LumaSplatsSemantics = LumaSplatsSemantics;
     window.LumaSplatsThree = LumaSplatsThree;
@@ -56,6 +51,10 @@
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: 'splat1',
 							},
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
 						},
 					},
 
@@ -128,6 +127,7 @@
         makeSplat({ MODEL, ID, SCENE }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
+            Scene3D.scenes[SCENE].objects[ID] = {};
 
             if (!MODEL.startsWith('http')) {
                 MODEL = 'https://lumalabs.ai/capture/' + MODEL;
@@ -136,22 +136,33 @@
             Scene3D.scenes[SCENE].objects[ID] = new LumaSplatsThree({
                 source: MODEL,
                 loadingAnimationEnabled: true,
-                onBeforeRender: () => {
-                    this.splats[ID].uniformTime.value = performance.now() / 1000;
-                }
+                // onBeforeRender: () => {
+                //     Scene3D.scenes[SCENE].uniformTime.value = performance.now() / 1000;
+                // }
             });
 
             Scene3D.scenes[SCENE].objects[ID].source = MODEL.replace("https://lumalabs.ai/capture/", "");
-            Scene3D.scenes[SCENE].world.add(this.splats[ID].splats);
+            Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
+
+            Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
+            Scene3D.scenes[SCENE].objects[ID].original = Scene3D.scenes[SCENE].objects[ID].uuid;
+            Scene3D.scenes[SCENE].objects[ID].supported = [];
 
             Scene3D.scenes[SCENE].objects[ID].loaded = false;
-            Scene3D.scenes[SCENE].objects[ID].splats.onLoad = () => {
-                Scene3D.scenes[SCENE].objects[ID].captureCubemap(Scene3D.scenes[SCENE].renderer).then((capturedTexture) => {
-                    this.splats[ID].scene.environment = capturedTexture;
-                    this.splats[ID].scene.background = capturedTexture;
-                    this.splats[ID].scene.backgroundBlurriness = 0.5;
-                });
+            Scene3D.scenes[SCENE].objects[ID].onLoad = () => {
+                // Scene3D.scenes[SCENE].objects[ID].captureCubemap(Scene3D.scenes[SCENE].renderer).then((capturedTexture) => {
+                //     Scene3D.scenes[SCENE].world.environment = capturedTexture;
+                //     Scene3D.scenes[SCENE].world.background = capturedTexture;
+                //     Scene3D.scenes[SCENE].world.backgroundBlurriness = 0.5;
+                // });
                 Scene3D.scenes[SCENE].objects[ID].loaded = true;
+            }
+
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+                delete Scene3D.scenes[SCENE].objects[ID];
             }
         }
 

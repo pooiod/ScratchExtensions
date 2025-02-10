@@ -11,12 +11,27 @@
         window.Scene3D = {};
     }
     if (!document.getElementById("WindowImports3D")) {
+        let importmap = document.createElement('script');
+        importmap.type = 'importmap';
+        importmap.id = "ThreeImportMap";
+        importmap.textContent = JSON.stringify({
+            imports: {
+                "@lumaai/luma-web": "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js",
+                "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+            }
+        });
+        document.head.appendChild(importmap);
+
         let script = document.createElement("script");
         script.type = "module";
         script.id = "WindowImports3D";
         script.innerHTML = `import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
 window.Scene3D.scenes = {};
-window.Scene3D.func = THREE;`;
+window.Scene3D.func = THREE;
+
+window.LumaSplatsSemantics = LumaSplatsSemantics;
+window.LumaSplatsThree = LumaSplatsThree;`;
         document.head.appendChild(script);
     }
 
@@ -333,6 +348,7 @@ window.Scene3D.func = THREE;`;
             Scene3D.scenes[ID].renderer.render(Scene3D.scenes[ID].world, Scene3D.scenes[ID].camera);
             return Scene3D.scenes[ID].canvas.toDataURL(`image/${FORMAT || "png"}`);
         }
+
         async showSceneFrame({ ID }, util) {
             if (!util.target) return;
             if (!Scene3D.scenes[ID]) {
