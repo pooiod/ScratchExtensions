@@ -354,7 +354,7 @@
         "id": "Fetch",
         "image": "/ext/[id]/cover.svg",
         "title": "Fetch",
-        "description": "Make requests to the internet, without CORS errors.",
+        "description": "Make requests to the internet.",
         "created": "May 22, 2023",
         "subtext": "",
         "icon": "",

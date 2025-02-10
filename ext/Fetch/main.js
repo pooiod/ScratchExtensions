@@ -1,5 +1,4 @@
-// Fetch content from the web (without CORS issues) by pooiod7
-// Modified from https://extensions.turbowarp.org/fetch.js
+// Fetch - made by pooiod7
 
 class Fetch {
     getInfo () {
@@ -10,9 +9,9 @@ class Fetch {
         color2: '#595959',
         blocks: [
             {
-                opcode: 'get',
+                opcode: 'getbasic',
                 blockType: Scratch.BlockType.REPORTER,
-                text: 'GET [URL] (proxy)',
+                text: 'get [URL]',
                 arguments: {
                     URL: {
                         type: Scratch.ArgumentType.STRING,
@@ -20,10 +19,23 @@ class Fetch {
                     }
                 }
             },
+
             {
-                opcode: 'getbasic',
+                opcode: 'getproxy',
                 blockType: Scratch.BlockType.REPORTER,
-                text: 'GET [URL] (no proxy)',
+                text: 'get [URL] with proxy',
+                arguments: {
+                    URL: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: 'https://example.com'
+                    }
+                }
+            },
+
+            {
+                opcode: 'getfile',
+                blockType: Scratch.BlockType.REPORTER,
+                text: 'Get [URL] as data uri',
                 arguments: {
                     URL: {
                         type: Scratch.ArgumentType.STRING,
@@ -35,17 +47,24 @@ class Fetch {
     };
     }
 
-    get (args) {
+    async get(args) {
+        return this.getproxy(args);
+    }
+
+    async getproxy(args) {
+        var canfetch = await Scratch.canFetch(args.URL);
+        if (!canfetch) return "Error: user denied request";
+
         return fetch(args.URL)
             .then(r => r.text())
             .catch(() => {
-                return fetch('https://thingproxy.freeboard.io/fetch/' + args.URL)
-                    .then(r => r.text())
-                    .catch(() => {
-                    return fetch('https://corsproxy.io?' + encodeURIComponent(args.URL))
+                return fetch('https://corsproxy.io?' + args.URL)
                     .then(r => r.text())
                     .catch(() => {
                     return fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(args.URL))
+                    .then(r => r.text())
+                    .catch(() => {
+                    return fetch('https://thingproxy.freeboard.io/fetch/' + encodeURIComponent(args.URL))
                         .then(r => r.text())
                         .catch((error) => error);
                     });
@@ -53,10 +72,33 @@ class Fetch {
             });
     }
 
-    getbasic (args) {
-        return fetch(args.URL)
+    async getbasic(args) {
+        var canfetch = await Scratch.canFetch(args.URL);
+        if (!canfetch) return "Error: user denied request";
+
+        return Scratch.fetch(args.URL)
             .then(r => r.text())
             .catch((error) => error);
+    }
+
+    async getfile(args) {
+        var canfetch = await Scratch.canFetch(args.URL);
+        if (!canfetch) return "Error: user denied request";
+
+        try {
+            const response = await Scratch.fetch(args.URL);
+            if (!response.ok) throw new Error("Failed to get content");
+
+            return new Promise(async (resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    resolve(reader.result);
+                };
+                reader.readAsDataURL(await response.blob());
+            });
+        } catch(err) {
+            return err;
+        }
     }
 }
 
