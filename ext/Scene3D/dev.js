@@ -49,7 +49,7 @@
 			return {
 				id: 'P7Scene3D',
 				name: '3D scenes',
-                // color1: '',
+                color1: '#bae046',
 				blocks: [
 					{
 						opcode: 'isLoaded',
@@ -80,7 +80,7 @@
 						},
 					},
 
-                    { blockType: Scratch.BlockType.LABEL, text: "Move Camera" },
+                    { blockType: Scratch.BlockType.LABEL, text: "Move Camera" }, // --------------------------------
                     {
                         opcode: "moveCamera",
                         blockType: Scratch.BlockType.COMMAND,
@@ -143,7 +143,7 @@
                     //     },
                     // },
 
-                    { blockType: Scratch.BlockType.LABEL, text: "Object Creation" },
+                    { blockType: Scratch.BlockType.LABEL, text: "Object Creation" }, // ----------------------------
 					{
 						opcode: 'makeBox',
 						blockType: Scratch.BlockType.COMMAND,
@@ -164,7 +164,24 @@
 						},
 					},
 
-                    { blockType: Scratch.BlockType.LABEL, text: "Render" },
+                    { blockType: Scratch.BlockType.LABEL, text: "Object Modification" }, // ------------------------
+                    {
+                        opcode: "destroyObject",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Destroy object [ID] in scene [SCENE]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "object1",
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                        },
+                    },
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Render" }, // -------------------------------------
                     {
                         opcode: "showSceneFrame",
                         blockType: Scratch.BlockType.COMMAND,
@@ -189,7 +206,7 @@
                         },
                     },
 
-                    { blockType: Scratch.BlockType.LABEL, text: "Debug" },
+                    { blockType: Scratch.BlockType.LABEL, text: "Debug" }, // --------------------------------------
                     {
                         opcode: "makeHelperAxes",
                         blockType: Scratch.BlockType.COMMAND,
@@ -234,6 +251,23 @@
                     },
 
                     {
+                        opcode: "jsHookScene",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Run JavaScript [JS] on scene [ID]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            JS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene.camera.position.y",
+                            },
+                        },
+                    },
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Math" }, // ----------------------------------------
+                    {
                         disableMonitor: true,
                         opcode: "newVector3",
                         blockType: Scratch.BlockType.REPORTER,
@@ -267,26 +301,6 @@
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "x",
                                 menu: "xyz",
-                            },
-                        },
-                    },
-
-
-
-
-
-                    {
-                        opcode: "jsHookScene",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "Run JavaScript [JS] on scene [ID]",
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "scene1",
-                            },
-                            JS: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "scene.camera.position.y",
                             },
                         },
                     },
