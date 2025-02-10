@@ -92,12 +92,12 @@
         "hidden": false
     },
     {
-        "id": "Splats",
+        "id": "Scene3D",
         "image": "/ext/[id]/cover.svg",
-        "title": "3D Splats",
-        "description": "Render 3D gaussian splats from <a href=\"https://lumalabs.ai/featured\">LumaLabs</a>",
-        "created": "Feb 4 2025",
-        "subtext": "May cause lag",
+        "title": "Scene 3D",
+        "description": "Render complex 3D scenes",
+        "created": "Feb 9 2025",
+        "subtext": "work in progress, may change frequently",
         "icon": "/extras/images/icons/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
@@ -109,12 +109,30 @@
         "hidden": true
     },
     {
+        "id": "Splats",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Luma Splats",
+        "description": "Render 3D gaussian splats from <a href=\"https://lumalabs.ai/featured\">LumaLabs</a>",
+        "created": "Feb 4 2025",
+        "subtext": "Requires Scene3D",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
+            { "text": "View standalone build", "color": "#cbe0f2", "link": "/view/#/[id]/standalone.js" }
+        ],
+        "tags": ["unfinished"],
+        "type": ["unsandboxed"],
+        "hidden": true
+    },
+    {
         "id": "Ace",
         "image": "/ext/[id]/cover.png",
         "title": "Ace Editor",
         "description": "Create and manipulate an instance of the Ace code editor.",
         "created": "June 18, 2023",
-        "subtext": "Do not use this in an actual project yet",
+        "subtext": "Work in progress",
         "icon": "/extras/images/icons/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
