@@ -220,7 +220,7 @@
 					{
 						opcode: 'rotateObject',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Set scale of object [ID] in scene [SCENE] to [ROTATION]',
+						text: 'Set rotation of object [ID] in scene [SCENE] to [ROTATION]',
 						arguments: {
                             ID: {
 								type: Scratch.ArgumentType.STRING,
