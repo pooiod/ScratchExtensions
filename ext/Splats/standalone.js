@@ -18,7 +18,7 @@
                 "@lumaai/luma-web": "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js"
             }
         });
-        document.currentScript.after(importmap);
+        document.head.appendChild(importmap);
 
         let SplatWindowImports = document.createElement("script");
         SplatWindowImports.type = "module";

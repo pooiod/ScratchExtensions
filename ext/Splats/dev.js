@@ -8,18 +8,18 @@
 	}
 
     if (!document.getElementById("SplatWindowImports")) {
-        const importMap = document.querySelector('script[type="importmap"]#SplatImportMap');
-        if (importMap) {
-            const map = JSON.parse(importMap.textContent);
-            map.imports["@lumaai/luma-web"] = "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js";
-            importMap.textContent = JSON.stringify(map, null, 2);
-        }
+        // const importMap = document.querySelector('script[type="importmap"]#SplatImportMap');
+        // if (importMap) {
+        //     const map = JSON.parse(importMap.textContent);
+        //     map.imports["@lumaai/luma-web"] = "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js";
+        //     importMap.textContent = JSON.stringify(map, null, 2);
+        // }
         
         let SplatWindowImports = document.createElement("script");
         SplatWindowImports.type = "module";
         SplatWindowImports.id = "SplatWindowImports";
         SplatWindowImports.innerHTML = `
-    import { LumaSplatsSemantics, LumaSplatsThree } from "https://unpkg.com/@lumaai/luma-web@0.2.0/dist/library/luma-web.module.js";
+    import { LumaSplatsSemantics, LumaSplatsThree } from "@lumaai/luma-web";
 
     window.LumaSplatsSemantics = LumaSplatsSemantics;
     window.LumaSplatsThree = LumaSplatsThree;
@@ -27,15 +27,15 @@
         document.head.appendChild(SplatWindowImports);
     }
 
-	class P7Splats {
+	class P7LumaSplats {
 		constructor() {
 			this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
 		}
 
 		getInfo() {
 			return {
-				id: 'P7Splats',
-				name: '3D Splats',
+				id: 'P7LumaSplats',
+				name: 'Luma Splats',
                 color1: '#7b61e8',
 				blocks: [
 					{
@@ -141,7 +141,7 @@
                 // }
             });
 
-            Scene3D.scenes[SCENE].objects[ID].source = MODEL.replace("https://lumalabs.ai/capture/", "");
+            Scene3D.scenes[SCENE].objects[ID].sourcemodel = MODEL.replace("https://lumalabs.ai/capture/", "");
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -207,5 +207,5 @@
             });
         }
 	}
-	Scratch.extensions.register(new P7Splats());
+	Scratch.extensions.register(new P7LumaSplats());
 })(Scratch);
