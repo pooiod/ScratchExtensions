@@ -1,4 +1,5 @@
 // 3D Splats - an extension for rendering gaussian splats. (made by pooiod7)
+// Demo project: https://yeetyourfiles.lol/file/5a1b366f/Splat%20test%201.pmp
 
 (function(Scratch) {
 	'use strict';
