@@ -16,7 +16,7 @@
         let script = document.createElement("script");
         script.type = "text/javascript";
         script.id = "WindowImports3D";
-        script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
+        script.src = "http://p7scratchextensions.pages.dev/extras/js/three.js";
         script.onload = function () {
             window.Scene3D.func = THREE;
             window.Scene3D.func.getRandomColor = function() {
