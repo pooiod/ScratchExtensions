@@ -119,14 +119,10 @@
                     },
                     handsMenu: {
                         acceptReporters: true,
-                        items: this.HANDS_MENU
+                        items: Array.from({ length: 10 }, (_, i) => ({ text: `${i + 1}`, value: `${i + 1}` }))
                     }
                 }
             };
-        }
-
-        get HANDS_MENU() {
-            return Array.from({ length: 10 }, (_, i) => ({ text: `${i + 1}`, value: `${i + 1}` }));
         }
 
         get KEYPOINTS_MENU() {
