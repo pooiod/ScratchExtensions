@@ -7,6 +7,8 @@
 		throw new Error('This extension must run unsandboxed');
 	}
 
+    // Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
+
     if (!document.getElementById("SplatWindowImports")) {
         let importmap = document.createElement('script');
         importmap.type = 'importmap';

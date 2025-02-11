@@ -1,73 +1,65 @@
-// A work in progress extension for getting hand poses (unfinished)
-
-(function (Scratch) {
+(function(Scratch) {
     'use strict';
 
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('This extension must run unsandboxed');
     }
 
-    window.scratchvar = Scratch;
-    // Array.from(scratchvar.vm.extensionManager._loadedExtensions.keys())
-
-    class Handpose2Scratch {
+    class Scratch3Handpose2ScratchBlocks {
         constructor() {
             this.runtime = Scratch.vm.runtime;
-            this.landmarks = [];
-            this.ratio = 0.75;
-            this.loaded = false;
 
-            this.detectHand = this.detectHand.bind(this);
+			this.stagewidth = this.runtime.stageWidth;
+			this.stageheight = this.runtime.stageHeight;
 
-            this.loadML5 = new Promise((resolve, reject) => {
-                if (typeof ml5 !== 'undefined') {
-                    resolve();
-                } else {
+            this.keypoints = [];
+            const loadScriptSynchronously = (url) => {
+                const request = new XMLHttpRequest();
+                request.open('GET', url, false);
+                request.send(null);
+                if (request.status === 200) {
                     const script = document.createElement('script');
-                    script.src = 'https://unpkg.com/ml5@1.2.1/dist/ml5.min.js';
-                    script.onload = resolve;
-                    script.onerror = () => {
-                        reject(new Error('Failed to load ml5'));
-                    };
+                    script.text = request.responseText;
                     document.head.appendChild(script);
                 }
-            });
-
-            this.loadML5.then(() => {
-                this.loaded = true;
-            }).catch((err) => {
-                console.error("Error loading ml5:", err);
-            });
+            };
 
             this.checkLoad = () => {
-                return new Promise((resolve, reject) => {
-                    if (this.loaded) {
+                return new Promise((resolve) => {
+                    if (window.ml5) {
                         resolve();
                     } else {
-                        var loadercheck = setInterval(() => {
-                            if (this.loaded) {
+                        const loadercheck = setInterval(() => {
+                            if (window.ml5) {
                                 clearInterval(loadercheck);
                                 resolve();
                             }
                         }, 500);
                     }
-                })
-            }
+                });
+            };
+
+            loadScriptSynchronously('https://unpkg.com/ml5@1/dist/ml5.min.js');
         }
 
         getInfo() {
             return {
-                id: 'p7HandPos',
-                name: 'Hand Pos',
+                id: 'P7HandPos',
+                name: 'Hand Positions',
                 blocks: [
                     {
                         opcode: 'getX',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'x of [LANDMARK]',
+                        text: 'X of [KEYPOINT] of hand no. [HAND]',
                         arguments: {
-                            LANDMARK: {
+                            HAND: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: 'landmark',
+                                menu: 'handsMenu',
+                                defaultValue: '1'
+                            },
+                            KEYPOINT: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'keypointsMenu',
                                 defaultValue: '1'
                             }
                         }
@@ -75,11 +67,16 @@
                     {
                         opcode: 'getY',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'y of [LANDMARK]',
+                        text: 'Y of [KEYPOINT] of hand no. [HAND]',
                         arguments: {
-                            LANDMARK: {
+                            HAND: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: 'landmark',
+                                menu: 'handsMenu',
+                                defaultValue: '1'
+                            },
+                            KEYPOINT: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'keypointsMenu',
                                 defaultValue: '1'
                             }
                         }
@@ -87,15 +84,21 @@
                     {
                         opcode: 'getZ',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'z of [LANDMARK]',
+                        text: 'Z of [KEYPOINT] of hand no. [HAND]',
                         arguments: {
-                            LANDMARK: {
+                            HAND: {
                                 type: Scratch.ArgumentType.STRING,
-                                menu: 'landmark',
+                                menu: 'handsMenu',
+                                defaultValue: '1'
+                            },
+                            KEYPOINT: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'keypointsMenu',
                                 defaultValue: '1'
                             }
                         }
                     },
+
                     {
                         opcode: 'videoToggle',
                         blockType: Scratch.BlockType.COMMAND,
@@ -110,7 +113,6 @@
                     },
                     {
                         opcode: 'setVideoTransparency',
-                        blockType: Scratch.BlockType.COMMAND,
                         text: 'set video transparency to [TRANSPARENCY]',
                         arguments: {
                             TRANSPARENCY: {
@@ -118,24 +120,12 @@
                                 defaultValue: 50
                             }
                         }
-                    },
-                    {
-                        opcode: 'setRatio',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'set ratio to [RATIO]',
-                        arguments: {
-                            RATIO: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: 'ratioMenu',
-                                defaultValue: '0.75'
-                            }
-                        }
                     }
                 ],
                 menus: {
-                    landmark: {
+                    keypointsMenu: {
                         acceptReporters: true,
-                        items: this.getLandmarkMenu()
+                        items: this.KEYPOINTS_MENU
                     },
                     videoMenu: {
                         acceptReporters: true,
@@ -143,130 +133,95 @@
                             { text: 'off', value: 'off' },
                             { text: 'on', value: 'on' },
                             { text: 'on flipped', value: 'on-flipped' }
-                        ]
+                        ],
                     },
-                    ratioMenu: {
+                    handsMenu: {
                         acceptReporters: true,
-                        items: [
-                            { text: '0.5', value: '0.5' },
-                            { text: '0.75', value: '0.75' },
-                            { text: '1', value: '1' },
-                            { text: '1.5', value: '1.5' },
-                            { text: '2.0', value: '2.0' }
-                        ]
-                    },
-                    intervalMenu: {
-                        acceptReporters: true,
-                        items: [
-                            { text: '0.1', value: '0.1' },
-                            { text: '0.2', value: '0.2' },
-                            { text: '0.5', value: '0.5' },
-                            { text: '1.0', value: '1.0' }
-                        ]
+                        items: this.HANDS_MENU
                     }
                 }
             };
         }
 
-        getLandmarkMenu() {
-            const menu = [];
-            const landmarks = [
-                'wrist',
-                'the base of thumb',
-                'the 2nd joint of thumb',
-                'the 1st joint of thumb',
-                'thumb',
-                'the 3rd joint of index finger',
-                'the 2nd joint of index finger',
-                'the 1st joint of index finger',
-                'index finger',
-                'the 3rd joint of middle finger',
-                'the 2nd joint of middle finger',
-                'the 1st joint of middle finger',
-                'middle finger',
-                'the 3rd joint of ring finger',
-                'the 2nd joint of ring finger',
-                'the 1st joint of ring finger',
-                'ring finger',
-                'the 3rd joint of little finger',
-                'the 2nd joint of little finger',
-                'the 1st joint of little finger',
-                'little finger'
-            ];
-            for (let i = 0; i < landmarks.length; i++) {
-                menu.push({
-                    text: `${landmarks[i]} (${i + 1})`,
-                    value: String(i + 1)
-                });
-            }
-            return menu;
+        get HANDS_MENU() {
+            return Array.from({ length: 10 }, (_, i) => ({ text: `${i + 1}`, value: `${i + 1}` }));
         }
 
-        detectHand() {
-            this.video = this.runtime.ioDevices.video.provider.video;
-            // alert('Setup takes a while. The browser will get stuck, but please wait.');
-
-            const handpose = ml5.handPose(this.video, function () {
-                console.log("Model loaded!");
-            });
-
-            handpose.on('predict', (hands) => {
-                hands.forEach((hand) => {
-                    this.landmarks = hand.landmarks;
-                });
-            });
+        get KEYPOINTS_MENU() {
+            const keypoints = [];
+            for (let i = 1; i <= 21; i++) {
+                keypoints.push({ text: `Keypoint ${i}`, value: String(i) });
+            }
+            return keypoints;
         }
 
         getX(args) {
-            const landmark = parseInt(args.LANDMARK, 10) - 1;
-            if (this.landmarks[landmark]) {
+            let keypoint = parseInt(args.KEYPOINT, 10) - 1;
+            let hand = parseInt(args.HAND, 10) - 1;
+            if (this.hands?.[hand]?.keypoints?.[keypoint]) {
                 if (this.runtime.ioDevices.video.mirror === false) {
-                    return -1 * (240 - this.landmarks[landmark][0] * this.ratio);
+                    return -1 * (this.stagewidth/2 - this.hands[hand].keypoints[keypoint].x);
                 } else {
-                    return 240 - this.landmarks[landmark][0] * this.ratio;
+                    return this.stagewidth/2 - this.hands[hand].keypoints[keypoint].x;
                 }
+            } else {
+                return '';
             }
-            return "";
         }
 
         getY(args) {
-            const landmark = parseInt(args.LANDMARK, 10) - 1;
-            if (this.landmarks[landmark]) {
-                return 180 - this.landmarks[landmark][1] * this.ratio;
+            let keypoint = parseInt(args.KEYPOINT, 10) - 1;
+            let hand = parseInt(args.HAND, 10) - 1;
+            if (this.hands?.[hand]?.keypoints?.[keypoint]) {
+                return this.stageheight/2 - this.hands[hand].keypoints[keypoint].y;
+            } else {
+                return '';
             }
-            return "";
         }
 
         getZ(args) {
-            const landmark = parseInt(args.LANDMARK, 10) - 1;
-            if (this.landmarks[landmark]) {
-                return this.landmarks[landmark][2];
+            let keypoint = parseInt(args.KEYPOINT, 10) - 1;
+            let hand = parseInt(args.HAND, 10) - 1;
+            if (this.hands?.[hand]?.keypoints?.[keypoint]) {
+                return this.hands[hand].keypoints[keypoint].z;
+            } else {
+                return '';
             }
-            return "";
         }
 
         async videoToggle(args) {
-            const state = args.VIDEO_STATE;
-
+            let state = args.VIDEO_STATE;
             if (state === 'off') {
                 this.runtime.ioDevices.video.disableVideo();
             } else {
                 await this.checkLoad();
-                this.runtime.ioDevices.video.enableVideo().then(this.detectHand);
-                this.runtime.ioDevices.video.mirror = (state === 'on');
+
+                ml5.handPose((handpose) => {
+                    console.log("Model loaded!");
+                    handpose.detectStart(this.video, (results) => {
+                        this.hands = results;
+                    });
+                });
+
+                this.stagewidth = this.runtime.stageWidth;
+                this.stageheight = this.runtime.stageHeight;
+    
+                this.runtime.ioDevices.video.enableVideo().then(() => {
+                    this.video = this.runtime.ioDevices.video.provider.video;
+                    this.video.width = this.stagewidth;
+                    this.video.height = this.stageheight;
+                });
+
+                this.runtime.ioDevices.video.mirror = state === "on";
             }
         }
 
         setVideoTransparency(args) {
-            const transparency = Number(args.TRANSPARENCY);
+            const transparency = Scratch.Cast.toNumber(args.TRANSPARENCY);
             this.globalVideoTransparency = transparency;
             this.runtime.ioDevices.video.setPreviewGhost(transparency);
         }
-
-        setRatio(args) {
-            this.ratio = parseFloat(args.RATIO);
-        }
     }
 
-    Scratch.extensions.register(new Handpose2Scratch());
+    Scratch.extensions.register(new Scratch3Handpose2ScratchBlocks());
 })(Scratch);
