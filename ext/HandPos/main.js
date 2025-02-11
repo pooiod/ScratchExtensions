@@ -1,3 +1,5 @@
+// Get hand positions in scratch (made by pooiod7)
+
 (function(Scratch) {
     'use strict';
 

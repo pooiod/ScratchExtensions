@@ -161,6 +161,23 @@
         "hidden": false
     },
     {
+        "id": "HandPos",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Hand Positions",
+        "description": "Hand tracking in scratch",
+        "created": "Feb 11, 2025",
+        "subtext": "",
+        "icon": "/extras/images/icons/new.svg",
+        "iconText": "",
+        "unsandboxed": false,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
         "id": "RaccFacts",
         "image": "/ext/[id]/cover.svg",
         "title": "Racoon Facts",
