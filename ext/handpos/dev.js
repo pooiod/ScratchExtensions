@@ -8,7 +8,7 @@
     }
 
     window.scratchvar = Scratch;
-    // scratchvar.vm.extensionManager._loadedExtensions.keys()
+    // Array.from(scratchvar.vm.extensionManager._loadedExtensions.keys())
 
     class Handpose2Scratch {
         constructor() {
