@@ -5,7 +5,7 @@
         throw new Error('This extension must run unsandboxed');
     }
 
-    class Scratch3Handpose2ScratchBlocks {
+    class Scratch3Handpose {
         constructor() {
             this.runtime = Scratch.vm.runtime;
 
@@ -13,22 +13,23 @@
 			this.stageheight = this.runtime.stageHeight;
 
             this.keypoints = [];
-            const loadScriptSynchronously = (url) => {
-                const request = new XMLHttpRequest();
-                request.open('GET', url, false);
-                request.send(null);
-                if (request.status === 200) {
-                    const script = document.createElement('script');
-                    script.text = request.responseText;
-                    document.head.appendChild(script);
-                }
-            };
 
-            this.checkLoad = () => {
+            this.checkAndLoadML5 = () => {
                 return new Promise((resolve) => {
                     if (window.ml5) {
                         resolve();
                     } else {
+                        const loadScriptSynchronously = (url) => {
+                            const request = new XMLHttpRequest();
+                            request.open('GET', url, false);
+                            request.send(null);
+                            if (request.status === 200) {
+                                const script = document.createElement('script');
+                                script.text = request.responseText;
+                                document.head.appendChild(script);
+                            }
+                        }; loadScriptSynchronously('https://unpkg.com/ml5@1/dist/ml5.min.js');
+
                         const loadercheck = setInterval(() => {
                             if (window.ml5) {
                                 clearInterval(loadercheck);
@@ -38,8 +39,6 @@
                     }
                 });
             };
-
-            loadScriptSynchronously('https://unpkg.com/ml5@1/dist/ml5.min.js');
         }
 
         getInfo() {
@@ -107,7 +106,7 @@
                             VIDEO_STATE: {
                                 type: Scratch.ArgumentType.STRING,
                                 menu: 'videoMenu',
-                                defaultValue: 'off'
+                                defaultValue: 'on'
                             }
                         }
                     },
@@ -194,7 +193,7 @@
             if (state === 'off') {
                 this.runtime.ioDevices.video.disableVideo();
             } else {
-                await this.checkLoad();
+                await this.checkAndLoadML5();
 
                 ml5.handPose((handpose) => {
                     console.log("Model loaded!");
@@ -223,5 +222,5 @@
         }
     }
 
-    Scratch.extensions.register(new Scratch3Handpose2ScratchBlocks());
+    Scratch.extensions.register(new Scratch3Handpose());
 })(Scratch);
