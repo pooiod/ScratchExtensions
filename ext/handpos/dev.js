@@ -80,23 +80,6 @@
                             }
                         }
                     },
-                    {
-                        opcode: 'getZ',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Z of [KEYPOINT] of hand no. [HAND]',
-                        arguments: {
-                            HAND: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: 'handsMenu',
-                                defaultValue: '1'
-                            },
-                            KEYPOINT: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: 'keypointsMenu',
-                                defaultValue: '1'
-                            }
-                        }
-                    },
 
                     {
                         opcode: 'videoToggle',
@@ -173,16 +156,6 @@
             let hand = parseInt(args.HAND, 10) - 1;
             if (this.hands?.[hand]?.keypoints?.[keypoint]) {
                 return this.stageheight/2 - this.hands[hand].keypoints[keypoint].y;
-            } else {
-                return '';
-            }
-        }
-
-        getZ(args) {
-            let keypoint = parseInt(args.KEYPOINT, 10) - 1;
-            let hand = parseInt(args.HAND, 10) - 1;
-            if (this.hands?.[hand]?.keypoints?.[keypoint]) {
-                return this.hands[hand].keypoints[keypoint].z;
             } else {
                 return '';
             }
