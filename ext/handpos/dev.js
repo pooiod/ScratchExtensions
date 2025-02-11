@@ -8,6 +8,7 @@
     }
 
     window.scratchvar = Scratch;
+    // scratchvar.vm.extensionManager._loadedExtensions.keys()
 
     class Handpose2Scratch {
         constructor() {
@@ -244,7 +245,7 @@
             return "";
         }
 
-        videoToggle(args) {
+        async videoToggle(args) {
             const state = args.VIDEO_STATE;
 
             if (state === 'off') {
