@@ -1077,8 +1077,29 @@ but has since deviated to be its own thing. (made with box2D js es6)
       return;
     }
 
-    ispoly(args) { // wip
-      return this.definePoly(args);
+    ispoly(args) {
+      let tmpshape = new b2PolygonShape;
+      var points = args.POINTS;
+
+      try {
+        var pts = points.split(' ');
+        for (var i = 0; i < pts.length; i++) {
+          if (pts[i].length == 0) {
+            pts.splice(i, 1);
+            i--;
+          }
+        }
+
+        var vertices = [];
+        for (var i = pts.length; i > 0; i -= 2) {
+          if (isNaN(Number(pts[i - 2])) || isNaN(Number(pts[i - 1]))) return false;
+          vertices.push(new b2Vec2(parseFloat(pts[i - 2]) / b2Dzoom, parseFloat(pts[i - 1]) / b2Dzoom));
+        }
+        tmpshape.SetAsArray(vertices);
+        return true;
+      } catch (error) {
+        return false;
+      }
     }
 
     definePoly(args) {
@@ -1677,7 +1698,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
       var secondsimspeed = Math.abs(simspeed + 30);
       if (secondsimspeed == 0) secondsimspeed = 1;
 
-      // Run the simulation step
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
     }
