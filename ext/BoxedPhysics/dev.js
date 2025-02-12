@@ -172,6 +172,19 @@ but has since deviated to be its own thing. (made with box2D js es6)
               },
             },
           },
+          {
+            opcode: 'ispoly',
+            hideFromPalette: !wipblocks,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'Is [POINTS] a polygon?',
+            arguments: {
+              POINTS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "0 50   40 -50   -40 -50",
+              },
+            },
+          },
+
           { blockType: Scratch.BlockType.LABEL, text: "Modify objects" }, // ---- Modify objects ---
           {
             opcode: 'destroyBody',
@@ -395,6 +408,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             blockType: Scratch.BlockType.REPORTER,
             text: 'All objects',
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "Define joints" }, // ---- Define joints -----
           {
             opcode: 'defineSpring',
@@ -474,6 +488,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
               },
             },
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "Modify joints" }, // ------ Modify joints ---
           {
             opcode: 'destroyJoint',
@@ -552,6 +567,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             blockType: Scratch.BlockType.REPORTER,
             text: 'All joints',
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "World functions" }, // --- World functions --
           {
             opcode: 'init',
@@ -636,6 +652,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             blockType: Scratch.BlockType.COMMAND,
             text: 'Step Simulation',
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "Math functions" }, // ---- Math functions -----
           {
             opcode: 'rotatePoint',
@@ -777,31 +794,19 @@ but has since deviated to be its own thing. (made with box2D js es6)
             hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.REPORTER,
             text: 'Get debug [VAL]',
-            arguments: { // this is the only debug block I don't plan on changing
+            arguments: { // this is the only debug block I don't plan on removing
               VAL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "version",
               },
             },
           },
-          
-          {
-            hideFromPalette: !wipblocks,
-            blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-            text: "Upcoming blocks (project corruption warning)"
-          },
-          {
-            opcode: 'ispoly',
-            hideFromPalette: !wipblocks,
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: 'Is [POINTS] a polygon?',
-            arguments: {
-              POINTS: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "0 50   40 -50   -40 -50",
-              },
-            },
-          },
+
+          // {
+          //   hideFromPalette: !wipblocks,
+          //   blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
+          //   text: "Upcoming blocks (project corruption warning)"
+          // }
         ],
         menus: {
           sceneType: ['semi-closed stage', 'boxed stage', 'opened stage', 'nothing'],
