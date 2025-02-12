@@ -359,6 +359,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
             },
           },
           {
+            opcode: 'getTouching',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get all objects touching [NAME]',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Object1",
+              },
+            },
+          },
+          {
             opcode: 'getBodyIDAt',
             blockType: Scratch.BlockType.REPORTER,
             text: 'Get object of type [type] at x: [X]  y: [Y]',
@@ -1245,27 +1256,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
       }
     }
 
-    getTouchingObjectNames(obj) {
-      var contacts = obj.GetContactList();
-      var touchingObjectNames = [];
-
-      while (contacts) {
-        if (contacts.contact.IsTouching()) {
-          var otherFixture = contacts.contact.GetFixtureA() === obj ? contacts.contact.GetFixtureB() : contacts.contact.GetFixtureA();
-          var otherBody = otherFixture.GetBody();
-          var otherUserData = otherBody.GetUserData();
-
-          if (otherUserData && otherUserData.name) {
-            touchingObjectNames.push(otherUserData.name);
-          }
-        }
-
-        contacts = contacts.next;
-      }
-
-      return touchingObjectNames;
-    }
-
     getBodyAttr(args) {
       var body = bodies[args.NAME];
       if (!body) return '';
@@ -1292,7 +1282,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           // console.log("The force applied to the object by other objects is " + force + " N");
           return force;
 
-        //case 'touching': return JSON.stringify(this.getTouchingObjectNames(body));
+        //case 'touching': return JSON.stringify(this.getTouching({NAME: args.NAME}));
       }
       return '';
     }
@@ -1324,6 +1314,26 @@ but has since deviated to be its own thing. (made with box2D js es6)
       }
       return true;
     };
+
+    getTouching(args) {
+      var body = bodies[args.NAME];
+      if (!body) return '';
+      
+      var touchingObjects = [];
+      var contacts = body.GetContactList();
+      
+      while (contacts) {
+        if (contacts.contact.IsTouching()) {
+          var otherBody = contacts.contact.GetFixtureA().GetBody() === body ? contacts.contact.GetFixtureB().GetBody() : contacts.contact.GetFixtureA().GetBody();
+          if (otherBody && otherBody.uid) {
+            touchingObjects.push(otherBody.uid);
+          }
+        }
+        contacts = contacts.next;
+      }
+      
+      return touchingObjects.join(', ');
+    }
 
     getBodyIDAt(args) {
       if (args.type == "static") {
