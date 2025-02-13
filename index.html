@@ -636,7 +636,9 @@
                 if (filteredData.length === 0) {
                     const noResultsMessage = document.createElement('div');
                     container.textContent = 'No results found';
-                    document.querySelector(".footer").innerHTML = footerHTML;
+                    if (document.getElementById('search').value) {
+                        document.querySelector(".footer").innerHTML = `Didn't find what you wanted? It coule be in <a href="/archives">the archives</a>`;
+                    }
                 } else {
                     filteredData.forEach(card => {
                         container.appendChild(createCard(card, query.includes('is:hidden') || document.getElementById('search').value.toLowerCase().includes('include:hidden')));
