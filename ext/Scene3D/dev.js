@@ -488,6 +488,14 @@
         async showSceneFrame({ ID }, util) {
             if (!util.target) return;
             if (!Scene3D.scenes[ID]) {
+                const drawableID = util.target.drawableID;
+                if (
+                    Scratch.vm.renderer._allDrawables[drawableID]._skin && 
+                    Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
+                    Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
+                ) {
+                    Scratch.vm.renderer._allSkins.splice(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, 1);
+                }
                 util.target.updateAllDrawableProperties();
                 return;
             }
@@ -500,7 +508,16 @@
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(image, 0, 0);
 
+                if (
+                    Scratch.vm.renderer._allDrawables[drawableID]._skin && 
+                    Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
+                    Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
+                ) {
+                    Scratch.vm.renderer._allSkins.splice(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, 1);
+                }
+
                 const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
+                Scratch.vm.renderer._allSkins[skinId].tmpSkin = true;
                 Scratch.vm.renderer.updateDrawableSkinId(util.target.drawableID, skinId);
             };
             image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;

@@ -31,18 +31,8 @@
                         blockType: Scratch.BlockType.COMMAND,
                         text: "Remove sprite skin",
                     },
-
-                    // {
-                    //     opcode: "log",
-                    //     blockType: Scratch.BlockType.COMMAND,
-                    //     text: "log",
-                    // },
                 ],
             };
-        }
-
-        log(_, util) {
-            console.log(util.target);
         }
 
         async setSkin({ DATAURI }, util) {
@@ -65,9 +55,9 @@
                     const response = await fetch(url);
                     const blob = await response.blob();
                     return new Promise((resolve) => {
-                            const reader = new FileReader();
-                            reader.onloadend = () => resolve(reader.result);
-                            reader.readAsDataURL(blob);
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
                     });
                 }
 
@@ -81,7 +71,7 @@
                 canvas.height = image.height;
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(image, 0, 0);
-        
+
                 const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
                 Scratch.vm.renderer._allSkins[skinId].tmpSkin = true;
                 Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);

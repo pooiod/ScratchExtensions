@@ -318,6 +318,14 @@
         restoreSkin(_, util) {
             const target = util.target;
             if (!target) return;
+            const drawableID = target.drawableID;
+            if (
+                Scratch.vm.renderer._allDrawables[drawableID]._skin && 
+                Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
+                Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
+            ) {
+                Scratch.vm.renderer._allSkins.splice(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, 1);
+            }
             target.updateAllDrawableProperties();
         }
 
@@ -451,6 +459,14 @@
                 const target = util.target;
                 const drawableID = target.drawableID;
                 const dataURI = DATAURI;
+
+                if (
+                    Scratch.vm.renderer._allDrawables[drawableID]._skin && 
+                    Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
+                    Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
+                ) {
+                    Scratch.vm.renderer._allSkins.splice(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, 1);
+                }
           
                 const image = new Image();
                 image.onload = () => {
@@ -461,6 +477,7 @@
                     ctx.drawImage(image, 0, 0);
 
                     const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
+                    Scratch.vm.renderer._allSkins[skinId].tmpSkin = true;
                     Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
                 };
                 image.src = dataURI;
