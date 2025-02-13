@@ -22,10 +22,26 @@
         
                 const original = target._getRenderedDirectionAndScale;
 
-                target.onTargetVisualChange = () => {renderSkew(target)};
+				const originalFunc = target.onTargetVisualChange;
+                target.onTargetVisualChange = () => {
+					renderSkew(target, originalFunc);
+				};
 
-                function renderSkew(target) {
+				function getimage(target) {
+					var img = target.sprite.costumes_;
+					img[target.currentCostume];
+					if (target.renderer._nextSkinId) {
+						img = target.renderer._allSkins[target.renderer._nextSkinId];
+						img = img._texture;
+					}
+					return img;
+				}
+
+                function renderSkew(target, originalFunc) {
+					if (originalFunc) originalFunc();
                     console.log(target);
+
+					// this.setSkin({ DATAURI: "" }, target)
                 }
             };
         
@@ -53,10 +69,20 @@
 								defaultValue: 'REEEEEEEEEE',
 							},
 						},
-					}
+					},
+
+                    {
+                        opcode: "log",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "log",
+                    },
 				]
 			};
 		}
+
+        log(_, util) {
+            console.log(util.target);
+        }
 
 		func(args) {
 			console.log(args);
