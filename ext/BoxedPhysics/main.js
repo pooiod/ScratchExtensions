@@ -12,8 +12,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 (function(Scratch) {
   'use strict';
-  var b2Dupdated = "01/02/2025";
-  var publishedUpdateIndex = 17;
+  var b2Dupdated = "02/03/2025";
+  var publishedUpdateIndex = 18;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -172,6 +172,19 @@ but has since deviated to be its own thing. (made with box2D js es6)
               },
             },
           },
+          {
+            opcode: 'ispoly',
+            hideFromPalette: !wipblocks,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: 'Is [POINTS] a polygon?',
+            arguments: {
+              POINTS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "0 50   40 -50   -40 -50",
+              },
+            },
+          },
+
           { blockType: Scratch.BlockType.LABEL, text: "Modify objects" }, // ---- Modify objects ---
           {
             opcode: 'destroyBody',
@@ -359,6 +372,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
             },
           },
           {
+            opcode: 'getTouching',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get all objects touching [NAME]',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Object1",
+              },
+            },
+          },
+          {
             opcode: 'getBodyIDAt',
             blockType: Scratch.BlockType.REPORTER,
             text: 'Get object of type [type] at x: [X]  y: [Y]',
@@ -384,6 +408,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             blockType: Scratch.BlockType.REPORTER,
             text: 'All objects',
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "Define joints" }, // ---- Define joints -----
           {
             opcode: 'defineSpring',
@@ -463,6 +488,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
               },
             },
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "Modify joints" }, // ------ Modify joints ---
           {
             opcode: 'destroyJoint',
@@ -541,6 +567,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             blockType: Scratch.BlockType.REPORTER,
             text: 'All joints',
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "World functions" }, // --- World functions --
           {
             opcode: 'init',
@@ -625,6 +652,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             blockType: Scratch.BlockType.COMMAND,
             text: 'Step Simulation',
           },
+
           { blockType: Scratch.BlockType.LABEL, text: "Math functions" }, // ---- Math functions -----
           {
             opcode: 'rotatePoint',
@@ -766,31 +794,19 @@ but has since deviated to be its own thing. (made with box2D js es6)
             hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.REPORTER,
             text: 'Get debug [VAL]',
-            arguments: { // this is the only debug block I don't plan on changing
+            arguments: { // this is the only debug block I don't plan on removing
               VAL: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "version",
               },
             },
           },
-          
-          {
-            hideFromPalette: !wipblocks,
-            blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-            text: "Upcoming blocks (project corruption warning)"
-          },
-          {
-            opcode: 'ispoly',
-            hideFromPalette: !wipblocks,
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: 'Is [POINTS] a polygon?',
-            arguments: {
-              POINTS: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "0 50   40 -50   -40 -50",
-              },
-            },
-          },
+
+          // {
+          //   hideFromPalette: !wipblocks,
+          //   blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
+          //   text: "Upcoming blocks (project corruption warning)"
+          // }
         ],
         menus: {
           sceneType: ['semi-closed stage', 'boxed stage', 'opened stage', 'nothing'],
@@ -1066,8 +1082,29 @@ but has since deviated to be its own thing. (made with box2D js es6)
       return;
     }
 
-    ispoly(args) { // wip
-      return this.definePoly(args);
+    ispoly(args) {
+      let tmpshape = new b2PolygonShape;
+      var points = args.POINTS;
+
+      try {
+        var pts = points.split(' ');
+        for (var i = 0; i < pts.length; i++) {
+          if (pts[i].length == 0) {
+            pts.splice(i, 1);
+            i--;
+          }
+        }
+
+        var vertices = [];
+        for (var i = pts.length; i > 0; i -= 2) {
+          if (isNaN(Number(pts[i - 2])) || isNaN(Number(pts[i - 1]))) return false;
+          vertices.push(new b2Vec2(parseFloat(pts[i - 2]) / b2Dzoom, parseFloat(pts[i - 1]) / b2Dzoom));
+        }
+        tmpshape.SetAsArray(vertices);
+        return true;
+      } catch (error) {
+        return false;
+      }
     }
 
     definePoly(args) {
@@ -1245,27 +1282,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
       }
     }
 
-    getTouchingObjectNames(obj) {
-      var contacts = obj.GetContactList();
-      var touchingObjectNames = [];
-
-      while (contacts) {
-        if (contacts.contact.IsTouching()) {
-          var otherFixture = contacts.contact.GetFixtureA() === obj ? contacts.contact.GetFixtureB() : contacts.contact.GetFixtureA();
-          var otherBody = otherFixture.GetBody();
-          var otherUserData = otherBody.GetUserData();
-
-          if (otherUserData && otherUserData.name) {
-            touchingObjectNames.push(otherUserData.name);
-          }
-        }
-
-        contacts = contacts.next;
-      }
-
-      return touchingObjectNames;
-    }
-
     getBodyAttr(args) {
       var body = bodies[args.NAME];
       if (!body) return '';
@@ -1292,7 +1308,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           // console.log("The force applied to the object by other objects is " + force + " N");
           return force;
 
-        //case 'touching': return JSON.stringify(this.getTouchingObjectNames(body));
+        //case 'touching': return JSON.stringify(this.getTouching({NAME: args.NAME}));
       }
       return '';
     }
@@ -1324,6 +1340,26 @@ but has since deviated to be its own thing. (made with box2D js es6)
       }
       return true;
     };
+
+    getTouching(args) {
+      var body = bodies[args.NAME];
+      if (!body) return '';
+      
+      var touchingObjects = [];
+      var contacts = body.GetContactList();
+      
+      while (contacts) {
+        if (contacts.contact.IsTouching()) {
+          var otherBody = contacts.contact.GetFixtureA().GetBody() === body ? contacts.contact.GetFixtureB().GetBody() : contacts.contact.GetFixtureA().GetBody();
+          if (otherBody && otherBody.uid) {
+            touchingObjects.push(otherBody.uid);
+          }
+        }
+        contacts = contacts.next;
+      }
+      
+      return touchingObjects.join(', ');
+    }
 
     getBodyIDAt(args) {
       if (args.type == "static") {
@@ -1667,7 +1703,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
       var secondsimspeed = Math.abs(simspeed + 30);
       if (secondsimspeed == 0) secondsimspeed = 1;
 
-      // Run the simulation step
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
     }
