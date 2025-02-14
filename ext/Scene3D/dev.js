@@ -11,11 +11,7 @@
         window.Scene3D = {};
         window.Scene3D.scenes = {};
 
-        let script = document.createElement("script");
-        script.type = "text/javascript";
-        script.id = "WindowImports3D";
-        script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
-        script.onload = function () {
+        if (window.THREE) {
             window.Scene3D.func = THREE;
             window.Scene3D.func.getRandomColor = function() {
                 var letters = '0123456789ABCDEF';
@@ -25,13 +21,33 @@
                 }
                 return color;
             }
-        };
-        document.head.appendChild(script);
+        } else {
+            let script = document.createElement("script");
+            script.type = "text/javascript";
+            script.id = "WindowImports3D";
+            script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
+            script.onload = function () {
+                window.Scene3D.func = THREE;
+                window.Scene3D.func.getRandomColor = function() {
+                    var letters = '0123456789ABCDEF';
+                    var color = '#';
+                    for (var i = 0; i < 6; i++) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                }
+                THREE = null;
+            };
+            document.head.appendChild(script);
+        }
     }
 
-	class P7Splats {
+	class P7Scene3D {
 		constructor() {
 			this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
+
+            this.over3seconds = false;
+            setTimeout(()=>{this.over3seconds = true});
 
 			Scratch.vm.runtime.on('PROJECT_LOADED', () => {
                 this.canscript = Scratch.vm.runtime.isPackaged || !typeof scaffolding === "undefined";
@@ -52,6 +68,7 @@
 					{
 						opcode: 'isLoaded',
 						blockType: Scratch.BlockType.BOOLEAN,
+                        hideFromPalette: this.over3seconds,
 						text: 'Scene3D libs loaded',
 					},
 
@@ -280,6 +297,23 @@
 							},
 						},
 					},
+
+                    {
+                        blockType: Scratch.BlockType.HAT,
+                        opcode: 'onObjectLoad',
+                        text: 'When [ID] in scene [SCENE] loads',
+                        isEdgeActivated: true,
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'object1',
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                        }
+                    },
 
                     { blockType: Scratch.BlockType.LABEL, text: "Render" }, // -------------------------------------
                     {
@@ -581,6 +615,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
+            Scene3D.scenes[SCENE].objects[ID].loaded = true;
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
@@ -600,6 +635,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
+            Scene3D.scenes[SCENE].objects[ID].loaded = true;
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
@@ -623,6 +659,7 @@
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
+            Scene3D.scenes[SCENE].objects[ID].loaded = true;
             Scene3D.scenes[SCENE].objects[ID].original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
@@ -650,6 +687,7 @@
 
             Scene3D.scenes[SCENE].world.add(mesh);
 
+            Scene3D.scenes[SCENE].objects[ID].loaded = true;
             Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid;
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
@@ -672,6 +710,30 @@
 
             Scene3D.scenes[SCENE].world.add(mesh);
 
+            Scene3D.scenes[SCENE].objects[ID].loaded = true;
+            Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid;
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+                delete Scene3D.scenes[SCENE].objects[ID];
+            }
+        }
+
+        makeCylinder({ ID, SCENE, RADIUSTOP, RADIUSBOTTOM, HEIGHT, OPENED }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
+
+            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CylinderGeometry(RADIUSTOP, RADIUSBOTTOM, HEIGHT, 30, 1, OPENED);
+
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
+
+            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
+            mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
+
+            Scene3D.scenes[SCENE].world.add(mesh);
+
+            Scene3D.scenes[SCENE].objects[ID].loaded = true;
             Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid;
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
@@ -734,6 +796,12 @@
 
         // ----------------------------------- extras ----------------------------------- //
 
+        onObjectLoad({ SCENE, ID }) {
+            if (! Scene3D.scenes[SCENE]) return;
+            if (! Scene3D.scenes[SCENE].objects[ID]) return;
+            return Scene3D.scenes[SCENE].objects[ID].loaded;
+        }
+
         jsHookScene({ ID, JS }) {
             if (!this.canscript) {
                 if (!window.confirm("Do you want to allow this project to run JavaScript hooks? \n(This will allow it to run any code, including malicious code)")) {
@@ -759,5 +827,5 @@
             return result;
         }
 	}
-	Scratch.extensions.register(new P7Splats());
+	Scratch.extensions.register(new P7Scene3D());
 })(Scratch);
