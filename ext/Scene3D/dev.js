@@ -180,6 +180,30 @@
 						},
 					},
 
+					{
+						opcode: 'makeCapsule',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Create capsule [ID] with a length of [LENGTH] and a redius of [RADIUS] in scene [SCENE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'capsule1',
+							},
+                            LENGTH: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "2",
+                            },
+                            RADIUS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "1",
+                            },
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
                     { blockType: Scratch.BlockType.LABEL, text: "Object Modification" }, // ------------------------
                     {
                         opcode: "destroyObject",
@@ -487,8 +511,9 @@
 
         async showSceneFrame({ ID }, util) {
             if (!util.target) return;
+            const drawableID = util.target.drawableID;
+
             if (!Scene3D.scenes[ID]) {
-                const drawableID = util.target.drawableID;
                 if (
                     Scratch.vm.renderer._allDrawables[drawableID]._skin && 
                     Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
@@ -518,7 +543,7 @@
 
                 const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
                 Scratch.vm.renderer._allSkins[skinId].tmpSkin = true;
-                Scratch.vm.renderer.updateDrawableSkinId(util.target.drawableID, skinId);
+                Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
             };
             image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;
         }
@@ -634,6 +659,28 @@
             }
         }
 
+        makeCapsule({ ID, SCENE, RADIUS, LENGTH }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
+
+            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CapsuleGeometry(RADIUS, LENGTH, 5, 30);
+
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
+
+            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
+            mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
+
+            Scene3D.scenes[SCENE].world.add(mesh);
+
+            Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid;
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+                delete Scene3D.scenes[SCENE].objects[ID];
+            }
+        }
+
         // ----------------------------------- Object modification ----------------------------------- //
 
         destroyObject({ ID, SCENE }) {
@@ -655,10 +702,10 @@
             obj.position.z = Z;
         }
 
-        rotateObject({ ID, SCENE, SCALE }) {
+        rotateObject({ ID, SCENE, ROTATION }) {
             if (!Scene3D.scenes[SCENE]) return;
             if (!Scene3D.scenes[SCENE].objects[ID]) return;
-            var [X, Y, Z] = this.vectorToArray(SCALE);
+            var [X, Y, Z] = this.vectorToArray(ROTATION);
 
             var uuid = Scene3D.scenes[SCENE].objects[ID].generated;
             var obj = Scene3D.scenes[SCENE].world.children.find(objc => objc.uuid == uuid);
