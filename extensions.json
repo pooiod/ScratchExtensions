@@ -169,7 +169,7 @@
         "subtext": "",
         "icon": "/extras/images/icons/new.svg",
         "iconText": "",
-        "unsandboxed": false,
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
