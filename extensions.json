@@ -260,7 +260,7 @@
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
             { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
-        "tags": ["unfinished"],
+        "tags": ["finished"],
         "type": ["unsandboxed"],
         "hidden": false
     },
