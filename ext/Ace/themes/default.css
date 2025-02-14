@@ -3,6 +3,19 @@
     /*border-radius: 5px;*/
 }
 
+#AceContextMenu {
+    background: #f1f1f1;
+    border: 1px solid #d4d4d4;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+#AceContextMenuItem {
+    transition: background 0.3s ease;
+}
+#AceContextMenuItem:hover {
+    background: rgb(223, 223, 223);
+}
+
 .ace-editor .ace_gutter {
     background: #f7f7f7;
     color: #333;
