@@ -834,7 +834,7 @@
             }
 
             if (!Scene3D.scenes[ID]) return "Error: No scene found";
-            if (!JS.includes("scene")) return "Error: Unused scene";
+            if (!(JS.includes("scene") || JS.includes("Scene3D"))) return "Error: Unused scene";
 
             var scene = Scene3D.scenes[ID];
             var result = "";
