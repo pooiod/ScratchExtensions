@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<!--https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/teapot.obj-->
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three.js with OBJ File Upload</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <h1>Upload OBJ File</h1>
+  <input type="file" id="fileInput" />
+  
+  <h2>Select Face Type</h2>
+  <label>
+    <input type="radio" name="faceType" value="tri" checked> Triangular Faces
+  </label>
+  <label>
+    <input type="radio" name="faceType" value="quad"> Quadrilateral Faces
+  </label>
+
+  <pre id="output"></pre>
+
+  <script>
+    function extractPointsAndFaces(objData) {
+      let points = [];
+      let faces = [];
+      let lines = objData.split('\n');
+
+      lines.forEach(line => {
+        line = line.trim();
+        if (line.startsWith('v ')) {
+          let coords = line.slice(2).split(' ').map(Number);
+          points.push(...coords);
+        } else if (line.startsWith('f ')) {
+          let face = line.slice(2).split(' ').map(f => {
+            return parseInt(f.split('/')[0]) - 1;
+          });
+          faces.push(face);
+        }
+      });
+
+      return { points, faces };
+    }
+
+    function makeObject(points, type) {
+      let geom = new THREE.BufferGeometry();
+      geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 3));
+
+      let indices = [];
+      let vp = type === 'tri' ? 3 : type === 'quad' ? 4 : 4;
+      let numFaces = (points.length / 3) / vp;
+
+      for (let f = 0; f < numFaces; f++) {
+        let base = f * vp;
+        if (vp === 3) indices.push(base, base + 1, base + 2);
+        else if (vp === 4) indices.push(base, base + 1, base + 2, base + 2, base + 3, base);
+      }
+
+      geom.setIndex(indices);
+      geom.computeVertexNormals();
+      return new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide }));
+    }
+
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    let renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    scene.fog = new THREE.Fog(0x000000, 1, 10);
+
+    let radius = 5, angleY = Math.PI / 4, angleX = Math.PI / 6, speed = 0.03;
+    let keys = { w: false, a: false, s: false, d: false };
+    document.addEventListener('keydown', e => { if (e.key in keys) keys[e.key] = true; });
+    document.addEventListener('keyup', e => { if (e.key in keys) keys[e.key] = false; });
+
+    function updateCamera() {
+      if (keys.a) angleY -= speed;
+      if (keys.d) angleY += speed;
+      if (keys.w) angleX = Math.max(-Math.PI / 2 + 0.1, angleX - speed);
+      if (keys.s) angleX = Math.min(Math.PI / 2 - 0.1, angleX + speed);
+      let x = radius * Math.cos(angleY) * Math.cos(angleX);
+      let y = radius * Math.sin(angleX);
+      let z = radius * Math.sin(angleY) * Math.cos(angleX);
+      camera.position.set(x, y, z);
+      camera.lookAt(0, 0, 0);
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+      let file = event.target.files[0];
+      if (file && file.name.endsWith('.obj')) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+          let objData = e.target.result;
+          let { points, faces } = extractPointsAndFaces(objData);
+
+          let orderedPoints = [];
+          faces.forEach(face => {
+            face.forEach(vertexIndex => {
+              let point = points.slice(vertexIndex * 3, vertexIndex * 3 + 3);
+              orderedPoints.push(...point);
+            });
+          });
+
+          let faceType = document.querySelector('input[name="faceType"]:checked').value;
+
+          scene.clear();
+          let obj = makeObject(orderedPoints, faceType);
+          scene.add(obj);
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      updateCamera();
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

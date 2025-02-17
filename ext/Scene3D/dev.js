@@ -693,6 +693,29 @@
 
         // ----------------------------------- Object creaton ----------------------------------- //
 
+        makePointObject() {
+            function makeObject(points, type) {
+                let geom = new THREE.BufferGeometry();
+                geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 3));
+          
+                let indices = [];
+                let vp = type === 'tri' ? 3 : type === 'quad' ? 4 : 3;
+                let numFaces = (points.length / 3) / vp;
+          
+                for (let f = 0; f < numFaces; f++) {
+                    let base = f * vp;
+                    if (vp === 3) indices.push(base, base + 1, base + 2);
+                    else if (vp === 4) indices.push(base, base + 1, base + 2, base + 2, base + 3, base);
+                }
+
+                let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: THREE.DoubleSide});
+          
+                geom.setIndex(indices);
+                geom.computeVertexNormals();
+                return new THREE.Mesh(geom, baseMaterial);
+            }
+        }
+
         makeBox({ ID, SCENE, V3 }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
@@ -701,7 +724,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: THREE.DoubleSide});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -724,7 +747,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CapsuleGeometry(RADIUS, LENGTH, 5, 30);
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: THREE.DoubleSide});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
