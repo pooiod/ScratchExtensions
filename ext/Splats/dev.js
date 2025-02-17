@@ -85,7 +85,43 @@
 						},
 					},
 
-                    { blockType: Scratch.BlockType.LABEL, text: "Configure Shaders" },
+                    {
+                        opcode: "setSplatType",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set type of [ID] to [TYPE] in scene [SCENE]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            TYPE: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "TypeSplat",
+                                defaultValue: "object",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "envTexture",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get env texture of [ID] in scene [SCENE]",
+                        arguments: {
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "splat1",
+                            },
+                        },
+                    },
+
                     {
                         opcode: "addSplatShader",
                         blockType: Scratch.BlockType.COMMAND,
@@ -120,24 +156,6 @@
                             },
                         },
                     },
-
-                    // { blockType: Scratch.BlockType.LABEL, text: "Interaction Hooks" },
-                    // {
-                    //     blockType: Scratch.BlockType.HAT,
-                    //     opcode: 'onSplatLoad',
-                    //     text: 'When [ID] in scene [SCENE] loads',
-                    //     isEdgeActivated: true,
-                    //     arguments: {
-                    //         ID: {
-                    //             type: Scratch.ArgumentType.STRING,
-                    //             defaultValue: 'splat1',
-                    //         },
-                    //         SCENE: {
-                    //             type: Scratch.ArgumentType.STRING,
-                    //             defaultValue: "scene1",
-                    //         },
-                    //     }
-                    // }
 				],
                 menus: {
                     TypeSplat: {
@@ -191,6 +209,12 @@
                 Scene3D.scenes[SCENE].world.children = newscene;
                 delete Scene3D.scenes[SCENE].objects[ID];
             }
+        }
+
+        envTexture({ SCENE, ID }) {
+            if (! Scene3D.scenes[SCENE]) return;
+            if (! Scene3D.scenes[SCENE].objects[ID]) return;
+            return Scene3D.scenes[SCENE].objects[ID].envtexture;
         }
 
         onSplatLoad({ SCENE, ID }) {
