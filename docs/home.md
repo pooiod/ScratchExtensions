@@ -1,67 +1,35 @@
-#Loading cards...
-[!js-document.title="Pooiod7's hidden Scratch extensions"!]
-
 [!js-
-let cardsData = ["/extensions.json"];
-document.querySelector("#toolbar > a").innerText = "← Back";
+  document.body.innerHTML = '';
+  document.title += "Doc not found";
 
-async function fetchExtensions() {
-  try {
-    const response = await fetch(cardsData[0]);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    cardsData = await response.json();
-    generateMarkdown(cardsData);
-  } catch (error) {
-    console.error('Failed to fetch extensions:', error);
-  }
-}
+  const container = document.createElement('div');
+  container.style.display = 'flex';
+  container.style.flexDirection = 'column';
+  container.style.alignItems = 'center';
+  container.style.justifyContent = 'center';
+  container.style.height = '100vh';
+  container.style.color = '#333';
+  container.style.fontFamily = 'Arial, sans-serif';
+  container.style.textAlign = 'center';
+  container.style.padding = '20px';
+  container.style.boxSizing = 'border-box';
 
-function generateMarkdown(cardsData) {
-  let markdownContent = `# Pooiod7's hidden Scratch extensions
+  const message = document.createElement('h1');
+  message.innerHTML = '<img style="height: 40vh; width: auto;" src="/extras/images/ErrorPageAxolotl.svg"\\>';
+  message.style.margin = '0';
 
-> Most of these are hidden due to no-longer working, or being too unfinished to publish yet.
-> **Use with caution!**
+  const subMessage = document.createElement('p');
+  subMessage.innerHTML = `This page seems to be missing! <br>
+<a href="/" style="color:#555;">Why not</a> check out my <b>AWSOME</b> Scratch extensions while you're here?`;
+  subMessage.style.fontSize = '1.5rem';
+  subMessage.style.marginTop = '20px';
+  subMessage.style.color = '#777';
 
----
+  container.appendChild(message);
+  container.appendChild(subMessage);
 
-`;
+  document.body.appendChild(container);
 
-  cardsData.forEach(card => {
-    let imageURL = card.image.replace(/\[id\]/g, card.id);
-    if (!imageURL || imageURL === "") {
-        imageURL = `https://dummyimage.com/600x300/e0e0e0/000&text=${card.id}`;
-    }
-
-    if (!card.hidden) return;
-
-    const buttonsMarkdown = card.buttons.map(button => {
-      const link = button.link.replace(/\[id\]/g, card.id);
-      return `- [${button.text}](${link})`;
-    }).join('\n');
-
-    markdownContent += `
-## ${card.title}
-
-![${card.title}](${imageURL})
-
-${card.description}<br>
-<sub>${card.subtext}</sub>
-
-<sub>(${card.unsandboxed?"This extension does not work when sandboxed":"This extension works when sandboxed"})</sub>
-
-${buttonsMarkdown}
-
-`;
-  });
-
-  markdownContent += `
-> Also try searching "<a href="https://p7scratchextensions.pages.dev/?q=include%3Ahidden">include:hidden</a>"
-`
-
-  parseMarkdown(markdownContent);
-}
-
-fetchExtensions();
+  document.body.style.margin = '0';
+  document.body.style.fontFamily = 'Arial, sans-serif';
 !]
