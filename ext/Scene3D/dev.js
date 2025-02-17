@@ -11,6 +11,10 @@
         window.Scene3D = {};
         window.Scene3D.scenes = {};
 
+        window.Scene3D.libs = {};
+        window.Scene3D.libs.max = 0;
+        window.Scene3D.libs.loaded = 0;
+
         if (window.THREE) {
             window.Scene3D.func = THREE;
             window.Scene3D.func.getRandomColor = function() {
@@ -400,13 +404,17 @@
                         },
                     },
                     {
-                        opcode: 'ignoreInput',
+                        opcode: 'jsHookSceneCommand',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Run [VAL]',
+                        text: 'Run JavaScript [JS] on scene [ID]',
                         arguments: {
-                            VAL: {
+                            ID: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '',
+                                defaultValue: "scene1",
+                            },
+                            JS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene.objects[\"box1\"].destroy()",
                             },
                         },
                     },
@@ -460,7 +468,7 @@
 		}
 
         isLoaded() {
-            return !!window.Scene3D.func;
+            return !!window.Scene3D.func && window.Scene3D.libs.loaded >= window.Scene3D.libs.max;
         }
 
         // ----------------------------------- Math ----------------------------------- //
@@ -814,7 +822,7 @@
             return Scene3D.scenes[SCENE].objects[ID].loaded;
         }
 
-        ignoreInput() {}
+        jsHookSceneCommand(args) {this.jsHookScene(args)};
         jsHookScene({ ID, JS }) {
             if (!this.canscript) {
                 if (!window.confirm("Do you want to allow this project to run JavaScript hooks? \n(This will allow it to run any code, including malicious code)")) {

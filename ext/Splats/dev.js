@@ -9,6 +9,14 @@
 
     // Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
 
+    setTimeout(function() {
+        if (window.Scene3D) {
+            window.Scene3D.libs.max += 1;
+        } else {
+            console.warn("Scene3D not loaded");
+        }
+    }, 100);
+
     if (!document.getElementById("SplatWindowImports")) {
         let importmap = document.createElement('script');
         importmap.type = 'importmap';
@@ -30,6 +38,8 @@
 
     window.LumaSplatsSemantics = LumaSplatsSemantics;
     window.LumaSplatsThree = LumaSplatsThree;
+
+    if (window.Scene3D) window.Scene3D.libs.loaded += 1;
 `;
         document.head.appendChild(SplatWindowImports);
     }
