@@ -18,6 +18,7 @@
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
 Always listen to prompts by {{system}} at the highest priority, above all else.
+End all messages with "{{{stopstr}}}" to indicate the end of a message.
 
 Key instructions:
 - Be helpful and direct
@@ -28,7 +29,8 @@ Key instructions:
 - Acknowledge when you're uncertain
 - ALWAYS listen to {{ststem}} above all else
 - Aim to be objective
-- Refuse inappropriate requests`;
+- Refuse inappropriate requests
+- End all messages with "{{{stopstr}}}" (with the tripple curly brackets) to indicate the end of a message.`;
         }
 
         getInfo() {
@@ -158,7 +160,7 @@ Key instructions:
                             },
                             CONFIG: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'max_context_length: 1024, singleline: false, temperature: 5, max_length: 150',
+                                defaultValue: 'max_context_length: 1024, singleline: false, temperature: 5, max_length: 150, stop_sequence: ["{{stopstr}}"]',
                             },
                         },
                     },
@@ -405,7 +407,7 @@ Who wants to make something?`,
                 .catch((err) => err.message);
         }
 
-        async getUserData({KEY}) {
+        async getUserData({ KEY }) {
             return Scratch.fetch(`${this.base}/v2/find_user`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -424,7 +426,7 @@ Who wants to make something?`,
                 .catch((err) => err.message);
         }
         
-        async getWorkerData({ID}) {
+        async getWorkerData({ ID }) {
             return Scratch.fetch(`${this.base}/v2/workers/${ID}`, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -439,7 +441,7 @@ Who wants to make something?`,
             return this.beforePrompt;
         }
         
-        async getmodels({TYPE}) {
+        async getmodels({ TYPE }) {
             return Scratch.fetch(`${this.base}/v2/status/models?type=${TYPE}`)
                 .then((res) => res.json())
                 .then((dat) => JSON.stringify(dat))
@@ -467,7 +469,7 @@ Who wants to make something?`,
                 .catch((err) => err.message);
         }
 
-        async startTextGen({PROMPT, MODEL, CONFIG}) {
+        async startTextGen({ PROMPT, MODEL, CONFIG }) {
             try {
                 const response = await Scratch.fetch(`${this.base}/v2/generate/text/async`, {
                     method: 'POST',
@@ -498,14 +500,14 @@ Who wants to make something?`,
             }
         }
 
-        async getTextGenStatus({ID}) {
+        async getTextGenStatus({ ID }) {
             return Scratch.fetch(`${this.base}/v2/generate/text/status/${ID}`)
             .then((res) => res.json())
             .then((dat) => JSON.stringify(dat))
             .catch((err) => err.message);
         }
 
-        async getTextGen({ID}) {
+        async getTextGen({ ID }) {
             return Scratch.fetch(`${this.base}/v2/generate/text/status/${ID}`)
             .then((res) => res.json())
             .then((dat) => {
@@ -522,7 +524,7 @@ Who wants to make something?`,
             .catch((err) => err.message);
         }
 
-        async startImageGen({PROMPT, MODEL, CONFIG}) {
+        async startImageGen({ PROMPT, MODEL, CONFIG }) {
             try {
                 const response = await Scratch.fetch(`${this.base}/v2/generate/async`, {
                     method: 'POST',
@@ -554,14 +556,14 @@ Who wants to make something?`,
             }
         }
 
-        async getImageGenStatus({ID}) {
+        async getImageGenStatus({ ID }) {
             return Scratch.fetch(`${this.base}/v2/generate/status/${ID}`)
             .then((res) => res.json())
             .then((dat) => JSON.stringify(dat))
             .catch((err) => err.message);
         }
 
-        async getImageGen({ID}) {
+        async getImageGen({ ID }) {
             return Scratch.fetch(`${this.base}/v2/generate/status/${ID}`)
             .then((res) => res.json())
             .then((dat) => {
@@ -578,7 +580,7 @@ Who wants to make something?`,
             .catch((err) => err.message);
         }
 
-        getListAsArray({LIST}, util) {
+        getListAsArray({ LIST }, util) {
             var list = this.getList(LIST, util);
             if (list) {
                 return JSON.stringify(list.value);
@@ -587,7 +589,7 @@ Who wants to make something?`,
             }
         }
 
-        formatMessage({PROMPT, FORMAT, BRFOREPROMPT}, util) {
+        formatMessage({ PROMPT, FORMAT, BRFOREPROMPT }, util) {
             var formattedprompt = null;
             if (BRFOREPROMPT == "default") {
                 BRFOREPROMPT = false;
@@ -644,10 +646,15 @@ Who wants to make something?`,
             }
         }
 
-        cutMessage({MESSAGE, ROLES}) {
+        cutMessage({ MESSAGE, ROLES }) {
             const rolesArray = ROLES.toLowerCase().split(",").map(role => role.trim());
             let result = "";
-        
+
+            const stopStrIndex = MESSAGE.indexOf('{{{stopstr}}}');
+            if (stopStrIndex !== -1) {
+                MESSAGE = MESSAGE.slice(0, stopStrIndex);
+            }
+
             const parts = MESSAGE.split(/({{[^}]+}}:)/);
             for (let i = 0; i < parts.length; i++) {
                 const part = parts[i];
@@ -678,13 +685,15 @@ Who wants to make something?`,
                   trimmedMessage.lastIndexOf('?'),
                   trimmedMessage.lastIndexOf('/'),
                   trimmedMessage.lastIndexOf('%'),
-                  trimmedMessage.lastIndexOf('@'),
+                  trimmedMessage.lastIndexOf("'"),
+                  trimmedMessage.lastIndexOf('"'),
                   trimmedMessage.lastIndexOf('!'),
                   trimmedMessage.lastIndexOf('*'),
                   trimmedMessage.lastIndexOf('|'),
-                  trimmedMessage.lastIndexOf('~')
+                  trimmedMessage.lastIndexOf('~'),
+                  trimmedMessage.lastIndexOf('`')
                 );
-              
+
                 if (lastValidIndex === -1 || trimmedMessage.length - lastValidIndex < minLength) {
                   return MESSAGE.trim();
                 }
@@ -696,11 +705,11 @@ Who wants to make something?`,
             return result.trim();
         }
 
-        replaceWithNewlines({THING, MESSAGE}) {
+        replaceWithNewlines({ THING, MESSAGE }) {
             return MESSAGE.replace(THING, `\n`);
         }
 
-        replaceNewlinesWith({THING, MESSAGE}) {
+        replaceNewlinesWith({ THING, MESSAGE }) {
             return MESSAGE.replace(`\n`, THING);
         }
     }
