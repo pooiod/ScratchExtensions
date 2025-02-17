@@ -1,4 +1,4 @@
-// 3D Splats - an extension for rendering gaussian splats with Scene3D. (made by pooiod7)
+// Luma Splats - an extension for rendering luma scenes with Scene3D. (made by pooiod7)
 
 (function(Scratch) {
 	'use strict';
@@ -9,9 +9,12 @@
 
     // Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
 
-    setTimeout(function() {
+    if (window.Scene3D) {
+        window.Scene3D.libs.max += 1;
+        this.didloadcheck = true;
+    } setTimeout(function() {
         if (window.Scene3D) {
-            window.Scene3D.libs.max += 1;
+            if (!didloadcheck) window.Scene3D.libs.max += 1;
         } else {
             console.warn("Scene3D not loaded");
         }
@@ -55,6 +58,13 @@
 				name: 'Luma Splats',
                 color1: '#7b61e8',
 				blocks: [
+                    {
+                        func: "openScene3D",
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: window.Scene3D,
+                        text: "Scene3D is required"
+                    },
+
 					{
 						opcode: 'makeSplat',
 						blockType: Scratch.BlockType.COMMAND,
@@ -111,23 +121,23 @@
                         },
                     },
 
-                    { blockType: Scratch.BlockType.LABEL, text: "Interaction Hooks" },
-                    {
-                        blockType: Scratch.BlockType.HAT,
-                        opcode: 'onSplatLoad',
-                        text: 'When [ID] in scene [SCENE] loads',
-                        isEdgeActivated: true,
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'splat1',
-                            },
-                            SCENE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "scene1",
-                            },
-                        }
-                    }
+                    // { blockType: Scratch.BlockType.LABEL, text: "Interaction Hooks" },
+                    // {
+                    //     blockType: Scratch.BlockType.HAT,
+                    //     opcode: 'onSplatLoad',
+                    //     text: 'When [ID] in scene [SCENE] loads',
+                    //     isEdgeActivated: true,
+                    //     arguments: {
+                    //         ID: {
+                    //             type: Scratch.ArgumentType.STRING,
+                    //             defaultValue: 'splat1',
+                    //         },
+                    //         SCENE: {
+                    //             type: Scratch.ArgumentType.STRING,
+                    //             defaultValue: "scene1",
+                    //         },
+                    //     }
+                    // }
 				],
                 menus: {
                     TypeSplat: {
@@ -137,6 +147,10 @@
                 }
 			};
 		}
+
+        openScene3D() {
+            window.open("https://p7scratchextensions.pages.dev/#Scene3D");
+        }
 
         makeSplat({ MODEL, ID, SCENE }) {
             if (!Scene3D.scenes[SCENE]) return;
