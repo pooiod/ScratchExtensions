@@ -160,21 +160,21 @@
                         },
                     },
 
-                    // {
-                    //     opcode: "setCameraFOV",
-                    //     blockType: Scratch.BlockType.COMMAND,
-                    //     text: "Set fov of camera for [ID] to [FOV]",
-                    //     arguments: {
-                    //         ID: {
-                    //             type: Scratch.ArgumentType.STRING,
-                    //             defaultValue: "scene1",
-                    //         },
-                    //         FOV: {
-                    //             type: Scratch.ArgumentType.NUMBER,
-                    //             defaultValue: "75",
-                    //         },
-                    //     },
-                    // },
+                    {
+                        opcode: "setCameraFOV",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set fov of camera for [ID] to [FOV]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            FOV: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "75",
+                            },
+                        },
+                    },
 
                     { blockType: Scratch.BlockType.LABEL, text: "Object Creation" }, // ----------------------------
 					{
@@ -399,6 +399,17 @@
                             },
                         },
                     },
+                    {
+                        opcode: 'ignoreInput',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Run [VAL]',
+                        arguments: {
+                            VAL: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '',
+                            },
+                        },
+                    },
 
                     { blockType: Scratch.BlockType.LABEL, text: "Math" }, // ----------------------------------------
                     {
@@ -605,6 +616,7 @@
         setCameraFOV({ ID, FOV }) {
             if (!Scene3D.scenes[ID]) return;
             Scene3D.scenes[ID].camera.fov = FOV
+            Scene3D.scenes[ID].camera.updateProjectionMatrix();
         }
 
         // ----------------------------------- Helpers ----------------------------------- //
@@ -802,6 +814,7 @@
             return Scene3D.scenes[SCENE].objects[ID].loaded;
         }
 
+        ignoreInput() {}
         jsHookScene({ ID, JS }) {
             if (!this.canscript) {
                 if (!window.confirm("Do you want to allow this project to run JavaScript hooks? \n(This will allow it to run any code, including malicious code)")) {
