@@ -14,7 +14,7 @@
         this.didloadcheck = true;
     } setTimeout(function() {
         if (window.Scene3D) {
-            if (!didloadcheck) window.Scene3D.libs.max += 1;
+            if (!this.didloadcheck) window.Scene3D.libs.max += 1;
         } else {
             console.warn("Scene3D not loaded");
         }
@@ -106,21 +106,21 @@
                         },
                     },
 
-                    {
-                        opcode: "envTexture",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "Get env texture of [ID] in scene [SCENE]",
-                        arguments: {
-                            SCENE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "scene1",
-                            },
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: "splat1",
-                            },
-                        },
-                    },
+                    // {
+                    //     opcode: "envTexture",
+                    //     blockType: Scratch.BlockType.REPORTER,
+                    //     text: "Get env texture of [ID] in scene [SCENE]",
+                    //     arguments: {
+                    //         SCENE: {
+                    //             type: Scratch.ArgumentType.STRING,
+                    //             defaultValue: "scene1",
+                    //         },
+                    //         ID: {
+                    //             type: Scratch.ArgumentType.STRING,
+                    //             defaultValue: "splat1",
+                    //         },
+                    //     },
+                    // },
 
                     {
                         opcode: "addSplatShader",
