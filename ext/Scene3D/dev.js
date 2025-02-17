@@ -823,7 +823,7 @@
             return Scene3D.scenes[SCENE].objects[ID].loaded;
         }
 
-        jsHookSceneCommand(args) {this.jsHookScene(args)};
+        jsHookSceneCommand(args) {console.log(this.jsHookScene(args))};
         jsHookScene({ ID, JS }) {
             if (!this.canscript) {
                 if (!window.confirm("Do you want to allow this project to run JavaScript hooks? \n(This will allow it to run any code, including malicious code)")) {
