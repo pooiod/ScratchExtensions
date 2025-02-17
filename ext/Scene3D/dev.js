@@ -12,7 +12,7 @@
         window.Scene3D.scenes = {};
 
         window.Scene3D.libs = {};
-        window.Scene3D.libs.max = 0;
+        window.Scene3D.libs.max = 1;
         window.Scene3D.libs.loaded = 0;
 
         if (window.THREE) {
@@ -32,6 +32,7 @@
             script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
             script.onload = function () {
                 window.Scene3D.func = THREE;
+                window.Scene3D.libs.loaded += 1;
                 window.Scene3D.func.getRandomColor = function() {
                     var letters = '0123456789ABCDEF';
                     var color = '#';
@@ -468,7 +469,7 @@
 		}
 
         isLoaded() {
-            return !!window.Scene3D.func && window.Scene3D.libs.loaded >= window.Scene3D.libs.max;
+            return window.Scene3D.libs.loaded >= window.Scene3D.libs.max;
         }
 
         // ----------------------------------- Math ----------------------------------- //
