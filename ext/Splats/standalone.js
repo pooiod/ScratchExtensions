@@ -409,7 +409,8 @@
 
         setSplatCameraFOV({ ID, FOV }) {
             if (!this.splats[ID]) return;
-            this.splats[ID].camera.fov = FOV
+            this.splats[ID].camera.fov = FOV;
+            this.splats[ID].camera.updateProjectionMatrix();
         }
 
         setSplatType({ ID, TYPE }) {

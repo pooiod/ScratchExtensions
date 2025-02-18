@@ -9,12 +9,13 @@
 
     // Array.from(Scratch.vm.extensionManager._loadedExtensions.keys())
 
+    var didloadcheck = false;
     if (window.Scene3D) {
         window.Scene3D.libs.max += 1;
-        this.didloadcheck = true;
+        didloadcheck = true;
     } setTimeout(function() {
         if (window.Scene3D) {
-            if (!this.didloadcheck) window.Scene3D.libs.max += 1;
+            if (!didloadcheck) window.Scene3D.libs.max += 1;
         } else {
             console.warn("Scene3D not loaded");
         }
