@@ -350,6 +350,27 @@
                         }
                     },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Materials" }, // ----------------------------------
+                    {
+                        opcode: "makeMaterial",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Create material [ID] of type [TYPE] in scene [SCENE]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "object1",
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            TYPE: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "materials",
+                            },
+                        },
+                    },
+
                     { blockType: Scratch.BlockType.LABEL, text: "Render" }, // -------------------------------------
                     {
                         opcode: "showSceneFrame",
@@ -522,6 +543,20 @@
                     faceTypes: {
                         acceptReporters: true,
                         items: ["tri", "quad"]
+                    },
+                    materials: {
+                        acceptReporters: true,
+                        items: [
+                            { text: "Basic", value: "MeshBasicMaterial" },
+                            { text: "Depth", value: "MeshDepthMaterial" },
+                            { text: "Lambert", value: "MeshLambertMaterial" },
+                            { text: "Matcap", value: "MeshMatcapMaterial" },
+                            { text: "Normal", value: "MeshNormalMaterial" },
+                            { text: "Phong", value: "MeshPhongMaterial" },
+                            { text: "Physical", value: "MeshPhysicalMaterial" },
+                            { text: "Standard", value: "MeshStandardMaterial" },
+                            { text: "Toon", value: "MeshToonMaterial" }
+                        ]
                     }
                 }
 			};
