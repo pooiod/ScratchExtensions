@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 
-<!--https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/teapot.obj-->
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Three.js with OBJ File Upload</title>
+
+  <title>Scene3D model tester</title>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-  <h1>Upload OBJ File</h1>
+  <h1>Import Model</h1>
   <input type="file" id="fileInput" />
+  <button id="importArrayButton">Import Point From Array</button>
+
+  <br><br><button id="showVerticesButton">Export Model Vertices</button>
   
   <h2>Select Face Type</h2>
   <label>
@@ -22,9 +26,18 @@
   </label>
 
   <pre id="output"></pre>
+  
+  <p>Examples: <br>
+    <a href="https://yeetyourfiles.lol/file/378994de/quad_obj_sample.obj">Quad sample</a>
+    <a href="https://yeetyourfiles.lol/file/1b5396fe/teapot.obj">Tri sample</a>
+  </p>
 
   <script>
-    function extractPointsAndFaces(objData) {
+    let modelData = null;
+    
+    var modelverts = [];
+
+    function extractPointsAndFaces(objData, type) {
       let points = [];
       let faces = [];
       let lines = objData.split('\n');
@@ -42,12 +55,22 @@
         }
       });
 
+      if (type === 'tri') faces = faces.filter(face => face.length === 3);
+      if (type === 'quad') faces = faces.filter(face => face.length === 4);
+
       return { points, faces };
+    }
+
+    function openWindowWithArray(array) {
+      let newWindow = window.open('about:blank', '_blank', 'width=600,height=400');
+      newWindow.document.write(array.join(', '));
     }
 
     function makeObject(points, type) {
       let geom = new THREE.BufferGeometry();
       geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 3));
+      
+      modelverts = points;
 
       let indices = [];
       let vp = type === 'tri' ? 3 : type === 'quad' ? 4 : 4;
@@ -56,12 +79,15 @@
       for (let f = 0; f < numFaces; f++) {
         let base = f * vp;
         if (vp === 3) indices.push(base, base + 1, base + 2);
-        else if (vp === 4) indices.push(base, base + 1, base + 2, base + 2, base + 3, base);
+        else if (vp === 4) {
+          indices.push(base, base + 1, base + 2);
+          indices.push(base + 2, base + 3, base);
+        }
       }
 
       geom.setIndex(indices);
       geom.computeVertexNormals();
-      return new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide }));
+      return new THREE.Mesh(geom, new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, wireframe: true }));
     }
 
     let scene = new THREE.Scene();
@@ -70,24 +96,44 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    scene.fog = new THREE.Fog(0x000000, 1, 10);
+    let controls = new THREE.OrbitControls(camera, renderer.domElement);
+    camera.position.set(0, 0, 5);
+    controls.update();
 
-    let radius = 5, angleY = Math.PI / 4, angleX = Math.PI / 6, speed = 0.03;
-    let keys = { w: false, a: false, s: false, d: false };
-    document.addEventListener('keydown', e => { if (e.key in keys) keys[e.key] = true; });
-    document.addEventListener('keyup', e => { if (e.key in keys) keys[e.key] = false; });
+    scene.fog = new THREE.Fog(0x000000, 1, 50);
 
-    function updateCamera() {
-      if (keys.a) angleY -= speed;
-      if (keys.d) angleY += speed;
-      if (keys.w) angleX = Math.max(-Math.PI / 2 + 0.1, angleX - speed);
-      if (keys.s) angleX = Math.min(Math.PI / 2 - 0.1, angleX + speed);
-      let x = radius * Math.cos(angleY) * Math.cos(angleX);
-      let y = radius * Math.sin(angleX);
-      let z = radius * Math.sin(angleY) * Math.cos(angleX);
-      camera.position.set(x, y, z);
-      camera.lookAt(0, 0, 0);
+    try {
+      let pointsArray = [-1,  1,  1,  -1, -1,  1,   1, -1,  1,   1,  1,  1,    1,  1, -1,   1, -1, -1,  -1, -1, -1,  -1,  1, -1,   -1,  1, -1,  -1, -1, -1,  -1, -1,  1,  -1,  1,  1,    1,  1,  1,   1, -1,  1,   1, -1, -1,   1,  1, -1,   -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,   -1, -1,  1,  -1, -1, -1,   1, -1, -1,   1, -1,  1 ]
+      if (Array.isArray(pointsArray) && pointsArray.every(x => typeof x === 'number')) {
+        let obj = makeObject(pointsArray, "quad");
+        scene.add(obj);
+      } else {
+        alert('Invalid point array. Please ensure it is a valid array of numbers.');
+      }
+    } catch (e) {
+      alert('Failed to parse the input. Please ensure it is a valid array of numbers.');
     }
+
+    fetch('https://yeetyourfiles.lol/file/1b5396fe/teapot.obj')
+      .then(response => response.text())
+      .then(objData => {
+        modelData = objData;
+        let faceType = document.querySelector('input[name="faceType"]:checked').value;
+        let { points, faces } = extractPointsAndFaces(objData, faceType);
+
+        let orderedPoints = [];
+        faces.forEach(face => {
+          face.forEach(vertexIndex => {
+            let point = points.slice(vertexIndex * 3, vertexIndex * 3 + 3);
+            orderedPoints.push(...point);
+          });
+        });
+
+        scene.clear();
+        let obj = makeObject(orderedPoints, faceType);
+        scene.add(obj);
+      })
+      .catch(err => console.error('Error loading the model:', err));
 
     document.getElementById('fileInput').addEventListener('change', function (event) {
       let file = event.target.files[0];
@@ -95,7 +141,8 @@
         let reader = new FileReader();
         reader.onload = function (e) {
           let objData = e.target.result;
-          let { points, faces } = extractPointsAndFaces(objData);
+          let faceType = document.querySelector('input[name="faceType"]:checked').value;
+          let { points, faces } = extractPointsAndFaces(objData, faceType);
 
           let orderedPoints = [];
           faces.forEach(face => {
@@ -105,8 +152,6 @@
             });
           });
 
-          let faceType = document.querySelector('input[name="faceType"]:checked').value;
-
           scene.clear();
           let obj = makeObject(orderedPoints, faceType);
           scene.add(obj);
@@ -115,9 +160,48 @@
       }
     });
 
+    document.getElementById('showVerticesButton').addEventListener('click', function() {
+      if (modelData) {
+        // let faceType = document.querySelector('input[name="faceType"]:checked').value;
+        // let { points, faces } = extractPointsAndFaces(modelData, faceType);
+
+        // let orderedPoints = [];
+        // faces.forEach(face => {
+        //   face.forEach(vertexIndex => {
+        //     let point = points.slice(vertexIndex * 3, vertexIndex * 3 + 3);
+        //     orderedPoints.push(...point);
+        //   });
+        // });
+
+        openWindowWithArray(modelverts);
+        // openWindowWithArray(orderedPoints);
+      } else {
+        alert('Model is not loaded yet!');
+      }
+    });
+
+    document.getElementById('importArrayButton').addEventListener('click', function() {
+      let input = window.prompt('Paste your point array');
+      if (input) {
+        try {
+          let pointsArray = JSON.parse('[' + input + ']');
+          if (Array.isArray(pointsArray) && pointsArray.every(x => typeof x === 'number')) {
+            let faceType = document.querySelector('input[name="faceType"]:checked').value;
+            scene.clear();
+            let obj = makeObject(pointsArray, faceType);
+            scene.add(obj);
+          } else {
+            alert('Invalid point array. Please ensure it is a valid array of numbers.');
+          }
+        } catch (e) {
+          alert('Failed to parse the input. Please ensure it is a valid array of numbers.');
+        }
+      }
+    });
+
     function animate() {
       requestAnimationFrame(animate);
-      updateCamera();
+      controls.update();
       renderer.render(scene, camera);
     }
     animate();
