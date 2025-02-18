@@ -10,6 +10,7 @@
     if (!window.Scene3D) {
         window.Scene3D = {};
         window.Scene3D.scenes = {};
+        window.Scene3D.maxverts = 10000;
 
         window.Scene3D.libs = {};
         window.Scene3D.libs.max = 1;
@@ -767,7 +768,6 @@
 
         makeMaterial({ SCENE, ID, TYPE }) {
             if (!Scene3D.scenes[SCENE]) return;
-            Scene3D.scenes[SCENE].materials[ID]?.destroy();
 
             if (!TYPE.includes("Material")) return;
 
@@ -789,7 +789,6 @@
             }
 
             let texture = await loadTexture(IMAGE);
-            // texture = new Scene3D.func.MeshBasicMaterial({ map: texture, side: window.Scene3D.func.DoubleSide });
             Scene3D.scenes[SCENE].materials[ID].map = texture;
         }
 
@@ -861,60 +860,70 @@
         makePointObject({ SCENE, ID, POINTS, TYPE }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
-
+        
             var points = [];
             try {
                 points = JSON.parse(`[${POINTS}]`);
-            } catch(e) {
+            } catch (e) {
                 return;
             }
-
+        
             let geom = new window.Scene3D.func.BufferGeometry();
             geom.setAttribute('position', new window.Scene3D.func.BufferAttribute(new Float32Array(points), 3));
-
+        
             let indices = [];
             let uvs = [];
-
+            let stopcount = 0;
+        
             let vp = 3;
-            switch(TYPE) {
+            switch (TYPE) {
                 case "tri": vp = 3; break;
                 case "quad": vp = 4; break;
                 default: vp = TYPE || 3;
             }
-            
+
             let numFaces = points.length / vp;
-            
+
             for (let f = 0; f < numFaces; f++) {
                 let base = f * vp;
+                if (stopcount >= Scene3D.maxverts) break;
+        
                 for (let i = 1; i < vp - 1; i++) {
+                    stopcount += 1; if (stopcount >= Scene3D.maxverts) break;
                     indices.push(base, base + i, base + i + 1);
                 }
             }
-
+        
+            let xMin = Math.min(...points.filter((_, idx) => idx % 3 === 0));
+            let xMax = Math.max(...points.filter((_, idx) => idx % 3 === 0));
+            let yMin = Math.min(...points.filter((_, idx) => idx % 3 === 1));
+            let yMax = Math.max(...points.filter((_, idx) => idx % 3 === 1));
+        
             for (let i = 0; i < points.length; i += 3) {
+                stopcount += 1;
+                if (stopcount >= Scene3D.maxverts) break;
+                
                 let x = points[i], y = points[i + 1], z = points[i + 2];
-                let u = (x - Math.min(...points.filter((_, idx) => idx % 3 === 0))) / 
-                        (Math.max(...points.filter((_, idx) => idx % 3 === 0)) - Math.min(...points.filter((_, idx) => idx % 3 === 0)));
-                let v = (y - Math.min(...points.filter((_, idx) => idx % 3 === 1))) / 
-                        (Math.max(...points.filter((_, idx) => idx % 3 === 1)) - Math.min(...points.filter((_, idx) => idx % 3 === 1)));
+                let u = (x - xMin) / (xMax - xMin);
+                let v = (y - yMin) / (yMax - yMin);
                 uvs.push(u, v);
             }
-
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
-
+        
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({ color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide });
+        
             geom.setIndex(indices);
             geom.setAttribute('uv', new window.Scene3D.func.BufferAttribute(new Float32Array(uvs), 2));
             geom.computeVertexNormals();
-
+        
             Scene3D.scenes[SCENE].objects[ID] = geom;
-
+        
             var mesh = new window.Scene3D.func.Mesh(geom, baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].world.add(mesh);
-
+        
             Scene3D.scenes[SCENE].objects[ID].loaded = true;
             Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid;
-
+        
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
