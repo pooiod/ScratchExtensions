@@ -375,6 +375,31 @@
                         },
                     },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Environment" }, // --------------------------------
+                    {
+                        opcode: "setSceneFog",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set fog in scene [SCENE] to color [COLOR] and near [NEAR] with far [FAR]",
+                        arguments: {
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            COLOR: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "#fff",
+                            },
+                            NEAR: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "3",
+                            },
+                            FAR: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "20",
+                            },
+                        },
+                    },
+
                     { blockType: Scratch.BlockType.LABEL, text: "Debug" }, // --------------------------------------
                     {
                         opcode: "makeHelperAxes",
@@ -635,6 +660,14 @@
             };
             image.src = await this.getSceneRender({ ID: ID, FORMAT: 'bmp' });;
         }
+
+        // -------------------------------- Environment --------------------------------- //
+
+        setSceneFog({ SCENE, COLOR, NEAR, FAR }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].world.fog = new Scene3D.func.Fog(new Scene3D.func.Color(COLOR).convertLinearToSRGB(), NEAR, FAR);
+        }
+
 
         // ----------------------------------- Camera ----------------------------------- //
 
