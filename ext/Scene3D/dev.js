@@ -237,11 +237,17 @@
 							},
                             TYPE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "tri",
+                                defaultValue: "quad",
+                                menu: "faceTypes",
                             },
                             POINTS: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: `-1,  1,  1,  -1, -1,  1,   1, -1,  1,   1,  1,  1,   1,  1, -1,   1, -1, -1,  -1, -1, -1,  -1,  1, -1,  -1,  1, -1,  -1, -1, -1,  -1, -1,  1,  -1,  1,  1,   1,  1,  1,   1, -1,  1,   1, -1, -1,   1,  1, -1,  -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,  -1, -1,  1,  -1, -1, -1,   1, -1, -1,   1, -1,  1`,
+                                defaultValue: `-1,  1,  1,  -1, -1,  1,   1, -1,  1,   1,  1,  1,
+    1,  1, -1,   1, -1, -1,  -1, -1, -1,  -1,  1, -1,
+   -1,  1, -1,  -1, -1, -1,  -1, -1,  1,  -1,  1,  1,
+    1,  1,  1,   1, -1,  1,   1, -1, -1,   1,  1, -1,
+   -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,
+   -1, -1,  1,  -1, -1, -1,   1, -1, -1,   1, -1,  1 `.replace(/\n/g, ''),
                             },
                             SCENE: {
 								type: Scratch.ArgumentType.STRING,
@@ -487,6 +493,10 @@
                     xyz: {
                         acceptReporters: true,
                         items: ["x", "y", "z"]
+                    },
+                    faceTypes: {
+                        acceptReporters: true,
+                        items: ["tri", "quad"]
                     }
                 }
 			};
@@ -717,14 +727,6 @@
 
         // ----------------------------------- Object creaton ----------------------------------- //
 
-// Example box (use quad mode)
-//   -1,  1,  1,  -1, -1,  1,   1, -1,  1,   1,  1,  1,  // front face
-//    1,  1, -1,   1, -1, -1,  -1, -1, -1,  -1,  1, -1,  // back face
-//   -1,  1, -1,  -1, -1, -1,  -1, -1,  1,  -1,  1,  1,  // left face
-//    1,  1,  1,   1, -1,  1,   1, -1, -1,   1,  1, -1,  // right face
-//   -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,  // top face
-//   -1, -1,  1,  -1, -1, -1,   1, -1, -1,   1, -1,  1   // bottom face
-
         makePointObject({ SCENE, ID, POINTS, TYPE }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
@@ -740,21 +742,22 @@
             geom.setAttribute('position', new window.Scene3D.func.BufferAttribute(new Float32Array(points), 3));
 
             let indices = [];
-            let vp = TYPE === 'tri' ? 3 : TYPE === 'quad' ? 4 : TYPE;
 
+            let vp = 3;
             switch(TYPE) {
-                case "tri": vp = 3;
-                case "quad": vp = 4;
-                default: vp = TYPE;
+                case "tri": vp = 3; break;
+                case "quad": vp = 4; break;
+                default: vp = TYPE || 3;
             }
-
-            let numFaces = (points.length / 3) / vp;
-
+            
+            let numFaces = points.length / vp;
+            
             for (let f = 0; f < numFaces; f++) {
                 let base = f * vp;
-                if (vp === 3) indices.push(base, base + 1, base + 2);
-                else if (vp === 4) indices.push(base, base + 1, base + 2, base + 2, base + 3, base);
-            }
+                for (let i = 1; i < vp - 1; i++) {
+                    indices.push(base, base + i, base + i + 1);
+                }
+            }            
 
             let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
       
