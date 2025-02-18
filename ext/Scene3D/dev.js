@@ -333,6 +333,26 @@
 						},
 					},
 
+					{
+						opcode: 'setObjectMaterial',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [ID] material to [MATERIAL] in scene [SCENE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            MATERIAL: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "material1",
+                            },
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
                     {
                         blockType: Scratch.BlockType.HAT,
                         opcode: 'onObjectLoad',
@@ -367,6 +387,26 @@
                             TYPE: {
                                 type: Scratch.ArgumentType.STRING,
                                 menu: "materials",
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: "setMaterialTexture",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set image of material [ID] in scene [SCENE] to [IMAGE]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "material1",
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            IMAGE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAABfSURBVFhH7daxCQBBCERRtxD7L8HAJjawC1sQ7uDgGtgNJvnmA8NLxpWZjx3czHwpdz9Im/35RQEEEEAAAQTkAhGhXUN5gaq6Eujuu3+AAggggAACCMgF9t7aNVQXeAH0+VkwQQSNOAAAAABJRU5ErkJggg==`,
                             },
                         },
                     },
@@ -590,17 +630,10 @@
             V3 = this.vectorToArray(V3);
             if (!V3) return;
             switch(PART) {
-                case "x":
-                    return V3[0];
-                    break;
-                case "y":
-                    return V3[1];
-                    break;
-                case "z":
-                    return V3[2];
-                    break;
-                default:
-                    return 0;
+                case "x": return V3[0];
+                case "y": return V3[1];
+                case "z": return V3[2];
+                default:  return 0;
             }
         }
 
@@ -745,6 +778,21 @@
             }
         }
 
+        async setMaterialTexture({ SCENE, ID, IMAGE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new Scene3D.func.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            let texture = await loadTexture(IMAGE);
+            // texture = new Scene3D.func.MeshBasicMaterial({ map: texture, side: window.Scene3D.func.DoubleSide });
+            Scene3D.scenes[SCENE].materials[ID].map = texture;
+        }
+
         // ----------------------------------- Helpers ----------------------------------- //
 
         makeHelperAxes({ ID, SCENE, SIZE }) {
@@ -825,6 +873,7 @@
             geom.setAttribute('position', new window.Scene3D.func.BufferAttribute(new Float32Array(points), 3));
 
             let indices = [];
+            let uvs = [];
 
             let vp = 3;
             switch(TYPE) {
@@ -840,11 +889,21 @@
                 for (let i = 1; i < vp - 1; i++) {
                     indices.push(base, base + i, base + i + 1);
                 }
-            }            
+            }
+
+            for (let i = 0; i < points.length; i += 3) {
+                let x = points[i], y = points[i + 1], z = points[i + 2];
+                let u = (x - Math.min(...points.filter((_, idx) => idx % 3 === 0))) / 
+                        (Math.max(...points.filter((_, idx) => idx % 3 === 0)) - Math.min(...points.filter((_, idx) => idx % 3 === 0)));
+                let v = (y - Math.min(...points.filter((_, idx) => idx % 3 === 1))) / 
+                        (Math.max(...points.filter((_, idx) => idx % 3 === 1)) - Math.min(...points.filter((_, idx) => idx % 3 === 1)));
+                uvs.push(u, v);
+            }
 
             let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
-      
+
             geom.setIndex(indices);
+            geom.setAttribute('uv', new window.Scene3D.func.BufferAttribute(new Float32Array(uvs), 2));
             geom.computeVertexNormals();
 
             Scene3D.scenes[SCENE].objects[ID] = geom;
@@ -969,7 +1028,7 @@
                 Scene3D.func.MathUtils.degToRad(X),
                 Scene3D.func.MathUtils.degToRad(Y),
                 Scene3D.func.MathUtils.degToRad(Z)
-            );              
+            );
         }
 
         scaleObject({ ID, SCENE, SCALE }) {
@@ -984,6 +1043,16 @@
             obj.scale.x = X;
             obj.scale.y = Y;
             obj.scale.z = Z;
+        }
+
+        setObjectMaterial({ ID, SCENE, MATERIAL }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].objects[ID]) return;
+            if (!Scene3D.scenes[SCENE].materials[MATERIAL]) return;
+
+            var genuuid = Scene3D.scenes[SCENE].objects[ID].generated;
+            var child = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid)
+            child.material = Scene3D.scenes[SCENE].materials[MATERIAL];
         }
 
         // ----------------------------------- extras ----------------------------------- //
