@@ -226,6 +226,30 @@
 						},
 					},
 
+					{
+						opcode: 'makePointObject',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Create object [ID] with points [POINTS] and face type [TYPE] in scene [SCENE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            TYPE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "tri",
+                            },
+                            POINTS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: `-1,  1,  1,  -1, -1,  1,   1, -1,  1,   1,  1,  1,   1,  1, -1,   1, -1, -1,  -1, -1, -1,  -1,  1, -1,  -1,  1, -1,  -1, -1, -1,  -1, -1,  1,  -1,  1,  1,   1,  1,  1,   1, -1,  1,   1, -1, -1,   1,  1, -1,  -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,  -1, -1,  1,  -1, -1, -1,   1, -1, -1,   1, -1,  1`,
+                            },
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
                     { blockType: Scratch.BlockType.LABEL, text: "Object Modification" }, // ------------------------
                     {
                         opcode: "destroyObject",
@@ -693,26 +717,64 @@
 
         // ----------------------------------- Object creaton ----------------------------------- //
 
-        makePointObject() {
-            function makeObject(points, type) {
-                let geom = new THREE.BufferGeometry();
-                geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 3));
-          
-                let indices = [];
-                let vp = type === 'tri' ? 3 : type === 'quad' ? 4 : 3;
-                let numFaces = (points.length / 3) / vp;
-          
-                for (let f = 0; f < numFaces; f++) {
-                    let base = f * vp;
-                    if (vp === 3) indices.push(base, base + 1, base + 2);
-                    else if (vp === 4) indices.push(base, base + 1, base + 2, base + 2, base + 3, base);
-                }
+// Example box (use quad mode)
+//   -1,  1,  1,  -1, -1,  1,   1, -1,  1,   1,  1,  1,  // front face
+//    1,  1, -1,   1, -1, -1,  -1, -1, -1,  -1,  1, -1,  // back face
+//   -1,  1, -1,  -1, -1, -1,  -1, -1,  1,  -1,  1,  1,  // left face
+//    1,  1,  1,   1, -1,  1,   1, -1, -1,   1,  1, -1,  // right face
+//   -1,  1, -1,  -1,  1,  1,   1,  1,  1,   1,  1, -1,  // top face
+//   -1, -1,  1,  -1, -1, -1,   1, -1, -1,   1, -1,  1   // bottom face
 
-                let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: THREE.DoubleSide});
-          
-                geom.setIndex(indices);
-                geom.computeVertexNormals();
-                return new THREE.Mesh(geom, baseMaterial);
+        makePointObject({ SCENE, ID, POINTS, TYPE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].objects[ID]?.destroy();
+
+            var points = [];
+            try {
+                points = JSON.parse(`[${POINTS}]`);
+            } catch(e) {
+                return;
+            }
+
+            let geom = new window.Scene3D.func.BufferGeometry();
+            geom.setAttribute('position', new window.Scene3D.func.BufferAttribute(new Float32Array(points), 3));
+
+            let indices = [];
+            let vp = TYPE === 'tri' ? 3 : TYPE === 'quad' ? 4 : TYPE;
+
+            switch(TYPE) {
+                case "tri": vp = 3;
+                case "quad": vp = 4;
+                default: vp = TYPE;
+            }
+
+            let numFaces = (points.length / 3) / vp;
+
+            for (let f = 0; f < numFaces; f++) {
+                let base = f * vp;
+                if (vp === 3) indices.push(base, base + 1, base + 2);
+                else if (vp === 4) indices.push(base, base + 1, base + 2, base + 2, base + 3, base);
+            }
+
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
+      
+            geom.setIndex(indices);
+            geom.computeVertexNormals();
+
+            Scene3D.scenes[SCENE].objects[ID] = geom;
+
+            var mesh = new window.Scene3D.func.Mesh(geom, baseMaterial);
+            mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
+            Scene3D.scenes[SCENE].world.add(mesh);
+
+            Scene3D.scenes[SCENE].objects[ID].loaded = true;
+            Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid;
+
+            Scene3D.scenes[SCENE].objects[ID].destroy = () => {
+                var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
+                var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
+                Scene3D.scenes[SCENE].world.children = newscene;
+                delete Scene3D.scenes[SCENE].objects[ID];
             }
         }
 
@@ -724,7 +786,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: THREE.DoubleSide});
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -747,7 +809,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CapsuleGeometry(RADIUS, LENGTH, 5, 30);
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: THREE.DoubleSide});
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
