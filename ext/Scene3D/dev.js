@@ -358,7 +358,7 @@
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "object1",
+                                defaultValue: "material1",
                             },
                             SCENE: {
                                 type: Scratch.ArgumentType.STRING,
@@ -728,6 +728,21 @@
             if (!Scene3D.scenes[ID]) return;
             Scene3D.scenes[ID].camera.fov = FOV
             Scene3D.scenes[ID].camera.updateProjectionMatrix();
+        }
+
+        // ---------------------------------- Materials ---------------------------------- //
+
+        makeMaterial({ SCENE, ID, TYPE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            Scene3D.scenes[SCENE].materials[ID]?.destroy();
+
+            if (!TYPE.includes("Material")) return;
+
+            Scene3D.scenes[SCENE].materials[ID] = new Scene3D.func[TYPE]({});
+
+            Scene3D.scenes[SCENE].materials[ID].destroy = () => {
+                delete Scene3D.scenes[SCENE].materials[ID];
+            }
         }
 
         // ----------------------------------- Helpers ----------------------------------- //
