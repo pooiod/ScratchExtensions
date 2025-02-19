@@ -27,7 +27,7 @@
                 return color;
             }
         } else {
-            let script = document.createElement("script");
+            var script = document.createElement("script");
             script.type = "text/javascript";
             script.id = "WindowImports3D";
             script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
@@ -821,7 +821,7 @@
                 });
             }
 
-            let texture = await loadTexture(IMAGE);
+            var texture = await loadTexture(IMAGE);
             Scene3D.scenes[SCENE].materials[ID].map = texture;
         }
 
@@ -901,32 +901,32 @@
                 return;
             }
 
-            let geom = new window.Scene3D.func.BufferGeometry();
+            var geom = new window.Scene3D.func.BufferGeometry();
             geom.setAttribute('position', new window.Scene3D.func.BufferAttribute(new Float32Array(points), 3));
 
-            let indices = [];
-            let stopcount = 0;
+            var indices = [];
+            var stopcount = 0;
 
-            let vp = 3;
+            var vp = 3;
             switch (TYPE) {
                 case "tri": vp = 3; break;
                 case "quad": vp = 4; break;
                 default: vp = TYPE || 3;
             }
 
-            let numFaces = points.length / vp;
+            var numFaces = points.length / vp;
 
-            for (let f = 0; f < numFaces; f++) {
-                let base = f * vp;
+            for (var f = 0; f < numFaces; f++) {
+                var base = f * vp;
                 if (stopcount >= Scene3D.maxverts) break;
 
-                for (let i = 1; i < vp - 1; i++) {
+                for (var i = 1; i < vp - 1; i++) {
                     stopcount += 1; if (stopcount >= Scene3D.maxverts) break;
                     indices.push(base, base + i, base + i + 1);
                 }
             }
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({ color: 0xffffff, side: window.Scene3D.func.DoubleSide });
+            var baseMaterial = new Scene3D.func.MeshBasicMaterial({ color: 0xffffff, side: window.Scene3D.func.DoubleSide });
 
             geom.setIndex(indices);
             geom.computeVertexNormals();
@@ -956,7 +956,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
+            var baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -979,7 +979,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CapsuleGeometry(RADIUS, LENGTH, 5, 30);
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
+            var baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -1002,7 +1002,7 @@
 
             Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CylinderGeometry(RADIUSTOP, RADIUSBOTTOM, HEIGHT, 30, 1, OPENED);
 
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
+            var baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
 
             var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
@@ -1089,30 +1089,181 @@
 
             if (!mesh) return;
 
+            var geometry = mesh.geometry;
+
+            if (!geometry) return;
+
             switch (TYPE) {
-                case "CubeFit":
-                    // project the surface of a cube onto the object to make UV map
+                case "CubeFit": // project the surface of a cube onto the object to make UV map
+                    geometry.computeBoundingBox();
+                    var bbox = geometry.boundingBox;
+                    var bboxSize = new Scene3D.func.Vector3().subVectors(bbox.max, bbox.min);
+                    var boxMaxSize = Math.max(bboxSize.x, bboxSize.y, bboxSize.z);
+
+                    // Based on https://jsfiddle.net/mmalex/pcjbysn1
+                    function applyBoxUV(geom, transformMatrix, bbox, bboxMaxSize) {
+                        var coords = new Float32Array(2 * geom.attributes.position.array.length / 3);
+                        
+                        if (!geom.attributes.uv) {
+                            geom.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(coords, 2));
+                        }
+
+                        var makeUVs = function(v0, v1, v2) {
+                            v0.applyMatrix4(transformMatrix);
+                            v1.applyMatrix4(transformMatrix);
+                            v2.applyMatrix4(transformMatrix);
+
+                            var n = new Scene3D.func.Vector3();
+                            n.crossVectors(v1.clone().sub(v0), v1.clone().sub(v2)).normalize();
+
+                            n.x = Math.abs(n.x);
+                            n.y = Math.abs(n.y);
+                            n.z = Math.abs(n.z);
+
+                            var uv0 = new Scene3D.func.Vector2();
+                            var uv1 = new Scene3D.func.Vector2();
+                            var uv2 = new Scene3D.func.Vector2();
+
+                            if (n.y > n.x && n.y > n.z) {
+                                uv0.set((v0.x - bbox.min.x) / bboxMaxSize, (bbox.max.z - v0.z) / bboxMaxSize);
+                                uv1.set((v1.x - bbox.min.x) / bboxMaxSize, (bbox.max.z - v1.z) / bboxMaxSize);
+                                uv2.set((v2.x - bbox.min.x) / bboxMaxSize, (bbox.max.z - v2.z) / bboxMaxSize);
+                            } else if (n.x > n.y && n.x > n.z) {
+                                uv0.set((v0.z - bbox.min.z) / bboxMaxSize, (v0.y - bbox.min.y) / bboxMaxSize);
+                                uv1.set((v1.z - bbox.min.z) / bboxMaxSize, (v1.y - bbox.min.y) / bboxMaxSize);
+                                uv2.set((v2.z - bbox.min.z) / bboxMaxSize, (v2.y - bbox.min.y) / bboxMaxSize);
+                            } else {
+                                uv0.set((v0.x - bbox.min.x) / bboxMaxSize, (v0.y - bbox.min.y) / bboxMaxSize);
+                                uv1.set((v1.x - bbox.min.x) / bboxMaxSize, (v1.y - bbox.min.y) / bboxMaxSize);
+                                uv2.set((v2.x - bbox.min.x) / bboxMaxSize, (v2.y - bbox.min.y) / bboxMaxSize);
+                            }
+
+                            return { uv0, uv1, uv2 };
+                        };
+
+                        if (geom.index) {
+                            for (var i = 0; i < geom.index.array.length; i += 3) {
+                                var idx0 = geom.index.array[i], idx1 = geom.index.array[i + 1], idx2 = geom.index.array[i + 2];
+
+                                var v0 = new Scene3D.func.Vector3().fromArray(geom.attributes.position.array, idx0 * 3);
+                                var v1 = new Scene3D.func.Vector3().fromArray(geom.attributes.position.array, idx1 * 3);
+                                var v2 = new Scene3D.func.Vector3().fromArray(geom.attributes.position.array, idx2 * 3);
+
+                                var uvs = makeUVs(v0, v1, v2);
+
+                                coords[2 * idx0] = uvs.uv0.x; coords[2 * idx0 + 1] = uvs.uv0.y;
+                                coords[2 * idx1] = uvs.uv1.x; coords[2 * idx1 + 1] = uvs.uv1.y;
+                                coords[2 * idx2] = uvs.uv2.x; coords[2 * idx2 + 1] = uvs.uv2.y;
+                            }
+                        }
+
+                        geom.attributes.uv.array = coords;
+                        geom.attributes.uv.needsUpdate = true;
+                    }
+
+                    var transformMatrix = new Scene3D.func.Matrix4();
+                    var uvBoundingBox = new Scene3D.func.Box3(
+                        new Scene3D.func.Vector3(-boxMaxSize / 2, -boxMaxSize / 2, -boxMaxSize / 2),
+                        new Scene3D.func.Vector3(boxMaxSize / 2, boxMaxSize / 2, boxMaxSize / 2)
+                    );
+
+                    applyBoxUV(geometry, transformMatrix, uvBoundingBox, boxMaxSize); break;
+                case "SphericalFit": // project the surface of a sphere onto the object to make UV map
+                    geometry.computeBoundingSphere();
+                    var sphere = geometry.boundingSphere;
+                    var center = sphere.center;
+                    var radius = sphere.radius;
+
+                    if (!geometry.attributes.uv) {
+                        var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
+                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                    }
+
+                    var positions = geometry.attributes.position.array;
+                    var uvs = geometry.attributes.uv.array;
+
+                    for (var i = 0, j = 0; i < positions.length; i += 3, j += 2) {
+                        var x = positions[i] - center.x;
+                        var y = positions[i + 1] - center.y;
+                        var z = positions[i + 2] - center.z;
+
+                        var theta = Math.atan2(z, x);
+                        var phi = Math.acos(y / radius);
+
+                        var u = (theta / (2 * Math.PI)) + 0.5;
+                        var v = phi / Math.PI;
+
+                        uvs[j] = u;
+                        uvs[j + 1] = v;
+                    }
+
+                    geometry.attributes.uv.needsUpdate = true; break;
+                case "CylindricalFit": // project the surface of a cyliner onto the object to make UV map
+                    geometry.computeBoundingBox();
+                    var bbox = geometry.boundingBox;
+                    var height = bbox.max.y - bbox.min.y;
+                    var centerY = (bbox.max.y + bbox.min.y) / 2;
+
+                    if (!geometry.attributes.uv) {
+                        var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
+                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                    }
+
+                    var positions = geometry.attributes.position.array;
+                    var uvs = geometry.attributes.uv.array;
+
+                    for (var i = 0, j = 0; i < positions.length; i += 3, j += 2) {
+                        var x = positions[i];
+                        var y = positions[i + 1] - centerY; // Centering Y
+                        var z = positions[i + 2];
+
+                        var theta = Math.atan2(z, x); // Angle around Y-axis
+                        var u = (theta / (2 * Math.PI)) + 0.5; // Map theta to [0,1]
+                        var v = (y - bbox.min.y) / height; // Normalize height to [0,1]
+
+                        uvs[j] = u;
+                        uvs[j + 1] = v;
+                    }
+
+                    geometry.attributes.uv.needsUpdate = true; break;
+                case "WrapFit": // project the surface of a sphere onto the object, but shrink wrap it to make UV map
+                    console.warn("Not implamented yet");
                     break;
-                case "SphericalFit":
-                    // project the surface of a sphere onto the object to make UV map
+                case "PlaneFit": // project a plane onto the object from above to make UV map
+                    geometry.computeBoundingBox();
+                    var bbox = geometry.boundingBox;
+
+                    var sizeX = bbox.max.x - bbox.min.x;
+                    var sizeZ = bbox.max.z - bbox.min.z;
+
+                    if (!geometry.attributes.uv) {
+                        var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
+                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                    }
+
+                    var positions = geometry.attributes.position.array;
+                    var uvs = geometry.attributes.uv.array;
+
+                    for (var i = 0, j = 0; i < positions.length; i += 3, j += 2) {
+                        var x = positions[i];
+                        var z = positions[i + 2];
+
+                        var u = (x - bbox.min.x) / sizeX;
+                        var v = (z - bbox.min.z) / sizeZ;
+
+                        uvs[j] = u;
+                        uvs[j + 1] = v;
+                    }
+
+                    geometry.attributes.uv.needsUpdate = true; break;
+                case "AllOneFace": // every face shows the texture in full
+                    console.warn("Not implamented yet");
                     break;
-                case "CylindricalFit":
-                    // project the surface of a cyliner onto the object to make UV map
-                    break;
-                case "WrapFit":
-                    // project the surface of a sphere onto the object, but shrink wrap it to make UV map
-                    break;
-                case "PlaneFit":
-                    // project a plane onto the object from above to make UV map
-                    break;
-                case "AllOneFace":
-                    // every face shows the texture in full
-                    break;
-                case "Dynamic":
-                    // every face gets a spot on the texture based on its size
+                case "Dynamic": // every face gets a spot on the texture based on its size
+                    console.warn("Not implamented yet");
                     break;
                 default:
-                    geometry.faceVertexUvs[0] = [];
+                    console.warn("Not implamented yet");
                     break;
             }
         }
