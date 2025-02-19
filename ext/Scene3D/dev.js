@@ -335,6 +335,26 @@
 					},
 
 					{
+						opcode: 'setObjectUV',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [ID] UV to [TYPE] in scene [SCENE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            TYPE: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "uvTypes",
+                            },
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
+					{
 						opcode: 'setObjectMaterial',
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Set object [ID] material to [MATERIAL] in scene [SCENE]',
@@ -598,7 +618,20 @@
                             { text: "Standard", value: "MeshStandardMaterial" },
                             { text: "Toon", value: "MeshToonMaterial" }
                         ]
-                    }
+                    },
+                    uvTypes: [
+                        { text: "Cube", value: "CubeFit" },
+                        { text: "Spherical", value: "SphericalFit" },
+                        { text: "Cylindrical", value: "CylindricalFit" },
+
+                        { text: "Plane Fit", value: "PlaneFit" },
+
+                        { text: "Wrap Fit", value: "WrapFit" },
+                        { text: "All One Face", value: "AllOneFace" },
+                        { text: "Dynamic", value: "Dynamic" },
+
+                        { text: "None", value: "none" }
+                    ]
                 }
 			};
 		}
@@ -1050,25 +1083,37 @@
         setObjectUV({ ID, SCENE, TYPE }) {
             if (!Scene3D.scenes[SCENE]) return;
             if (!Scene3D.scenes[SCENE].objects[ID]) return;
-
+        
             var genuuid = Scene3D.scenes[SCENE].objects[ID].generated;
             var mesh = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid);
 
+            if (!mesh) return;
+
             switch (TYPE) {
-                case "BoxFit": // maps the uvs like it is projecting a box onto the object surfaces
+                case "CubeFit":
+                    // project the surface of a cube onto the object to make UV map
                     break;
-                case "SphericalFit": // same as box fit but sphere
+                case "SphericalFit":
+                    // project the surface of a sphere onto the object to make UV map
                     break;
-                case "AllFaces": // Every face is a triangle on the texture fir in a grid (each triangle has a second pair) based on the index and not positions
+                case "CylindricalFit":
+                    // project the surface of a cyliner onto the object to make UV map
                     break;
-                case "WrapFit": // like wrapping a cloth around the object (like Pelt Mapping)
+                case "WrapFit":
+                    // project the surface of a sphere onto the object, but shrink wrap it to make UV map
                     break;
-                case "CylindricalFit": // like box fit but cylinder
+                case "PlaneFit":
+                    // project a plane onto the object from above to make UV map
                     break;
-                case "Dynamic": // like if the 3D object is flattened while preserving the proportions
+                case "AllOneFace":
+                    // every face shows the texture in full
+                    break;
+                case "Dynamic":
+                    // every face gets a spot on the texture based on its size
                     break;
                 default:
-                    return; // remove all uv mapping
+                    geometry.faceVertexUvs[0] = [];
+                    break;
             }
         }
 
