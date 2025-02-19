@@ -526,6 +526,22 @@
                         },
                     },
 
+					{
+						opcode: 'getObjectUVtexture',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Generate template texture for object [ID] in scene [SCENE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
                     {
                         opcode: "jsHookScene",
                         blockType: Scratch.BlockType.REPORTER,
@@ -629,8 +645,6 @@
                         { text: "Wrap Fit", value: "WrapFit" },
                         { text: "All One Face", value: "AllOneFace" },
                         { text: "Dynamic", value: "Dynamic" },
-
-                        { text: "None", value: "none" }
                     ]
                 }
 			};
@@ -1167,8 +1181,8 @@
                         new Scene3D.func.Vector3(boxMaxSize / 2, boxMaxSize / 2, boxMaxSize / 2)
                     );
 
-                    applyBoxUV(geometry, transformMatrix, uvBoundingBox, boxMaxSize); break;
-                case "SphericalFit": // project the surface of a sphere onto the object to make UV map
+                    applyBoxUV(geometry, transformMatrix, uvBoundingBox, boxMaxSize);
+                break; case "SphericalFit": // project the surface of a sphere onto the object to make UV map
                     geometry.computeBoundingSphere();
                     var sphere = geometry.boundingSphere;
                     var center = sphere.center;
@@ -1197,8 +1211,8 @@
                         uvs[j + 1] = v;
                     }
 
-                    geometry.attributes.uv.needsUpdate = true; break;
-                case "CylindricalFit": // project the surface of a cyliner onto the object to make UV map
+                    geometry.attributes.uv.needsUpdate = true;
+                break; case "CylindricalFit": // project the surface of a cyliner onto the object to make UV map
                     geometry.computeBoundingBox();
                     var bbox = geometry.boundingBox;
                     var height = bbox.max.y - bbox.min.y;
@@ -1225,11 +1239,36 @@
                         uvs[j + 1] = v;
                     }
 
-                    geometry.attributes.uv.needsUpdate = true; break;
-                case "WrapFit": // project the surface of a sphere onto the object, but shrink wrap it to make UV map
-                    console.warn("Not implamented yet");
-                    break;
-                case "PlaneFit": // project a plane onto the object from above to make UV map
+                    geometry.attributes.uv.needsUpdate = true;
+                break; case "WrapFit": // project the surface of a sphere onto the object, but shrink wrap it to make UV map
+                    geometry.computeBoundingBox();
+                    var bbox = geometry.boundingBox;
+
+                    var center = bbox.getCenter(new Scene3D.func.Vector3());
+                    var size = bbox.getSize(new Scene3D.func.Vector3());
+
+                    if (!geometry.attributes.uv) {
+                        var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
+                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                    }
+
+                    var positions = geometry.attributes.position.array;
+                    var uvs = geometry.attributes.uv.array;
+
+                    for (var i = 0, j = 0; i < positions.length; i += 3, j += 2) {
+                        var x = positions[i] - center.x;
+                        var y = positions[i + 1] - center.y;
+                        var z = positions[i + 2] - center.z;
+
+                        var theta = Math.atan2(z, x);
+                        var phi = Math.acos(y / size.y);
+
+                        uvs[j] = (theta / (2 * Math.PI)) + 0.5;
+                        uvs[j + 1] = phi / Math.PI;
+                    }
+
+                    geometry.attributes.uv.needsUpdate = true;
+                break; case "PlaneFit": // project a plane onto the object from above to make UV map
                     geometry.computeBoundingBox();
                     var bbox = geometry.boundingBox;
 
@@ -1255,20 +1294,121 @@
                         uvs[j + 1] = v;
                     }
 
-                    geometry.attributes.uv.needsUpdate = true; break;
-                case "AllOneFace": // every face shows the texture in full
-                    console.warn("Not implamented yet");
-                    break;
-                case "Dynamic": // every face gets a spot on the texture based on its size
-                    console.warn("Not implamented yet");
-                    break;
-                default:
-                    console.warn("Not implamented yet");
-                    break;
+                    geometry.attributes.uv.needsUpdate = true;
+                break; case "Dynamic": // every face gets a spot on the texture based on its size
+                    geometry.computeBoundingBox();
+                    var bbox = geometry.boundingBox;
+                    var size = new Scene3D.func.Vector3();
+                    bbox.getSize(size);
+
+                    var maxAxis = Math.max(size.x, size.y, size.z);
+
+                    var uvs = [];
+                    var positions = geometry.attributes.position.array;
+                    var normals = geometry.attributes.normal.array;
+
+                    for (let i = 0; i < positions.length; i += 3) {
+                        var x = positions[i];
+                        var y = positions[i + 1];
+                        var z = positions[i + 2];
+
+                        var nx = Math.abs(normals[i]);
+                        var ny = Math.abs(normals[i + 1]);
+                        var nz = Math.abs(normals[i + 2]);
+
+                        var u, v;
+
+                        if (nx >= ny && nx >= nz) {
+                            u = (y - bbox.min.y) / maxAxis;
+                            v = (z - bbox.min.z) / maxAxis;
+                        } else if (ny >= nx && ny >= nz) {
+                            u = (x - bbox.min.x) / maxAxis;
+                            v = (z - bbox.min.z) / maxAxis;
+                        } else {
+                            u = (x - bbox.min.x) / maxAxis;
+                            v = (y - bbox.min.y) / maxAxis;
+                        }
+
+                        uvs.push(u, v);
+                    }
+
+                    geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvs, 2));
+                    geometry.attributes.uv.needsUpdate = true;
+                break; default:
+                    if (!geometry.attributes.uv) {
+                        var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
+                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                    }
+
+                    var uvs = geometry.attributes.uv.array;
+
+                    for (var i = 0, j = 0; i < uvs.length; i += 6) {
+                        uvs[i] = 0;   uvs[i + 1] = 0;
+                        uvs[i + 2] = 1; uvs[i + 3] = 0;
+                        uvs[i + 4] = 0; uvs[i + 5] = 1;
+                    }
+
+                    geometry.attributes.uv.needsUpdate = true;
+                break;
             }
         }
 
         // ----------------------------------- extras ----------------------------------- //
+
+        getObjectUVtexture({ ID, SCENE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].objects[ID]) return;
+
+            var genuuid = Scene3D.scenes[SCENE].objects[ID].generated;
+            var mesh = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid);
+
+            if (!mesh) return;
+
+            var geometry = mesh.geometry;
+            if (!geometry || !geometry.attributes.uv) return;
+            geometry.computeBoundingBox();
+
+            var size = 512; // geometry.boundingBox.getSize(new Scene3D.func.Vector3())
+
+            var canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            var ctx = canvas.getContext("2d");
+
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, size, size);
+
+            var uvs = geometry.attributes.uv.array;
+            var indices = geometry.index ? geometry.index.array : null;
+            var positions = geometry.attributes.position.array;
+
+            ctx.strokeStyle = Scene3D.func.getRandomColor();
+            ctx.lineWidth = 1;
+
+            for (var i = 0; i < (indices ? indices.length : uvs.length / 2); i += 3) {
+                var idx0 = indices ? indices[i] * 2 : i * 2;
+                var idx1 = indices ? indices[i + 1] * 2 : (i + 1) * 2;
+                var idx2 = indices ? indices[i + 2] * 2 : (i + 2) * 2;
+
+                var x0 = uvs[idx0] * size;
+                var y0 = (1 - uvs[idx0 + 1]) * size;
+                var x1 = uvs[idx1] * size;
+                var y1 = (1 - uvs[idx1 + 1]) * size;
+                var x2 = uvs[idx2] * size;
+                var y2 = (1 - uvs[idx2 + 1]) * size;
+
+                ctx.beginPath();
+                ctx.moveTo(x0, y0);
+                ctx.lineTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.closePath();
+                ctx.stroke();
+
+                ctx.strokeStyle = Scene3D.func.getRandomColor();
+            }
+
+            return canvas.toDataURL('image/png');
+        }
 
         onObjectLoad({ SCENE, ID }) {
             if (! Scene3D.scenes[SCENE]) return;
