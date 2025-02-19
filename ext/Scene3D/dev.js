@@ -860,21 +860,20 @@
         makePointObject({ SCENE, ID, POINTS, TYPE }) {
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
-        
+
             var points = [];
             try {
                 points = JSON.parse(`[${POINTS}]`);
             } catch (e) {
                 return;
             }
-        
+
             let geom = new window.Scene3D.func.BufferGeometry();
             geom.setAttribute('position', new window.Scene3D.func.BufferAttribute(new Float32Array(points), 3));
-        
+
             let indices = [];
-            let uvs = [];
             let stopcount = 0;
-        
+
             let vp = 3;
             switch (TYPE) {
                 case "tri": vp = 3; break;
@@ -887,43 +886,27 @@
             for (let f = 0; f < numFaces; f++) {
                 let base = f * vp;
                 if (stopcount >= Scene3D.maxverts) break;
-        
+
                 for (let i = 1; i < vp - 1; i++) {
                     stopcount += 1; if (stopcount >= Scene3D.maxverts) break;
                     indices.push(base, base + i, base + i + 1);
                 }
             }
-        
-            let xMin = Math.min(...points.filter((_, idx) => idx % 3 === 0));
-            let xMax = Math.max(...points.filter((_, idx) => idx % 3 === 0));
-            let yMin = Math.min(...points.filter((_, idx) => idx % 3 === 1));
-            let yMax = Math.max(...points.filter((_, idx) => idx % 3 === 1));
-        
-            for (let i = 0; i < points.length; i += 3) {
-                stopcount += 1;
-                if (stopcount >= Scene3D.maxverts) break;
-                
-                let x = points[i], y = points[i + 1], z = points[i + 2];
-                let u = (x - xMin) / (xMax - xMin);
-                let v = (y - yMin) / (yMax - yMin);
-                uvs.push(u, v);
-            }
-        
-            let baseMaterial = new Scene3D.func.MeshBasicMaterial({ color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide });
-        
+
+            let baseMaterial = new Scene3D.func.MeshBasicMaterial({ color: 0xffffff, side: window.Scene3D.func.DoubleSide });
+
             geom.setIndex(indices);
-            geom.setAttribute('uv', new window.Scene3D.func.BufferAttribute(new Float32Array(uvs), 2));
             geom.computeVertexNormals();
-        
+
             Scene3D.scenes[SCENE].objects[ID] = geom;
-        
+
             var mesh = new window.Scene3D.func.Mesh(geom, baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].world.add(mesh);
-        
+
             Scene3D.scenes[SCENE].objects[ID].loaded = true;
             Scene3D.scenes[SCENE].objects[ID].generated = mesh.uuid;
-        
+
             Scene3D.scenes[SCENE].objects[ID].destroy = () => {
                 var destroy = Scene3D.scenes[SCENE].objects[ID].generated;
                 var newscene = Scene3D.scenes[SCENE].world.children.filter(obj => obj.uuid !== destroy);
@@ -1060,8 +1043,33 @@
             if (!Scene3D.scenes[SCENE].materials[MATERIAL]) return;
 
             var genuuid = Scene3D.scenes[SCENE].objects[ID].generated;
-            var child = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid)
-            child.material = Scene3D.scenes[SCENE].materials[MATERIAL];
+            var mesh = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid);
+            mesh.material = Scene3D.scenes[SCENE].materials[MATERIAL];
+        }
+
+        setObjectUV({ ID, SCENE, TYPE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].objects[ID]) return;
+
+            var genuuid = Scene3D.scenes[SCENE].objects[ID].generated;
+            var mesh = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid);
+
+            switch (TYPE) {
+                case "BoxFit": // maps the uvs like it is projecting a box onto the object surfaces
+                    break;
+                case "SphericalFit": // same as box fit but sphere
+                    break;
+                case "AllFaces": // Every face is a triangle on the texture fir in a grid (each triangle has a second pair) based on the index and not positions
+                    break;
+                case "WrapFit": // like wrapping a cloth around the object (like Pelt Mapping)
+                    break;
+                case "CylindricalFit": // like box fit but cylinder
+                    break;
+                case "Dynamic": // like if the 3D object is flattened while preserving the proportions
+                    break;
+                default:
+                    return; // remove all uv mapping
+            }
         }
 
         // ----------------------------------- extras ----------------------------------- //
