@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triangle Grid</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <input type="number" id="triangleCount" placeholder="Enter number of triangles" min="1" oninput="drawTriangles()">
+    <canvas id="triangleCanvas"></canvas>
+
+    <script>
+        function drawTriangles() {
+            const count = parseInt(document.getElementById('triangleCount').value);
+            if (isNaN(count) || count < 1) {
+                return;
+            }
+
+            const canvas = document.getElementById('triangleCanvas');
+            const context = canvas.getContext('2d');
+
+            const gridSize = Math.ceil(Math.sqrt(count / 2));
+            const triangleSize = (1 / gridSize);
+            const canvasSize = gridSize * (triangleSize * 200);
+
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < count; i++) {
+                const row = Math.floor(i / (gridSize * 2));
+                const col = (i % (gridSize * 2)) / 2;
+                const x = col * triangleSize;
+                const y = row * triangleSize;
+
+                const isLeft = (i % 2) === 0;
+                drawTriangle(context, x, y, triangleSize, isLeft);
+            }
+        }
+
+        function drawTriangle(context, x, y, size, isLeft) {
+            context.beginPath();
+            context.fillStyle = getRandomColor();
+            x *= 200;
+            y *= 200;
+            size *= 200;
+            if (isLeft) {
+                context.moveTo(x, y);
+                context.lineTo(x + size, y);
+                context.lineTo(x, y + size);
+            } else {
+                context.moveTo(x + size/2, y);
+                context.lineTo(x + size/2, y + size);
+                context.lineTo(x - size/2, y + size);
+            }
+            context.closePath();
+            context.fill();
+            context.stroke();
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+</body>
+</html>
