@@ -17,8 +17,8 @@
         window.Scene3D.libs.loaded = 0;
 
         if (window.THREE) {
-            window.Scene3D.func = THREE;
-            window.Scene3D.func.getRandomColor = function() {
+            window.Scene3D.libs.loaded += 1;
+            window.THREE.getRandomColor = function() {
                 var letters = '0123456789ABCDEF';
                 var color = '#';
                 for (var i = 0; i < 6; i++) {
@@ -32,9 +32,8 @@
             script.id = "WindowImports3D";
             script.src = "https://unpkg.com/three@0.157.0/build/three.min.js";
             script.onload = function () {
-                window.Scene3D.func = THREE;
                 window.Scene3D.libs.loaded += 1;
-                window.Scene3D.func.getRandomColor = function() {
+                window.THREE.getRandomColor = function() {
                     var letters = '0123456789ABCDEF';
                     var color = '#';
                     for (var i = 0; i < 6; i++) {
@@ -42,7 +41,6 @@
                     }
                     return color;
                 }
-                THREE = null;
             };
             document.head.appendChild(script);
         }
@@ -710,9 +708,9 @@
             scene.canvas.height = HEIGHT;
             document.body.appendChild(scene.canvas);
 
-            scene.uniformTime = new Scene3D.func.Uniform(0);
+            scene.uniformTime = new THREE.Uniform(0);
 
-            scene.renderer = new Scene3D.func.WebGLRenderer({
+            scene.renderer = new THREE.WebGLRenderer({
                 canvas: scene.canvas,
                 antialias: false,
                 alpha: true
@@ -722,9 +720,9 @@
 
             scene.objects = {};
             scene.materials = {};
-            scene.world = new Scene3D.func.Scene();
+            scene.world = new THREE.Scene();
 
-            scene.camera = new Scene3D.func.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
+            scene.camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
 
             Scene3D.scenes[ID] = scene;
         }
@@ -781,7 +779,7 @@
 
         setSceneFog({ SCENE, COLOR, NEAR, FAR }) {
             if (!Scene3D.scenes[SCENE]) return;
-            Scene3D.scenes[SCENE].world.fog = new Scene3D.func.Fog(new Scene3D.func.Color(COLOR).convertLinearToSRGB(), NEAR, FAR);
+            Scene3D.scenes[SCENE].world.fog = new THREE.Fog(new THREE.Color(COLOR).convertLinearToSRGB(), NEAR, FAR);
         }
 
 
@@ -802,7 +800,7 @@
         rotateCameraToLookAt({ ID, V3 }) {
             if (!Scene3D.scenes[ID]) return;
             var [X, Y, Z] = this.vectorToArray(V3);
-            Scene3D.scenes[ID].camera.lookAt(new Scene3D.func.Vector3(X, Y, Z));
+            Scene3D.scenes[ID].camera.lookAt(new THREE.Vector3(X, Y, Z));
         }
 
         setCameraFOV({ ID, FOV }) {
@@ -818,7 +816,7 @@
 
             if (!TYPE.includes("Material")) return;
 
-            Scene3D.scenes[SCENE].materials[ID] = new Scene3D.func[TYPE]({});
+            Scene3D.scenes[SCENE].materials[ID] = new THREE[TYPE]({});
 
             Scene3D.scenes[SCENE].materials[ID].destroy = () => {
                 delete Scene3D.scenes[SCENE].materials[ID];
@@ -831,7 +829,7 @@
 
             function loadTexture(url) {
                 return new Promise((resolve, reject) => {
-                    new Scene3D.func.TextureLoader().load(url, resolve, undefined, reject);
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
                 });
             }
 
@@ -845,7 +843,7 @@
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
 
-            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.AxesHelper(SIZE);
+            Scene3D.scenes[SCENE].objects[ID] = new THREE.AxesHelper(SIZE);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].loaded = true;
 
@@ -865,7 +863,7 @@
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
 
-            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.GridHelper(SIZE, PARTS);
+            Scene3D.scenes[SCENE].objects[ID] = new THREE.GridHelper(SIZE, PARTS);
             Scene3D.scenes[SCENE].objects[ID].generated = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].objects[ID].loaded = true;
 
@@ -887,7 +885,7 @@
             var [OX, OY, OZ] = this.vectorToArray(OV3);
             var [DX, DY, DZ] = this.vectorToArray(DV3);
 
-            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.ArrowHelper(new Scene3D.func.Vector3(DX, DY, DZ).normalize(), new Scene3D.func.Vector3(OX, OY, OZ), LENGTH, COLOR);
+            Scene3D.scenes[SCENE].objects[ID] = new THREE.ArrowHelper(new THREE.Vector3(DX, DY, DZ).normalize(), new THREE.Vector3(OX, OY, OZ), LENGTH, COLOR);
 
             Scene3D.scenes[SCENE].world.add(Scene3D.scenes[SCENE].objects[ID]);
 
@@ -915,8 +913,8 @@
                 return;
             }
 
-            var geom = new window.Scene3D.func.BufferGeometry();
-            geom.setAttribute('position', new window.Scene3D.func.BufferAttribute(new Float32Array(points), 3));
+            var geom = new window.THREE.BufferGeometry();
+            geom.setAttribute('position', new window.THREE.BufferAttribute(new Float32Array(points), 3));
 
             var indices = [];
             var stopcount = 0;
@@ -940,14 +938,14 @@
                 }
             }
 
-            var baseMaterial = new Scene3D.func.MeshBasicMaterial({ color: 0xffffff, side: window.Scene3D.func.DoubleSide });
+            var baseMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: window.THREE.DoubleSide });
 
             geom.setIndex(indices);
             geom.computeVertexNormals();
 
             Scene3D.scenes[SCENE].objects[ID] = geom;
 
-            var mesh = new window.Scene3D.func.Mesh(geom, baseMaterial);
+            var mesh = new window.THREE.Mesh(geom, baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].world.add(mesh);
 
@@ -968,11 +966,11 @@
 
             var [WIDTH, HEIGHT, DEPTH] = this.vectorToArray(V3);
 
-            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.BoxGeometry(WIDTH, HEIGHT, DEPTH);
+            Scene3D.scenes[SCENE].objects[ID] = new THREE.BoxGeometry(WIDTH, HEIGHT, DEPTH);
 
-            var baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
+            var baseMaterial = new THREE.MeshBasicMaterial({color: window.THREE.getRandomColor(), side: window.THREE.DoubleSide});
 
-            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
+            var mesh = new THREE.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
 
             Scene3D.scenes[SCENE].world.add(mesh);
@@ -991,11 +989,11 @@
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
 
-            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CapsuleGeometry(RADIUS, LENGTH, 5, 30);
+            Scene3D.scenes[SCENE].objects[ID] = new THREE.CapsuleGeometry(RADIUS, LENGTH, 5, 30);
 
-            var baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor(), side: window.Scene3D.func.DoubleSide});
+            var baseMaterial = new THREE.MeshBasicMaterial({color: window.THREE.getRandomColor(), side: window.THREE.DoubleSide});
 
-            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
+            var mesh = new THREE.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
 
             Scene3D.scenes[SCENE].world.add(mesh);
@@ -1014,11 +1012,11 @@
             if (!Scene3D.scenes[SCENE]) return;
             Scene3D.scenes[SCENE].objects[ID]?.destroy();
 
-            Scene3D.scenes[SCENE].objects[ID] = new Scene3D.func.CylinderGeometry(RADIUSTOP, RADIUSBOTTOM, HEIGHT, 30, 1, OPENED);
+            Scene3D.scenes[SCENE].objects[ID] = new THREE.CylinderGeometry(RADIUSTOP, RADIUSBOTTOM, HEIGHT, 30, 1, OPENED);
 
-            var baseMaterial = new Scene3D.func.MeshBasicMaterial({color: window.Scene3D.func.getRandomColor()});
+            var baseMaterial = new THREE.MeshBasicMaterial({color: window.THREE.getRandomColor()});
 
-            var mesh = new Scene3D.func.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
+            var mesh = new THREE.Mesh(Scene3D.scenes[SCENE].objects[ID], baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
 
             Scene3D.scenes[SCENE].world.add(mesh);
@@ -1064,9 +1062,9 @@
             if (!obj) return;
 
             obj.rotation.set(
-                Scene3D.func.MathUtils.degToRad(X),
-                Scene3D.func.MathUtils.degToRad(Y),
-                Scene3D.func.MathUtils.degToRad(Z)
+                THREE.MathUtils.degToRad(X),
+                THREE.MathUtils.degToRad(Y),
+                THREE.MathUtils.degToRad(Z)
             );
         }
 
@@ -1111,7 +1109,7 @@
                 case "CubeFit": // project the surface of a cube onto the object to make UV map
                     geometry.computeBoundingBox();
                     var bbox = geometry.boundingBox;
-                    var bboxSize = new Scene3D.func.Vector3().subVectors(bbox.max, bbox.min);
+                    var bboxSize = new THREE.Vector3().subVectors(bbox.max, bbox.min);
                     var boxMaxSize = Math.max(bboxSize.x, bboxSize.y, bboxSize.z);
 
                     // Based on https://jsfiddle.net/mmalex/pcjbysn1
@@ -1119,7 +1117,7 @@
                         var coords = new Float32Array(2 * geom.attributes.position.array.length / 3);
                         
                         if (!geom.attributes.uv) {
-                            geom.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(coords, 2));
+                            geom.setAttribute('uv', new THREE.Float32BufferAttribute(coords, 2));
                         }
 
                         var makeUVs = function(v0, v1, v2) {
@@ -1127,16 +1125,16 @@
                             v1.applyMatrix4(transformMatrix);
                             v2.applyMatrix4(transformMatrix);
 
-                            var n = new Scene3D.func.Vector3();
+                            var n = new THREE.Vector3();
                             n.crossVectors(v1.clone().sub(v0), v1.clone().sub(v2)).normalize();
 
                             n.x = Math.abs(n.x);
                             n.y = Math.abs(n.y);
                             n.z = Math.abs(n.z);
 
-                            var uv0 = new Scene3D.func.Vector2();
-                            var uv1 = new Scene3D.func.Vector2();
-                            var uv2 = new Scene3D.func.Vector2();
+                            var uv0 = new THREE.Vector2();
+                            var uv1 = new THREE.Vector2();
+                            var uv2 = new THREE.Vector2();
 
                             if (n.y > n.x && n.y > n.z) {
                                 uv0.set((v0.x - bbox.min.x) / bboxMaxSize, (bbox.max.z - v0.z) / bboxMaxSize);
@@ -1159,9 +1157,9 @@
                             for (var i = 0; i < geom.index.array.length; i += 3) {
                                 var idx0 = geom.index.array[i], idx1 = geom.index.array[i + 1], idx2 = geom.index.array[i + 2];
 
-                                var v0 = new Scene3D.func.Vector3().fromArray(geom.attributes.position.array, idx0 * 3);
-                                var v1 = new Scene3D.func.Vector3().fromArray(geom.attributes.position.array, idx1 * 3);
-                                var v2 = new Scene3D.func.Vector3().fromArray(geom.attributes.position.array, idx2 * 3);
+                                var v0 = new THREE.Vector3().fromArray(geom.attributes.position.array, idx0 * 3);
+                                var v1 = new THREE.Vector3().fromArray(geom.attributes.position.array, idx1 * 3);
+                                var v2 = new THREE.Vector3().fromArray(geom.attributes.position.array, idx2 * 3);
 
                                 var uvs = makeUVs(v0, v1, v2);
 
@@ -1175,10 +1173,10 @@
                         geom.attributes.uv.needsUpdate = true;
                     }
 
-                    var transformMatrix = new Scene3D.func.Matrix4();
-                    var uvBoundingBox = new Scene3D.func.Box3(
-                        new Scene3D.func.Vector3(-boxMaxSize / 2, -boxMaxSize / 2, -boxMaxSize / 2),
-                        new Scene3D.func.Vector3(boxMaxSize / 2, boxMaxSize / 2, boxMaxSize / 2)
+                    var transformMatrix = new THREE.Matrix4();
+                    var uvBoundingBox = new THREE.Box3(
+                        new THREE.Vector3(-boxMaxSize / 2, -boxMaxSize / 2, -boxMaxSize / 2),
+                        new THREE.Vector3(boxMaxSize / 2, boxMaxSize / 2, boxMaxSize / 2)
                     );
 
                     applyBoxUV(geometry, transformMatrix, uvBoundingBox, boxMaxSize);
@@ -1190,7 +1188,7 @@
 
                     if (!geometry.attributes.uv) {
                         var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
-                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
                     }
 
                     var positions = geometry.attributes.position.array;
@@ -1220,7 +1218,7 @@
 
                     if (!geometry.attributes.uv) {
                         var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
-                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
                     }
 
                     var positions = geometry.attributes.position.array;
@@ -1244,12 +1242,12 @@
                     geometry.computeBoundingBox();
                     var bbox = geometry.boundingBox;
 
-                    var center = bbox.getCenter(new Scene3D.func.Vector3());
-                    var size = bbox.getSize(new Scene3D.func.Vector3());
+                    var center = bbox.getCenter(new THREE.Vector3());
+                    var size = bbox.getSize(new THREE.Vector3());
 
                     if (!geometry.attributes.uv) {
                         var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
-                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
                     }
 
                     var positions = geometry.attributes.position.array;
@@ -1277,7 +1275,7 @@
 
                     if (!geometry.attributes.uv) {
                         var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
-                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
                     }
 
                     var positions = geometry.attributes.position.array;
@@ -1318,9 +1316,9 @@
 
                         if (isLeft) {
                             uvs.push(
-                                sx / totalSize,         sy / totalSize,
+                                sx / totalSize, sy / totalSize,
                                 (sx + cellSize) / totalSize, sy / totalSize,
-                                sx / totalSize,         (sy + cellSize) / totalSize
+                                sx / totalSize, (sy + cellSize) / totalSize
                             );
                         } else {
                             uvs.push(
@@ -1331,15 +1329,12 @@
                         }
                     }
 
-                    geometry.setAttribute(
-                        'uv',
-                        new Scene3D.func.Float32BufferAttribute(uvs, 2)
-                    );
-            geometry.attributes.uv.needsUpdate = true;
+                    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+                    geometry.attributes.uv.needsUpdate = true;
                 break; default:
                     if (!geometry.attributes.uv) {
                         var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
-                        geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvArray, 2));
+                        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvArray, 2));
                     }
 
                     var uvs = geometry.attributes.uv.array;
@@ -1370,7 +1365,7 @@
             if (!geometry || !geometry.attributes.uv) return;
             geometry.computeBoundingBox();
 
-            var size = 512; // geometry.boundingBox.getSize(new Scene3D.func.Vector3())
+            var size = 512; // geometry.boundingBox.getSize(new THREE.Vector3())
 
             var canvas = document.createElement("canvas");
             canvas.width = size;
@@ -1384,7 +1379,7 @@
             var indices = geometry.index ? geometry.index.array : null;
             var positions = geometry.attributes.position.array;
 
-            ctx.strokeStyle = Scene3D.func.getRandomColor();
+            ctx.strokeStyle = THREE.getRandomColor();
             ctx.lineWidth = 1;
 
             for (var i = 0; i < (indices ? indices.length : uvs.length / 2); i += 3) {
@@ -1406,7 +1401,7 @@
                 ctx.closePath();
                 ctx.stroke();
 
-                ctx.strokeStyle = Scene3D.func.getRandomColor();
+                ctx.strokeStyle = THREE.getRandomColor();
             }
 
             return canvas.toDataURL('image/png');
