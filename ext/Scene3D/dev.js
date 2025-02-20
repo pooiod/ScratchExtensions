@@ -540,6 +540,22 @@
 						},
 					},
 
+					{
+						opcode: 'getObjectPoints',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Generate points from object [ID] in scene [SCENE]',
+						arguments: {
+                            ID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'object1',
+							},
+                            SCENE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'scene1',
+							},
+						},
+					},
+
                     {
                         opcode: "jsHookScene",
                         blockType: Scratch.BlockType.REPORTER,
@@ -908,13 +924,17 @@
 
             var points = [];
             try {
-                points = JSON.parse(`[${POINTS}]`);
+                if (POINTS.startsWith("[") && POINTS.endsWith("]")) {
+                    points = JSON.parse(POINTS);
+                } else {
+                    points = JSON.parse(`[${POINTS}]`);
+                }
             } catch (e) {
                 return;
             }
 
-            var geom = new window.THREE.BufferGeometry();
-            geom.setAttribute('position', new window.THREE.BufferAttribute(new Float32Array(points), 3));
+            var geom = new THREE.BufferGeometry();
+            geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 3));
 
             var indices = [];
             var stopcount = 0;
@@ -938,14 +958,14 @@
                 }
             }
 
-            var baseMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: window.THREE.DoubleSide });
+            var baseMaterial = new THREE.MeshBasicMaterial({color: THREE.getRandomColor()});
 
             geom.setIndex(indices);
             geom.computeVertexNormals();
 
             Scene3D.scenes[SCENE].objects[ID] = geom;
 
-            var mesh = new window.THREE.Mesh(geom, baseMaterial);
+            var mesh = new THREE.Mesh(geom, baseMaterial);
             mesh.original = Scene3D.scenes[SCENE].objects[ID].uuid;
             Scene3D.scenes[SCENE].world.add(mesh);
 
@@ -1100,9 +1120,7 @@
             var mesh = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid);
 
             if (!mesh) return;
-
             var geometry = mesh.geometry;
-
             if (!geometry) return;
 
             switch (TYPE) {
@@ -1351,6 +1369,31 @@
         }
 
         // ----------------------------------- extras ----------------------------------- //
+
+        getObjectPoints({ ID, SCENE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].objects[ID]) return;
+        
+            var genuuid = Scene3D.scenes[SCENE].objects[ID].generated;
+            var mesh = Scene3D.scenes[SCENE].world.children.find(obj => obj.uuid == genuuid);
+
+            if (!mesh) return;
+            var geometry = mesh.geometry;
+            if (!geometry) return;
+
+            if (geometry.index) {
+                const indices = geometry.index.array;
+                const positions = geometry.attributes.position.array;
+                const result = [];
+                for (let i = 0; i < indices.length; i++) {
+                    const idx = indices[i] * 3;
+                    result.push(positions[idx], positions[idx + 1], positions[idx + 2]);
+                }
+                return JSON.stringify(result);
+            } else {
+                return JSON.stringify(Array.from(geometry.attributes.position.array));
+            }
+        }
 
         getObjectUVtexture({ ID, SCENE }) {
             if (!Scene3D.scenes[SCENE]) return;
