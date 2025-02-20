@@ -1295,41 +1295,28 @@
                     }
 
                     geometry.attributes.uv.needsUpdate = true;
-                break; case "Dynamic": // every face gets a spot on the texture based on its size
-                    geometry.computeBoundingBox();
-                    var bbox = geometry.boundingBox;
-                    var size = new Scene3D.func.Vector3();
-                    bbox.getSize(size);
-
-                    var maxAxis = Math.max(size.x, size.y, size.z);
-
+                break; case "Dynamic": // every face gets a spot on the texture based on its size (wip)
+                    var totalFaces = geometry.index ? geometry.index.count / 3 : geometry.attributes.position.count / 3;
                     var uvs = [];
-                    var positions = geometry.attributes.position.array;
-                    var normals = geometry.attributes.normal.array;
 
-                    for (let i = 0; i < positions.length; i += 3) {
-                        var x = positions[i];
-                        var y = positions[i + 1];
-                        var z = positions[i + 2];
+                    var rows = Math.ceil(Math.sqrt(totalFaces));
+                    var cols = Math.ceil(totalFaces / rows);
 
-                        var nx = Math.abs(normals[i]);
-                        var ny = Math.abs(normals[i + 1]);
-                        var nz = Math.abs(normals[i + 2]);
+                    var uSize = 1 / cols;
+                    var vSize = 1 / rows;
 
-                        var u, v;
+                    for (let i = 0; i < totalFaces; i++) {
+                        var row = Math.floor(i / cols);
+                        var col = i % cols;
 
-                        if (nx >= ny && nx >= nz) {
-                            u = (y - bbox.min.y) / maxAxis;
-                            v = (z - bbox.min.z) / maxAxis;
-                        } else if (ny >= nx && ny >= nz) {
-                            u = (x - bbox.min.x) / maxAxis;
-                            v = (z - bbox.min.z) / maxAxis;
-                        } else {
-                            u = (x - bbox.min.x) / maxAxis;
-                            v = (y - bbox.min.y) / maxAxis;
-                        }
+                        var u0 = col * uSize;
+                        var v0 = row * vSize;
+                        var u1 = (col + 1) * uSize;
+                        var v1 = (row + 1) * vSize;
 
-                        uvs.push(u, v);
+                        uvs.push(u0, v0);
+                        uvs.push(u1, v0);
+                        uvs.push(u0, v1);
                     }
 
                     geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvs, 2));
