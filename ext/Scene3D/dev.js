@@ -1296,31 +1296,46 @@
 
                     geometry.attributes.uv.needsUpdate = true;
                 break; case "Grid": // every face gets a spot on the texture based on its size
-                    var totalFaces = geometry.index ? geometry.index.count / 3 : geometry.attributes.position.count / 3;
-                    var gridSize = Math.ceil(Math.sqrt(totalFaces / 2));
-                    var cellSize = 1 / gridSize;
+                    var triangleCount = geometry.index
+                        ? geometry.index.count / 3
+                        : geometry.attributes.position.count / 3;
+
+                    var gridSize = Math.ceil(Math.sqrt(triangleCount / 2));
+
+                    var cellSize = 100;
+                    var totalSize = gridSize * cellSize;
+
                     var uvs = [];
 
-                    for (let i = 0; i < totalFaces; i++) {
-                        let row = Math.floor(i / (gridSize * 2));
-                        let col = (i % (gridSize * 2)) / 2;
-                        let u = col * cellSize;
-                        let v = row * cellSize;
-                        let isLeft = (i % 2) === 0;
+                    for (var i = 0; i < triangleCount; i++) {
+                        var row = Math.floor(i / (gridSize * 2));
+                        var col = (i % (gridSize * 2)) / 2;
+
+                        var sx = col * cellSize;
+                        var sy = row * cellSize;
+
+                        var isLeft = (i % 2) === 0;
 
                         if (isLeft) {
-                            uvs.push(u, v);
-                            uvs.push(u + cellSize, v);
-                            uvs.push(u, v + cellSize);
+                            uvs.push(
+                                sx / totalSize,         sy / totalSize,
+                                (sx + cellSize) / totalSize, sy / totalSize,
+                                sx / totalSize,         (sy + cellSize) / totalSize
+                            );
                         } else {
-                            uvs.push(u + cellSize / 2, v);
-                            uvs.push(u + cellSize / 2, v + cellSize);
-                            uvs.push(u - cellSize / 2, v + cellSize);
+                            uvs.push(
+                                (sx + cellSize / 2) / totalSize, sy / totalSize,
+                                (sx + cellSize / 2) / totalSize, (sy + cellSize) / totalSize,
+                                (sx - cellSize / 2) / totalSize, (sy + cellSize) / totalSize
+                            );
                         }
                     }
 
-                    geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvs, 2));
-                    geometry.attributes.uv.needsUpdate = true;
+                    geometry.setAttribute(
+                        'uv',
+                        new Scene3D.func.Float32BufferAttribute(uvs, 2)
+                    );
+            geometry.attributes.uv.needsUpdate = true;
                 break; default:
                     if (!geometry.attributes.uv) {
                         var uvArray = new Float32Array(2 * geometry.attributes.position.array.length / 3);
