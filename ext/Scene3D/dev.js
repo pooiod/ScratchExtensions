@@ -644,7 +644,7 @@
 
                         { text: "Wrap Fit", value: "WrapFit" },
                         { text: "All One Face", value: "AllOneFace" },
-                        { text: "Dynamic", value: "Dynamic" },
+                        { text: "Grid", value: "Grid" },
                     ]
                 }
 			};
@@ -1295,28 +1295,28 @@
                     }
 
                     geometry.attributes.uv.needsUpdate = true;
-                break; case "Dynamic": // every face gets a spot on the texture based on its size (wip)
+                break; case "Grid": // every face gets a spot on the texture based on its size
                     var totalFaces = geometry.index ? geometry.index.count / 3 : geometry.attributes.position.count / 3;
+                    var gridSize = Math.ceil(Math.sqrt(totalFaces / 2));
+                    var cellSize = 1 / gridSize;
                     var uvs = [];
 
-                    var rows = Math.ceil(Math.sqrt(totalFaces));
-                    var cols = Math.ceil(totalFaces / rows);
-
-                    var uSize = 1 / cols;
-                    var vSize = 1 / rows;
-
                     for (let i = 0; i < totalFaces; i++) {
-                        var row = Math.floor(i / cols);
-                        var col = i % cols;
+                        let row = Math.floor(i / (gridSize * 2));
+                        let col = (i % (gridSize * 2)) / 2;
+                        let u = col * cellSize;
+                        let v = row * cellSize;
+                        let isLeft = (i % 2) === 0;
 
-                        var u0 = col * uSize;
-                        var v0 = row * vSize;
-                        var u1 = (col + 1) * uSize;
-                        var v1 = (row + 1) * vSize;
-
-                        uvs.push(u0, v0);
-                        uvs.push(u1, v0);
-                        uvs.push(u0, v1);
+                        if (isLeft) {
+                            uvs.push(u, v);
+                            uvs.push(u + cellSize, v);
+                            uvs.push(u, v + cellSize);
+                        } else {
+                            uvs.push(u + cellSize / 2, v);
+                            uvs.push(u + cellSize / 2, v + cellSize);
+                            uvs.push(u - cellSize / 2, v + cellSize);
+                        }
                     }
 
                     geometry.setAttribute('uv', new Scene3D.func.Float32BufferAttribute(uvs, 2));
