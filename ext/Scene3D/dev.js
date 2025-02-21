@@ -430,6 +430,26 @@
                         },
                     },
 
+                    {
+                        opcode: "setMaterialColor",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set color of material [ID] in scene [SCENE] to [COLOR]",
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "material1",
+                            },
+                            SCENE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "scene1",
+                            },
+                            COLOR: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: `#ff0000`,
+                            },
+                        },
+                    },
+
                     { blockType: Scratch.BlockType.LABEL, text: "Render" }, // -------------------------------------
                     {
                         opcode: "showSceneFrame",
@@ -659,6 +679,16 @@
                         { text: "Wrap Fit", value: "WrapFit" },
                         { text: "All One Face", value: "AllOneFace" },
                         { text: "Grid", value: "Grid" },
+                    ],
+                    wireframeJoin: [
+                        "round",
+                        "bevel",
+                        "miter"
+                    ],
+                    wireframeCap: [
+                        "round",
+                        "butt",
+                        "square"
                     ]
                 }
 			};
@@ -839,6 +869,96 @@
             }
         }
 
+        setMaterialColor({ SCENE, ID, COLOR }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].color = new THREE.Color(COLOR);
+        }
+
+        setMaterialEmissive({ SCENE, ID, COLOR }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].emissive = new THREE.Color(COLOR);
+        }
+
+        setMaterialReflectivity({ SCENE, ID, VALUE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].reflectivity = VALUE;
+        }
+
+        setMaterialShininess({ SCENE, ID, VALUE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].shininess = VALUE;
+        }
+
+        setMaterialRefractionRatio({ SCENE, ID, VALUE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].refractionRatio = VALUE;
+        }
+
+        setMaterialTransparency({ SCENE, ID, TRANSPARENT }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].transparent = TRANSPARENT;
+        }
+
+        setMaterialClearcoat({ SCENE, ID, INTENSITY, ROUGHNESS }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].clearcoat = INTENSITY;
+            Scene3D.scenes[SCENE].materials[ID].clearcoatRoughness = ROUGHNESS;
+        }
+
+        setMaterialAttenuation({ SCENE, ID, COLOR, DISTANCE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].attenuationColor = new THREE.Color(COLOR);
+            Scene3D.scenes[SCENE].materials[ID].attenuationDistance = DISTANCE;
+        }
+
+        setMaterialIor({ SCENE, ID, VALUE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].ior = VALUE;
+        }
+
+        setMaterialIridescence({ SCENE, ID, VALUE, OR, THICKNESS }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].iridescence = VALUE;
+            Scene3D.scenes[SCENE].materials[ID].iridescenceIOR = OR;
+            Scene3D.scenes[SCENE].materials[ID].iridescenceThicknessRange = JSON.parse(`[${THICKNESS}]`);
+        }
+
+        setMaterialFlatShading({ SCENE, ID, FLATSHADING }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].flatShading = FLATSHADING;
+        }
+
+        setMaterialWireframe({ SCENE, ID, WIREFRAME, CAP, JOIN }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            Scene3D.scenes[SCENE].materials[ID].transparent = WIREFRAME;
+            Scene3D.scenes[SCENE].materials[ID].wireframeLinecap = CAP;
+            Scene3D.scenes[SCENE].materials[ID].wireframeLinejoin = JOIN;
+        }
+
         async setMaterialTexture({ SCENE, ID, IMAGE }) {
             if (!Scene3D.scenes[SCENE]) return;
             if (!Scene3D.scenes[SCENE].materials[ID]) return;
@@ -851,6 +971,124 @@
 
             var texture = await loadTexture(IMAGE);
             Scene3D.scenes[SCENE].materials[ID].map = texture;
+        }
+
+        async setMaterialAlphaMap({ SCENE, ID, IMAGE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].alphaMap = texture;
+        }
+
+        async setMaterialEnvMap({ SCENE, ID, IMAGE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].envMap = texture;
+        }
+
+        async setMaterialSpecularMap({ SCENE, ID, IMAGE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].specularMap = texture;
+        }
+
+        async setMaterialMatCapMap({ SCENE, ID, IMAGE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].matcap = texture;
+        }
+
+        async setMaterialDisplacementMap({ SCENE, ID, IMAGE, SCALE, BIAS }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].displacementMap = texture;
+            Scene3D.scenes[SCENE].materials[ID].displacementScale = SCALE;
+            Scene3D.scenes[SCENE].materials[ID].displacementBias = BIAS;
+        }
+
+        async setMaterialBumpMap({ SCENE, ID, IMAGE, SCALE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].bumpMap = texture;
+            Scene3D.scenes[SCENE].materials[ID].bumpScale = SCALE;
+        }
+
+        async setMaterialEmissiveMap({ SCENE, ID, IMAGE, INTENSITY }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].emissiveMap = texture;
+            Scene3D.scenes[SCENE].materials[ID].emissiveIntensity = INTENSITY;
+        }
+
+        async setMaterialNormalMap({ SCENE, ID, IMAGE, SCALE, TYPE }) {
+            if (!Scene3D.scenes[SCENE]) return;
+            if (!Scene3D.scenes[SCENE].materials[ID]) return;
+
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
+                });
+            }
+
+            var texture = await loadTexture(IMAGE);
+            Scene3D.scenes[SCENE].materials[ID].normalMap = texture;
+            Scene3D.scenes[SCENE].materials[ID].normalScale = THREE.Vector2(SCALEX, SCALEY);
+            Scene3D.scenes[SCENE].materials[ID].normalMapType = TYPE == "Object" ? THREE.ObjectSpaceNormalMap : THREE.TangentSpaceNormalMap;
         }
 
         // ----------------------------------- Helpers ----------------------------------- //
@@ -1311,7 +1549,7 @@
                     }
 
                     geometry.attributes.uv.needsUpdate = true;
-                break; case "Grid": // every face gets a spot on the texture based on its size
+                break; case "Grid": // every face gets a spot on the texture in a grid of triangles
                     var triangleCount = geometry.index
                         ? geometry.index.count / 3
                         : geometry.attributes.position.count / 3;
