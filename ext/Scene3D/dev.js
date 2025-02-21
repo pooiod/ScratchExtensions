@@ -411,9 +411,9 @@
                     },
 
                     {
-                        opcode: "setMaterialTexture",
+                        opcode: "setMaterialPropMap",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Set image of material [ID] in scene [SCENE] to [IMAGE]",
+                        text: "Set [PROP] of material [ID] in scene [SCENE] to [VALUE]",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
@@ -423,17 +423,20 @@
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "scene1",
                             },
-                            IMAGE: {
+                            PROP: {
+                                menu: "materialPropsTexture",
+                            },
+                            VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAABfSURBVFhH7daxCQBBCERRtxD7L8HAJjawC1sQ7uDgGtgNJvnmA8NLxpWZjx3czHwpdz9Im/35RQEEEEAAAQTkAhGhXUN5gaq6Eujuu3+AAggggAACCMgF9t7aNVQXeAH0+VkwQQSNOAAAAABJRU5ErkJggg==`,
+                                defaultValue: `http://p7scratchextensions.pages.dev/extras/images/custom_uv_diag.png`,
                             },
                         },
                     },
 
                     {
-                        opcode: "setMaterialColor",
+                        opcode: "setMaterialPropColor",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "Set color of material [ID] in scene [SCENE] to [COLOR]",
+                        text: "Set [PROP] of material [ID] in scene [SCENE] to [VALUE]",
                         arguments: {
                             ID: {
                                 type: Scratch.ArgumentType.STRING,
@@ -443,9 +446,12 @@
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: "scene1",
                             },
-                            COLOR: {
+                            PROP: {
+                                menu: "materialPropsColor",
+                            },
+                            VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: `#ff0000`,
+                                defaultValue: window.THREE && THREE.getRandomColor ? window.THREE.getRandomColor() : "#049ef4",
                             },
                         },
                     },
@@ -689,7 +695,72 @@
                         "round",
                         "butt",
                         "square"
-                    ]
+                    ],
+                    materialPropsColor: [
+                        { text: "Color", value: "color" },
+                        { text: "Emissive Color", value: "emissive" },
+                        { text: "Speculat Color", value: "specular" },
+                        { text: "Attenuation Color", value: "attenuationColor" },
+                        { text: "Sheen Color", value: "sheenColor" },
+                        { text: "Specular Color", value: "specularColor" },
+                    ],
+                    materialPropsTexture: [
+                        { text: "Texture", value: "map" },
+                        { text: "Alpha Map", value: "alphaMap" },
+                        { text: "Environment Map", value: "envMap" },
+                        { text: "Speculat Map Map", value: "specularMap" },
+                        { text: "Displacement Map", value: "displacementMap" },
+                        { text: "Bump Map", value: "bumpMap" },
+                        { text: "Emissive Map", value: "emissiveMap" },
+                        { text: "Normal Map", value: "normalMap" },
+                        { text: "Matcap", value: "matcap" },
+                        { text: "Anistrophy Map", value: "anisotropyMap" },
+                        { text: "Clearcoat Map", value: "clearcoatMap" },
+                        { text: "Clearcoat Normal Map", value: "clearcoatNormalMap" },
+                        { text: "Iridecence Map", value: "iridescenceMap" },
+                        { text: "Iridecence Thickness Map", value: "iridescenceThicknessMap " },
+                        { text: "Sheen Roughness Map", value: "sheenRoughnessMap" },
+                        { text: "Sheen Color Map", value: "sheenColorMap" },
+                        { text: "Speculat Intensity Map", value: "specularIntensityMap" },
+                        { text: "Speculat Color Map", value: "specularColorMap" },
+                        { text: "Thickness Map", value: "thicknessMap" },
+                        { text: "Tranmission Map", value: "transmissionMap" },
+                        { text: "Metalness Map", value: "metalnessMap" },
+                        { text: "Gradient Map", value: "gradientMap" },
+                    ],
+                    materialPropsNumber: [
+                        { text: "Reflectivity", value: "reflectivity" },
+                        { text: "Refraction Ratio", value: "refractionRatio" },
+                        { text: "Displacement Scale", value: "displacementScale" },
+                        { text: "Displacement Bias", value: "displacementBias" },
+                        { text: "Bump Scale", value: "bumpScale" },
+                        { text: "Emissive Intensity", value: "emissiveIntensity" },
+                        { text: "Shininess", value: "shininess" },
+                        { text: "Anistrophy", value: "anisotropy" },
+                        { text: "Attenuation Distance", value: "attenuationDistance" },
+                        { text: "Clearcoat", value: "clearcoat" },
+                        { text: "Clearcoat Rouchness", value: "clearcoatRoughness" },
+                        { text: "Dispersion", value: "dispersion" },
+                        { text: "Ior", value: "ior" },
+                        { text: "Iridescence", value: "iridescence" },
+                        { text: "IridescenceIOR", value: "iridescenceIOR" },
+                        { text: "Sheen", value: "sheen" },
+                        { text: "Sheen Roughness", value: "sheenRoughness" },
+                        { text: "Specular Intensity", value: "specularIntensity" },
+                        { text: "Thickness", value: "thickness" },
+                        { text: "Transmission", value: "transmission" },
+                        { text: "Environment Map Intensity", value: "envMapIntensity" },
+                        { text: "Metalness", value: "metalness" },
+                        { text: "Roughness", value: "roughness" },
+                    ],
+                    materialPropsRotation: [
+                        { text: "Anisotropy", value: "anisotropyRotation" },
+                        { text: "Environment", value: "envMapRotation" },
+                    ],
+                    materialPropsBool: [
+                        { text: "Fog Enabled", value: "fog" },
+                        { text: "Flat Shading", value: "flatShading" },
+                    ],
                 }
 			};
 		}
@@ -869,97 +940,28 @@
             }
         }
 
-        setMaterialColor({ SCENE, ID, COLOR }) {
+        setMaterialPropColor({ SCENE, ID, PROP, VALUE }) {
             if (!Scene3D.scenes[SCENE]) return;
             if (!Scene3D.scenes[SCENE].materials[ID]) return;
 
-            Scene3D.scenes[SCENE].materials[ID].color = new THREE.Color(COLOR);
+            Scene3D.scenes[SCENE].materials[ID][PROP] = new THREE.Color(VALUE);
         }
 
-        setMaterialEmissive({ SCENE, ID, COLOR }) {
+        setMaterialPropNumber({ SCENE, ID, PROP, VALUE }) {
             if (!Scene3D.scenes[SCENE]) return;
             if (!Scene3D.scenes[SCENE].materials[ID]) return;
 
-            Scene3D.scenes[SCENE].materials[ID].emissive = new THREE.Color(COLOR);
+            Scene3D.scenes[SCENE].materials[ID][PROP] = VALUE;
         }
 
-        setMaterialReflectivity({ SCENE, ID, VALUE }) {
+        setMaterialPropBool({ SCENE, ID, PROP, VALUE }) {
             if (!Scene3D.scenes[SCENE]) return;
             if (!Scene3D.scenes[SCENE].materials[ID]) return;
 
-            Scene3D.scenes[SCENE].materials[ID].reflectivity = VALUE;
+            Scene3D.scenes[SCENE].materials[ID][PROP] = VALUE;
         }
 
-        setMaterialShininess({ SCENE, ID, VALUE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].shininess = VALUE;
-        }
-
-        setMaterialRefractionRatio({ SCENE, ID, VALUE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].refractionRatio = VALUE;
-        }
-
-        setMaterialTransparency({ SCENE, ID, TRANSPARENT }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].transparent = TRANSPARENT;
-        }
-
-        setMaterialClearcoat({ SCENE, ID, INTENSITY, ROUGHNESS }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].clearcoat = INTENSITY;
-            Scene3D.scenes[SCENE].materials[ID].clearcoatRoughness = ROUGHNESS;
-        }
-
-        setMaterialAttenuation({ SCENE, ID, COLOR, DISTANCE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].attenuationColor = new THREE.Color(COLOR);
-            Scene3D.scenes[SCENE].materials[ID].attenuationDistance = DISTANCE;
-        }
-
-        setMaterialIor({ SCENE, ID, VALUE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].ior = VALUE;
-        }
-
-        setMaterialIridescence({ SCENE, ID, VALUE, OR, THICKNESS }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].iridescence = VALUE;
-            Scene3D.scenes[SCENE].materials[ID].iridescenceIOR = OR;
-            Scene3D.scenes[SCENE].materials[ID].iridescenceThicknessRange = JSON.parse(`[${THICKNESS}]`);
-        }
-
-        setMaterialFlatShading({ SCENE, ID, FLATSHADING }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].flatShading = FLATSHADING;
-        }
-
-        setMaterialWireframe({ SCENE, ID, WIREFRAME, CAP, JOIN }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            Scene3D.scenes[SCENE].materials[ID].transparent = WIREFRAME;
-            Scene3D.scenes[SCENE].materials[ID].wireframeLinecap = CAP;
-            Scene3D.scenes[SCENE].materials[ID].wireframeLinejoin = JOIN;
-        }
-
-        async setMaterialTexture({ SCENE, ID, IMAGE }) {
+        async setMaterialPropMap({ SCENE, ID, PROP, VALUE }) {
             if (!Scene3D.scenes[SCENE]) return;
             if (!Scene3D.scenes[SCENE].materials[ID]) return;
 
@@ -969,126 +971,8 @@
                 });
             }
 
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].map = texture;
-        }
-
-        async setMaterialAlphaMap({ SCENE, ID, IMAGE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].alphaMap = texture;
-        }
-
-        async setMaterialEnvMap({ SCENE, ID, IMAGE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].envMap = texture;
-        }
-
-        async setMaterialSpecularMap({ SCENE, ID, IMAGE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].specularMap = texture;
-        }
-
-        async setMaterialMatCapMap({ SCENE, ID, IMAGE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].matcap = texture;
-        }
-
-        async setMaterialDisplacementMap({ SCENE, ID, IMAGE, SCALE, BIAS }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].displacementMap = texture;
-            Scene3D.scenes[SCENE].materials[ID].displacementScale = SCALE;
-            Scene3D.scenes[SCENE].materials[ID].displacementBias = BIAS;
-        }
-
-        async setMaterialBumpMap({ SCENE, ID, IMAGE, SCALE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].bumpMap = texture;
-            Scene3D.scenes[SCENE].materials[ID].bumpScale = SCALE;
-        }
-
-        async setMaterialEmissiveMap({ SCENE, ID, IMAGE, INTENSITY }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].emissiveMap = texture;
-            Scene3D.scenes[SCENE].materials[ID].emissiveIntensity = INTENSITY;
-        }
-
-        async setMaterialNormalMap({ SCENE, ID, IMAGE, SCALE, TYPE }) {
-            if (!Scene3D.scenes[SCENE]) return;
-            if (!Scene3D.scenes[SCENE].materials[ID]) return;
-
-            function loadTexture(url) {
-                return new Promise((resolve, reject) => {
-                    new THREE.TextureLoader().load(url, resolve, undefined, reject);
-                });
-            }
-
-            var texture = await loadTexture(IMAGE);
-            Scene3D.scenes[SCENE].materials[ID].normalMap = texture;
-            Scene3D.scenes[SCENE].materials[ID].normalScale = THREE.Vector2(SCALEX, SCALEY);
-            Scene3D.scenes[SCENE].materials[ID].normalMapType = TYPE == "Object" ? THREE.ObjectSpaceNormalMap : THREE.TangentSpaceNormalMap;
+            var texture = await loadTexture(VALUE);
+            Scene3D.scenes[SCENE].materials[ID][PROP] = texture;
         }
 
         // ----------------------------------- Helpers ----------------------------------- //
