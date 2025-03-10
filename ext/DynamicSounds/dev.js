@@ -125,7 +125,7 @@
 				],
 				menus: {
 					actions: ['Play', 'Pause', 'Stop'],
-					effects: ['Volume', 'Pan', 'Pitch', 'Speed', 'echo', 'reverb', 'distortion', 'delay', 'chorus', 'flanger'],
+					effects: ['Volume', 'Pan', /*'Pitch',*/ 'Speed', /*'echo',*/ /*'reverb',*/ 'distortion', 'delay', 'chorus', /*'flanger'*/],
 				},
 			};
 		}
@@ -147,13 +147,13 @@
 
 			source.connect(gainNode)
 				.connect(panNode)
-				.connect(pitchNode)
-				.connect(echoNode)
-				.connect(reverbNode)
+				// .connect(pitchNode)
+				// .connect(echoNode)
+				// .connect(reverbNode)
 				.connect(distortionNode)
 				.connect(delayNode)
 				.connect(chorusNode)
-				.connect(flangerNode)
+				// .connect(flangerNode)
 				.connect(this.audioContext.destination);
 
 			this.sounds[ID] = { audio, gainNode, panNode, pitchNode, echoNode, reverbNode, distortionNode, delayNode, chorusNode, flangerNode };
