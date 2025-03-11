@@ -1321,10 +1321,9 @@ body > * {
           }
         }
 
-        let computedStyle = window.getComputedStyle(element);
-        let fillOpacity = parseFloat(computedStyle.getPropertyValue("fill-opacity")) || 1;
-        let fillColor = computedStyle.getPropertyValue("fill");
-        let strokeWidth = parseFloat(computedStyle.strokeWidth) || 1;
+        let fillOpacity = (parseFloat(element.getAttribute('fill-opacity')) + parseFloat(element.getAttribute('opacity'))) || 1;
+        let fillColor = element.getAttribute('fill');
+        let strokeWidth = parseFloat(element.strokeWidth) || 1;
 
         if (typeof element.isPointInFill === "function") {
           hitFill = element.isPointInFill(transformedPoint);
@@ -1363,7 +1362,7 @@ body > * {
         }
 
         if (hitFill && hitStroke) {
-          if (type === "Accurate" && (computedStyle.getPropertyValue("stroke-opacity") === 0 || computedStyle.getPropertyValue("stroke") === "none")) {
+          if (type === "Accurate" && element.getAttribute('stroke-opacity') === 0 || element.getAttribute('stroke') === "none")) {
             hitStroke = false;
           }
         }
