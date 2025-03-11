@@ -504,14 +504,13 @@ body > * {
             },
           },
 
-
           {
             blockType: "label", text: "SVG handling (wip)",
           },
           {
             opcode: 'getElementAtSVG',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Get element index at x: [x], y: [y] in svg: [svg] with selection type: [type]',
+            text: 'Get element index at x: [x] y: [y] in svg: [svg] with selection type: [type]',
             arguments: {
               x: {
                 type: Scratch.ArgumentType.STRING,
@@ -1308,7 +1307,12 @@ body > * {
 
         let hitFill = false, hitStroke = false;
         let transformedPoint = point;
-        let matrix = element.getCTM();
+
+        let matrix = false;
+        try {
+          matrix = element.getCTM();
+        } catch(e) {}
+
         if (matrix) {
           try {
             transformedPoint = point.matrixTransform(matrix.inverse());
@@ -1355,6 +1359,12 @@ body > * {
             if (!(dist <= r)) {
               hitStroke = dist >= (r - strokeWidth / 2) && dist <= (r + strokeWidth / 2);
             }
+          }
+        }
+
+        if (hitFill && hitStroke) {
+          if (type === "Accurate" && (computedStyle.getPropertyValue("stroke-opacity") === 0 || computedStyle.getPropertyValue("stroke") === "none")) {
+            hitStroke = false;
           }
         }
 
