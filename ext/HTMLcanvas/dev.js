@@ -24,6 +24,7 @@
 
       this.page;
       this.pagecontent;
+      this.tmp = {};
 
       this.runInternalScript = (js, bool) => {
         try {
@@ -505,7 +506,7 @@ body > * {
 
 
           {
-            blockType: "label", text: "SVG handling",
+            blockType: "label", text: "SVG handling (wip)",
           },
           {
             opcode: 'getElementAtSVG',
@@ -1261,22 +1262,22 @@ body > * {
         })[m]);
       }
 
-      if (!this.tmpcontainer) {
-        this.tmpcontainer = document.createElement("div");
-        this.tmpcontainer.style.cssText = "pointer-events:none;position:absolute;opacity:0;width:0;height:0;visibility:hidden";
-        this.tmpcontainer.ariaHidden = "true";
-        document.body.appendChild(this.tmpcontainer);
+      if (!this.tmp.container) {
+        this.tmp.container = document.createElement("div");
+        this.tmp.container.style.cssText = "pointer-events:none;position:absolute;opacity:0;width:0;height:0;visibility:hidden";
+        this.tmp.container.ariaHidden = "true";
+        document.body.appendChild(this.tmp.container);
       }
 
-      if (svg !== this.tmplastSvg) {
-        while (this.tmpcontainer.firstChild) this.tmpcontainer.removeChild(this.tmpcontainer.firstChild);
+      if (svg !== this.tmp.lastSvg) {
+        while (this.tmp.container.firstChild) this.tmp.container.removeChild(this.tmp.container.firstChild);
         let parser = new DOMParser();
-        this.tmpcachedSvg = parser.parseFromString(svg, "image/svg+xml").documentElement;
-        this.tmpcontainer.appendChild(this.tmpcachedSvg);
-        this.tmplastSvg = svg;
+        this.tmp.cachedSvg = parser.parseFromString(svg, "image/svg+xml").documentElement;
+        this.tmp.container.appendChild(this.tmp.cachedSvg);
+        this.tmp.lastSvg = svg;
       }
 
-      let svgElement = this.tmpcachedSvg;
+      let svgElement = this.tmp.cachedSvg;
       let svgWidth = parseFloat(svgElement.getAttribute("width")) || 0;
       let svgHeight = parseFloat(svgElement.getAttribute("height")) || 0;
       let vb = svgElement.hasAttribute("viewBox") ? svgElement.viewBox.baseVal : { x: 0, y: 0, width: svgWidth, height: svgHeight };

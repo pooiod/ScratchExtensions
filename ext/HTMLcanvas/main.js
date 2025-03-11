@@ -1,6 +1,6 @@
-// HTML Canvas (Dec/12/2024 dev build) by pooiod7
+// HTML Canvas (Mar/11/2025 dev build) by pooiod7
 
-(function(Scratch) {
+(function (Scratch) {
   'use strict';
 
   if (!Scratch.extensions.unsandboxed) {
@@ -24,10 +24,11 @@
 
       this.page;
       this.pagecontent;
+      this.tmp = {};
 
       this.runInternalScript = (js, bool) => {
         try {
-          return bool?!!this.page.contentWindow.eval(js):this.page.contentWindow.eval(js);
+          return bool ? !!this.page.contentWindow.eval(js) : this.page.contentWindow.eval(js);
         } catch (e) {
           if (bool) return false;
           console.warn('Error running internal script:', e);
@@ -36,7 +37,7 @@
       }
 
       if (!packaged) {
-        setInterval(()=> {
+        setInterval(() => {
           try {
             if (!document.getElementById('htmlcanvaspageiframe')) {
               this.createOverlayFrame();
@@ -64,8 +65,8 @@
         }
         try {
           if (event.data && 'scratchmessage' in event.data) {
-              this.lastmessage = Scratch.Cast.toString(event.data.scratchmessage);
-              Scratch.vm.runtime.startHats('HTMLcanvas_whenmessagerecived');
+            this.lastmessage = Scratch.Cast.toString(event.data.scratchmessage);
+            Scratch.vm.runtime.startHats('HTMLcanvas_whenmessagerecived');
           }
         } catch (err) {
           console.warn("Message dropped", event.data);
@@ -116,9 +117,9 @@ body > * {
           {
             func: "showdocs",
             blockType: Scratch.BlockType.BUTTON,
-            text: (this.findelement("#extdocsp7markdownonstage"))?"Close Documentation":"Open Documentation"
+            text: (this.findelement("#extdocsp7markdownonstage")) ? "Close Documentation" : "Open Documentation"
           },
-          
+
           {
             func: "toggledebug",
             blockType: Scratch.BlockType.BUTTON,
@@ -166,20 +167,20 @@ body > * {
             },
           },
           {
-              opcode: 'setImageAsCostume',
-              blockType: Scratch.BlockType.COMMAND,
-              text: 'Set image [elm] to [costume]',
-              arguments: {
-                  costume: {
-                      type: Scratch.ArgumentType.STRING,
-                      menu: 'costumeNames',
-                      defaultValue: 'current'
-                  },
-                  elm: {
-                      type: Scratch.ArgumentType.STRING,
-                      defaultValue: '#elementId',
-                  },
-              }
+            opcode: 'setImageAsCostume',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Set image [elm] to [costume]',
+            arguments: {
+              costume: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'costumeNames',
+                defaultValue: 'current'
+              },
+              elm: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '#elementId',
+              },
+            }
           },
           {
             opcode: 'setProperty',
@@ -302,16 +303,16 @@ body > * {
             },
           },
           {
-              opcode: 'HTMLencode',
-              blockType: Scratch.BlockType.REPORTER,
-              text: 'Make [text] HTML-safe',
-              arguments: {
-                text: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: '<h1>Hello!</h1>',
-                },
+            opcode: 'HTMLencode',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Make [text] HTML-safe',
+            arguments: {
+              text: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '<h1>Hello!</h1>',
               },
             },
+          },
 
           {
             opcode: 'elementExists',
@@ -385,23 +386,23 @@ body > * {
             },
           },
           {
-              opcode: 'addFont',
-              blockType: Scratch.BlockType.COMMAND,
-              text: 'Add font [url] with properties [style] and id [id]',
-              arguments: {
-                  url: {
-                      type: Scratch.ArgumentType.STRING,
-                      defaultValue: 'https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf',
-                  },
-                  style: {
-                      type: Scratch.ArgumentType.STRING,
-                      defaultValue: "font-family: 'Sono'; font-style: normal; font-weight: 400;",
-                  },
-                  id: {
-                      type: Scratch.ArgumentType.STRING,
-                      defaultValue: 'SonoFont',
-                  },
+            opcode: 'addFont',
+            blockType: Scratch.BlockType.COMMAND,
+            text: 'Add font [url] with properties [style] and id [id]',
+            arguments: {
+              url: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'https://p7scratchextensions.pages.dev/extras/fonts/Sono.ttf',
               },
+              style: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "font-family: 'Sono'; font-style: normal; font-weight: 400;",
+              },
+              id: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'SonoFont',
+              },
+            },
           },
 
           {
@@ -503,6 +504,34 @@ body > * {
             },
           },
 
+
+          {
+            blockType: "label", text: "SVG handling (wip)",
+          },
+          {
+            opcode: 'getElementAtSVG',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get element index at x: [x], y: [y] in svg: [svg] with selection type: [type]',
+            arguments: {
+              x: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '0',
+              },
+              y: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '0',
+              },
+              svg: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '',
+              },
+              type: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'svgSelectionTypes',
+              },
+            },
+          },
+
           {
             blockType: "label", text: "Advanced Scripting",
           },
@@ -514,20 +543,20 @@ body > * {
           },
 
           {
-              blockType: Scratch.BlockType.HAT,
-              opcode: 'whenmessagerecived',
-              text: 'When message recived',
-              isEdgeActivated: false,
-              hideFromPalette: !this.canscript
+            blockType: Scratch.BlockType.HAT,
+            opcode: 'whenmessagerecived',
+            text: 'When message recived',
+            isEdgeActivated: false,
+            hideFromPalette: !this.canscript
           },
           {
-              opcode: 'getlastmessage',
-              hideFromPalette: !this.canscript,
-              blockType: Scratch.BlockType.REPORTER,
-              text: 'Last recived message',
-              hideFromPalette: !this.canscript
+            opcode: 'getlastmessage',
+            hideFromPalette: !this.canscript,
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Last recived message',
+            hideFromPalette: !this.canscript
           },
-          
+
           {
             opcode: 'addScript',
             hideFromPalette: !this.canscript,
@@ -559,6 +588,7 @@ body > * {
           "---",
         ],
         menus: {
+          svgSelectionTypes: ['Shape', 'BoundingBox', 'Accurate'],
           elementTypes: [
             'div',
             'span',
@@ -569,7 +599,7 @@ body > * {
             'iframe',
             'br',
             'wbr',
-            
+
             'h1',
             'h2',
             'h3',
@@ -587,7 +617,7 @@ body > * {
             'article',
             'main',
             'nav',
-            
+
             'header',
             'footer',
 
@@ -597,14 +627,14 @@ body > * {
 
             'select',
             'option',
-            
+
             'b',
             'i',
             'u',
             's',
 
             'dialog',
-            
+
             'mark',
             'sub',
             'sup',
@@ -655,8 +685,8 @@ body > * {
             ],
           },
           costumeNames: {
-              acceptReporters: true,
-              items: 'fetchAndGetCostumeNames'
+            acceptReporters: true,
+            items: 'fetchAndGetCostumeNames'
           }
         },
       };
@@ -718,12 +748,12 @@ body > * {
         this.firstconsoleload = true;
         try {
           this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
-        } catch(err) {
-          setTimeout(()=>{
+        } catch (err) {
+          setTimeout(() => {
             try {
               this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
-            } catch(err) {
-              setTimeout(()=>{
+            } catch (err) {
+              setTimeout(() => {
                 this.findelement("#eruda").shadowRoot.querySelector("div > div.eruda-entry-btn").style.display = "none";
               }, 500);
             }
@@ -731,8 +761,8 @@ body > * {
         }
         if (inspecting) {
           this.runInternalScript(`eruda.show()`);
-          setTimeout(()=>{
-            this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
+          setTimeout(() => {
+            this.runInternalScript(`${!this.canscript ? "eruda.remove('console');" : ""} eruda.remove('snippets'); eruda.remove('sources');`);
           }, 500);
         }
       }
@@ -750,12 +780,12 @@ body > * {
         } else {
           this.inspecting = true;
         }
-        this.runInternalScript(`eruda.${this.inspecting?"show":"hide"}()`);
+        this.runInternalScript(`eruda.${this.inspecting ? "show" : "hide"}()`);
       } if (this.inspecting) {
         this.setClickThrough(false);
         if (this.firstconsoleload) {
           this.firstconsoleload = false;
-          this.runInternalScript(`${!this.canscript?"eruda.remove('console');":""} eruda.remove('snippets'); eruda.remove('sources');`);
+          this.runInternalScript(`${!this.canscript ? "eruda.remove('console');" : ""} eruda.remove('snippets'); eruda.remove('sources');`);
         }
       }
     }
@@ -769,9 +799,9 @@ body > * {
         this.clearAllElements(true);
         var html = `<iframe src="https://p7scratchextensions.pages.dev/docs/#/HTMLcanvas" style="width: 100vw; height: calc(100vh + 0px); position: absolute; top: 0px; left: 0; border: none;"></iframe>`;
         var css = `body {margin:0px;padding:0px;} iframe{width:100%;height:100%;border:none;}`;
-        this.makeElement({type:"iframe",id:"extdocsp7markdownonstage"});
-        this.setContent({elm:"#extdocsp7markdownonstage",content:html});
-        this.addStyle({STYLE:css,ID:"styledocs"});
+        this.makeElement({ type: "iframe", id: "extdocsp7markdownonstage" });
+        this.setContent({ elm: "#extdocsp7markdownonstage", content: html });
+        this.addStyle({ STYLE: css, ID: "styledocs" });
         this.setClickThrough(false);
 
         Scratch.vm.extensionManager.refreshBlocks();
@@ -792,7 +822,7 @@ body > * {
       var str = String(STRING);
       // strip harmful tags but allow basic user formated text
       var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'img'];
-      str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function(match, p1) {
+      str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (match, p1) {
         // Check if the tag is in the allowedTags array
         if (allowedTags.indexOf(p1.toLowerCase()) !== -1) {
           return match; // Allowed tag, keep it
@@ -877,7 +907,7 @@ body > * {
     findelement(elm) {
       try {
         return this.pagecontent.querySelector(elm);
-      } catch(err) {
+      } catch (err) {
         return;
       }
     }
@@ -893,30 +923,30 @@ body > * {
         element.hasclickeventlistenerfromext = true;
         element.hasbeenclickedrecently = false;
 
-        element.addEventListener('click', function() {
+        element.addEventListener('click', function () {
           if (!element.hasbeenclickedrecently) {
             element.hasbeenclickedrecently = true;
             Scratch.vm.runtime.startHats('HTMLcanvas_whenelmclicked');
 
-            setTimeout(function() {
+            setTimeout(function () {
               element.hasbeenclickedrecently = false;
               Scratch.vm.runtime.startHats('HTMLcanvas_whenelmclicked');
             }.bind(this), 100);
           }
         }.bind(this));
 
-        element.addEventListener('tap', function() {
+        element.addEventListener('tap', function () {
           if (!element.hasbeenclickedrecently) {
             element.hasbeenclickedrecently = true;
             Scratch.vm.runtime.startHats('HTMLcanvas_whenelmclicked');
 
-            setTimeout(function() {
+            setTimeout(function () {
               element.hasbeenclickedrecently = false;
               Scratch.vm.runtime.startHats('HTMLcanvas_whenelmclicked');
             }.bind(this), 100);
           }
         }.bind(this));
-        
+
         return false;
       } else {
         if (element.hasbeenclickedrecently) {
@@ -938,17 +968,17 @@ body > * {
         element.hasHoverListenerFromExt = true;
         element.isHovered = false;
 
-        element.addEventListener('mouseenter', function() {
+        element.addEventListener('mouseenter', function () {
           element.isHovered = true;
         });
-        element.addEventListener('mouseleave', function() {
+        element.addEventListener('mouseleave', function () {
           element.isHovered = false;
         });
 
-        element.addEventListener('touchstart', function() {
+        element.addEventListener('touchstart', function () {
           element.isHovered = true;
         });
-        element.addEventListener('touchend', function() {
+        element.addEventListener('touchend', function () {
           element.isHovered = false;
         });
 
@@ -982,11 +1012,11 @@ body > * {
         element.hasMouseDownListenerFromExt = true;
         element.isMouseDown = false;
 
-        element.addEventListener('mousedown', function() {
+        element.addEventListener('mousedown', function () {
           element.isMouseDown = true;
         });
 
-        element.addEventListener('mouseup', function() {
+        element.addEventListener('mouseup', function () {
           element.isMouseDown = false;
         });
 
@@ -1008,7 +1038,7 @@ body > * {
           }
         }
       }
-      
+
       if (targetElement) {
         targetElement[property] = value;
       }
@@ -1093,29 +1123,29 @@ body > * {
 
       let selectedCostume;
       if (costumeName === 'current') {
-          selectedCostume = sprite.costumes_[util.target.currentCostume];
+        selectedCostume = sprite.costumes_[util.target.currentCostume];
       } else {
-          selectedCostume = sprite.costumes_.find(costume => costume.name === costumeName);
+        selectedCostume = sprite.costumes_.find(costume => costume.name === costumeName);
       }
-          
+
       function uint8ArrayToBase64(uint8Array) {
-          let binary = '';
-          const len = uint8Array.byteLength;
-          for (let i = 0; i < len; i++) {
-              binary += String.fromCharCode(uint8Array[i]);
-          }
-          return window.btoa(binary);
+        let binary = '';
+        const len = uint8Array.byteLength;
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode(uint8Array[i]);
+        }
+        return window.btoa(binary);
       }
 
       var img = "Costume not found";
       if (selectedCostume) {
-          const costumeData = selectedCostume.asset.data;
-          const mimeType = selectedCostume.asset.assetType.contentType;
+        const costumeData = selectedCostume.asset.data;
+        const mimeType = selectedCostume.asset.assetType.contentType;
 
-          if (costumeData) {
-              const base64Data = uint8ArrayToBase64(costumeData);
-              img = `data:${mimeType};base64,${base64Data}`;
-          }
+        if (costumeData) {
+          const base64Data = uint8ArrayToBase64(costumeData);
+          img = `data:${mimeType};base64,${base64Data}`;
+        }
       }
       this.setContent({ elm: elm, content: img });
     }
@@ -1154,37 +1184,35 @@ body > * {
 
     addFont({ url, style, id }) {
       try {
-          const styleTag = this.pagecontent.createElement('style');
-          styleTag.id = id;
-      
-          const fontFaceRule = `
-              @font-face {
-                  src: url(${url});
-                  ${style}
-              }
-          `;
-      
-          // Set the content of the style tag to the @font-face rule
-          styleTag.textContent = fontFaceRule;
-      
-          // Append the style tag to the head of the document
-          this.pagecontent.head.appendChild(styleTag);
+        const styleTag = this.pagecontent.createElement('style');
+        styleTag.id = id;
+
+        const fontFaceRule = `
+          @font-face {
+            src: url(${url});
+            ${style}
+          }
+        `;
+
+        styleTag.textContent = fontFaceRule;
+
+        this.pagecontent.head.appendChild(styleTag);
       } catch (e) {
-          console.error('Error adding font:', e);
+        console.error('Error adding font:', e);
       }
-    }      
+    }
 
     addClass({ elm, clas }) {
       elm = this.findelement(elm);
       if (elm && clas) {
-          elm.classList.add(clas);
+        elm.classList.add(clas);
       }
     }
 
     removeClass({ elm, clas }) {
       elm = this.findelement(elm);
       if (elm && clas) {
-          elm.classList.remove(clas);
+        elm.classList.remove(clas);
       }
     }
 
@@ -1227,12 +1255,126 @@ body > * {
       }
     }
 
+    getElementAtSVG({ x, y, svg, type = "Shape" }) {
+      function escapeXml(str) {
+        return str.replace(/[&<>"']/g, m => ({
+          '&': "&amp;", '<': "&lt;", '>': "&gt;", '"': "&quot;", "'": "&apos;"
+        })[m]);
+      }
+
+      if (!this.tmp.container) {
+        this.tmp.container = document.createElement("div");
+        this.tmp.container.style.cssText = "pointer-events:none;position:absolute;opacity:0;width:0;height:0;visibility:hidden";
+        this.tmp.container.ariaHidden = "true";
+        document.body.appendChild(this.tmp.container);
+      }
+
+      if (svg !== this.tmp.lastSvg) {
+        while (this.tmp.container.firstChild) this.tmp.container.removeChild(this.tmp.container.firstChild);
+        let parser = new DOMParser();
+        this.tmp.cachedSvg = parser.parseFromString(svg, "image/svg+xml").documentElement;
+        this.tmp.container.appendChild(this.tmp.cachedSvg);
+        this.tmp.lastSvg = svg;
+      }
+
+      let svgElement = this.tmp.cachedSvg;
+      let svgWidth = parseFloat(svgElement.getAttribute("width")) || 0;
+      let svgHeight = parseFloat(svgElement.getAttribute("height")) || 0;
+      let vb = svgElement.hasAttribute("viewBox") ? svgElement.viewBox.baseVal : { x: 0, y: 0, width: svgWidth, height: svgHeight };
+
+      let point = svgElement.createSVGPoint();
+      point.x = vb.x + x;
+      point.y = vb.y + y;
+
+      let elements = Array.from(svgElement.getElementsByTagName("*"));
+
+      for (let i = elements.length - 1; i >= 0; i--) {
+        let element = elements[i];
+        let bbox;
+        try {
+          bbox = element.getBBox();
+        } catch (e) {
+          bbox = { x: 0, y: 0, width: 0, height: 0 };
+        }
+
+        if (type === "BoundingBox") {
+          let inBox = point.x >= bbox.x && point.x <= bbox.x + bbox.width &&
+            point.y >= bbox.y && point.y <= bbox.y + bbox.height;
+          if (inBox) {
+            return `<elm index="${i + 1}" type="BoundingBox" type="in" relX="0" relY="0" hit="${escapeXml(element.outerHTML)}" />`;
+          }
+          continue;
+        }
+
+        let hitFill = false, hitStroke = false;
+        let transformedPoint = point;
+        let matrix = element.getCTM();
+        if (matrix) {
+          try {
+            transformedPoint = point.matrixTransform(matrix.inverse());
+          } catch (e) {
+            transformedPoint = point;
+          }
+        }
+
+        let computedStyle = window.getComputedStyle(element);
+        let fillOpacity = parseFloat(computedStyle.getPropertyValue("fill-opacity")) || 1;
+        let fillColor = computedStyle.getPropertyValue("fill");
+        let strokeWidth = parseFloat(computedStyle.strokeWidth) || 1;
+
+        if (typeof element.isPointInFill === "function") {
+          hitFill = element.isPointInFill(transformedPoint);
+          if (type === "Accurate" && (fillOpacity === 0 || fillColor === "none")) {
+            hitFill = false;
+          }
+        }
+
+        hitStroke = typeof element.isPointInStroke === "function" ? element.isPointInStroke(transformedPoint) : false;
+
+        if (!hitStroke) {
+          if (element.tagName.toLowerCase() === "rect") {
+            let strokeRegion = {
+              x: bbox.x - strokeWidth / 2,
+              y: bbox.y - strokeWidth / 2,
+              width: bbox.width + strokeWidth,
+              height: bbox.height + strokeWidth
+            };
+            if (!(transformedPoint.x >= bbox.x && transformedPoint.x <= bbox.x + bbox.width &&
+              transformedPoint.y >= bbox.y && transformedPoint.y <= bbox.y + bbox.height)) {
+              hitStroke = transformedPoint.x >= strokeRegion.x && transformedPoint.x <= strokeRegion.x + strokeRegion.width &&
+                transformedPoint.y >= strokeRegion.y && transformedPoint.y <= strokeRegion.y + strokeRegion.height;
+            }
+          } else if (element.tagName.toLowerCase() === "circle") {
+            let cx = parseFloat(element.getAttribute("cx")) || 0;
+            let cy = parseFloat(element.getAttribute("cy")) || 0;
+            let r = parseFloat(element.getAttribute("r")) || 0;
+            let dx = transformedPoint.x - cx;
+            let dy = transformedPoint.y - cy;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (!(dist <= r)) {
+              hitStroke = dist >= (r - strokeWidth / 2) && dist <= (r + strokeWidth / 2);
+            }
+          }
+        }
+
+        if (hitFill || hitStroke) {
+          let hitType = hitFill ? "in" : "out";
+          let relX = transformedPoint.x - bbox.x;
+          let relY = transformedPoint.y - bbox.y;
+          return `<elm index="${i + 1}" type="${hitType}" relX="${relX}" relY="${relY}" hit="${escapeXml(element.outerHTML)}" />`;
+        }
+      }
+
+      return "";
+    }
+
     whenmessagerecived() {
       if (this.lastmessage != this.lastmessage2) {
-          this.lastmessage2 == this.lastmessage;
-          return true;
+        this.lastmessage2 == this.lastmessage;
+        return true;
       } else {
-          return false;
+        return false;
       }
     }
 
