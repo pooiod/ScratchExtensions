@@ -505,11 +505,9 @@ body > * {
           },
 
           {
-            blockType: "label", text: "SVG handling (wip)",
-          },
-          {
             opcode: 'getElementAtSVG',
             blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
             text: 'Get element index at x: [x] y: [y] in svg: [svg] with selection type: [type]',
             arguments: {
               x: {

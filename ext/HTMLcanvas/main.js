@@ -505,11 +505,9 @@ body > * {
           },
 
           {
-            blockType: "label", text: "SVG handling (wip)",
-          },
-          {
             opcode: 'getElementAtSVG',
             blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
             text: 'Get element index at x: [x] y: [y] in svg: [svg] with selection type: [type]',
             arguments: {
               x: {
@@ -1300,7 +1298,7 @@ body > * {
           let inBox = point.x >= bbox.x && point.x <= bbox.x + bbox.width &&
             point.y >= bbox.y && point.y <= bbox.y + bbox.height;
           if (inBox) {
-            return `<elm index="${i + 1}" type="BoundingBox" type="in" relX="0" relY="0" hit="${escapeXml(element.outerHTML)}" />`;
+            return `<elm index="${i + 1}" type="in" relX="0" relY="0" hit="${escapeXml(element.outerHTML)}" />`;
           }
           continue;
         }
@@ -1326,7 +1324,7 @@ body > * {
 
         if (typeof element.isPointInFill === "function") {
           hitFill = element.isPointInFill(transformedPoint);
-          if (type === "Accurate" && (fillOpacity === 0 || parseFloat(element.getAttribute('opacity')) === 0 || !element.getAttribute('fill'))) {
+          if (type === "Accurate" && (fillOpacity === 0 || parseFloat(element.getAttribute('opacity')) === 0 || element.getAttribute('fill') == "transparent")) {
             hitFill = false;
           }
         }
@@ -1361,7 +1359,7 @@ body > * {
         }
 
         if (hitFill && hitStroke) {
-          if (type === "Accurate" && (element.getAttribute('stroke-opacity') === 0 || strokeWidth == 0 || !element.getAttribute('stroke'))) {
+          if (type === "Accurate" && (element.getAttribute('stroke-opacity') === 0 || strokeWidth == 0 || element.getAttribute('stroke') == "transparent")) {
             hitStroke = false;
           }
         }
