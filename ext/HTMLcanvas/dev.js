@@ -1300,7 +1300,7 @@ body > * {
           let inBox = point.x >= bbox.x && point.x <= bbox.x + bbox.width &&
             point.y >= bbox.y && point.y <= bbox.y + bbox.height;
           if (inBox) {
-            return `<elm index="${i + 1}" type="BoundingBox" type="in" relX="0" relY="0" hit="${escapeXml(element.outerHTML)}" />`;
+            return `<elm index="${i + 1}" type="in" relX="0" relY="0" hit="${escapeXml(element.outerHTML)}" />`;
           }
           continue;
         }
