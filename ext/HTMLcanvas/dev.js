@@ -1326,10 +1326,10 @@ body > * {
 
         if (typeof element.isPointInFill === "function") {
           hitFill = element.isPointInFill(transformedPoint);
-          if (type === "Accurate" && (fillOpacity === 0 || parseFloat(element.getAttribute('opacity')) === 0 || !element.getAttribute('fill'))) {
+          if (type === "Accurate" && (fillOpacity === 0 || parseFloat(element.getAttribute('opacity')) === 0 || element.getAttribute('fill') == "transparent")) {
             hitFill = false;
           }
-        } console.log(element.getAttribute('fill'))
+        }
 
         hitStroke = typeof element.isPointInStroke === "function" ? element.isPointInStroke(transformedPoint) : false;
 
@@ -1361,7 +1361,7 @@ body > * {
         }
 
         if (hitFill && hitStroke) {
-          if (type === "Accurate" && (element.getAttribute('stroke-opacity') === 0 || strokeWidth == 0 || !element.getAttribute('stroke'))) {
+          if (type === "Accurate" && (element.getAttribute('stroke-opacity') === 0 || strokeWidth == 0 || element.getAttribute('stroke') == "transparent")) {
             hitStroke = false;
           }
         }
