@@ -1321,14 +1321,12 @@ body > * {
           }
         }
 
-        let computedStyle = window.getComputedStyle(element);
-        let fillOpacity = parseFloat(computedStyle.getPropertyValue("fill-opacity")) || 1;
-        let fillColor = computedStyle.getPropertyValue("fill");
-        let strokeWidth = parseFloat(computedStyle.strokeWidth) || 1;
+        let fillOpacity = parseFloat(element.getAttribute('fill-opacity')) || 1;
+        let strokeWidth = parseFloat(element.getAttribute('stroke-width')) || 1;
 
         if (typeof element.isPointInFill === "function") {
           hitFill = element.isPointInFill(transformedPoint);
-          if (type === "Accurate" && (fillOpacity === 0 || fillColor === "none")) {
+          if (type === "Accurate" && (fillOpacity === 0 || parseFloat(element.getAttribute('opacity')) === 0 || !element.getAttribute('fill'))) {
             hitFill = false;
           }
         }
@@ -1363,13 +1361,13 @@ body > * {
         }
 
         if (hitFill && hitStroke) {
-          if (type === "Accurate" && (computedStyle.getPropertyValue("stroke-opacity") === 0 || computedStyle.getPropertyValue("stroke") === "none")) {
+          if (type === "Accurate" && (element.getAttribute('stroke-opacity') === 0 || strokeWidth == 0 || !element.getAttribute('stroke')))) {
             hitStroke = false;
           }
         }
 
         if (hitFill || hitStroke) {
-          let hitType = hitFill ? "in" : "out";
+          let hitType = hitStroke ? "out" : "in";
           let relX = transformedPoint.x - bbox.x;
           let relY = transformedPoint.y - bbox.y;
           return `<elm index="${i + 1}" type="${hitType}" relX="${relX}" relY="${relY}" hit="${escapeXml(element.outerHTML)}" />`;
