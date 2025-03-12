@@ -1329,7 +1329,7 @@ body > * {
           if (type === "Accurate" && (fillOpacity === 0 || parseFloat(element.getAttribute('opacity')) === 0 || !element.getAttribute('fill'))) {
             hitFill = false;
           }
-        }
+        } print(element.getAttribute('fill'))
 
         hitStroke = typeof element.isPointInStroke === "function" ? element.isPointInStroke(transformedPoint) : false;
 
