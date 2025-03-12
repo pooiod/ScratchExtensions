@@ -1,63 +1,32 @@
-<!doctype html>
-<!-- https://p7scratchextensions.pages.dev/ext/YouTilities/api?format=mp3&q=https://www.youtube.com/watch?v=FtutLA63Cp8 -->
+<!DOCTYPE html>
+<!-- https://www.youtube.com/watch?v=FtutLA63Cp8 -->
 <html lang="en">
-    <base href="https://ytmp3.plus/261-youtube-to-mp4/">
-    <div id="content">
-        <div id="converter_wrapper">
-            <div id="converter">
-                <form method="post">
-                    <input id="input" name="video">
-                    <input id="submit" type="submit" value="Convert">
-                </form>
-                <div id="progress">
-                    <div class="loader"></div>
-                </div>
-                <div id="buttons" hidden>
-                    <a href id="downloadbtn" rel="nofollow" style="display:none">Download</a>
-                </div>
-            </div>
-            <div id="formats" hidden>
-                <a href id="mp4">mp4</a>
-                <a href id="mp3">mp3</a>
-            </div>
-        </div>
-    </div>
-    <video controls id="videlem" style="display:none"></video>
-    <script src="https://web.archive.org/web/20231017145453id_/https://ytmp3.plus/261-youtube-to-mp4/assets/js/jquery-3.4.1.min.js"></script>
-    <script src="https://web.archive.org/web/20231017145453id_/https://ytmp3.plus/261-youtube-to-mp4/assets/js/lang.js?=1655223185"></script>
-    <script src="https://web.archive.org/web/20231017145453id_/https://ytmp3.plus/261-youtube-to-mp4/assets/js/ytmp3.js?u=NrOSUIDu11tCnRUIUmCCduI&=1655223185"></script>
-    <script>
-        const link = document.querySelector("link[rel*='icon']") || document.createElement("link");
-        function loadvid(A) {
-            console.log(A);
-            window.parent.postMessage({ from: "ytdownloadapi", dat: A }, "*");
-            document.getElementById("videlem").src = A;
-            document.getElementById("videlem").style.display = "block";
-            document.getElementById("videlem").addEventListener("loadeddata", function () {
-                checkForErrorElement();
-            });
-        }
-        link.type = "image/x-icon";
-        link.rel = "shortcut icon";
-        link.href = "";
-        document.querySelector("head").appendChild(link);
-        const urlParams = new URLSearchParams(window.location.search);
-        function checkForErrorElement() {
-            document.getElementById("error") && window.parent.postMessage({ from: "ytdownloadapi", dat: "ERROR" }, "*");
-        }
-        setTimeout(function () {
-            document.getElementById(urlParams.get("format")).click();
-            let A = urlParams.get("q");
-            document.getElementById("input").value = A;
-            A ? setTimeout(function () {
-                document.getElementById("submit").click();
-            }, 10) : (document.getElementById("input").style.display = "block", document.getElementById("progress").style.display = "none");
-            let e = document.getElementById("progress");
-            document.getElementById("downloadbtn");
-            let E = new MutationObserver(function (A) {
-                for (let E of A) "attributes" === E.type && "style" === E.attributeName && "none" === e.style.display && (checkForErrorElement(), document.getElementById("progress").style.display = "block", loadvid(document.getElementById("downloadbtn").href));
-            });
-            E.observe(e, { attributes: !0 });
-        }, 100), setInterval(checkForErrorElement, 300);
-    </script>
+<head>
+  <meta charset="UTF-8">
+  <base href="https://ytmp3.plus/jCcU/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="canonical" href="https://ytmp3.plus/jCcU/" />
+  <link rel="alternate" href="https://ytmp3.plus/jCcU/" hreflang="x-default" />
+  <link rel="stylesheet" type="text/css" href="/css/a/l.css?t=1732169042" />	
+</head>
+<body> 
+  <form autocomplete="off" method="post">
+    <div><div>
+      <input id="query" type="text" name="query" aria-label="query" placeholder="Enter Keywords or YouTube URL here..." value="https://www.youtube.com/watch?v=FtutLA63Cp8" autofocus required><input type="submit" value="Search">
+      </div></div>
+  </form>
+  <script>
+    const originalFetch = window.fetch;
+    window.fetch = (url, options = {}) => {
+      return originalFetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, options);
+    };
+
+    const originalXHROpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
+      arguments[1] = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+      return originalXHROpen.apply(this, arguments);
+    };
+  </script>
+  <script src="/js/ytmp3.js?t=1732169042"></script>
+</body>
 </html>
