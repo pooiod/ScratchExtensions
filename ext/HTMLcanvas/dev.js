@@ -1361,7 +1361,7 @@ body > * {
         }
 
         if (hitFill && hitStroke) {
-          if (type === "Accurate" && (element.getAttribute('stroke-opacity') === 0 || strokeWidth == 0 || !element.getAttribute('stroke')))) {
+          if (type === "Accurate" && (element.getAttribute('stroke-opacity') === 0 || strokeWidth == 0 || !element.getAttribute('stroke'))) {
             hitStroke = false;
           }
         }
