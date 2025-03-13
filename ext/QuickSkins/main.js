@@ -22,7 +22,7 @@
                         arguments: {
                             DATAURI: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "data:image/png;base64,...",
+                                defaultValue: "data:image/bmp;base64,...",
                             },
                         },
                     },

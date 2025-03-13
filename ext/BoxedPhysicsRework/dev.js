@@ -40,7 +40,7 @@
         getInfo() {
             return {
             id: 'exampleunsandboxedext',
-            name: 'Example Unsandboxed Extension',
+            name: 'Boxed Physics but without Box2D',
             blocks: [
                 {
                     opcode: 'func',
