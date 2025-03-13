@@ -2,18 +2,7 @@
 [!js-document.title="Scratchblocks Documentation"!]
 ---
 
-basic example
-```scratch3
-when green flag clicked
-forever
-    turn cw (15) degrees
-    say [Hello!] for (2) seconds
-    if <mouse down?> then
-        change [mouse clicks v] by (1)
-    end
-end
-```
-
+<!-- Sorry to anybody looking at this markdown code -->
 
 ## Arguments
 
@@ -264,86 +253,62 @@ jump
 
 A definition can be created by writing "define" followed by the name of the block:
 
-```txt
-define jump
-repeat (10)
-    change y by (4)
-end
-```
-
-```scratch3
-define jump
-repeat (10)
-    change y by (4)
-end
-```
-
 <table>
     <tr><td>
 ```txt
-
+define jump
+repeat (10)
+    change y by (4)
+end
 ```
     </td>
     <td>
 ```scratch3
-
+define jump
+repeat (10)
+    change y by (4)
+end
 ```
     </td></tr>
 </table>
 
 Number, boolean, and string arguments can be added:
 
-```txt
-define jump (height) <gravity on?> [message]
-```
-
-```scratch3
-define jump (height) <gravity on?> [message]
-```
-
 <table>
     <tr><td>
 ```txt
-
+define jump (height) <gravity on?> [message]
 ```
     </td>
     <td>
 ```scratch3
-
+define jump (height) <gravity on?> [message]
 ```
     </td></tr>
 </table>
 
 Once a define hat has been made, one can then use the block inside the same script, and it will no longer appear obsolete. <br>
-You can also use `jump :: custom`
-
-```txt
-jump
-
-define jump
-repeat (10)
-    change y by (4)
-end
-```
-
-```scratch3
-jump
-
-define jump
-repeat (10)
-    change y by (4)
-end
-```
+You can also use `:: custom`
 
 <table>
     <tr><td>
 ```txt
+jump
 
+define jump
+repeat (10)
+    change y by (4)
+end
 ```
     </td>
     <td>
 ```scratch3
+jump
 
+define jump
+repeat (10)
+    change y by (4)
+end
 ```
     </td></tr>
 </table>
@@ -351,49 +316,32 @@ end
 ### Custom Block Inputs
 If one tries to use an input reporter without making a block definition first, it will appear as a variable.
 
-```txt
-say (height)
-```
-
-```scratch3
-say (height)
-```
-
 <table>
     <tr><td>
 ```txt
-
+say (height)
 ```
     </td>
     <td>
 ```scratch3
-
+say (height)
 ```
     </td></tr>
 </table>
 
 But if it is put below a block definition, it will render as an input reporter:
 
-
-```txt
-define jump (height)
-say (height)
-```
-
-```scratch3
-define jump (height)
-say (height)
-```
-
 <table>
     <tr><td>
 ```txt
-
+define jump (height)
+say (height)
 ```
     </td>
     <td>
 ```scratch3
-
+define jump (height)
+say (height)
 ```
     </td></tr>
 </table>
@@ -404,23 +352,15 @@ say (height)
 
 If one tries to write a list reporter, it will look like a variable reporter, because the plugin has no way of telling them apart.
 
-```txt
-say (list of Scratch team members)
-```
-
-```scratch3
-say (list of Scratch team members)
-```
-
 <table>
     <tr><td>
 ```txt
-
+say (list of Scratch team members)
 ```
     </td>
     <td>
 ```scratch3
-
+say (list of Scratch team members)
 ```
     </td></tr>
 </table>
@@ -428,33 +368,25 @@ say (list of Scratch team members)
 However, if one has used the list in a list block inside the same script, then it will render correctly. <br>
 If a list block is not wanted or needed inside the same script, `:: list` can be used instead
 
-```txt
-add [mres] to [list of Scratch team members v]
-add [paddle2see] to [list of Scratch team members v]
-add [harakou] to [list of Scratch team members v]
-say (list of Scratch team members)
-
-(list of projects made by pooiod7 :: list)
-```
-
-```scratch3
-add [mres] to [list of Scratch team members v]
-add [paddle2see] to [list of Scratch team members v]
-add [harakou] to [list of Scratch team members v]
-say (list of Scratch team members)
-
-(list of projects made by pooiod7 :: list)
-```
-
 <table>
     <tr><td>
 ```txt
+add [mres] to [list of Scratch team members v]
+add [paddle2see] to [list of Scratch team members v]
+add [harakou] to [list of Scratch team members v]
+say (list of Scratch team members)
 
+(list of projects made by pooiod7 :: list)
 ```
     </td>
     <td>
 ```scratch3
+add [mres] to [list of Scratch team members v]
+add [paddle2see] to [list of Scratch team members v]
+add [harakou] to [list of Scratch team members v]
+say (list of Scratch team members)
 
+(list of projects made by pooiod7 :: list)
 ```
     </td></tr>
 </table>
@@ -497,4 +429,218 @@ end
 ```
     </td>
   </tr>
+  <tr>
+    <td>
+Changing color
+    </td>
+    <td>
+```txt
+think [Arbitrary colors?]:: #228b22
+```
+    </td>
+    <td>
+```scratch3
+think [Arbitrary colors?]:: #228b22
+```
+    </td>
+  </tr>
+  <tr>
+    <td>
+Changing shape
+    </td>
+    <td>
+```txt
+abc:: events hat
+def:: motion stack
+ghi:: pen reporter
+jkl:: operators boolean
+(::ring)ooh square block(::ring)::ring control
+```
+    </td>
+    <td>
+```scratch3
+abc:: events hat
+def:: motion stack
+ghi:: pen reporter
+jkl:: operators boolean
+(::ring)ooh square block(::ring)::ring control
+```
+    </td>
+  </tr>
+  <tr>
+    <td>
+Creating C blocks and changing category
+    </td>
+    <td>
+```txt
+mno {
+    ...
+}:: sensing
+```
+    </td>
+    <td>
+```scratch3
+mno {
+    ...
+}:: sensing
+```
+    </td>
+  </tr>
+  <tr>
+    <td>
+C blocks with multiple branches
+    </td>
+    <td>
+```txt
+pqr {
+    ...
+} stu {
+    ...
+} vwx:: sound
+```
+    </td>
+    <td>
+```scratch3
+pqr {
+    ...
+} stu {
+    ...
+} vwx:: sound
+```
+    </td>
+  </tr>
+  <tr>
+    <td>
+C block with cap
+    </td>
+    <td>
+```txt
+yz {
+    ...
+}:: motion cap
+```
+    </td>
+    <td>
+```scratch3
+yz {
+    ...
+}:: motion cap
+```
+    </td>
+  </tr>
+  <tr>
+    <td>
+Adding icons
+    </td>
+    <td>
+```txt
+@greenFlag @stopSign @turnRight @turnLeft:: grey
+@delInput @addInput @loopArrow:: grey
+```
+    </td>
+    <td>
+```scratch3
+@greenFlag @stopSign @turnRight @turnLeft:: grey
+@delInput @addInput @loopArrow:: grey
+```
+    </td>
+  </tr>
+</table>
+
+Scratchblocks also supports features specific to [Snap!](https://snap.berkeley.edu/), such as "rings". Other blocks in [Snap!](https://snap.berkeley.edu/) and can be created using the color/shape hacks above.
+
+<table>
+    <tr><td>
+```txt
+run ({create clone:: control} @addInput:: grey ring):: control
+
+<() @addInput:: grey ring>
+
+say (http:// [snap.berkeley.edu]:: sensing)
+
+((6) × (7):: operators)
+
+(join [hello ] [world] @delInput @addInput:: operators)
+
+script variables ((foo):: grey) ((bar):: grey) @delInput @addInput:: grey
+
+warp {
+  move (10) steps
+} :: grey
+
+report [Done!]:: control cap
+
+(<> @addInput) // without even the:: grey ring
+```
+    </td>
+    <td>
+```scratch2
+run ({create clone:: control} @addInput:: grey ring):: control
+
+<() @addInput:: grey ring>
+
+say (http:// [snap.berkeley.edu]:: sensing)
+
+((6) × (7):: operators)
+
+(join [hello ] [world] @delInput @addInput:: operators)
+
+script variables ((foo):: grey) ((bar):: grey) @delInput @addInput:: grey
+
+warp {
+  move (10) steps
+} :: grey
+
+report [Done!]:: control cap
+
+(<> @addInput) // without even the:: grey ring
+```
+    </td></tr>
+</table>
+
+## Backslash
+
+---
+
+A backslash (\\) is an escape character, a character that cancels out any special functionality of the next character, making it show up as normal text. If a character with special functionality, like a closing bracket (]), needs to be rendered as normal text, put a backslash before it.
+
+<table>
+    <tr><td>
+```txt
+say []]
+```
+    </td>
+    <td>
+```scratch3
+say []]
+```
+    </td></tr>
+</table>
+
+<table>
+    <tr><td>
+```txt
+say [\]]
+```
+    </td>
+    <td>
+```scratch3
+say [\]]
+```
+    </td></tr>
+</table>
+
+This is useful in certain situations, where backslashes are necessary to properly display a block:
+
+<table>
+    <tr><td>
+```txt
+play drum (\(1\) Snare Drum v) for (0.25) beats
+```
+    </td>
+    <td>
+```scratch3
+play drum (\(1\) Snare Drum v) for (0.25) beats
+```
+    </td></tr>
 </table>
