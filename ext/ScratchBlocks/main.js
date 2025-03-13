@@ -14,7 +14,7 @@
                 name: 'Scratch​Blocks',
                 color1: '#e1a91a',
                 color2: '#c88330',
-                docsURI: 'https://extensions.penguinmod.com/docs/ScratchBlocks',
+                docsURI: 'https://p7scratchextensions.pages.dev/docs/#/ScratchBlocks',
                 blocks: [
                     {
                         opcode: 'makestackSVG',
