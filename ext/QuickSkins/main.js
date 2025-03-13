@@ -30,7 +30,7 @@
                         opcode: "removeSkin",
                         blockType: Scratch.BlockType.COMMAND,
                         text: "Remove sprite skin",
-                    },
+                    }
                 ],
             };
         }
@@ -41,40 +41,63 @@
 
             const drawableID = target.drawableID;
 
-            // This can cause list counter desync issues, but it's the best I have for now.
-            if (
-                Scratch.vm.renderer._allDrawables[drawableID]._skin && 
-                Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
-                Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
-            ) {
-                Scratch.vm.renderer._allSkins.splice(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, 1);
-            }
+            var removeSkin = false;
 
             if (!DATAURI.startsWith("data:")) {
                 async function imageToDataURI(url) {
-                    const response = await fetch(url);
-                    const blob = await response.blob();
-                    return new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onloadend = () => resolve(reader.result);
-                        reader.readAsDataURL(blob);
-                    });
+                    try {
+                        const response = await fetch(url);
+                        const blob = await response.blob();
+                        return new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.readAsDataURL(blob);
+                        });
+                    } catch(e) {
+                        removeSkin = true;
+                        return `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/ep7rVQAAAAASUVORK5CYII=`;
+                    }
                 }
 
                 DATAURI = await imageToDataURI(DATAURI)
             }
 
+            var doUpdate = Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] && Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin;
+
             const image = new Image();
             image.onload = () => {
-                const canvas = document.createElement("canvas");
+                var canvas = document.createElement("canvas");
+
                 canvas.width = image.width;
                 canvas.height = image.height;
+
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(image, 0, 0);
 
-                const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
-                Scratch.vm.renderer._allSkins[skinId].tmpSkin = true;
-                Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
+                if (removeSkin) {
+                    if (doUpdate) {
+                        Scratch.vm.renderer.updateBitmapSkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, canvas, 2);
+                        Scratch.vm.renderer.updateDrawableSkinId(drawableID, Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
+                    } else {
+                        if (
+                            Scratch.vm.renderer._allDrawables[drawableID]._skin && 
+                            Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
+                            Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
+                        ) {
+                            Scratch.vm.renderer.destroySkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
+                        }
+                    }
+                    target.updateAllDrawableProperties();
+                }
+
+                if (doUpdate) {
+                    Scratch.vm.renderer.updateBitmapSkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, canvas, 2);
+                    Scratch.vm.renderer.updateDrawableSkinId(drawableID, Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
+                } else {
+                    const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
+                    Scratch.vm.renderer._allSkins[skinId].tmpSkin = true;
+                    Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
+                }
 
                 if (target.onTargetVisualChange) {
                     target.onTargetVisualChange();
@@ -92,7 +115,7 @@
                 Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
                 Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
             ) {
-                Scratch.vm.renderer._allSkins.splice(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, 1);
+                Scratch.vm.renderer.destroySkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
             }
             target.updateAllDrawableProperties();
         }
