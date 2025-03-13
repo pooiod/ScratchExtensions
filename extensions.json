@@ -320,12 +320,11 @@
         "image": "/ext/[id]/cover.svg",
         "title": "You-tilities",
         "description": "An extension to interface with youtube.",
-        "subtext": "Currently does not work",
-        "icon": "/extras/images/icons/warn.png",
-        "iconText": "This extension is half functioning.",
+        "subtext": "Download api is down, everything else works",
+        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "iconText": "This extension uses third party apis",
         "created": "Apr 22, 2024",
         "unsandboxed": true,
-        "notworking": true,
         "buttons": [
             { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
         ],
