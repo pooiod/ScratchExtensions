@@ -2,7 +2,7 @@
 [!js-document.title="Scratchblocks Documentation"!]
 ---
 <!-- Sorry to anybody looking at this markdown code -->
-This documentation will teach you hot to use Scratchblocks.
+This documentation will teach you how to use Scratchblocks.
 
 > This page is a work in progress
 
@@ -279,12 +279,12 @@ Number, boolean, and string arguments can be added:
 <table>
     <tr><td>
 ```txt
-define jump (height) <gravity on?> [message]
+define jump (height) [message] <gravity on?>
 ```
     </td>
     <td>
 ```scratch3
-define jump (height :: custom) <gravity on? :: custom> [message :: custom]
+define jump (height :: custom) [message :: custom] <gravity on? :: custom>
 ```
     </td></tr>
 </table>
