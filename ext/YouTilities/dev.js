@@ -14,11 +14,11 @@
 
 		getInfo() {
 			return {
-				"id": "P7YTutils",
-				"name": "You-tilities",
+				id: "P7YTutils",
+				name: "You-tilities",
 				color1: '#e30000',
 				color2: '#ba1818',
-				"blocks": [
+				blocks: [
 					{
 						opcode: "converturl",
 						blockType: "reporter",
@@ -165,7 +165,7 @@
 				.then((data) => (data[DAT]))
 				.catch((error) => {
 					console.error('Error fetching data:', error);
-					return false;
+					return "Error: failed to reach API";
 				});
 		}
 
@@ -203,13 +203,13 @@
 							resolve('No results');
 						}
 					})
-					.catch(e => reject('Error fetching results'));
+					.catch(e => reject('Error: unable to fetch results'));
 			});
 		}
 
 		async downloadvid({ VIDURL, TYPE }, _, check) {
 			if (!check && !await Scratch.canFetch("https://p7scratchextensions.pages.dev/ext/YouTilities/api")) {
-				return "Error: API call rejected by user";
+				return "Error: API call rejected by security manager";
 			}
 
 			const iframe = document.createElement('iframe');
