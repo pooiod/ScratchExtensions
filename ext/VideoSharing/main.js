@@ -129,35 +129,72 @@
       }
 
       async showimage({ URL }, util) {
-        const target = util.target;
+        const target = util.target || util;
+        if (!target) return;
+
         const drawableID = target.drawableID;
 
-        if (!target) return;
+        var removeSkin = false;
 
         if (!URL.startsWith("data:")) {
           async function imageToDataURI(url) {
-            const response = await fetch(url);
-            const blob = await response.blob();
-            return new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result);
-              reader.readAsDataURL(blob);
-            });
+            try {
+              const response = await fetch(url);
+              const blob = await response.blob();
+              return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+              });
+            } catch(e) {
+              removeSkin = true;
+              return `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/ep7rVQAAAAASUVORK5CYII=`;
+            }
           }
 
           URL = await imageToDataURI(URL)
         }
 
+        var doUpdate = Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] && Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin;
+
         const image = new Image();
         image.onload = () => {
-          const canvas = document.createElement("canvas");
+          var canvas = document.createElement("canvas");
+
           canvas.width = image.width;
           canvas.height = image.height;
+
           const ctx = canvas.getContext("2d");
           ctx.drawImage(image, 0, 0);
-  
-          const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
-          Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
+
+          if (removeSkin) {
+            if (doUpdate) {
+              Scratch.vm.renderer.updateBitmapSkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, canvas, 2);
+              Scratch.vm.renderer.updateDrawableSkinId(drawableID, Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
+            } else {
+                if (
+                  Scratch.vm.renderer._allDrawables[drawableID]._skin && 
+                  Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
+                  Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
+                ) {
+                  Scratch.vm.renderer.destroySkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
+                }
+            }
+            target.updateAllDrawableProperties();
+          }
+
+          if (doUpdate) {
+            Scratch.vm.renderer.updateBitmapSkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id, canvas, 2);
+            Scratch.vm.renderer.updateDrawableSkinId(drawableID, Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
+          } else {
+            const skinId = Scratch.vm.renderer.createBitmapSkin(canvas);
+            Scratch.vm.renderer._allSkins[skinId].tmpSkin = true;
+            Scratch.vm.renderer.updateDrawableSkinId(drawableID, skinId);
+          }
+
+          if (target.onTargetVisualChange) {
+            target.onTargetVisualChange();
+          }
         };
         image.src = Scratch.Cast.toString(URL);
       }
@@ -165,6 +202,14 @@
       restoreSkin(args, util) {
         const target = util.target;
         if (!target) return;
+        const drawableID = target.drawableID;
+        if (
+          Scratch.vm.renderer._allDrawables[drawableID]._skin && 
+          Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id] &&
+          Scratch.vm.renderer._allSkins[Scratch.vm.renderer._allDrawables[drawableID]._skin._id].tmpSkin
+        ) {
+          Scratch.vm.renderer.destroySkin(Scratch.vm.renderer._allDrawables[drawableID]._skin._id);
+        }
         target.updateAllDrawableProperties();
       }
   
