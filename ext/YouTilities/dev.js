@@ -3,9 +3,9 @@
 (function (Scratch) {
 	'use strict';
 
-	if (!Scratch.extensions.unsandboxed) {
-		throw new Error('Youtube Utils can\'t run in the sandbox');
-	}
+	// if (!Scratch.extensions.unsandboxed) {
+	// 	throw new Error('Youtube Utils can\'t run in the sandbox');
+	// }
 
 	var defaulturl = "https://www.youtube.com/watch?v=FtutLA63Cp8";
 
