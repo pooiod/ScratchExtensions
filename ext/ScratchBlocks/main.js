@@ -6,75 +6,75 @@
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('This extension must run unsandboxed');
     }
-    
+
     class scratchblocksext {
-    getInfo() {
-        return {
-            id: 'scratchblocks',
-            name: 'Scratch​Blocks',
-            color1: '#e1a91a',
-            color2: '#c88330',
-            docsURI: 'https://en.scratch-wiki.info/wiki/Block_Plugin/Syntax',
-            blocks: [
-                {
-                    opcode: 'makestackSVG',
-                    hideFromPalette: true, /** Hidded because of bugs with the scratch render system */
-                    blockType: Scratch.BlockType.COMMAND,
-                    text: 'Make svg stack [blocks] of type [type]',
-                    arguments: {
-                        blocks: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'when green flag clicked \n say[Hello, World!]',
-                        },
-                        id: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'Stack1',
-                        },
-                        type: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'sb3',
-                        },
-                    },
-                },
-                {
-                    opcode: 'makestackPNG',
-                    blockType: Scratch.BlockType.COMMAND,
-                    text: 'Make png stack [blocks] of type [type]',
-                    arguments: {
-                        blocks: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'when green flag clicked \n say[Hello, World!]',
-                        },
-                        id: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'Stack1',
-                        },
-                        type: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'sb3',
+        getInfo() {
+            return {
+                id: 'scratchblocks',
+                name: 'Scratch​Blocks',
+                color1: '#e1a91a',
+                color2: '#c88330',
+                docsURI: 'https://extensions.penguinmod.com/docs/ScratchBlocks',
+                blocks: [
+                    {
+                        opcode: 'makestackSVG',
+                        hideFromPalette: true, /** Hidded because of bugs with the scratch render system */
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Make svg stack [blocks] of type [type]',
+                        arguments: {
+                            blocks: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'when green flag clicked \n say[Hello, World!]',
+                            },
+                            id: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Stack1',
+                            },
+                            type: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'sb3',
+                            },
                         },
                     },
-                },
-                {
-                    opcode: 'makestackSVGstring',
-                    blockType: Scratch.BlockType.REPORTER,
-                    text: 'Make svg stack [blocks] of type [type]',
-                    arguments: {
-                        blocks: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'when green flag clicked \n say[Hello, World!]',
-                        },
-                        id: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'Stack1',
-                        },
-                        type: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: 'sb3',
+                    {
+                        opcode: 'makestackPNG',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Make png stack [blocks] of type [type]',
+                        arguments: {
+                            blocks: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'when green flag clicked \n say[Hello, World!]',
+                            },
+                            id: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Stack1',
+                            },
+                            type: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'sb3',
+                            },
                         },
                     },
-                },
-            ]
+                    {
+                        opcode: 'makestackSVGstring',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Make svg stack [blocks] of type [type]',
+                        arguments: {
+                            blocks: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'when green flag clicked \n say[Hello, World!]',
+                            },
+                            id: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Stack1',
+                            },
+                            type: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'sb3',
+                            },
+                        },
+                    },
+                ]
             };
         }
 
@@ -208,7 +208,7 @@
         });
     }
 
-    // Scratchblocks
+    // Scratchblocks lib
 
     let scratchblocks = {};
     scratchblocks.init = () => {
