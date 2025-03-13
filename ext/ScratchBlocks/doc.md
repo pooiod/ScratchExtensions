@@ -1,8 +1,10 @@
 # How to use ScratchBlocks
 [!js-document.title="Scratchblocks Documentation"!]
 ---
-
 <!-- Sorry to anybody looking at this markdown code -->
+This documentation will teach you hot to use Scratchblocks.
+
+> This page is a work in progress
 
 ## Arguments
 
@@ -282,7 +284,7 @@ define jump (height) <gravity on?> [message]
     </td>
     <td>
 ```scratch3
-define jump (height) <gravity on?> [message]
+define jump (height :: custom) <gravity on? :: custom> [message :: custom]
 ```
     </td></tr>
 </table>
@@ -340,8 +342,8 @@ say (height)
     </td>
     <td>
 ```scratch3
-define jump (height)
-say (height)
+define jump (height :: custom)
+say (height :: custom)
 ```
     </td></tr>
 </table>
