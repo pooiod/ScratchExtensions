@@ -1,4 +1,4 @@
-// Video sharing (v2.4.4) by pooiod7
+// Video sharing (v2.4.5) by pooiod7
 
 (function(Scratch) {
     'use strict';
@@ -131,6 +131,10 @@
       async showimage({ URL }, util) {
         const target = util.target || util;
         if (!target) return;
+
+        if (!URL) {
+          this.restoreSkin({}, util);
+        }
 
         const drawableID = target.drawableID;
 
