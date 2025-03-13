@@ -279,12 +279,12 @@ Number, boolean, and string arguments can be added:
 <table>
     <tr><td>
 ```txt
-define jump (height) [message] <gravity on?>
+define jump (height) <gravity on?> [message]
 ```
     </td>
     <td>
 ```scratch3
-define jump (height :: custom) [message :: custom] <gravity on? :: custom>
+define jump (height :: custom) <gravity on? :: custom> (height :: custom)
 ```
     </td></tr>
 </table>
