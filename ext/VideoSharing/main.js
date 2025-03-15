@@ -1,4 +1,4 @@
-// Video sharing (v2.4.5) by pooiod7
+// Video sharing (v2.5.2) by pooiod7
 
 (function(Scratch) {
   'use strict';
