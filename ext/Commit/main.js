@@ -67,6 +67,9 @@
     } getTheme();
 
     function showToast(text, html) {
+        var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
+        if (!targetElement) return;
+
         var existingToast = document.querySelector('.toast-notification');
         if (existingToast) {
             existingToast.remove();
@@ -96,7 +99,6 @@
             alertBox.innerText = text;
         }
 
-        var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
         var bgColor = getComputedStyle(document.documentElement).getPropertyValue("--ui-primary").trim() || "#fff";
         alertBox.style.position = 'absolute';
         alertBox.style.top = '5px';
@@ -288,8 +290,6 @@
             const changeUsernameButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-menu_239MD *'))
                 .find(el => el.textContent.trim() === "Change Username");
 
-            document.querySelector(".modal_header-item_2zQTd.modal_header-item-title_tLOU5").innerText = "Choose a Username";
-
             if (changeUsernameButton) {
                 click(changeUsernameButton);
                 await new Promise(resolve => setTimeout(resolve, 100));
@@ -300,6 +300,9 @@
                 const helpTexts = document.querySelectorAll('p.username-modal_help-text_3dN2-');
                 if (helpTexts.length > 0) helpTexts[0].remove();
                 if (helpTexts.length > 1) helpTexts[1].innerHTML = "Please select suitable username so that everyone else on this colab can tell it's you.";
+                document.querySelector(".modal_header-item_2zQTd.modal_header-item-title_tLOU5").innerText = "Choose a Username";
+
+                document.querySelector("body > div.ReactModalPortal > div > div > div > div.username-modal_body_UaL6e.box_box_2jjDp > div.username-modal_button-row_2amuh.box_box_2jjDp > button:nth-child(1)")?.remove();
 
                 await waitForInputDisappear(inputField);
             }
@@ -507,7 +510,7 @@
 
                     var edit = getEditingSprite(target.getName());
                     if (!edit || edit == clientId) {
-                        showToast(`Notice: ${edit} is already editing "${sprite}"`, false);
+                        showToast(`Notice: ${edit} is already editing "${target.getName()}"`, false);
                     }
 
                     sendmsg("usrtrack", JSON.stringify({
@@ -572,12 +575,12 @@
         const parsedData = JSON.parse(dat);
         const {
             sprite,
-            from,
-            dothing
+            dothing,
+            from
         } = parsedData;
 
         if (from == clientId) {
-            // return;
+            return;
         } else {
             editing[from] = {
                 sprite: sprite,
@@ -585,7 +588,9 @@
             };
         }
 
-        if (dothing) showToast(`${from} is now editing "${sprite}"`, false);
+        if (dothing) {
+            showToast(`${from} is now editing "${sprite}"`, false);
+        }
     };
 
 	function setColors() {
