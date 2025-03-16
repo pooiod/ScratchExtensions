@@ -10,6 +10,8 @@
         return; // Backup for if the extension exports with the project
     }
 
+    var editing = {};
+
 	function getColorFromID(id) {
 		var hue = Array.from(id).reduce((acc, char) => acc + char.charCodeAt(0), 0);
 		var hexColor = `hsl(${(hue / 5) % 360}, 50%, 80%)`;
@@ -64,6 +66,74 @@
         backColor = standardizeColor(accent).replace('rgb', 'rgba').replace(')', ', 0.7)');
     } getTheme();
 
+    function showToast(text, html) {
+        var existingToast = document.querySelector('.toast-notification');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        function getTextColorBasedOnBackground(color) {
+            var rgb = hexToRgb(color) || { r: 255, g: 255, b: 255 };
+            var lightness = 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
+            return lightness > 128 ? 'black' : 'white';
+        }
+
+        function hexToRgb(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        var alertBox = document.createElement('div');
+        alertBox.classList.add('toast-notification');
+        
+        if (html) {
+            alertBox.innerHTML = text;
+        } else {
+            alertBox.innerText = text;
+        }
+
+        var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
+        var bgColor = getComputedStyle(document.documentElement).getPropertyValue("--ui-primary").trim() || "#fff";
+        alertBox.style.position = 'absolute';
+        alertBox.style.top = '5px';
+        alertBox.style.right = '5px';
+        alertBox.style.height = (targetElement.offsetHeight - 10) + 'px';
+        alertBox.style.backgroundColor = bgColor;
+        alertBox.style.color = getTextColorBasedOnBackground(bgColor);
+        alertBox.style.fontSize = 'auto';
+        alertBox.style.whiteSpace = 'nowrap';
+        alertBox.style.overflow = 'hidden';
+        alertBox.style.textOverflow = 'ellipsis';
+        alertBox.style.borderRadius = '5px';
+        alertBox.style.outline = `2px solid ${getComputedStyle(document.documentElement).getPropertyValue("--ui-tertiary").trim() || "#f1f1f1"}`;
+        alertBox.style.opacity = '0';
+        alertBox.style.transform = 'translateY(100%)';
+        alertBox.style.transition = 'all 0.5s ease';
+
+        var height = (targetElement.offsetHeight - 10);
+        alertBox.style.padding = `${height * 0.3}px ${height * 0.35}px`;
+
+        document.querySelector('#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul').appendChild(alertBox);
+
+        setTimeout(function() {
+            alertBox.style.opacity = '1';
+            alertBox.style.transform = 'translateY(0)';
+        }, 10);
+
+        setTimeout(function() {
+            alertBox.style.opacity = '0';
+            alertBox.style.transform = 'translateY(100%)';
+        }, 1500);
+
+        setTimeout(function() {
+            alertBox.remove();
+        }, 2000);
+    }
+
     async function YeetFile(BLOB) {
         const formData = new FormData();
         formData.append('file', BLOB);
@@ -98,6 +168,29 @@
 
             xhr.send(formData);
         });
+    }
+
+    async function blobToBase64(blob) {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        return new Promise((resolve) => {
+            reader.onloadend = () => {
+                resolve(reader.result);
+            };
+        });
+    }
+
+    async function blobToFile(blob) {
+        if (!blob instanceof Blob) {
+            alert("Invalid file tried to upload");
+            return;
+        }
+
+        if (blob.size < 1024 * 1024 * 1024) {
+            return blobToBase64(blob);
+        } else {
+            return YeetFile(blob);
+        }
     }
 
     function showalert(txt, timeout, inst) {
@@ -263,6 +356,7 @@
         client.onMessageArrived = gotMessage;
         client.subscribe("commit" + serverid);
 		client.subscribe("chat" + serverid);
+        client.subscribe("usrtrack" + serverid);
         main();
         showalert("Connected to broker", 2000, false);
     }
@@ -299,7 +393,7 @@
     }
 
     function gotMessage(message) {
-        console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
+        // console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
         try {
             function isJsonString(str) {
                 try {
@@ -316,30 +410,20 @@
 					setTimeout(() => {
 						docommit(message.payloadString);
 					}, 1000);
-				}
+				} else if (message.destinationName == "usrtrack" + serverid) {
+                    alertUserSpriteChange(message.payloadString);
+                }
             }
         } catch (err) {
             err = err;
         }
     }
 
-    async function blobToBase64(blob) {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        return new Promise((resolve) => {
-            reader.onloadend = () => {
-                resolve(reader.result);
-            };
-        });
-    }
-
     async function getdata(target) {
-        // Export code from https://surv.is-a.dev/survs-gallery (NicheToolbox) 
-
         // Scratch.vm.runtime.getSpriteTargetByName("Sprite1")
         if (!target) return '';
         const spriteExport = await Scratch.vm.exportSprite(target.id);
-        const dat = await YeetFile(spriteExport);
+        const dat = await blobToFile(spriteExport);
         return JSON.stringify({
             sprite: target.getName(),
             data: dat,
@@ -348,6 +432,12 @@
     }
 
     async function commit(spr) {
+        // var edit = getEditingSprite(prevtarget.getName());
+        // if (!edit || edit == clientId) {
+        //     edit = window.conferm(`${edit} is already editing this sprite, are you sure you want to commit`);
+        //     if (!edit) return;
+        // }
+
         if (spr.isStage) {
             showalert("Unable to commit the stage.", 2000);
             return;
@@ -368,23 +458,68 @@
     function main() {
         var prevtarget = Scratch.vm.runtime.getEditingTarget();
 
-        // Scratch.vm.on('targetsUpdate', (event) => {
-        //   let target = Scratch.vm.runtime.getEditingTarget(); // event.editingTarget
+        setInterval(() => {
+            const currentTime = Math.floor(Date.now() / 1000);
+            for (const user in editing) {
+                if (editing[user].time < currentTime - 20) {
+                    delete editing[user];
+                }
+            }
+        }, 10000);
 
-        //   if (published == target.getName() || prevtarget.getName() == published) {
-        //     prevtarget = target;
-        //     return;
-        //   }
+        setInterval(()=>{
+            sendmsg("usrtrack", JSON.stringify({
+                sprite: Scratch.vm.runtime.getEditingTarget().getName(),
+                dothing: false,
+                from: clientId
+            }));
+        }, 5000);
 
-        //   if (prevtarget.getName() == target.getName()) {
-        //     console.log("same");
-        //     return;
-        //   } else {
-        //     commit(prevtarget);
-        //     prevtarget = target;
-        //   }
-        //   console.log("e");
-        // });
+        function getEditingSprite(sprite) {
+            for (const user in editing) {
+                if (editing[user].sprite === sprite) {
+                    return user;
+                }
+            }
+            return null;
+        }
+
+        var ignoreSwap = false;
+        Scratch.vm.on('targetsUpdate', (event) => {
+            if (ignoreSwap) return;
+            ignoreSwap = true;
+            setTimeout(()=>{
+                ignoreSwap = false;
+                let target = Scratch.vm.runtime.getEditingTarget(); // event.editingTarget
+
+                if (published == target.getName() || prevtarget.getName() == published) {
+                    prevtarget = target;
+                    return;
+                }
+
+                if (prevtarget.getName() == target.getName()) {
+                    return;
+                } else {
+                    // var edit = getEditingSprite(prevtarget.getName());
+                    // if (!edit || edit == clientId) {
+                    //     commit(prevtarget);
+                    // }
+
+                    var edit = getEditingSprite(target.getName());
+                    if (!edit || edit == clientId) {
+                        showToast(`Notice: ${edit} is already editing "${sprite}"`, false);
+                    }
+
+                    sendmsg("usrtrack", JSON.stringify({
+                        sprite: target.getName(),
+                        dothing: true,
+                        from: clientId
+                    }));
+
+                    prevtarget = target;
+                }
+            }, 500);
+        });
     }
 
     function docommit(dat) {
@@ -398,7 +533,7 @@
         if (from == clientId) {
             // return;
         } else {
-			showalert(`Recived sprite from ${clientId}`, 2000, false);
+			showalert(`Recived "${sprite}" from ${clientId}`, 2000, false);
 		}
 
         let target = Scratch.vm.runtime.getEditingTarget();
@@ -432,6 +567,26 @@
                 console.log("Error", error);
             });
     }
+
+    function alertUserSpriteChange(dat) {
+        const parsedData = JSON.parse(dat);
+        const {
+            sprite,
+            from,
+            dothing
+        } = parsedData;
+
+        if (from == clientId) {
+            // return;
+        } else {
+            editing[from] = {
+                sprite: sprite,
+                time: Math.floor(Date.now() / 1000)
+            };
+        }
+
+        showToast(`${from} is now editing "${sprite}"`, false);
+    };
 
 	function setColors() {
         getTheme();
@@ -700,7 +855,7 @@
 	chatToggle.style.alignItems = "center";
 	chatToggle.style.justifyContent = "center";
 	chatToggle.style.transition = "background 0.3s ease-in-out, border 0.3s ease-in-out";
-	// chatToggle.style.cursor = "pointer";
+	chatToggle.style.cursor = "default";
 	chatToggle.style.fontSize = "24px";
 
 	chatToggle.onclick = toggleChat;
