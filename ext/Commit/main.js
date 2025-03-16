@@ -292,7 +292,11 @@
 
             if (changeUsernameButton) {
                 click(changeUsernameButton);
-                await new Promise(resolve => setTimeout(resolve, 100));
+
+                const startTime = Date.now();
+                while (!document.querySelector('input.username-modal_text-input_3z1ni') && Date.now() - startTime < 1000) {
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
 
                 const inputField = document.querySelector('input.username-modal_text-input_3z1ni');
                 if (inputField) inputField.value = '';
