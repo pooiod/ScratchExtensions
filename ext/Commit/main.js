@@ -1,6 +1,6 @@
 // A commit system for scratch (wip)
 
-(function(Scratch) {
+(async function(Scratch) {
     "use strict";
     if (!Scratch.extensions.unsandboxed) {
         throw new Error("This extension must be run unsandboxed");
@@ -167,6 +167,56 @@
     var serverid = false;
     if (pgeparams.has("project_url")) {
         serverid = pgeparams.get("project_url");
+    }
+
+    async function promptUsername() {
+        const editButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-item_oLDa-.menu-bar_hoverable_c6WFB'))
+            .find(el => el.textContent.trim() === "Edit");
+
+        async function waitForInputDisappear(inputField) {
+            while (inputField && inputField.offsetParent !== null) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        function click(elm) {
+            const mouseDownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+            const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+
+            elm.dispatchEvent(mouseDownEvent);
+            elm.dispatchEvent(mouseUpEvent);
+            elm.click();
+        }
+
+        if (editButton) {
+            click(editButton);
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const changeUsernameButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-menu_239MD *'))
+                .find(el => el.textContent.trim() === "Change Username");
+
+            document.querySelector(".modal_header-item_2zQTd.modal_header-item-title_tLOU5").innerText = "Choose a Username";
+
+            if (changeUsernameButton) {
+                click(changeUsernameButton);
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                const inputField = document.querySelector('input.username-modal_text-input_3z1ni');
+                if (inputField) inputField.value = '';
+
+                const helpTexts = document.querySelectorAll('p.username-modal_help-text_3dN2-');
+                if (helpTexts.length > 0) helpTexts[0].remove();
+                if (helpTexts.length > 1) helpTexts[1].innerHTML = "Please select suitable username so that everyone else on this colab can tell it's you.";
+
+                await waitForInputDisappear(inputField);
+            }
+        }
+    }
+
+    if (serverid && /^player\d+$/.test(Scratch.vm.runtime.ioDevices.userData._username)) {
+        try {
+            await promptUsername();
+        } catch(e) {}
     }
 
     var canmanual = true;
@@ -494,11 +544,18 @@
 	}
 
 	function setPos() {
-		var targetElementChat = document.querySelector("#react-tabs-1 > div.gui_blocks-wrapper_1ccgf.box_box_2jjDp > div > div > svg.blocklySvg > g > g.blocklyZoom > image:nth-child(3)");
+		var targetElementChat = document.querySelector("svg.blocklySvg > g > g.blocklyZoom > image:nth-child(3)");
+        var targetElement = document.querySelector("svg.blocklySvg > g > g.blocklyZoom > image:nth-child(2)");
+
+        if (document.querySelector("#app > div > div.interface_menu_3K-Q2 > div") || document.querySelector("div.stage-wrapper_stage-wrapper_2bejr.stage-wrapper_full-screen_2hjMb.box_box_2jjDp > div:nth-child(1) > div") || document.querySelector("body > div.ReactModalPortal > div > div > div > div.modal_header_1h7ps > div.modal_header-item_2zQTd.modal_header-item-title_tLOU5") || document.querySelector(".ReactModal__Overlay")) {
+            targetElementChat = false;
+            targetElement = false;
+        }
+
 		if (targetElementChat) {
 			var rect = targetElementChat.getBoundingClientRect();
 			if (rect.top == 0) {
-				targetElementChat = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp");
+				targetElementChat = document.querySelector("div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp");
 				rect = targetElementChat.getBoundingClientRect();
 
 				chatContainer.style.borderRadius = "0px";
@@ -513,18 +570,17 @@
 				chatContainer.style.borderRadius = "10px";
 			}
 		} else {
-			chatContainer.style.bottom = "20px";
-			chatContainer.style.right = "20px";
+            chatContainer.style.top = `calc(100vh - 20px - ${chatContainer.offsetHeight}px)`;
+            chatContainer.style.left = `calc(100vw - 20px - ${chatContainer.offsetWidth}px)`;
 		}
 
-		const targetElement = document.querySelector("#react-tabs-1 > div.gui_blocks-wrapper_1ccgf.box_box_2jjDp > div > div > svg.blocklySvg > g > g.blocklyZoom > image:nth-child(2)");
 		if (targetElement) {
 			const rect = targetElement.getBoundingClientRect();
 			chatToggle.style.top = rect.top - 52 + "px";
 			chatToggle.style.left = rect.left + rect.width / 2 - (52 / 2) + "px";
 		} else {
-			chatToggle.style.bottom = "20px";
-			chatToggle.style.right = "20px";
+            chatToggle.style.top = `calc(100vh - 20px - ${chatToggle.offsetHeight}px)`;
+            chatToggle.style.left = `calc(100vw - 20px - ${chatToggle.offsetWidth}px)`;
 		}
 	}
 
@@ -703,11 +759,11 @@
         async server() {
             var id = window.prompt("Select server to join (blank to start new server)");
             if (id) {
-				showalert("Joining colab server: ", 5000);
+				showalert("Joining colab server: " + id, 5000);
                 pgeparams.set("project_url", id);
                 window.location.href = pgeurl;
             } else {
-				showalert("Starting colab server: ", 5000);
+				showalert("Starting colab server", 5000);
 				pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3()));
 				window.location.href = pgeurl;
 			}
