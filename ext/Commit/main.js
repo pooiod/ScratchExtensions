@@ -585,7 +585,7 @@
             };
         }
 
-        showToast(`${from} is now editing "${sprite}"`, false);
+        if (dothing) showToast(`${from} is now editing "${sprite}"`, false);
     };
 
 	function setColors() {
