@@ -591,8 +591,12 @@
 				} else if (message.destinationName == "usrtrack" + serverid) {
                     alertUserSpriteChange(message.payloadString);
                 }
-            } else if (message.destinationName == "joined" + serverid && !clientId == message.payloadString) {
-                showToast(`${message.payloadString} has joined the colab`, false);
+            } else if (message.destinationName == "joined" + serverid) {
+                if (clientId == message.payloadString) {
+                    showToast(`Welcome ${message.payloadString}`, false);
+                } else {
+                    showToast(`${message.payloadString} has joined the colab`, false);
+                }
             }
         } catch (err) {
             err = err;
