@@ -10,6 +10,13 @@
         return; // Backup for if the extension exports with the project
     }
 
+    var compatability = [
+        ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"]
+    ];
+    function isCompatible(str1, str2) {
+        return str1 == str2 || compatability.some(arr => arr.includes(str1) && arr.includes(str2));
+    }
+
     var editing = {};
 
     function standardizeColor(color) {
@@ -530,6 +537,7 @@
 		client.subscribe("chat" + serverid);
         client.subscribe("usrtrack" + serverid);
         client.subscribe("joined" + serverid);
+        client.subscribe("scratchVersion" + serverid);
         if (firstTimeConnect) {
             main();
             sendmsg("joined", clientId)
@@ -570,6 +578,7 @@
         client.send(message);
     }
 
+    var incompatable = false;
     function gotMessage(message) {
         // console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
         try {
@@ -596,6 +605,15 @@
                     showToast(`Welcome ${message.payloadString}`, false);
                 } else {
                     showToast(`${message.payloadString} has joined the colab`, false);
+                    if (!incompatable) sendmsg("scratchVersion", window.location.host);
+                }
+            } else if (message.destinationName == "scratchVersion" + serverid) {
+                if (!isCompatible(window.location.host, message.payloadString) && !incompatable) {
+                    var [overlay, widgetframe, title, isOpen, closeButton] = MakeWidget(`
+                        <div style="position: absolute; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 0, 13, 0.07) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                            <p style="margin: 0; font-size: 18px;">This project is being hosted in ${message.payloadString} and may not be compatable with ${window.location.host}.</p> <p style="margin: 10px 0 0 0; font-size: 16px;">Please be cautious of project corruption when using multiple mods for a single project!</p>
+                        </div>
+                    `, "Compatability Error", "500px", "202px");
                 }
             }
         } catch (err) {
@@ -907,6 +925,22 @@
             targetElement = false;
         }
 
+        function detectMob() {
+            const toMatch = [
+                /Android/i,
+                /webOS/i,
+                /iPhone/i,
+                /iPad/i,
+                /iPod/i,
+                /BlackBerry/i,
+                /Windows Phone/i
+            ];
+
+            return toMatch.some((toMatchItem) => {
+                return navigator.userAgent.match(toMatchItem);
+            });
+        }
+
 		if (targetElementChat) {
 			var rect = targetElementChat.getBoundingClientRect();
 			if (rect.top == 0) {
@@ -928,8 +962,8 @@
             chatContainer.style.top = `calc(100vh - 20px - ${chatContainer.offsetHeight}px)`;
             chatContainer.style.left = `calc(100vw - 40px - ${chatContainer.offsetWidth}px)`;
 
-            if (navigator.userAgent.includes("CrOS")) {
-                chatToggle.style.left = `calc(100vw - 20px - ${chatToggle.offsetWidth}px)`;
+            if (/\bCrOS\b/.test(navigator.userAgent) || detectMob()) {
+                chatContainer.style.left = `calc(100vw - 20px - ${chatContainer.offsetWidth}px)`;
             }
 		}
 
@@ -941,7 +975,7 @@
             chatToggle.style.top = `calc(100vh - 20px - ${chatToggle.offsetHeight}px)`;
             chatToggle.style.left = `calc(100vw - 40px - ${chatToggle.offsetWidth}px)`;
 
-            if (navigator.userAgent.includes("CrOS")) {
+            if (/\bCrOS\b/.test(navigator.userAgent) || detectMob()) {
                 chatToggle.style.left = `calc(100vw - 20px - ${chatToggle.offsetWidth}px)`;
             }
 		}
