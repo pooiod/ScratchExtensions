@@ -1122,7 +1122,7 @@
 	setInterval(()=>{
 		var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'Commit Settings');
 		if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
-		  	element.remove();
+		  	element.style.display = "none";
 		}
 	}, 1000);
 
@@ -1143,10 +1143,17 @@
             return {
                 id: 'p7scratchcommits',
                 name: 'Commit Settings',
-                blocks: [{
+                blocks: [
+                    {
+                        func: "remove",
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: !serverid || !canmanual,
+                        text: "Leave colab"
+                    },
+                    {
                         func: "server",
                         blockType: Scratch.BlockType.BUTTON,
-                        text: serverid?"Connect to another server":"Connect to a server"
+                        text: serverid?"Join another colab":"Join a colab"
                     },
                     {
                         func: "commit",
@@ -1170,21 +1177,29 @@
         async server() {
             // JoinColabServer(window.prompt("Select server to join (blank to start new server)"));
             var [overlay, widgetframe, title, isOpen, closeButton] = MakeWidget(`
-<div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
-    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabServerInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
-    <p class="username-modal_help-text_3dN2-"><span>
-        Select project url to join a server. <br>
-        Leave the input blank to create a new server
-    </span></p>
+                <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
+                    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabServerInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
+                    <p class="username-modal_help-text_3dN2-"><span>
+                        Select project url to join a server. <br>
+                        Leave the input blank to create a new server
+                    </span></p>
 
-    <div class="username-modal_button-row_2amuh box_box_2jjDp">
-        <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
-        <button class="username-modal_cancel-button_3bs7j" onclick="document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
-        <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(document.getElementById('ColabServerInput').value); document.getElementById('widgetoverlay').remove()"><span>Join server</span></button>
-    </div>
-</div>
+                    <div class="username-modal_button-row_2amuh box_box_2jjDp">
+                        <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
+                        <button class="username-modal_cancel-button_3bs7j" onclick="document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
+                        <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(document.getElementById('ColabServerInput').value); document.getElementById('widgetoverlay').remove()"><span>Join server</span></button>
+                    </div>
+                </div>
             `, "Server select", "600px", "271px");
+        }
+        remove() {
+            // var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'Commit Settings');
+            // if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
+            //     click(element);
+            // }
 
+            pgeparams.delete("project_url");
+            window.location.href = pgeurl;
         }
     }
     Scratch.extensions.register(new p7scratchcommits());
