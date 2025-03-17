@@ -355,6 +355,7 @@
 
     const mqttBroker = "wss://test.mosquitto.org:8081/mqtt";
     var clientId = Scratch.vm.runtime.ioDevices.userData._username
+    if (clientId == null || clientId == "null" || clientId == "") clientId = false;
 	clientId = clientId || "Scratcher-" + Math.random().toString(16).substr(2, 8);
     var client;
 
@@ -488,7 +489,7 @@
                     return user;
                 }
             }
-            return null;
+            return;
         }
 
         var ignoreSwap = false;
@@ -513,7 +514,7 @@
                     // }
 
                     var edit = getEditingSprite(target.getName());
-                    if (!edit || edit == clientId) {
+                    if (edit || edit == clientId) {
                         showToast(`Notice: ${edit} is already editing "${target.getName()}"`, false);
                     }
 
