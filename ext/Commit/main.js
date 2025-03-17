@@ -280,7 +280,7 @@
         widgetframe.name = 'Widgetframe';
         widgetframe.style.borderBottomLeftRadius = '10px';
         widgetframe.style.borderBottomRightRadius = '10px';     
-        widgetframe.style.backgroundColor = 'var(--ui-primary, white)';   
+        widgetframe.style.backgroundColor = theme=="light"?"white":"black";   
         widgetframe.innerHTML = html;
         modal.appendChild(widgetframe);
 
