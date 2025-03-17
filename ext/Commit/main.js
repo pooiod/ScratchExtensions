@@ -427,6 +427,15 @@
         serverid = pgeparams.get("project_url");
     }
 
+    function click(elm) {
+        const mouseDownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+        const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
+
+        elm.dispatchEvent(mouseDownEvent);
+        elm.dispatchEvent(mouseUpEvent);
+        elm.click();
+    }
+
     async function promptUsername() {
         const editButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-item_oLDa-.menu-bar_hoverable_c6WFB'))
             .find(el => el.textContent.trim() === "Edit");
@@ -435,15 +444,6 @@
             while (inputField && inputField.offsetParent !== null) {
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
-        }
-
-        function click(elm) {
-            const mouseDownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
-            const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
-
-            elm.dispatchEvent(mouseDownEvent);
-            elm.dispatchEvent(mouseUpEvent);
-            elm.click();
         }
 
         if (editButton) {
@@ -571,7 +571,7 @@
     }
 
     function gotMessage(message) {
-        console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
+        // console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
         try {
             function isJsonString(str) {
                 try {
@@ -591,7 +591,7 @@
 				} else if (message.destinationName == "usrtrack" + serverid) {
                     alertUserSpriteChange(message.payloadString);
                 }
-            } else if (message.destinationName == "joined" + serverid) {
+            } else if (message.destinationName == "joined" + serverid && !clientId == message.payloadString) {
                 showToast(`${message.payloadString} has joined the colab`, false);
             }
         } catch (err) {
@@ -757,7 +757,7 @@
             from
         } = parsedData;
 
-        if (from == clientId && false) {
+        if (from == clientId) {
             return;
         } else {
             if (editing[from]) findSpriteVisual(editing[from].sprite).style = "";
