@@ -522,14 +522,21 @@
 	clientId = clientId || "Scratcher-" + Math.random().toString(16).substr(2, 8);
     var client;
 
+    var firstTimeConnect = true;
     function onConnect() {
         console.log("Connected to MQTT broker");
         client.onMessageArrived = gotMessage;
         client.subscribe("commit" + serverid);
 		client.subscribe("chat" + serverid);
         client.subscribe("usrtrack" + serverid);
-        main();
-        showalert("Connected to broker", 2000, false);
+        client.subscribe("joined" + serverid);
+        if (firstTimeConnect) {
+            main();
+            sendmsg("joined", clientId)
+            showalert("Connected to broker", 2000, false);
+        } else {
+            showalert("Regained connection", 2000, false);
+        }
     }
 
     function onFailure(err) {
@@ -583,6 +590,8 @@
 					}, 1000);
 				} else if (message.destinationName == "usrtrack" + serverid) {
                     alertUserSpriteChange(message.payloadString);
+                } else if (message.destinationName == "joined" + serverid) {
+                    showToast(`${message.payloadString} has joined the colab`, false);
                 }
             }
         } catch (err) {
@@ -678,8 +687,8 @@
                     // }
 
                     var edit = getEditingSprite(target.getName());
-                    if (edit || edit == clientId) {
-                        showToast(`Notice: ${edit} is already editing "${target.getName()}"`, false);
+                    if (edit && edit != clientId) {
+                        showalert(`Warning: ${edit} is already editing "${target.getName()}"`, 2000);
                     }
 
                     sendmsg("usrtrack", JSON.stringify({
@@ -760,9 +769,9 @@
             };
         }
 
-        if (dothing) {
-            showToast(`${from} is now editing "${sprite}"`, false);
-        }
+        // if (dothing) {
+        //     showToast(`${from} is now editing "${sprite}"`, false);
+        // }
     }
 
 	function setColors() {
@@ -1137,8 +1146,6 @@
             `, "Server select", "600px", "271px");
 
         }
-
-        // window.JoinColabServer(id)
     }
     Scratch.extensions.register(new p7scratchcommits());
 })(Scratch);
