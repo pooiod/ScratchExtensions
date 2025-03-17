@@ -609,6 +609,7 @@
                 }
             } else if (message.destinationName == "scratchVersion" + serverid) {
                 if (!isCompatible(window.location.host, message.payloadString) && !incompatable) {
+                    incompatable = true;
                     var [overlay, widgetframe, title, isOpen, closeButton] = MakeWidget(`
                         <div style="position: absolute; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 0, 13, 0.07) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
                             <p style="margin: 0; font-size: 18px;">This project is being hosted in ${message.payloadString} and may not be compatable with ${window.location.host}.</p> <p style="margin: 10px 0 0 0; font-size: 16px;">Please be cautious of project corruption when using multiple mods for a single project!</p>
