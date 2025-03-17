@@ -10,6 +10,8 @@
         return; // Backup for if the extension exports with the project
     }
 
+    var isCancled = false;
+
     var compatability = [
         ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"]
     ];
@@ -491,6 +493,8 @@
 
     var canmanual = true;
     document.addEventListener("keydown", async function(event) {
+        if (isCancled) return;
+
         if (event.ctrlKey && event.key === "k") {
             event.preventDefault();
 			if (serverid) {
@@ -512,8 +516,8 @@
     });
 
     setTimeout(function() {
-        if (serverid) {
-            const script = document.createElement('script');
+        if (serverid && !window.Paho) {
+            var script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js';
             script.onload = function() {
                 showalert("Conencting to broker...", 2000, false);
@@ -1113,8 +1117,8 @@
 	};
 
 	setColors();
-    setInterval(setColors, 5000);
-	setInterval(setPos, 100);
+    var intervalColors = setInterval(setColors, 5000);
+	var intervalPos = setInterval(setPos, 100);
 	setPos();
 
 	var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'Commit Settings');
@@ -1138,10 +1142,10 @@
         }
     };
 
-    class p7scratchcommits {
+    class P7scratchcommits {
         getInfo() {
             return {
-                id: 'p7scratchcommits',
+                id: 'P7scratchcommits',
                 name: 'Commit Settings',
                 blocks: [
                     {
@@ -1193,14 +1197,25 @@
             `, "Server select", "600px", "271px");
         }
         remove() {
-            // var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'Commit Settings');
-            // if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
-            //     click(element);
-            // }
+            try {
+                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
 
-            pgeparams.delete("project_url");
-            window.location.href = pgeurl;
+                chatToggle.remove();
+                chatContainer.style.display = "none";
+
+                window.clearInterval(intervalPos);
+                window.clearInterval(intervalColors)
+
+                isCancled = true;
+                serverid = false;
+                client.disconnect();
+            } catch(e) {
+                alert(e);
+
+                pgeparams.delete("project_url");
+                window.location.href = pgeurl;
+            }
         }
     }
-    Scratch.extensions.register(new p7scratchcommits());
+    Scratch.extensions.register(new P7scratchcommits());
 })(Scratch);
