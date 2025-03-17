@@ -12,9 +12,62 @@
 
     var editing = {};
 
-	function getColorFromID(id) {
+    function standardizeColor(color) {
+        if (color.startsWith('#')) {
+            let r = parseInt(color.slice(1, 3), 16);
+            let g = parseInt(color.slice(3, 5), 16);
+            let b = parseInt(color.slice(5, 7), 16);
+            return `rgb(${r}, ${g}, ${b})`;
+        } else if (color.startsWith('rgb')) {
+            return color;
+        } else if (color.startsWith('rgba')) {
+            return color.slice(0, color.length - 4) + '1)';
+        } else if (color.startsWith('hsla')) {
+            let hsla = color.match(/hsla\((\d+), (\d+)%, (\d+)%, (\d+)\)/);
+            if (hsla) {
+                let h = parseInt(hsla[1]) / 360;
+                let s = parseInt(hsla[2]) / 100;
+                let l = parseInt(hsla[3]) / 100;
+                let a = parseFloat(hsla[4]);
+                return `rgb(${Math.round(h * 255)}, ${Math.round(s * 255)}, ${Math.round(l * 255)})`;
+            }
+        } else if (color.startsWith('hsl')) {
+            let hsl = color.match(/hsl\((\d+), (\d+)%, (\d+)%\)/);
+            if (hsl) {
+                let h = parseInt(hsl[1]) / 360;
+                let s = parseInt(hsl[2]) / 100;
+                let l = parseInt(hsl[3]) / 100;
+                let r, g, b;
+
+                if (s === 0) {
+                    r = g = b = l;
+                } else {
+                    function hueToRgb(p, q, t) {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1 / 6) return p + (q - p) * 6 * t;
+                        if (t < 1 / 2) return q;
+                        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                        return p;
+                    }
+
+                    let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    let p = 2 * l - q;
+
+                    r = hueToRgb(p, q, h + 1 / 3);
+                    g = hueToRgb(p, q, h);
+                    b = hueToRgb(p, q, h - 1 / 3);
+                }
+
+                return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
+            }
+        }
+        return color;
+    }
+
+	function getColorFromID(id, brightness = 80) {
 		var hue = Array.from(id).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-		var hexColor = `hsl(${(hue / 5) % 360}, 50%, 80%)`;
+		var hexColor = `hsl(${(hue + 130) % 360}, 50%, ${brightness}%)`;
 		return hexColor;
 	}
 
@@ -23,48 +76,80 @@
     var backColor = "rgba(0, 0, 0, 0.7)";
     
     function getTheme() {
-        function standardizeColor(color) {
-            if (color.startsWith('#')) {
-                let r = parseInt(color.slice(1, 3), 16);
-                let g = parseInt(color.slice(3, 5), 16);
-                let b = parseInt(color.slice(5, 7), 16);
-                return `rgb(${r}, ${g}, ${b})`;
-            } else if (color.startsWith('rgb')) {
-                return color;
-            } else if (color.startsWith('rgba')) {
-                return color.slice(0, color.length - 4) + '1)';
-            }
-            return color;
-        }
-    
         try {
-            accent = "#e01f1f";
+            accent = "rgb(24, 202, 39)";
             theme = "light";
             backColor = "rgba(0, 0, 0, 0.7)";
             var themeSetting = localStorage.getItem('tw:theme');
             var parsed = JSON.parse(themeSetting);
+
+            if (parsed.gui) {
+                theme = parsed.gui;
+            }
+
             if (parsed.accent === 'purple') {
                 accent = '#855cd6';
             } else if (parsed.accent === 'blue') {
                 accent = '#4c97ff';
             }
-    
-            if (parsed.gui === 'dark' || parsed.gui === 'light') {
-                theme = parsed.gui;
-            }
         } catch (err) {
             err = err;
         }
-    
+
         if (document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")) {
             var accent2 = window.getComputedStyle(document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")).backgroundColor;
             if (accent2 && accent != "transparent") {
                 accent = accent2;
             }
+        } else if (document.querySelector("#app > div > div.interface_menu_3K-Q2 > div")) {
+            var accent2 = window.getComputedStyle(document.querySelector("#app > div > div.interface_menu_3K-Q2 > div")).backgroundColor;
+            if (accent2 && accent != "transparent") {
+                accent = accent2;
+            }
         }
-    
+
         backColor = standardizeColor(accent).replace('rgb', 'rgba').replace(')', ', 0.7)');
     } getTheme();
+
+    function darkenHexColor(hex, percent) {
+        hex = standardizeColor(hex);
+        hex = hex.replace(/rgb\((\d+), (\d+), (\d+)\)/, (match, r, g, b) => {
+            r = parseInt(r);
+            g = parseInt(g);
+            b = parseInt(b);
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+        });
+
+        let r = parseInt(hex.slice(1, 3), 16);
+        let g = parseInt(hex.slice(3, 5), 16);
+        let b = parseInt(hex.slice(5, 7), 16);
+
+        r = Math.max(0, r - r * percent / 100);
+        g = Math.max(0, g - g * percent / 100);
+        b = Math.max(0, b - b * percent / 100);
+
+        return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+    }
+
+    function lightenHexColor(hex, percent) {
+        hex = standardizeColor(hex);
+        hex = hex.replace(/rgb\((\d+), (\d+), (\d+)\)/, (match, r, g, b) => {
+            r = parseInt(r);
+            g = parseInt(g);
+            b = parseInt(b);
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+        });
+
+        let r = parseInt(hex.slice(1, 3), 16);
+        let g = parseInt(hex.slice(3, 5), 16);
+        let b = parseInt(hex.slice(5, 7), 16);
+
+        r = Math.min(255, r + r * percent / 100);
+        g = Math.min(255, g + g * percent / 100);
+        b = Math.min(255, b + b * percent / 100);
+
+        return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
+    }
 
     function showToast(text, html) {
         var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
@@ -210,35 +295,7 @@
         alertDiv.textContent = txt;
         alertDiv.style.zIndex = '9999999999999999999999999999999999999999999';
         alertDiv.style.pointerEvents = 'none';
-
-        try {
-            var accent = "#e01f1f";
-            var themeSetting = localStorage.getItem('tw:theme');
-            var parsed = JSON.parse(themeSetting);
-            if (parsed.accent === 'purple') {
-                accent = '#855cd6';
-            } else if (parsed.accent === 'blue') {
-                accent = '#4c97ff';
-            }
-			if (document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")) {
-				var accent2 = window.getComputedStyle(document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")).backgroundColor;
-				if (accent2 && accent != "transparent") {
-					accent = accent2;
-				}
-			}
-            alertDiv.style.backgroundColor = accent;
-        } catch (err) {
-			var accent = "#e01f1f";
-			if (document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")) {
-				var accent2 = window.getComputedStyle(document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")).backgroundColor;
-				if (accent2 && accent != "transparent") {
-					accent = accent2;
-				}
-				alertDiv.style.backgroundColor = accent;
-			}
-            err = err;
-        }
-
+        alertDiv.style.backgroundColor = accent;
         document.body.appendChild(alertDiv);
 
         console.log(txt);
@@ -255,6 +312,19 @@
                 document.body.removeChild(alertDiv);
             }, 500);
         }, timeout);
+    }
+
+    function findSpriteVisual(name) {
+        const container = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div");
+        if (!container) return null;
+
+        const elements = container.querySelectorAll('*');
+        for (const element of elements) {
+            if (element.textContent.trim() === name) {
+                return element.parentElement;
+            }
+        }
+        return null;
     }
 
     var pgeurl = new URL(window.location.href);
@@ -401,7 +471,7 @@
     }
 
     function gotMessage(message) {
-        // console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
+        console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
         try {
             function isJsonString(str) {
                 try {
@@ -470,6 +540,7 @@
             const currentTime = Math.floor(Date.now() / 1000);
             for (const user in editing) {
                 if (editing[user].time < currentTime - 20) {
+                    findSpriteVisual(editing[user].sprite).style = "";
                     delete editing[user];
                 }
             }
@@ -584,9 +655,12 @@
             from
         } = parsedData;
 
-        if (from == clientId) {
+        if (from == clientId && false) {
             return;
         } else {
+            if (editing[from]) findSpriteVisual(editing[from].sprite).style = "";
+            findSpriteVisual(sprite).style.borderColor = getColorFromID(from, 50);
+
             editing[from] = {
                 sprite: sprite,
                 time: Math.floor(Date.now() / 1000)
@@ -596,7 +670,7 @@
         if (dothing) {
             showToast(`${from} is now editing "${sprite}"`, false);
         }
-    };
+    }
 
 	function setColors() {
         getTheme();
@@ -621,6 +695,15 @@
 </svg>
 		`;
 		chatToggle.innerHTML = chatIcon;
+
+        var borderColor = getComputedStyle(document.documentElement).getPropertyValue("--ui-tertiary").trim() || "#f1f1f1";
+        if (theme == "dark") {
+            borderColor = lightenHexColor(borderColor, 50);
+            chatContainer.style.border = `2px solid ${borderColor}`;
+        } else {
+            chatContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+            chatContainer.style.border = `0px`;
+        }
 	}
 
     function strformat(STRING) {
@@ -736,7 +819,11 @@
 			}
 		} else {
             chatContainer.style.top = `calc(100vh - 20px - ${chatContainer.offsetHeight}px)`;
-            chatContainer.style.left = `calc(100vw - 20px - ${chatContainer.offsetWidth}px)`;
+            chatContainer.style.left = `calc(100vw - 40px - ${chatContainer.offsetWidth}px)`;
+
+            if (navigator.userAgent.includes("CrOS")) {
+                chatToggle.style.left = `calc(100vw - 20px - ${chatToggle.offsetWidth}px)`;
+            }
 		}
 
 		if (targetElement) {
@@ -745,7 +832,11 @@
 			chatToggle.style.left = rect.left + rect.width / 2 - (52 / 2) + "px";
 		} else {
             chatToggle.style.top = `calc(100vh - 20px - ${chatToggle.offsetHeight}px)`;
-            chatToggle.style.left = `calc(100vw - 20px - ${chatToggle.offsetWidth}px)`;
+            chatToggle.style.left = `calc(100vw - 40px - ${chatToggle.offsetWidth}px)`;
+
+            if (navigator.userAgent.includes("CrOS")) {
+                chatToggle.style.left = `calc(100vw - 20px - ${chatToggle.offsetWidth}px)`;
+            }
 		}
 	}
 
@@ -880,6 +971,7 @@
 	};
 
 	setColors();
+    setInterval(setColors, 5000);
 	setInterval(setPos, 500);
 	setPos();
 

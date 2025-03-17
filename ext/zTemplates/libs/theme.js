@@ -23,14 +23,15 @@ function getTheme() {
         backColor = "rgba(0, 0, 0, 0.7)";
         var themeSetting = localStorage.getItem('tw:theme');
         var parsed = JSON.parse(themeSetting);
+
+        if (parsed.gui) {
+            theme = parsed.gui;
+        }
+
         if (parsed.accent === 'purple') {
             accent = '#855cd6';
         } else if (parsed.accent === 'blue') {
             accent = '#4c97ff';
-        }
-
-        if (parsed.gui === 'dark' || parsed.gui === 'light') {
-            theme = parsed.gui;
         }
     } catch (err) {
         err = err;
