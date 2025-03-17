@@ -1131,7 +1131,7 @@
     <div class="username-modal_button-row_2amuh box_box_2jjDp">
         <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
         <button class="username-modal_cancel-button_3bs7j" onclick="document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
-        <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(document.getElementById(ColabServerInput).value); document.getElementById('widgetoverlay').remove()"><span>Join server</span></button>
+        <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(document.getElementById('ColabServerInput').value); document.getElementById('widgetoverlay').remove()"><span>Join server</span></button>
     </div>
 </div>
             `, "Server select", "600px", "271px");
