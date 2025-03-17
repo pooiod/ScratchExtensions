@@ -1151,7 +1151,7 @@
                     {
                         func: "remove",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: !serverid || !canmanual,
+                        hideFromPalette: (!serverid || !canmanual) && (Scratch.vm.extensionManager && Scratch.vm.extensionManager.removeExtension),
                         text: "Leave colab"
                     },
                     {
