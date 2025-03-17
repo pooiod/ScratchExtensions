@@ -15,6 +15,11 @@
     var compatability = [
         ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"]
     ];
+
+    var warnCompatableIssue = [
+        "rc.40code.com"
+    ];
+
     function isCompatible(str1, str2) {
         return str1 == str2 || compatability.some(arr => arr.includes(str1) && arr.includes(str2));
     }
@@ -514,6 +519,14 @@
         try {
             await promptUsername();
         } catch(e) {}
+    } if (serverid) {
+        if (warnCompatableIssue.includes(window.location.host)) {
+            MakeWidget(`
+                <div style="position: absolute; top: 50px; left: 0px; right: 0px; bottom: 0px; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 145, 0, 0.1) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                    <p style="margin: 0; font-size: 18px;">${window.location.host} has been known to have some issues</p> <p style="margin: 10px 0 0 0; font-size: 16px;">Some errors may present themselves, or some visual elements may be missing.</p>
+                </div>
+            `, "Compatability Error", "500px", "202px");
+        }
     }
 
     var canmanual = true;
@@ -639,7 +652,7 @@
             } else if (message.destinationName == "scratchVersion" + serverid) {
                 if (!isCompatible(window.location.host, message.payloadString) && !incompatable) {
                     incompatable = true;
-                    var [overlay, widgetframe, title, isOpen, closeButton] = MakeWidget(`
+                    MakeWidget(`
                         <div style="position: absolute; top: 50px; left: 0px; right: 0px; bottom: 0px; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 0, 13, 0.1) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
                             <p style="margin: 0; font-size: 18px;">This project is being hosted in ${message.payloadString} and may not be compatable with ${window.location.host}.</p> <p style="margin: 10px 0 0 0; font-size: 16px;">Please be cautious of project corruption when using multiple mods for a single project!</p>
                         </div>
@@ -1180,7 +1193,7 @@
         }
         async server() {
             // JoinColabServer(window.prompt("Select server to join (blank to start new server)"));
-            var [overlay, widgetframe, title, isOpen, closeButton] = MakeWidget(`
+            MakeWidget(`
                 <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
                     <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabServerInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
                     <p class="username-modal_help-text_3dN2-"><span>
