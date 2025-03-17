@@ -1151,7 +1151,7 @@
                     {
                         func: "remove",
                         blockType: Scratch.BlockType.BUTTON, // This only exists for PenguinMod so that a project isn't stuck with colab forever
-                        hideFromPalette: (serverid) && (Scratch.vm.extensionManager && Scratch.vm.extensionManager.removeExtension),
+                        hideFromPalette: !serverid || !Scratch.vm.extensionManager || !Scratch.vm.extensionManager.removeExtension,
                         text: "Leave colab"
                     },
                     {
