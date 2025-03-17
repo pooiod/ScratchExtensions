@@ -188,7 +188,7 @@
         alertBox.classList.add('toast-notification');
         
         if (html) {
-            alertBox.innerHTML = text;
+            alertBox.innerHTML = strformat(text);
         } else {
             alertBox.innerText = text;
         }
@@ -229,6 +229,31 @@
             alertBox.remove();
         }, time + 500);
     }
+
+    function strformat(STRING) {
+		var str = String(STRING);
+		// strip harmful tags but allow basic user formated text
+		var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'img'];
+		str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (match, p1) {
+		  if (allowedTags.indexOf(p1.toLowerCase()) !== -1) {
+			return match;
+		  } else {
+			return '';
+		  }
+		});
+		// newline fixes
+		str = str.replace(/(?<!\\)\\n/g, " <br>");
+		str = str.replace(/\n/g, " <br>");
+		// @user links
+		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
+		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
+		// https links
+		str = str.replace(/(\/\/|www\.)([^ \n]+)/g, '$1<a href="https://$2" target="_blank">$2</a>');
+		// special links
+		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
+		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
+		return str;
+	};
 
     function MakeWidget(html, pageTitle, width, height) {
         getTheme();
@@ -508,9 +533,7 @@
 					}, 500);
 				}
 			} else {
-				showalert("Starting colab server: ", 5000);
-				pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3()));
-				window.location.href = pgeurl;
+				window.JoinColabServer();
 			}
         }
     });
@@ -524,12 +547,14 @@
                 start();
             };
             document.head.appendChild(script);
+        } else if (serverid) {
+            showalert("Conencting to broker...", 2000, false);
+            start();
         }
     }, 1000);
 
     const mqttBroker = "wss://test.mosquitto.org:8081/mqtt";
     var clientId = Scratch.vm.runtime.ioDevices.userData._username
-    if (clientId == null || clientId == "null" || clientId == "") clientId = false;
 	clientId = clientId || "Scratcher-" + Math.random().toString(16).substr(2, 8);
     var client;
 
@@ -615,7 +640,7 @@
                 if (!isCompatible(window.location.host, message.payloadString) && !incompatable) {
                     incompatable = true;
                     var [overlay, widgetframe, title, isOpen, closeButton] = MakeWidget(`
-                        <div style="position: absolute; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 0, 13, 0.07) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                        <div style="position: absolute; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 0, 13, 0.1) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
                             <p style="margin: 0; font-size: 18px;">This project is being hosted in ${message.payloadString} and may not be compatable with ${window.location.host}.</p> <p style="margin: 10px 0 0 0; font-size: 16px;">Please be cautious of project corruption when using multiple mods for a single project!</p>
                         </div>
                     `, "Compatability Error", "500px", "202px");
@@ -834,31 +859,6 @@
             chatContainer.style.border = `0px`;
         }
 	}
-
-    function strformat(STRING) {
-		var str = String(STRING);
-		// strip harmful tags but allow basic user formated text
-		var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'img'];
-		str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (match, p1) {
-		  if (allowedTags.indexOf(p1.toLowerCase()) !== -1) {
-			return match;
-		  } else {
-			return '';
-		  }
-		});
-		// newline fixes
-		str = str.replace(/(?<!\\)\\n/g, " <br>");
-		str = str.replace(/\n/g, " <br>");
-		// @user links
-		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
-		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
-		// https links
-		str = str.replace(/(\/\/|www\.)([^ \n]+)/g, '$1<a href="https://$2" target="_blank">$2</a>');
-		// special links
-		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
-		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
-		return str;
-	};
 
 	function showMessage(user, name, color, msg) {
 		const message = document.createElement("div");
@@ -1150,8 +1150,8 @@
                 blocks: [
                     {
                         func: "remove",
-                        blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: (!serverid || !canmanual) && (Scratch.vm.extensionManager && Scratch.vm.extensionManager.removeExtension),
+                        blockType: Scratch.BlockType.BUTTON, // This only exists for PenguinMod so that a project isn't stuck with colab forever
+                        hideFromPalette: (serverid) && (Scratch.vm.extensionManager && Scratch.vm.extensionManager.removeExtension),
                         text: "Leave colab"
                     },
                     {
@@ -1198,8 +1198,6 @@
         }
         remove() {
             try {
-                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
-
                 chatToggle.remove();
                 chatContainer.style.display = "none";
 
@@ -1209,6 +1207,8 @@
                 isCancled = true;
                 serverid = false;
                 client.disconnect();
+
+                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
             } catch(e) {
                 alert(e);
 
