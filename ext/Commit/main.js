@@ -221,6 +221,99 @@
         }, 2000);
     }
 
+    function MakeWidget(html, pageTitle, width, height) {
+        getTheme();
+
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = backColor;
+        overlay.style.zIndex = '9999';
+        overlay.id = "widgetoverlay";
+        
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'absolute';
+        wrapper.style.top = "50%";
+        wrapper.style.left = "50%";
+        wrapper.style.transform = 'translate(-50%, -50%)';
+        wrapper.style.border = '4px solid rgba(255, 255, 255, 0.25)';
+        wrapper.style.borderRadius = '13px';
+        wrapper.style.padding = '0px';
+        wrapper.style.width = width || '70vw';
+        wrapper.style.height = height || '80vh';
+        
+        const modal = document.createElement('div');
+        modal.style.padding = '0px';
+        modal.style.borderRadius = '10px';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.textAlign = 'center';
+        
+        wrapper.appendChild(modal);
+
+        const title = document.createElement('div');
+        title.style.position = 'absolute';
+        title.style.top = '0';
+        title.style.left = '0';
+        title.style.width = '100%';
+        title.style.height = '50px';
+        title.style.backgroundColor = accent;
+        title.style.display = 'flex';
+        title.style.justifyContent = 'center';
+        title.style.alignItems = 'center';
+        title.style.color = 'white';
+        title.style.fontSize = '24px';
+        title.style.borderTopLeftRadius = '10px';
+        title.style.borderTopRightRadius = '10px';   
+        title.id = "WidgetTitle";
+        title.innerHTML = pageTitle || "Widget";
+        
+        const widgetframe = document.createElement('div');
+        widgetframe.style.width = '100%';
+        widgetframe.style.height = `calc(100% - 50px)`;
+        widgetframe.style.marginTop = '50px';
+        widgetframe.style.border = 'none'; 
+        widgetframe.id = "Widgetframe";
+        widgetframe.name = 'Widgetframe';
+        widgetframe.style.borderBottomLeftRadius = '10px';
+        widgetframe.style.borderBottomRightRadius = '10px';     
+        widgetframe.style.backgroundColor = 'var(--ui-primary, white)';   
+        widgetframe.innerHTML = html;
+        modal.appendChild(widgetframe);
+
+        const closeButton = document.createElement('div');
+        closeButton.setAttribute('aria-label', 'Close');
+        closeButton.classList.add('close-button_close-button_lOp2G', 'close-button_large_2oadS');
+        closeButton.setAttribute('role', 'button');
+        closeButton.setAttribute('tabindex', '0');
+        closeButton.innerHTML = '<img class="close-button_close-icon_HBCuO" src="data:image/svg+xml,%3Csvg%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%207.48%207.48%22%3E%3Cpath%20d%3D%22M3.74%206.48V1M1%203.74h5.48%22%20style%3D%22fill%3Anone%3Bstroke%3A%23fff%3Bstroke-linecap%3Around%3Bstroke-linejoin%3Around%3Bstroke-width%3A2px%22%2F%3E%3C%2Fsvg%3E">';
+        closeButton.style.position = 'absolute';
+        closeButton.style.top = '50%';
+        closeButton.style.right = '10px';
+        closeButton.id = "WidgetCloseButton"
+        closeButton.style.transform = 'translateY(-50%)';
+        closeButton.style.zIndex = '1000';
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(overlay);
+        });
+        title.appendChild(closeButton);
+
+        modal.appendChild(title);
+        overlay.appendChild(wrapper);
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                document.body.removeChild(overlay);
+            }
+        });
+
+        return [overlay, widgetframe, title, () => document.getElementById("widgetoverlay"), closeButton];
+    }
+
     async function YeetFile(BLOB) {
         const formData = new FormData();
         formData.append('file', BLOB);
@@ -972,7 +1065,7 @@
 
 	setColors();
     setInterval(setColors, 5000);
-	setInterval(setPos, 500);
+	setInterval(setPos, 100);
 	setPos();
 
 	var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'Commit Settings');
@@ -984,6 +1077,18 @@
 		}
 	}, 1000);
 
+    window.JoinColabServer = async (id) => {
+        if (id) {
+            showalert("Joining colab server: " + id, 5000);
+            pgeparams.set("project_url", id);
+            window.location.href = pgeurl;
+        } else {
+            showalert("Starting colab server", 5000);
+            pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3()));
+            window.location.href = pgeurl;
+        }
+    };
+
     class p7scratchcommits {
         getInfo() {
             return {
@@ -992,7 +1097,7 @@
                 blocks: [{
                         func: "server",
                         blockType: Scratch.BlockType.BUTTON,
-                        text: serverid?"Connect to another server":"Connect to server"
+                        text: serverid?"Connect to another server":"Connect to a server"
                     },
                     {
                         func: "commit",
@@ -1014,17 +1119,26 @@
             }
         }
         async server() {
-            var id = window.prompt("Select server to join (blank to start new server)");
-            if (id) {
-				showalert("Joining colab server: " + id, 5000);
-                pgeparams.set("project_url", id);
-                window.location.href = pgeurl;
-            } else {
-				showalert("Starting colab server", 5000);
-				pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3()));
-				window.location.href = pgeurl;
-			}
+            // JoinColabServer(window.prompt("Select server to join (blank to start new server)"));
+            var [overlay, widgetframe, title, isOpen, closeButton] = MakeWidget(`
+<div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
+    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
+    <p class="username-modal_help-text_3dN2-"><span>
+        Select project url to join a server. <br>
+        Leave the input blank to create a new server
+    </span></p>
+
+    <div class="username-modal_button-row_2amuh box_box_2jjDp">
+        <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
+        <button class="username-modal_cancel-button_3bs7j"><span>Cancel</span></button>
+        <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(id)"><span>Join server</span></button>
+    </div>
+</div>
+            `, "Server select", "600px", "271px");
+
         }
+
+        // window.JoinColabServer(id)
     }
     Scratch.extensions.register(new p7scratchcommits());
 })(Scratch);

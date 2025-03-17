@@ -25,14 +25,13 @@ function MakeWidget(html, pageTitle, width, height) {
             backColor = "rgba(0, 0, 0, 0.7)";
 			var themeSetting = localStorage.getItem('tw:theme');
 			var parsed = JSON.parse(themeSetting);
+			if (parsed.gui) {
+				theme = parsed.gui;
+			}
 			if (parsed.accent === 'purple') {
 				accent = '#855cd6';
 			} else if (parsed.accent === 'blue') {
 				accent = '#4c97ff';
-			}
-
-			if (parsed.gui === 'dark' || parsed.gui === 'light') {
-				theme = parsed.gui;
 			}
 		} catch (err) {
 			err = err;
@@ -137,22 +136,3 @@ function MakeWidget(html, pageTitle, width, height) {
 
     return [overlay, widgetframe, title, () => document.getElementById("widgetoverlay"), closeButton];
 }
-
-var allow = false;
-var [_, _, _, _, closeButton] = MakeWidget(`<div class="security-manager-modal_body_Pn7qy box_box_2jjDp">
-    <div>
-        <p><span>
-            This project is is requesting access to your screen. Do you wish to allow this action?
-        </span></p>
-        <div class="load-extension_unsandboxed-warning_2iFhK"><span>
-            If you say yes, your choice will be remembered until the project asks for camera access, or a new project is loaded.
-        </span></div>
-    </div>
-    <div class="security-manager-modal_buttons_1LSKA box_box_2jjDp">
-        <button class="security-manager-modal_deny-button_3Vd-R" onclick='document.getElementById("widgetoverlay").remove();'><span>Deny</span></button>
-        <button class="security-manager-modal_allow-button_3tcXk" onclick='allow = true; document.getElementById("widgetoverlay").remove();'><span>Allow</span></button>
-    </div>
-</div>`, "Extension Security", "500px", "500px");
-closeButton.remove();
-
-// var [overlay, widget] = MakeWidget(`This project is is requesting access to your screen. Do you wish to allow this action?`, "Extension Security", "500px", "500px");
