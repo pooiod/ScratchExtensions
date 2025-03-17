@@ -151,7 +151,7 @@
         return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
     }
 
-    function showToast(text, html) {
+    function showToast(text, html, time = 2000) {
         var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
         if (!targetElement) return;
 
@@ -214,11 +214,11 @@
         setTimeout(function() {
             alertBox.style.opacity = '0';
             alertBox.style.transform = 'translateY(100%)';
-        }, 1500);
+        }, time);
 
         setTimeout(function() {
             alertBox.remove();
-        }, 2000);
+        }, time + 500);
     }
 
     function MakeWidget(html, pageTitle, width, height) {
@@ -590,9 +590,9 @@
 					}, 1000);
 				} else if (message.destinationName == "usrtrack" + serverid) {
                     alertUserSpriteChange(message.payloadString);
-                } else if (message.destinationName == "joined" + serverid) {
-                    showToast(`${message.payloadString} has joined the colab`, false);
                 }
+            } else if (message.destinationName == "joined" + serverid) {
+                showToast(`${message.payloadString} has joined the colab`, false);
             }
         } catch (err) {
             err = err;
@@ -872,6 +872,7 @@
             showMessage(1,from,  getColorFromID(from), message);
         } else {
 			showMessage(0, from, getColorFromID(from), message);
+            showToast(`${from} has sent a message`, false);
 		}
     }
 
