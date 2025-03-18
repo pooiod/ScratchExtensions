@@ -710,7 +710,7 @@
     }
 
     var published = "";
-    function doSpriteEventListeners() { return;
+    function doSpriteEventListeners() {
         document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div")
         ?.addEventListener("contextmenu", (event) => {
             setTimeout(()=>{
@@ -741,7 +741,7 @@
             })
         }, 500);
     }
-    doSpriteEventListeners();
+    // doSpriteEventListeners();
     var spriteElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp");
 
     function main() {
@@ -779,7 +779,7 @@
             if (ignoreSwap) return;
             document.getElementById("colabDeleteSpriteButton")?.remove();
             // document.getElementById("colabDeleteSpriteContextButton")?.remove();
-            var deleteButton = document.querySelector(".delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
+            var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
             if(deleteButton) deleteButton.style.display = "none";
             ignoreSwap = true;
             setTimeout(()=>{
@@ -791,10 +791,10 @@
                     return;
                 }
 
-                if (spriteElement != document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp")) {
-                    spriteElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp");
-                    doSpriteEventListeners();
-                }
+                // if (spriteElement != document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp")) {
+                //     spriteElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp");
+                //     doSpriteEventListeners();
+                // }
 
                 if (prevtarget.getName() == target.getName()) {
                     return;
@@ -817,7 +817,7 @@
 
                     prevtarget = target;
 
-                    var deleteButton = document.querySelector(".delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
+                    var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
 
                     if (deleteButton) {
                         const clone = deleteButton.cloneNode(true);
