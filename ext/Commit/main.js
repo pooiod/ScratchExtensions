@@ -776,11 +776,12 @@
 
         var ignoreSwap = false;
         Scratch.vm.on('targetsUpdate', (event) => {
+            var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
+            if(deleteButton) deleteButton.style.display = "none";
+
             if (ignoreSwap) return;
             document.getElementById("colabDeleteSpriteButton")?.remove();
             // document.getElementById("colabDeleteSpriteContextButton")?.remove();
-            var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
-            if(deleteButton) deleteButton.style.display = "none";
             ignoreSwap = true;
             setTimeout(()=>{
                 ignoreSwap = false;
