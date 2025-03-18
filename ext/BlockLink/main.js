@@ -1239,10 +1239,11 @@
 		  	element.style.display = "none";
 		}
 
-        var element = [...document.querySelectorAll('.blocklyBlockCanvas *')].find(el => el.innerText === 'BlockLink');
+        var element = [...document.querySelectorAll('g.blocklyBlockCanvas text.blocklyFlyoutLabelText')].find(el => el.textContent === 'BlockLink');
 		if (element) {
 		  	element.style.display = "none";
 		}
+        console.log(element)
 	}, 1000);
 
     window.JoinColabServer = async (id) => {
