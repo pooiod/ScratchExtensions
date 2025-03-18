@@ -1243,7 +1243,6 @@
 		if (element) {
 		  	element.style.display = "none";
 		}
-        console.log(element)
 	}, 1000);
 
     window.JoinColabServer = async (id) => {
