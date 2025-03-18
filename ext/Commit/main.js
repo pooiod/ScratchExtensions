@@ -17,7 +17,8 @@
     ];
 
     var warnCompatableIssue = [
-        "rc.40code.com"
+        "rc.40code.com",
+        "snail-ide.js.org"
     ];
 
     function isCompatible(str1, str2) {
@@ -522,8 +523,12 @@
     } if (serverid) {
         if (warnCompatableIssue.includes(window.location.host)) {
             MakeWidget(`
-                <div style="position: absolute; top: 50px; left: 0px; right: 0px; bottom: 0px; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 145, 0, 0.1) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-                    <p style="margin: 0; font-size: 18px;">${window.location.host} has been known to have some issues</p> <p style="margin: 10px 0 0 0; font-size: 16px;">Some errors may present themselves, or some visual elements may be missing.</p>
+                <div style="position: absolute; top: 50px; left: 0px; right: 0px; bottom: 0px; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 145, 0, 0.14) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                    <p style="margin: 0; font-size: 18px;">
+                        ${window.location.host} has been known to have some issues
+                    </p> <p style="margin: 10px 0 0 0; font-size: 16px;">
+                        This site has been tested and confermed to have bugs that may cause visual inconsistencies, missing elements, and or issues with some extension functions not working.
+                    </p>
                 </div>
             `, "Compatability Error", "500px", "202px");
         }
@@ -1161,6 +1166,11 @@
                 id: 'P7scratchcommits',
                 name: 'Commit Settings',
                 blocks: [
+                    { 
+                        blockType: Scratch.BlockType.LABEL, 
+                        hideFromPalette: warnCompatableIssue.includes(window.location.host),
+                        text: "Press \"CTRL + K\" if the buttons don't work"
+                    },
                     {
                         func: "remove",
                         blockType: Scratch.BlockType.BUTTON, // This only exists for PenguinMod so that a project isn't stuck with colab forever
