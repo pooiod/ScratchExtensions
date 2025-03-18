@@ -1255,16 +1255,52 @@
     };
 
     class P7BlockLink {
+        constructor() {
+            this.updateWorkspace = () => {
+                const divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
+                if (!divider) {
+                    setTimeout(this.updateWorkspace, 1000);
+                }
+
+                const button = document.createElement('div');
+                button.classList.add('menu-bar_menu-bar-item_oLDa-', 'menu-bar_hoverable_c6WFB');
+                button.style.paddingLeft = '10px';
+                button.style.paddingRight = '10px';
+
+                const img = document.createElement('img');
+                img.src = 'static/assets/d259fcbecaa9d2a22d19848daff9d4c6.svg';
+                img.setAttribute('draggable', 'false');
+                img.width = 20;
+                img.height = 20;
+                img.setAttribute('data-alt-listener', 'true');
+
+                const span = document.createElement('span');
+                span.classList.add('menu-bar_collapsible-label_o2tym');
+                span.innerHTML = '<span>BlockLink</span>';
+
+                button.appendChild(img);
+                button.appendChild(span);
+
+                button.onclick = (event) => {
+                    this.displayMenu(this.getInfo(), button.offsetLeft, button.offsetTop + button.offsetHeight);
+                };
+ 
+                divider.parentNode.insertBefore(button, divider);
+
+                const interval = setInterval(() => {
+                    if (!document.body.contains(button)) {
+                        clearInterval(interval);
+                        this.updateWorkspace();
+                    }
+                }, 1000);
+            }
+            this.updateWorkspace();
+        }
         getInfo() {
             return {
                 id: 'P7BlockLink',
                 name: 'BlockLink',
                 blocks: [
-                    { 
-                        blockType: Scratch.BlockType.LABEL, 
-                        hideFromPalette: !warnCompatableIssue.includes(window.location.host),
-                        text: "Press \"CTRL + K\" if the buttons don't work"
-                    },
                     {
                         func: "remove",
                         blockType: Scratch.BlockType.BUTTON, // This only exists for PenguinMod so that a project isn't stuck with colab forever
@@ -1285,6 +1321,85 @@
                 ],
             };
         }
+
+        displayMenu = (menuJson, xCoordinate = window.innerWidth / 2, yCoordinate = window.innerHeight / 2) => {
+            const menuContainerElement = document.createElement('div');
+            menuContainerElement.style.top = `${yCoordinate}px`;
+            menuContainerElement.style.left = `${xCoordinate}px`;
+            menuContainerElement.style.display = 'block';
+            menuContainerElement.style.direction = 'ltr';
+            menuContainerElement.style.position = 'fixed';
+            menuContainerElement.style.zIndex = '9999';
+
+            const menuListElement = document.createElement('ul');
+            menuListElement.className = 'menu_menu_3k7QT menu_right_3PQ4S';
+            let itemCount = 0;
+
+            menuJson.blocks.forEach((menuBlock, blockIndex) => {
+                if (menuBlock.hideFromPalette) return;
+
+                const menuItemElement = document.createElement('li');
+                menuItemElement.className = 'menu_menu-item_3EwYA menu_hoverable_3u9dt';
+                menuItemElement.id = `:${blockIndex}`;
+                menuItemElement.style.color = "white";
+                menuItemElement.style.userSelect = 'none';
+
+                const optionDivElement = document.createElement('div');
+                optionDivElement.className = 'settings-menu_option_3rMur';
+                const submenuLabelElement = document.createElement('span');
+                submenuLabelElement.className = 'settings-menu_submenu-label_r-gA3';
+
+                const labelSpanElement = document.createElement('span');
+                labelSpanElement.textContent = menuBlock.text;
+
+                submenuLabelElement.appendChild(labelSpanElement);
+                optionDivElement.appendChild(submenuLabelElement);
+                menuItemElement.appendChild(optionDivElement);
+
+                if (menuBlock.blockType === Scratch.BlockType.LABEL) {
+                    menuItemElement.style.fontWeight = 'bold';
+                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.3)';
+                } else if (menuBlock.blockType === Scratch.BlockType.BUTTON) {
+                    menuItemElement.onclick = () => {
+                        if (typeof this[menuBlock.func] === 'function') {
+                            this[menuBlock.func]();
+                        }
+                        document.body.removeChild(menuContainerElement);
+                    };
+                    menuItemElement.onmouseover = () => {
+                        menuItemElement.style.backgroundColor = 'rgba(110, 110, 110, 0.2)';
+                    };
+                    menuItemElement.onmouseout = () => {
+                        menuItemElement.style.backgroundColor = '';
+                    };
+                }
+                menuListElement.appendChild(menuItemElement);
+                itemCount++;
+            });
+
+            const maxMenuHeight = 400;
+            const itemHeight = 40;
+
+            menuContainerElement.style.height = `${Math.min(itemCount * itemHeight, maxMenuHeight)}px`;
+            menuContainerElement.appendChild(menuListElement);
+            document.body.appendChild(menuContainerElement);
+
+            const clickOutsideListener = (clickEvent) => {
+                if (!menuContainerElement.contains(clickEvent.target)) {
+                    closeMenu();
+                }
+            };
+
+            const closeMenu = () => {
+                document.body.removeChild(menuContainerElement);
+                document.removeEventListener('click', clickOutsideListener);
+            };
+
+            setTimeout(() => {
+                document.addEventListener('click', clickOutsideListener);
+            }, 500);
+        };
+
         commit() {
             if (canmanual) {
                 canmanual = false;
@@ -1295,6 +1410,7 @@
                 }, 500);
             }
         }
+
         async server() {
             // JoinColabServer(window.prompt("Select server to join (blank to start new server)"));
             MakeWidget(`
@@ -1336,3 +1452,4 @@
     }
     Scratch.extensions.register(new P7BlockLink());
 })(Scratch);
+f
