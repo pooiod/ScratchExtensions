@@ -525,12 +525,12 @@
             MakeWidget(`
                 <div style="position: absolute; top: 50px; left: 0px; right: 0px; bottom: 0px; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 145, 0, 0.14) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
                     <p style="margin: 0; font-size: 18px;">
-                        ${window.location.host} has been known to have some issues
+                        ${window.location.host} has been known to have issues with BlockLink
                     </p> <p style="margin: 10px 0 0 0; font-size: 16px;">
-                        This site has been tested and confermed to have bugs that may cause visual inconsistencies, missing elements, and or issues with some extension functions not working.
+                        This site has been tested and confermed to have issues that may cause visual inconsistencies, missing elements, and or problems that cause BlockLink to not function correctly.
                     </p>
                 </div>
-            `, "Compatability Error", "500px", "202px");
+            `, "Compatability Error", "550px", "205px");
         }
     }
 
@@ -665,7 +665,11 @@
                     incompatable = true;
                     MakeWidget(`
                         <div style="position: absolute; top: 50px; left: 0px; right: 0px; bottom: 0px; padding:20px; text-align: center; background: linear-gradient(135deg,rgba(255, 0, 13, 0.1) 0%,rgba(0, 0, 0, 0) 100%); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-                            <p style="margin: 0; font-size: 18px;">This project is being hosted in ${message.payloadString} and may not be compatable with ${window.location.host}.</p> <p style="margin: 10px 0 0 0; font-size: 16px;">Please be cautious of project corruption when using multiple mods for a single project!</p>
+                            <p style="margin: 0; font-size: 18px;">
+                                This project is being hosted in ${message.payloadString} and may not be compatable with ${window.location.host}.
+                            </p> <p style="margin: 10px 0 0 0; font-size: 16px;">
+                                Please be cautious of project corruption when using multiple mods for a single project!
+                            </p>
                         </div>
                     `, "Compatability Error", "500px", "202px");
                 }
@@ -1224,10 +1228,10 @@
 	var intervalPos = setInterval(setPos, 100);
 	setPos();
 
-	var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'Commit Settings');
+	var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'BlockLink');
 	if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) element.remove();
 	setInterval(()=>{
-		var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'Commit Settings');
+		var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'BlockLink');
 		if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
 		  	element.style.display = "none";
 		}
@@ -1245,11 +1249,11 @@
         }
     };
 
-    class P7scratchcommits {
+    class P7BlockLink {
         getInfo() {
             return {
-                id: 'P7scratchcommits',
-                name: 'Commit Settings',
+                id: 'P7BlockLink',
+                name: 'BlockLink',
                 blocks: [
                     { 
                         blockType: Scratch.BlockType.LABEL, 
@@ -1325,5 +1329,5 @@
             }
         }
     }
-    Scratch.extensions.register(new P7scratchcommits());
+    Scratch.extensions.register(new P7BlockLink());
 })(Scratch);
