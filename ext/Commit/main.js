@@ -590,6 +590,11 @@
             main();
             sendmsg("joined", clientId)
             showalert("Connected to broker", 2000, false);
+
+            // var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'BlockLink');
+            // if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
+            //     click(element);
+            // }
         } else {
             showalert("Regained connection", 2000, false);
         }
