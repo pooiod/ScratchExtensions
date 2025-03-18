@@ -1233,11 +1233,14 @@
 	var intervalPos = setInterval(setPos, 100);
 	setPos();
 
-	var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'BlockLink');
-	if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) element.remove();
 	setInterval(()=>{
-		var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'BlockLink');
+		var element = [...document.querySelectorAll('.scratchCategoryMenu > *')].find(el => el.innerText === 'BlockLink');
 		if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
+		  	element.style.display = "none";
+		}
+
+        var element = [...document.querySelectorAll('.blocklyBlockCanvas *')].find(el => el.innerText === 'BlockLink');
+		if (element) {
 		  	element.style.display = "none";
 		}
 	}, 1000);
@@ -1282,7 +1285,7 @@
                 button.appendChild(span);
 
                 button.onclick = (event) => {
-                    this.displayMenu(this.getInfo(), button.offsetLeft, button.offsetTop + button.offsetHeight);
+                    this.displayMenu(this.getblocks(), button.offsetLeft, button.offsetTop + button.offsetHeight);
                 };
  
                 divider.parentNode.insertBefore(button, divider);
@@ -1296,30 +1299,99 @@
             }
             this.updateWorkspace();
         }
+
         getInfo() {
             return {
                 id: 'P7BlockLink',
                 name: 'BlockLink',
+                blocks: [],
+            };
+        }
+
+        getblocks() {
+            return {
                 blocks: [
                     {
-                        func: "remove",
+                        func: "leaveColab",
                         blockType: Scratch.BlockType.BUTTON, // This only exists for PenguinMod so that a project isn't stuck with colab forever
                         hideFromPalette: !serverid || !Scratch.vm.extensionManager || !Scratch.vm.extensionManager.removeExtension,
                         text: "Leave colab"
                     },
+
                     {
-                        func: "server",
+                        func: "createColab",
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: serverid,
+                        text: "Create a colab"
+                    },
+                    {
+                        func: "joinColab",
                         blockType: Scratch.BlockType.BUTTON,
                         text: serverid?"Join another colab":"Join a colab"
                     },
+
                     {
-                        func: "commit",
+                        func: "commitSprite",
                         blockType: Scratch.BlockType.BUTTON,
                         hideFromPalette: !serverid || !canmanual,
                         text: "Commit this sprite"
                     },
                 ],
             };
+        }
+
+        commitSprite() {
+            if (canmanual) {
+                canmanual = false;
+                commit(Scratch.vm.runtime.getEditingTarget());
+                setTimeout(() => {
+                    canmanual = true;
+                    Scratch.vm.extensionManager.refreshBlocks();
+                }, 500);
+            }
+        }
+
+        createColab() {
+            JoinColabServer();
+        }
+
+        async joinColab() {
+            // JoinColabServer(window.prompt("Select server to join (blank to start new server)"));
+            MakeWidget(`
+                <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
+                    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabServerInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
+                    <p class="username-modal_help-text_3dN2-"><span>
+                        Enter a project url to join an existing colab server.
+                    </span></p>
+
+                    <div class="username-modal_button-row_2amuh box_box_2jjDp">
+                        <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
+                        <button class="username-modal_cancel-button_3bs7j" onclick="document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
+                        <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(document.getElementById('ColabServerInput').value); document.getElementById('widgetoverlay').remove()"><span>Join server</span></button>
+                    </div>
+                </div>
+            `, "Server select", "600px", "271px");
+        }
+
+        leaveColab() {
+            try {
+                chatToggle.remove();
+                chatContainer.style.display = "none";
+
+                window.clearInterval(intervalPos);
+                window.clearInterval(intervalColors)
+
+                isCancled = true;
+                serverid = false;
+                client.disconnect();
+
+                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+            } catch(e) {
+                alert(e);
+
+                pgeparams.delete("project_url");
+                window.location.href = pgeurl;
+            }
         }
 
         displayMenu = (menuJson, xCoordinate = window.innerWidth / 2, yCoordinate = window.innerHeight / 2) => {
@@ -1367,7 +1439,7 @@
                         document.body.removeChild(menuContainerElement);
                     };
                     menuItemElement.onmouseover = () => {
-                        menuItemElement.style.backgroundColor = 'rgba(110, 110, 110, 0.2)';
+                        menuItemElement.style.backgroundColor = 'var(--motion-tertiary, rgba(110, 110, 110, 0.2))';
                     };
                     menuItemElement.onmouseout = () => {
                         menuItemElement.style.backgroundColor = '';
@@ -1399,56 +1471,6 @@
                 document.addEventListener('click', clickOutsideListener);
             }, 500);
         };
-
-        commit() {
-            if (canmanual) {
-                canmanual = false;
-                commit(Scratch.vm.runtime.getEditingTarget());
-                setTimeout(() => {
-                    canmanual = true;
-                    Scratch.vm.extensionManager.refreshBlocks();
-                }, 500);
-            }
-        }
-
-        async server() {
-            // JoinColabServer(window.prompt("Select server to join (blank to start new server)"));
-            MakeWidget(`
-                <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
-                    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabServerInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
-                    <p class="username-modal_help-text_3dN2-"><span>
-                        Select project url to join a server. <br>
-                        Leave the input blank to create a new server
-                    </span></p>
-
-                    <div class="username-modal_button-row_2amuh box_box_2jjDp">
-                        <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
-                        <button class="username-modal_cancel-button_3bs7j" onclick="document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
-                        <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(document.getElementById('ColabServerInput').value); document.getElementById('widgetoverlay').remove()"><span>Join server</span></button>
-                    </div>
-                </div>
-            `, "Server select", "600px", "271px");
-        }
-        remove() {
-            try {
-                chatToggle.remove();
-                chatContainer.style.display = "none";
-
-                window.clearInterval(intervalPos);
-                window.clearInterval(intervalColors)
-
-                isCancled = true;
-                serverid = false;
-                client.disconnect();
-
-                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
-            } catch(e) {
-                alert(e);
-
-                pgeparams.delete("project_url");
-                window.location.href = pgeurl;
-            }
-        }
     }
     Scratch.extensions.register(new P7BlockLink());
 })(Scratch);
