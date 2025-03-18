@@ -786,6 +786,24 @@
                 ignoreSwap = false;
                 let target = Scratch.vm.runtime.getEditingTarget(); // event.editingTarget
 
+                var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
+
+                if (deleteButton) {
+                    const clone = deleteButton.cloneNode(true);
+                    deleteButton.parentNode.insertBefore(clone, deleteButton);
+                    deleteButton.style.display = "none";
+                    clone.style.display = "block";
+                    clone.id = "colabDeleteSpriteButton";
+                    clone.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        showalert(`Deleting ${target.getName()}`, 1000, false);
+                        sendmsg("delete", JSON.stringify({
+                            sprite: target.getName(),
+                            from: clientId
+                        }));
+                    });
+                }
+
                 if (published == target.getName() || prevtarget.getName() == published) {
                     prevtarget = target;
                     return;
@@ -816,24 +834,6 @@
                     }));
 
                     prevtarget = target;
-
-                    var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
-
-                    if (deleteButton) {
-                        const clone = deleteButton.cloneNode(true);
-                        deleteButton.parentNode.insertBefore(clone, deleteButton);
-                        deleteButton.style.display = "none";
-                        clone.style.display = "block";
-                        clone.id = "colabDeleteSpriteButton";
-                        clone.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            showalert(`Deleting ${target.getName()}`, 1000, false);
-                            sendmsg("delete", JSON.stringify({
-                                sprite: target.getName(),
-                                from: clientId
-                            }));
-                        });
-                    }
                 }
             }, 500);
         });
