@@ -1452,4 +1452,3 @@
     }
     Scratch.extensions.register(new P7BlockLink());
 })(Scratch);
-f
