@@ -585,6 +585,7 @@
         client.subscribe("usrtrack" + serverid);
         client.subscribe("joined" + serverid);
         client.subscribe("scratchVersion" + serverid);
+        client.subscribe("delete" + serverid);
         if (firstTimeConnect) {
             main();
             sendmsg("joined", clientId)
@@ -646,10 +647,15 @@
 					}, 1000);
 				} else if (message.destinationName == "usrtrack" + serverid) {
                     alertUserSpriteChange(message.payloadString);
+                } else if (message.destinationName == "delete" + serverid) {
+                    recivedDeleteCommand(message.payloadString);
                 }
             } else if (message.destinationName == "joined" + serverid) {
                 if (clientId == message.payloadString) {
                     showToast(`Welcome ${message.payloadString}`, false);
+                    // if (document.cookie.split('; ').some(cookie => cookie.startsWith('remove-sprite-confirm=') && (() => { try { return JSON.parse(decodeURIComponent(cookie.split('=')[1])).enabled === true; } catch { return false; } })())) {
+                    //     showToast(`Please disable the "<a href="https://turbowarp.org/addons#confirmation">Sprite deletion confirmation</a>" addon.`, true);
+                    // }
                 } else {
                     showToast(`${message.payloadString} has joined the colab`, false);
                     if (!incompatable) sendmsg("scratchVersion", window.location.host);
@@ -704,6 +710,47 @@
     }
 
     var published = "";
+    function doSpriteEventListeners() { return;
+        document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div")
+        ?.addEventListener("contextmenu", (event) => {
+            if (document.querySelector(".react-contextmenu")) {
+                var deleteButton = document.querySelector("div.react-contextmenu-item.context-menu_menu-item_3cioN.context-menu_menu-item-bordered_29CJG.context-menu_menu-item-danger_1tJg0");
+
+                if (deleteButton) {
+                    var clone = deleteButton.cloneNode(true);
+                    deleteButton.parentNode.insertBefore(clone, deleteButton);
+                    // deleteButton.style.display = "none";
+                    // deleteButton.remove();
+                    clone.style.display = "block";
+                    clone.id = "colabDeleteSpriteContextButton";
+                    clone.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        var sprite = deleteButton.parentElement.getElementsByClassName("sprite-selector-item_sprite-name_1PXjh")[0];
+                        alert(sprite);
+                        sprite = sprite.innerText;
+
+var parentElement = deleteButton.parentElement;
+
+var spriteNameElement = Array.from(parentElement.getElementsByClassName("sprite-selector-item_sprite-name_1PXjh"))
+    .find(el => el.closest(".sprite-selector-item") === parentElement);
+
+if (spriteNameElement) {
+    var spriteName = spriteNameElement.innerText;
+    console.log(spriteName);
+}
+
+                        showalert(`Deleting ${sprite}`, 1000, false);
+                        sendmsg("delete", JSON.stringify({
+                            sprite: sprite,
+                            from: clientId
+                        }));
+                    });
+                }
+            }
+        });
+    }
+    doSpriteEventListeners();
+    var spriteElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp");
 
     function main() {
         var prevtarget = Scratch.vm.runtime.getEditingTarget();
@@ -738,6 +785,10 @@
         var ignoreSwap = false;
         Scratch.vm.on('targetsUpdate', (event) => {
             if (ignoreSwap) return;
+            document.getElementById("colabDeleteSpriteButton")?.remove();
+            document.getElementById("colabDeleteSpriteContextButton")?.remove();
+            var deleteButton = document.querySelector(".delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
+            if(deleteButton) deleteButton.style.display = "none";
             ignoreSwap = true;
             setTimeout(()=>{
                 ignoreSwap = false;
@@ -746,6 +797,11 @@
                 if (published == target.getName() || prevtarget.getName() == published) {
                     prevtarget = target;
                     return;
+                }
+
+                if (spriteElement != document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp")) {
+                    spriteElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp");
+                    doSpriteEventListeners();
                 }
 
                 if (prevtarget.getName() == target.getName()) {
@@ -768,9 +824,45 @@
                     }));
 
                     prevtarget = target;
+
+                    var deleteButton = document.querySelector(".delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
+
+                    if (deleteButton) {
+                        const clone = deleteButton.cloneNode(true);
+                        deleteButton.parentNode.insertBefore(clone, deleteButton);
+                        deleteButton.style.display = "none";
+                        clone.style.display = "block";
+                        clone.id = "colabDeleteSpriteButton";
+                        clone.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            showalert(`Deleting ${target.getName()}`, 1000, false);
+                            sendmsg("delete", JSON.stringify({
+                                sprite: target.getName(),
+                                from: clientId
+                            }));
+                        });
+                    }
                 }
             }, 500);
         });
+    }
+
+    function recivedDeleteCommand(dat) {
+        const parsedData = JSON.parse(dat);
+        const {
+            sprite,
+            from
+        } = parsedData;
+
+        if (from == clientId) {
+            // return;
+        } else {
+            if (Scratch.vm.runtime.getSpriteTargetByName(sprite)) {
+                showalert(`Recived delete command for "${sprite}" from ${from}`, 1000, false);
+            }
+        }
+
+        deleteSprite(sprite);
     }
 
     function docommit(dat) {
@@ -1168,7 +1260,7 @@
                 blocks: [
                     { 
                         blockType: Scratch.BlockType.LABEL, 
-                        hideFromPalette: warnCompatableIssue.includes(window.location.host),
+                        hideFromPalette: !warnCompatableIssue.includes(window.location.host),
                         text: "Press \"CTRL + K\" if the buttons don't work"
                     },
                     {
