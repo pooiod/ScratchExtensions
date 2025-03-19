@@ -17,8 +17,7 @@
     ];
 
     var warnCompatableIssue = [
-        "rc.40code.com",
-        "snail-ide.js.org"
+        "rc.40code.com"
     ];
 
     function isCompatible(str1, str2) {
@@ -1233,18 +1232,6 @@
 	var intervalPos = setInterval(setPos, 100);
 	setPos();
 
-	setInterval(()=>{
-		var element = [...document.querySelectorAll('.scratchCategoryMenu > *')].find(el => el.innerText === 'BlockLink');
-		if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
-		  	element.style.display = "none";
-		}
-
-        var element = [...document.querySelectorAll('g.blocklyBlockCanvas text.blocklyFlyoutLabelText')].find(el => el.textContent === 'BlockLink');
-		if (element) {
-		  	element.style.display = "none";
-		}
-	}, 1000);
-
     window.JoinColabServer = async (id) => {
         if (id) {
             showalert("Joining colab server: " + id, 5000);
@@ -1260,7 +1247,15 @@
     class P7BlockLink {
         constructor() {
             this.updateWorkspace = () => {
-                const divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
+                var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
+
+                var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(2) > img:nth-child(1)");
+                if (showIcon) showIcon = getComputedStyle(showIcon).display != 'none';
+
+                if (showIcon) {
+                    divider = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(2)") || divider;
+                }
+
                 if (!divider) {
                     setTimeout(this.updateWorkspace, 1000);
                 }
@@ -1271,17 +1266,19 @@
                 button.style.paddingRight = '10px';
 
                 const img = document.createElement('img');
-                img.src = 'static/assets/d259fcbecaa9d2a22d19848daff9d4c6.svg';
+                img.src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/IconMono.svg';
                 img.setAttribute('draggable', 'false');
                 img.width = 20;
                 img.height = 20;
                 img.setAttribute('data-alt-listener', 'true');
 
+                if (theme == "dark") img.style.filter = "invert(100%)";
+
                 const span = document.createElement('span');
                 span.classList.add('menu-bar_collapsible-label_o2tym');
                 span.innerHTML = '<span>BlockLink</span>';
 
-                button.appendChild(img);
+                if (showIcon) button.appendChild(img);
                 button.appendChild(span);
 
                 button.onclick = (event) => {
@@ -1298,13 +1295,25 @@
                 }, 1000);
             }
             this.updateWorkspace();
+
+            setInterval(()=>{
+                var element = [...document.querySelectorAll('.scratchCategoryMenu > *')].find(el => el.innerText === 'BlockLink');
+                if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
+                    element.style.display = "none";
+                }
+
+                var element = [...document.querySelectorAll('g.blocklyBlockCanvas text.blocklyFlyoutLabelText')].find(el => el.textContent === 'BlockLink');
+                if (element) {
+                    element.style.display = "none";
+                }
+            }, 1000);
         }
 
         getInfo() {
             return {
                 id: 'P7BlockLink',
                 name: 'BlockLink',
-                blocks: [],
+                blocks: [], // 
             };
         }
 
@@ -1317,7 +1326,6 @@
                         hideFromPalette: !serverid || !Scratch.vm.extensionManager || !Scratch.vm.extensionManager.removeExtension,
                         text: "Leave colab"
                     },
-
                     {
                         func: "createColab",
                         blockType: Scratch.BlockType.BUTTON,
@@ -1333,7 +1341,7 @@
                     {
                         func: "commitSprite",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: !serverid || !canmanual,
+                        hideFromPalette: !serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
                         text: "Commit this sprite"
                     },
                 ],
@@ -1370,11 +1378,13 @@
                         <button class="username-modal_ok-button_UEZfz" onclick="window.JoinColabServer(document.getElementById('ColabServerInput').value); document.getElementById('widgetoverlay').remove()"><span>Join server</span></button>
                     </div>
                 </div>
-            `, "Server select", "600px", "271px");
+            `, "Server select", "600px", "251px");
         }
 
         leaveColab() {
             try {
+                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+
                 chatToggle.remove();
                 chatContainer.style.display = "none";
 
@@ -1384,11 +1394,7 @@
                 isCancled = true;
                 serverid = false;
                 client.disconnect();
-
-                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
             } catch(e) {
-                alert(e);
-
                 pgeparams.delete("project_url");
                 window.location.href = pgeurl;
             }
@@ -1415,6 +1421,7 @@
                 menuItemElement.id = `:${blockIndex}`;
                 menuItemElement.style.color = "white";
                 menuItemElement.style.userSelect = 'none';
+                menuItemElement.style.overflow = "none";
 
                 const optionDivElement = document.createElement('div');
                 optionDivElement.className = 'settings-menu_option_3rMur';
