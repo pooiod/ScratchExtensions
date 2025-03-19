@@ -1638,7 +1638,7 @@
                         if (typeof this[menuBlock.func] === 'function') {
                             this[menuBlock.func]();
                         }
-                        document.body.removeChild(menuContainerElement);
+                        closeMenu();
                     };
                     menuItemElement.onmouseover = () => {
                         menuItemElement.style.backgroundColor = 'var(--motion-tertiary, rgba(110, 110, 110, 0.2))';
