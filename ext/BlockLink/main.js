@@ -356,17 +356,17 @@
     async function YeetFile(BLOB, tmp) {
         if ((tmp || !canYeetFile) && canTMPfile) {
             const formData = new FormData();
-            formData.append('file', blob, filename);
+            formData.append('file', BLOB, Math.random().toString(36).substring(7));
 
-            const response = await fetch('https://tmpfiles.org/api/v1/upload', {
+            const response = await fetch('https://file.io', {
                 method: 'POST',
                 body: formData
-            });
+              });
 
-            if (!response.ok) throw new Error('Upload failed');
+              if (!response.ok) throw new Error('Upload failed');
 
-            const data = await response.json();
-            return data.data.url;
+              const data = await response.json();
+              return data.link;
         } else {
             const formData = new FormData();
             formData.append('file', BLOB);
@@ -418,7 +418,7 @@
 
     async function canTMP() {
         try {
-            const response = await fetch("https://tmpfiles.org/", {
+            const response = await fetch("https://file.io", {
                 method: "HEAD",
             });
             return response.ok && !window.location.hostname.includes('archive.org');
