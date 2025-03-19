@@ -353,40 +353,81 @@
         return [overlay, widgetframe, title, () => document.getElementById("widgetoverlay"), closeButton];
     }
 
-    async function YeetFile(BLOB) {
-        const formData = new FormData();
-        formData.append('file', BLOB);
+    async function YeetFile(BLOB, tmp) {
+        tmp = tmp || !canYeetFile;
 
-        return new Promise(async (resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://yeetyourfiles.lol/api/upload', true);
+        if (tmp && canTMPfile) {
+            const formData = new FormData();
+            formData.append('file', blob, filename);
 
-            await new Promise(resolve => setTimeout(resolve, 500));
+            const response = await fetch('https://tmpfiles.org/api/v1/upload', {
+                method: 'POST',
+                body: formData
+            });
 
-            xhr.upload.onprogress = function(e) {
-                if (e.lengthComputable) {
-                    const percentComplete = (e.loaded / e.total) * 100;
-                    showalert("Uploading to server " + percentComplete + "%", 2000, false);
-                }
-            };
+            if (!response.ok) throw new Error('Upload failed');
 
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    resolve(`https://yeetyourfiles.lol${response.fileUrl}`);
-                } else {
-                    showalert("Upload failed: " + xhr.status, 5000, false);
-                    reject(new Error('Upload failed with status: ' + xhr.status));
-                }
-            };
+            const data = await response.json();
+            return data.data.url;
+        } else {
+            const formData = new FormData();
+            formData.append('file', BLOB);
 
-            xhr.onerror = function() {
-                showalert("Unable to send file", 5000, false);
-                reject(new Error('An error occurred during the file upload.'));
-            };
+            return new Promise(async (resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://yeetyourfiles.lol/api/upload', true);
 
-            xhr.send(formData);
-        });
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                xhr.upload.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        showalert("Uploading to server " + percentComplete + "%", 2000, false);
+                    }
+                };
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        resolve(`https://yeetyourfiles.lol${response.fileUrl}`);
+                    } else {
+                        showalert("Upload failed: " + xhr.status, 5000, false);
+                        reject(new Error('Upload failed with status: ' + xhr.status));
+                    }
+                };
+
+                xhr.onerror = function() {
+                    showalert("Unable to send file", 5000, false);
+                    reject(new Error('An error occurred during the file upload.'));
+                };
+
+                xhr.send(formData);
+            });
+        }
+    }
+
+    async function canYeet() {
+        try {
+            const response = await fetch("https://yeetyourfiles.lol/", {
+                method: "HEAD",
+            });
+            return response.ok && !window.location.hostname.includes('archive.org');
+            // archive.org is an archival site, and doesn't work with file uploads
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async function canTMP() {
+        try {
+            const response = await fetch("https://tmpfiles.org/", {
+                method: "HEAD",
+            });
+            return response.ok && !window.location.hostname.includes('archive.org');
+            // archive.org is an archival site, and doesn't work with file uploads
+        } catch (error) {
+            return false;
+        }
     }
 
     async function blobToBase64(blob) {
@@ -408,7 +449,7 @@
         if (blob.size < 1024 * 1024 * 1024) {
             return blobToBase64(blob);
         } else {
-            return YeetFile(blob);
+            return YeetFile(blob, true);
         }
     }
 
@@ -514,6 +555,29 @@
             }
         }
     }
+
+    var canTMPfile = false;
+    var promiscantmp = canTMP();
+    promiscantmp.then(can => canTMPfile = can);
+
+    var canYeetFile = canYeet().then(can => canYeetFile = can);
+    canYeetFile.then(async (can) => {
+        async function setCanYeet() {
+            canYeetFile = await canYeet();
+            canTMPfile = await canTMP();
+            if (!canYeetFile && !canTMPfile) {
+                setTimeout(setCanYeet, 20000);
+            } else {
+                showalert("File server is back online", 5000, false);
+            }
+        }
+        if (!can && serverid) {
+            if (!await promiscantmp) {
+                showalert("Unable to upload connect to large file server, sprite commits van only be under 1mb", 5000, false);
+                setTimeout(setCanYeet, 10000);
+            }
+        }
+    });
 
     if (serverid && /^player\d+$/.test(Scratch.vm.runtime.ioDevices.userData._username)) {
         try {
@@ -1357,7 +1421,7 @@
                     {
                         func: "createColab",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: serverid,
+                        hideFromPalette: serverid || (!canYeetFile && !canTMPfile),
                         text: "Create a colab"
                     },
                     {
