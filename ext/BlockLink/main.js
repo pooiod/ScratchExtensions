@@ -578,6 +578,7 @@
     var firstTimeConnect = true;
     function onConnect() {
         console.log("Connected to MQTT broker");
+
         client.onMessageArrived = gotMessage;
         client.subscribe("commit" + serverid);
 		client.subscribe("chat" + serverid);
@@ -585,6 +586,8 @@
         client.subscribe("joined" + serverid);
         client.subscribe("scratchVersion" + serverid);
         client.subscribe("delete" + serverid);
+        client.subscribe("rename" + serverid);
+
         if (firstTimeConnect) {
             main();
             sendmsg("joined", clientId)
@@ -600,7 +603,7 @@
     }
 
     function onFailure(err) {
-        showalert("Unable to connect", 99000, true);
+        showalert("Connection lost", 10000, true);
         console.error("Failed to connect to MQTT broker: ", err);
     }
 
@@ -653,6 +656,8 @@
                     alertUserSpriteChange(message.payloadString);
                 } else if (message.destinationName == "delete" + serverid) {
                     recivedDeleteCommand(message.payloadString);
+                } else if (message.destinationName == "rename" + serverid) {
+                    doSpriteRename(message.payloadString);
                 }
             } else if (message.destinationName == "joined" + serverid) {
                 if (clientId == message.payloadString) {
@@ -749,8 +754,7 @@
             })
         }, 500);
     }
-    // doSpriteEventListeners();
-    var spriteElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp");
+    doSpriteEventListeners();
 
     function main() {
         var prevtarget = Scratch.vm.runtime.getEditingTarget();
@@ -784,6 +788,8 @@
 
         var ignoreSwap = false;
         Scratch.vm.on('targetsUpdate', (event) => {
+            if (isCancled) return;
+
             var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
             if(deleteButton) deleteButton.style.display = "none";
 
@@ -817,11 +823,6 @@
                     prevtarget = target;
                     return;
                 }
-
-                // if (spriteElement != document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp")) {
-                //     spriteElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp");
-                //     doSpriteEventListeners();
-                // }
 
                 if (prevtarget.getName() == target.getName()) {
                     return;
@@ -1012,6 +1013,21 @@
 			showMessage(0, from, getColorFromID(from), message);
             showToast(`${from} has sent a message`, false);
 		}
+    }
+
+    function doSpriteRename(dat) {
+        const parsedData = JSON.parse(dat);
+        const {
+            sprite,
+			name,
+            from
+        } = parsedData;
+
+        Scratch.vm.runtime.getSpriteTargetByName(sprite).sprite.name = name;
+
+        setTimeout(() => { // Force the sprite visuals to update
+            Scratch.vm.runtime.getSpriteTargetByName(name).setCostume(Scratch.vm.runtime.getSpriteTargetByName(name).currentCostume)
+        }, 200);
     }
 
     function sendchat(msg) {
@@ -1234,6 +1250,9 @@
 
     window.JoinColabServer = async (id) => {
         if (id) {
+            var match = id.match(/[?&]project_url=([^&#]+)/);
+            if (match) id = decodeURIComponent(match[1]);
+
             showalert("Joining colab server: " + id, 5000);
             pgeparams.set("project_url", id);
             window.location.href = pgeurl;
@@ -1247,6 +1266,8 @@
     class P7BlockLink {
         constructor() {
             this.updateWorkspace = () => {
+                if (isCancled) return;
+
                 var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
 
                 var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(2) > img:nth-child(1)");
@@ -1285,6 +1306,8 @@
  
                 divider.parentNode.insertBefore(button, divider);
 
+                doSpriteEventListeners();
+
                 const interval = setInterval(() => {
                     if (!document.body.contains(button)) {
                         clearInterval(interval);
@@ -1311,7 +1334,7 @@
             return {
                 id: 'P7BlockLink',
                 name: 'BlockLink',
-                blocks: [], // 
+                blocks: [],
             };
         }
 
@@ -1319,9 +1342,16 @@
             return {
                 blocks: [
                     {
+                        func: "inviteColab",
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: !serverid,
+                        text: "Invite to colab"
+                    },
+
+                    {
                         func: "leaveColab",
-                        blockType: Scratch.BlockType.BUTTON, // This only exists for PenguinMod so that a project isn't stuck with colab forever
-                        hideFromPalette: !serverid || !Scratch.vm.extensionManager || !Scratch.vm.extensionManager.removeExtension,
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: !serverid,
                         text: "Leave colab"
                     },
                     {
@@ -1337,13 +1367,43 @@
                     },
 
                     {
+                        blockType: "spacer",
+                        hideFromPalette: !serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH")
+                    },
+
+                    {
                         func: "commitSprite",
                         blockType: Scratch.BlockType.BUTTON,
                         hideFromPalette: !serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
-                        text: "Commit this sprite"
+                        text: "Save and commit"
+                    },
+                    {
+                        func: "renameSprite",
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: !serverid || !canmanual || Scratch.vm.runtime.getEditingTarget().isStage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
+                        text: "Rename and commit"
+                    },
+                    {
+                        func: "deleteSprite",
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: !serverid || !canmanual || Scratch.vm.runtime.getEditingTarget().isStage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
+                        text: "Delete and commit"
                     },
                 ],
             };
+        }
+
+        inviteColab() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'BlockLive Colab',
+                    url: window.location.href
+                })
+                .then(() => console.log('Successfully shared'))
+                .catch((error) => console.error('Error sharing:', error));
+            } else {
+            console.log('Web Share API not supported.');
+            }
         }
 
         commitSprite() {
@@ -1354,6 +1414,52 @@
                     canmanual = true;
                     Scratch.vm.extensionManager.refreshBlocks();
                 }, 500);
+            }
+        }
+
+        async renameSprite() {
+            if (Scratch.vm.runtime.getEditingTarget().isStage) {
+                showalert("Unable to rename the stage.", 2000);
+            } else {
+                MakeWidget(`
+                    <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
+                        <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabRenameInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
+                        <p class="username-modal_help-text_3dN2-"><span>
+                            Enter a new name for ${Scratch.vm.runtime.getEditingTarget().sprite.name}
+                        </span></p>
+
+                        <div class="username-modal_button-row_2amuh box_box_2jjDp">
+                            <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
+                            <button class="username-modal_cancel-button_3bs7j" onclick="window.resolve8501435(false); document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
+                            <button class="username-modal_ok-button_UEZfz" onclick="window.resolve8501435(document.getElementById('ColabRenameInput').value); document.getElementById('widgetoverlay').remove()"><span>Rename sprite</span></button>
+                        </div>
+                    </div>
+                `, "Rename sprite", "600px", "251px");
+
+                window.resolve8501435;
+                var newName = new Promise((res, rej) => {
+                    window.resolve8501435 = res;
+                });
+
+                newName = await newName;
+                if (!newName) return;
+
+                sendmsg("rename", JSON.stringify({
+                    sprite: Scratch.vm.runtime.getEditingTarget().getName(),
+                    name: newName,
+                    from: clientId
+                }));
+            }
+        }
+
+        deleteSprite() {
+            if (Scratch.vm.runtime.getEditingTarget().isStage) {
+                showalert("Unable to delete the stage.", 2000);
+            } else {
+                sendmsg("delete", JSON.stringify({
+                    sprite: Scratch.vm.runtime.getEditingTarget().getName(),
+                    from: clientId
+                }));
             }
         }
 
@@ -1381,8 +1487,6 @@
 
         leaveColab() {
             try {
-                Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
-
                 chatToggle.remove();
                 chatContainer.style.display = "none";
 
@@ -1392,7 +1496,12 @@
                 isCancled = true;
                 serverid = false;
                 client.disconnect();
+
+                try {
+                    Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+                } catch(e) {}
             } catch(e) {
+                console.error(e);
                 pgeparams.delete("project_url");
                 window.location.href = pgeurl;
             }
@@ -1449,6 +1558,11 @@
                     menuItemElement.onmouseout = () => {
                         menuItemElement.style.backgroundColor = '';
                     };
+                } else {
+                    menuItemElement.style.height = "0px";
+                    itemCount--;
+                    itemCount += "0.1";
+                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.1)';
                 }
                 menuListElement.appendChild(menuItemElement);
                 itemCount++;
@@ -1468,6 +1582,7 @@
             };
 
             const closeMenu = () => {
+                if (!menuContainerElement || !menuContainerElement.parentElement) return;
                 document.body.removeChild(menuContainerElement);
                 document.removeEventListener('click', clickOutsideListener);
             };
