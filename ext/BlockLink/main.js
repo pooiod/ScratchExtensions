@@ -354,9 +354,7 @@
     }
 
     async function YeetFile(BLOB, tmp) {
-        tmp = tmp || !canYeetFile;
-
-        if (tmp && canTMPfile) {
+        if ((tmp || !canYeetFile) && canTMPfile) {
             const formData = new FormData();
             formData.append('file', blob, filename);
 
@@ -446,6 +444,7 @@
             return;
         }
 
+        // Small files get sent through MQTT, large files go to a tmp file server
         if (blob.size < 1024 * 1024 * 1024) {
             return blobToBase64(blob);
         } else {
@@ -1322,7 +1321,7 @@
             window.location.href = pgeurl;
         } else {
             showalert("Starting colab server", 5000);
-            pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3()));
+            pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3(), true));
             window.location.href = pgeurl;
         }
     };
