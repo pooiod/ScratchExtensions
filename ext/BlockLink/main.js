@@ -354,19 +354,33 @@
     }
 
     async function YeetFile(BLOB, tmp) {
+        if (typeof BLOB.then === 'function') {
+            BLOB = await BLOB;
+        }
+
         if ((tmp || !canYeetFile) && canTMPfile) {
             const formData = new FormData();
-            formData.append('file', BLOB, Math.random().toString(36).substring(7));
+            formData.append('file', BLOB);
 
-            const response = await fetch('https://file.io', {
+            const response = await fetch('https://filepeoxyfortmpstorage.pooiod7.workers.dev/api/v1/upload', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
                 body: formData
-              });
+            }).catch(e => {
+                showalert("Upload failed: " + e.message, 5000, false);
+                throw new Error(e)
+            });
 
-              if (!response.ok) throw new Error('Upload failed');
+            if (!response.ok) {
+                showalert("Upload failed: " + "response not ok", 5000, false);
+                console.warn(response);
+                throw new Error('Upload failed')
+            };
 
-              const data = await response.json();
-              return data.link;
+            const data = await response.json();
+            return data.data.url;
         } else {
             const formData = new FormData();
             formData.append('file', BLOB);
@@ -406,7 +420,7 @@
 
     async function canYeet() {
         try {
-            const response = await fetch("https://yeetyourfiles.lol/", {
+            const response = await fetch("https://yeetyourfiles.lol", {
                 method: "HEAD",
             });
             return response.ok && !window.location.hostname.includes('archive.org');
@@ -418,7 +432,7 @@
 
     async function canTMP() {
         try {
-            const response = await fetch("https://file.io", {
+            const response = await fetch("https://filepeoxyfortmpstorage.pooiod7.workers.dev", {
                 method: "HEAD",
             });
             return response.ok && !window.location.hostname.includes('archive.org');
