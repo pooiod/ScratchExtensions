@@ -1272,8 +1272,6 @@
                 img.height = 20;
                 img.setAttribute('data-alt-listener', 'true');
 
-                if (theme == "dark") img.style.filter = "invert(100%)";
-
                 const span = document.createElement('span');
                 span.classList.add('menu-bar_collapsible-label_o2tym');
                 span.innerHTML = '<span>BlockLink</span>';
