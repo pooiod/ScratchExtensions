@@ -1423,7 +1423,7 @@
             } else {
                 MakeWidget(`
                     <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
-                        <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabRenameInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
+                        <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabRenameInput" class="username-modal_text-input_3z1ni" spellcheck="false" autocomplete="off" value="${Scratch.vm.runtime.getEditingTarget().sprite.name}"></div>
                         <p class="username-modal_help-text_3dN2-"><span>
                             Enter a new name for ${Scratch.vm.runtime.getEditingTarget().sprite.name}
                         </span></p>
@@ -1471,7 +1471,7 @@
             // JoinColabServer(window.prompt("Select server to join (blank to start new server)"));
             MakeWidget(`
                 <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
-                    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabServerInput" class="username-modal_text-input_3z1ni" spellcheck="false"></div>
+                    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabServerInput" class="username-modal_text-input_3z1ni" spellcheck="false" autocomplete="off"></div>
                     <p class="username-modal_help-text_3dN2-"><span>
                         Enter a project url to join an existing colab server.
                     </span></p>
