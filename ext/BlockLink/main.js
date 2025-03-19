@@ -1336,7 +1336,7 @@
 
             showalert("Joines for this session will last for 30 minutes", 2000);
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 500));
 
             window.location.href = pgeurl;
         }
