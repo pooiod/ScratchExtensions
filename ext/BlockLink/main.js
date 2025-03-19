@@ -362,11 +362,8 @@
             const formData = new FormData();
             formData.append('file', BLOB);
 
-            const response = await fetch('https://filepeoxyfortmpstorage.pooiod7.workers.dev/api/v1/upload', {
+            const response = await fetch('https://tmpfiles.pooiod7.workers.dev/store', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
                 body: formData
             }).catch(e => {
                 showalert("Upload failed: " + e.message, 5000, false);
@@ -380,7 +377,7 @@
             };
 
             const data = await response.json();
-            return data.data.url;
+            return data.url;
         } else {
             const formData = new FormData();
             formData.append('file', BLOB);
@@ -432,7 +429,7 @@
 
     async function canTMP() {
         try {
-            const response = await fetch("https://filepeoxyfortmpstorage.pooiod7.workers.dev", {
+            const response = await fetch("https://tmpfiles.pooiod7.workers.dev", {
                 method: "HEAD",
             });
             return response.ok && !window.location.hostname.includes('archive.org');
