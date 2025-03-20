@@ -362,20 +362,21 @@
             const formData = new FormData();
             formData.append('file', BLOB);
 
-async function tmpUpload(blob) {
+function uploadTmp(blob) {
   const formData = new FormData();
   formData.append('file', blob);
-
-  const response = await fetch('https://fex.net/api/upload', {
+  fetch('https://upload.uploadcare.com/base/', {
     method: 'POST',
     body: formData,
-  });
-
-  const data = await response.json();
-  return data.files[0].url;
+  })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
 }
 
-            return await tmpUpload(BLOB)
+console.log(await uploadTmp(BLOB))
+            // return await uploadTmp(BLOB)
+            throw new Error("eeeeeeeeee")
 
             const response = await fetch('https://tmpfiles.pooiod7.workers.dev/store', {
                 method: 'POST',

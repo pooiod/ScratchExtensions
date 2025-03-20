@@ -134,8 +134,8 @@
         }
         async function canYeet() {
             try {
-                const response = await fetch("https://yeetyourfiles.lol/", {
-                    method: "HEAD",
+                const response = await fetch("https://tmpfiles.pooiod7.workers.dev", {
+                    method: "HEPOSTAD",
                 });
                 return response.ok;
             } catch (error) {
@@ -244,7 +244,7 @@
 
             const xhr = new XMLHttpRequest();
 
-            xhr.open('POST', 'https://yeetyourfiles.lol/api/upload', true);
+            xhr.open('POST', 'https://tmpfiles.pooiod7.workers.dev/store', true);
 
             xhr.upload.onprogress = function(e) {
                 if (e.lengthComputable) {
@@ -257,8 +257,9 @@
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
-                    const fileId = response.fileUrl;
-                    const downloadUrl = `https://yeetyourfiles.lol${fileId}`;
+                    // const fileId = response.fileUrl;
+                    const downloadUrl = response.url;
+                    // const downloadUrl = `https://yeetyourfiles.lol${fileId}`;
 
                     clearInterval(didknow);
                     // statusText("Opening project");
