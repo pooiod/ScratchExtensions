@@ -13,7 +13,10 @@
     var isCancled = false;
 
     var compatability = [
-        ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"]
+        ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"],
+        ["studio.penguinmod.com"],
+        ["alpha.unsandboxed.org"],
+        ["librekitten.org"]
     ];
 
     var warnCompatableIssue = [
@@ -680,11 +683,6 @@
             main();
             sendmsg("joined", clientId)
             showalert("Connected to broker", 2000, false);
-
-            // var element = [...document.querySelectorAll('*')].find(el => el.innerText === 'BlockLink');
-            // if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
-            //     click(element);
-            // }
         } else {
             showalert("Regained connection", 2000, false);
         }
@@ -749,7 +747,8 @@
                 }
             } else if (message.destinationName == "joined" + serverid) {
                 if (clientId == message.payloadString) {
-                    showToast(`Welcome ${message.payloadString}`, false);
+                    showToast(`Connected to server`, false);
+
                     // if (document.cookie.split('; ').some(cookie => cookie.startsWith('remove-sprite-confirm=') && (() => { try { return JSON.parse(decodeURIComponent(cookie.split('=')[1])).enabled === true; } catch { return false; } })())) {
                     //     showToast(`Please disable the "<a href="https://turbowarp.org/addons#confirmation">Sprite deletion confirmation</a>" addon.`, true);
                     // }
@@ -1645,7 +1644,7 @@
 
                 if (menuBlock.blockType === Scratch.BlockType.LABEL) {
                     menuItemElement.style.fontWeight = 'bold';
-                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.3)';
+                    // menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.3)';
                 } else if (menuBlock.blockType === Scratch.BlockType.BUTTON) {
                     menuItemElement.onclick = () => {
                         if (typeof this[menuBlock.func] === 'function') {
@@ -1655,17 +1654,19 @@
                     };
                     menuItemElement.onmouseover = () => {
                         // menuItemElement.style.backgroundColor = 'var(--shadow-default, rgba(110, 110, 110, 0.2))';
-                        menuItemElement.classList.add('menu_expanded_1-Ozh')
+                        menuItemElement.classList.add('menu_expanded_1-Ozh');
                     };
                     menuItemElement.onmouseout = () => {
                         // menuItemElement.style.backgroundColor = '';
                         menuItemElement.classList.remove('menu_expanded_1-Ozh')
                     };
                 } else {
-                    menuItemElement.style.height = "0px";
+                    menuItemElement.style.height = "1px";
+                    menuItemElement.style.marginBottom = "1px";
+                    menuItemElement.classList.add('menu_expanded_1-Ozh')
                     itemCount--;
                     itemCount += "0.1";
-                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.2)';
+                    // menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.2)';
                 }
                 menuListElement.appendChild(menuItemElement);
                 itemCount++;
