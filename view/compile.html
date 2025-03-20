@@ -149,13 +149,14 @@
             alert(event.message);
         });
 
-        // canYeet().then(isReachable => {
-        //     if (isReachable) {
-        //         console.log("Your files can be yeeted :D");
-        //     } else {
-        //         console.log("Can't yeet right now :(");
-        //     }
-        // });
+        canYeet().then(isReachable => {
+            if (isReachable) {
+                // console.log("Your files can be yeeted :D");
+            } else {
+                alert("Unable to reach yeetyourfile.lol");
+                window.close();
+            }
+        });
 
         window.onload = async function() {
             try {
