@@ -1350,11 +1350,11 @@
 
                 var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
 
-                var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(2) > img:nth-child(1)");
+                var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(3) > img:nth-child(1)");
                 if (showIcon) showIcon = getComputedStyle(showIcon).display != 'none';
 
                 if (showIcon) {
-                    divider = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(2)") || divider;
+                    divider = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(3)") || divider;
                 }
 
                 if (!divider) {
@@ -1642,16 +1642,18 @@
                         closeMenu();
                     };
                     menuItemElement.onmouseover = () => {
-                        menuItemElement.style.backgroundColor = 'var(--motion-tertiary, rgba(110, 110, 110, 0.2))';
+                        // menuItemElement.style.backgroundColor = 'var(--shadow-default, rgba(110, 110, 110, 0.2))';
+                        menuItemElement.classList.add('menu_expanded_1-Ozh')
                     };
                     menuItemElement.onmouseout = () => {
-                        menuItemElement.style.backgroundColor = '';
+                        // menuItemElement.style.backgroundColor = '';
+                        menuItemElement.classList.remove('menu_expanded_1-Ozh')
                     };
                 } else {
                     menuItemElement.style.height = "0px";
                     itemCount--;
                     itemCount += "0.1";
-                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.1)';
+                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.2)';
                 }
                 menuListElement.appendChild(menuItemElement);
                 itemCount++;
