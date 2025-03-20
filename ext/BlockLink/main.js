@@ -97,8 +97,22 @@
             var themeSetting = localStorage.getItem('tw:theme');
             var parsed = JSON.parse(themeSetting);
 
+            function isPrimaryColorDark() {
+                const color = getComputedStyle(document.documentElement).getPropertyValue("--ui-primary").trim() || "rgb(255, 255, 255)";
+                const rgb = color.match(/\d+/g);
+                const r = parseInt(rgb[0]);
+                const g = parseInt(rgb[1]);
+                const b = parseInt(rgb[2]);
+                const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+                return luminance < 0.5;
+            }
+
             if (parsed.gui) {
                 theme = parsed.gui;
+            } else {
+                if (isPrimaryColorDark()) {
+                    theme == "dark";
+                }
             }
 
             if (parsed.accent === 'purple') {
