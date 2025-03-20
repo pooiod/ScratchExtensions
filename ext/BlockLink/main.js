@@ -428,6 +428,7 @@
     }
 
     async function canTMP() {
+        return false;
         try {
             const response = await fetch("https://tmpfiles.pooiod7.workers.dev", {
                 method: "HEAD",
