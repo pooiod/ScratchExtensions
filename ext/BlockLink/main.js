@@ -1586,6 +1586,8 @@
         }
 
         leaveColab() {
+            window.history.replaceState({}, document.title, window.location.pathname + (window.location.search.replace(/(\?|&)project_url=[^&]*(&|$)/, '$1').replace(/&$/, '') || ''));
+
             try {
                 chatToggle.remove();
                 chatContainer.style.display = "none";
