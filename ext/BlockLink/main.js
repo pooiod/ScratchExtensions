@@ -369,6 +369,7 @@
         return [overlay, widgetframe, title, () => document.getElementById("widgetoverlay"), closeButton];
     }
 
+// yeetyourfiles.lol is not a temperary file hosting site, so it's best not to use if for temperary files
     async function YeetFile(BLOB, tmp) {
         if (typeof BLOB.then === 'function') {
             BLOB = await BLOB;
@@ -376,25 +377,21 @@
 
         if ((tmp || !canYeetFile) && canTMPfile) {
             const formData = new FormData();
-            formData.append('file', BLOB);
+            formData.append('reqtype', 'fileupload');
+            formData.append('time', '1h');
+            formData.append('fileToUpload', BLOB);
 
-            // my tmp file service has low file limits, so it's not used
-            const response = await fetch('https://tmpfiles.pooiod7.workers.dev/store', {
+            const response = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', {
                 method: 'POST',
-                body: formData
-            }).catch(e => {
-                showalert("Upload failed: " + e.message, 5000, false);
-                throw new Error(e)
+                body: formData,
             });
 
             if (!response.ok) {
-                showalert("Upload failed: " + "response not ok", 5000, false);
-                console.warn(response);
-                throw new Error('Upload failed')
-            };
+                throw new Error('File upload failed');
+            }
 
-            const data = await response.json();
-            return data.url;
+            const url = await response.text();
+            return url.trim();
         } else {
             const formData = new FormData();
             formData.append('file', BLOB);
@@ -445,9 +442,8 @@
     }
 
     async function canTMP() {
-        return false;
         try {
-            const response = await fetch("https://tmpfiles.pooiod7.workers.dev", {
+            const response = await fetch("https://litterbox.catbox.moe", {
                 method: "HEAD",
             });
             return response.ok && !window.location.hostname.includes('archive.org');
