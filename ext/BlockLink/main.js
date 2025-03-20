@@ -378,6 +378,7 @@
             const formData = new FormData();
             formData.append('file', BLOB);
 
+            // my tmp file service has low file limits, so it's not used
             const response = await fetch('https://tmpfiles.pooiod7.workers.dev/store', {
                 method: 'POST',
                 body: formData

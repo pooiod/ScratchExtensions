@@ -17,7 +17,9 @@
     ];
 
     var warnCompatableIssue = [
-        "rc.40code.com"
+        "rc.40code.com",
+        "xplab.vercel.app",
+        "electramod.vercel.app"
     ];
 
     function isCompatible(str1, str2) {
@@ -97,8 +99,22 @@
             var themeSetting = localStorage.getItem('tw:theme');
             var parsed = JSON.parse(themeSetting);
 
+            function isPrimaryColorDark() {
+                const color = getComputedStyle(document.documentElement).getPropertyValue("--ui-primary").trim() || "rgb(255, 255, 255)";
+                const rgb = color.match(/\d+/g);
+                const r = parseInt(rgb[0]);
+                const g = parseInt(rgb[1]);
+                const b = parseInt(rgb[2]);
+                const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+                return luminance < 0.5;
+            }
+
             if (parsed.gui) {
                 theme = parsed.gui;
+            } else {
+                if (isPrimaryColorDark()) {
+                    theme == "dark";
+                }
             }
 
             if (parsed.accent === 'purple') {
@@ -353,6 +369,7 @@
         return [overlay, widgetframe, title, () => document.getElementById("widgetoverlay"), closeButton];
     }
 
+// yeetyourfiles.lol is not a temperary file hosting site, so it's best not to use if for temperary files
     async function YeetFile(BLOB, tmp) {
         if (typeof BLOB.then === 'function') {
             BLOB = await BLOB;
@@ -360,40 +377,21 @@
 
         if ((tmp || !canYeetFile) && canTMPfile) {
             const formData = new FormData();
-            formData.append('file', BLOB);
+            formData.append('reqtype', 'fileupload');
+            formData.append('time', '1h');
+            formData.append('fileToUpload', BLOB);
 
-function uploadTmp(blob) {
-  const formData = new FormData();
-  formData.append('file', blob);
-  fetch('https://upload.uploadcare.com/base/', {
-    method: 'POST',
-    body: formData,
-  })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
-}
-
-console.log(await uploadTmp(BLOB))
-            // return await uploadTmp(BLOB)
-            throw new Error("eeeeeeeeee")
-
-            const response = await fetch('https://tmpfiles.pooiod7.workers.dev/store', {
+            const response = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', {
                 method: 'POST',
-                body: formData
-            }).catch(e => {
-                showalert("Upload failed: " + e.message, 5000, false);
-                throw new Error(e)
+                body: formData,
             });
 
             if (!response.ok) {
-                showalert("Upload failed: " + "response not ok", 5000, false);
-                console.warn(response);
-                throw new Error('Upload failed')
-            };
+                throw new Error('File upload failed');
+            }
 
-            const data = await response.json();
-            return data.url;
+            const url = await response.text();
+            return url.trim();
         } else {
             const formData = new FormData();
             formData.append('file', BLOB);
@@ -445,7 +443,7 @@ console.log(await uploadTmp(BLOB))
 
     async function canTMP() {
         try {
-            const response = await fetch("https://tmpfiles.pooiod7.workers.dev", {
+            const response = await fetch("https://litterbox.catbox.moe", {
                 method: "HEAD",
             });
             return response.ok && !window.location.hostname.includes('archive.org');
@@ -472,7 +470,7 @@ console.log(await uploadTmp(BLOB))
         }
 
         // Small files get sent through MQTT, large files go to a tmp file server
-        if (blob.size < 1024 * 1024) {
+        if (blob.size < 1024 * 1024 * 1024) {
             return blobToBase64(blob);
         } else {
             return YeetFile(blob, true);
@@ -1350,27 +1348,25 @@ console.log(await uploadTmp(BLOB))
             showalert("Starting colab server", 5000);
             pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3(), true));
 
-            showalert("Joines for this session will last for 30 minutes", 2000);
-
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // await new Promise(resolve => setTimeout(resolve, 500));
 
             window.location.href = pgeurl;
         }
     };
 
-    var canShare = true;
     class P7BlockLink {
         constructor() {
             this.updateWorkspace = () => {
                 if (isCancled) return;
 
-                var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
+                var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm') ||
+                document.querySelector("div.divider_divider_2uUWW.menu-bar_divider_2bLcv");
 
-                var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(2) > img:nth-child(1)");
+                var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(3) > img:nth-child(1)");
                 if (showIcon) showIcon = getComputedStyle(showIcon).display != 'none';
 
                 if (showIcon) {
-                    divider = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(2)") || divider;
+                    divider = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(3)") || divider;
                 }
 
                 if (!divider) {
@@ -1422,19 +1418,6 @@ console.log(await uploadTmp(BLOB))
             }
             this.updateWorkspace();
 
-            async function checkShareLoop() {
-                try {
-                    const response = await fetch(new URLSearchParams(window.location.search).get('project_url'), {
-                        method: "HEAD",
-                    });
-        
-                    canShare = response.ok;
-                } catch (error) {
-                    canShare = false;
-                }
-                setTimeout(checkShareLoop, 50000);
-            } if (serverid) checkShareLoop();
-
             setInterval(()=>{
                 var element = [...document.querySelectorAll('.scratchCategoryMenu > *')].find(el => el.innerText === 'BlockLink');
                 if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
@@ -1462,7 +1445,7 @@ console.log(await uploadTmp(BLOB))
                     {
                         func: "inviteColab",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: !serverid || !canShare,
+                        hideFromPalette: !serverid,
                         text: "Invite to colab"
                     },
 
@@ -1671,16 +1654,18 @@ console.log(await uploadTmp(BLOB))
                         closeMenu();
                     };
                     menuItemElement.onmouseover = () => {
-                        menuItemElement.style.backgroundColor = 'var(--motion-tertiary, rgba(110, 110, 110, 0.2))';
+                        // menuItemElement.style.backgroundColor = 'var(--shadow-default, rgba(110, 110, 110, 0.2))';
+                        menuItemElement.classList.add('menu_expanded_1-Ozh')
                     };
                     menuItemElement.onmouseout = () => {
-                        menuItemElement.style.backgroundColor = '';
+                        // menuItemElement.style.backgroundColor = '';
+                        menuItemElement.classList.remove('menu_expanded_1-Ozh')
                     };
                 } else {
                     menuItemElement.style.height = "0px";
                     itemCount--;
                     itemCount += "0.1";
-                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.1)';
+                    menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.2)';
                 }
                 menuListElement.appendChild(menuItemElement);
                 itemCount++;
