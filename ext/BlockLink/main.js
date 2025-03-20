@@ -1586,9 +1586,12 @@
         }
 
         leaveColab() {
-            window.history.replaceState({}, document.title, window.location.pathname + (window.location.search.replace(/(\?|&)project_url=[^&]*(&|$)/, '$1').replace(/&$/, '') || ''));
-
             try {
+                var url = new URL(window.location);
+                url.searchParams.delete('project_url');
+                url = url.searchParams.toString() ? url.toString() : url.origin + url.pathname;
+                window.history.pushState({}, document.title, url);
+
                 chatToggle.remove();
                 chatContainer.style.display = "none";
 
