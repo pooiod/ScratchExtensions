@@ -17,7 +17,9 @@
     ];
 
     var warnCompatableIssue = [
-        "rc.40code.com"
+        "rc.40code.com",
+        "xplab.vercel.app",
+        "electramod.vercel.app"
     ];
 
     function isCompatible(str1, str2) {
@@ -1360,7 +1362,8 @@
             this.updateWorkspace = () => {
                 if (isCancled) return;
 
-                var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
+                var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm') ||
+                document.querySelector("div.divider_divider_2uUWW.menu-bar_divider_2bLcv");
 
                 var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(3) > img:nth-child(1)");
                 if (showIcon) showIcon = getComputedStyle(showIcon).display != 'none';
