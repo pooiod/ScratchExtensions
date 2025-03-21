@@ -1637,7 +1637,7 @@
                         text: serverid?"Join another colab":"Join a colab"
                     },
 
-                    (!serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:"---",
+                    (!serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
 
                     {
                         func: "commitSprite",

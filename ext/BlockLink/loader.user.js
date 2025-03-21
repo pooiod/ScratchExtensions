@@ -44,12 +44,10 @@
     Scratch.extensions = {};
 
 		// Simulate extension register without adding blocks
-    Scratch.extensions.register = function(extension) {
-      // console.log("BlockLink: extension registered", extension);
-    };
+    Scratch.extensions.register = function(extension) {};
 
     Scratch.extensions.unsandboxed = true;
-		Scratch.extensions.userscript = true;
+		Scratch.extensions.noblocks = true;
     Scratch.BlockType = { COMMAND: "command", REPORTER: "reporter", BUTTON: "button", BOOLEAN: "boolean", HAT: "hat", STACK: "stack" };
     Scratch.ArgumentType = { STRING: "string", NUMBER: "number", BOOLEAN: "boolean", MATRIX: "matrix", COLOR: "color" };
 
