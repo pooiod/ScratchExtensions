@@ -1747,5 +1747,5 @@
             document.querySelector("#app > div > div > div > div > img").remove();
             document.querySelector("#app > div > div > div > div > p.crash-message_header_1tEXc > span").textContent = "Session error";
         }
-    }, 2000);
+    }, 500);
 })(Scratch);
