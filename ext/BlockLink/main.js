@@ -1746,6 +1746,27 @@
             document.querySelector("#app > div > div > div > div > p.crash-message_error-message_1pX4X").remove();
             document.querySelector("#app > div > div > div > div > img").remove();
             document.querySelector("#app > div > div > div > div > p.crash-message_header_1tEXc > span").textContent = "Session error";
+
+            try {
+                var url = new URL(window.location);
+                url.searchParams.delete('project_url');
+                url = url.searchParams.toString() ? url.toString() : url.origin + url.pathname;
+                window.history.pushState({}, document.title, url);
+
+                chatToggle.remove();
+                chatContainer.style.display = "none";
+
+                window.clearInterval(intervalPos);
+                window.clearInterval(intervalColors)
+
+                isCancled = true;
+                serverid = false;
+                client.disconnect();
+
+                try {
+                    Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+                } catch(e) {}
+            } catch(e) {}
         }
     }, 500);
 })(Scratch);
