@@ -1395,8 +1395,7 @@
             this.updateWorkspace = () => {
                 if (isCancled) return;
 
-                var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm') ||
-                document.querySelector("div.divider_divider_2uUWW.menu-bar_divider_2bLcv");
+                var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
 
                 var showIcon = document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp > div.menu-bar_main-menu_3wjWH > div.menu-bar_file-group_1_CHX > div:nth-child(3) > img:nth-child(1)");
                 if (showIcon) showIcon = getComputedStyle(showIcon).display != 'none';
@@ -1409,7 +1408,8 @@
                     setTimeout(this.updateWorkspace, 1000);
                 }
 
-                hasmenu == !!divider;
+                hasmenu = !!divider;
+                if (!divider) return;
 
                 const button = document.createElement('div');
                 button.classList.add('menu-bar_menu-bar-item_oLDa-', 'menu-bar_hoverable_c6WFB');
@@ -1463,7 +1463,7 @@
                 }
 
                 var element = [...document.querySelectorAll('g.blocklyBlockCanvas text.blocklyFlyoutLabelText')].find(el => el.textContent === 'BlockLink');
-                if (element) {
+                if (element && hasmenu) {
                     element.style.display = "none";
                 }
             }, 1000);
@@ -1473,7 +1473,7 @@
             return {
                 id: 'P7BlockLink',
                 name: 'BlockLink',
-                blocks: hasmenu?[]:getblocks().blocks,
+                blocks: hasmenu?[]:this.getblocks().blocks,
             };
         }
 
@@ -1505,7 +1505,7 @@
                         text: serverid?"Join another colab":"Join a colab"
                     },
 
-                    "---",
+                    (!serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:"---",
 
                     {
                         func: "commitSprite",
