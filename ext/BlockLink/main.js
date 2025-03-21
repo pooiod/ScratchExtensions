@@ -590,12 +590,17 @@
 
     var published = "";
     function doSpriteEventListeners() {
+        document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-info_sprite-info_3EyZh.box_box_2jjDp > div.sprite-info_row_1om5V.sprite-info_row-primary_10JrS > div:nth-child(1) > label > input")
+        ?.addEventListener("click", () => {
+            renameSpriteAndCommit();
+        });
+
         document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div")
         ?.addEventListener("contextmenu", (event) => {
             setTimeout(()=>{
-                if (document.querySelector(".react-contextmenu")) {
-                    var deleteButton = document.querySelector("div.react-contextmenu-item.context-menu_menu-item_3cioN.context-menu_menu-item-bordered_29CJG.context-menu_menu-item-danger_1tJg0");
-    
+                if (document.querySelector(".react-contextmenu--visible")) {
+                    var deleteButton = document.querySelector(".react-contextmenu--visible div.react-contextmenu-item.context-menu_menu-item_3cioN.context-menu_menu-item-bordered_29CJG.context-menu_menu-item-danger_1tJg0");
+
                     if (deleteButton) {
                         var clone = deleteButton.cloneNode(true);
                         deleteButton.parentNode.insertBefore(clone, deleteButton);
@@ -603,7 +608,6 @@
                         // deleteButton.remove();
                         clone.style.display = "block";
                         clone.id = "colabDeleteSpriteContextButton";
-                        clone.innerText = "Delete for everyone";
                         clone.addEventListener('click', (e) => {
                             e.preventDefault();
                             var sprite = Array.from(deleteButton.parentElement.parentElement.getElementsByClassName("sprite-selector-item_sprite-name_1PXjh"));
@@ -972,6 +976,51 @@
         }
 
         deleteSprite(sprite);
+    }
+
+    async function renameSpriteAndCommit() {
+        if (Scratch.vm.runtime.getEditingTarget().isStage) {
+            showalert("Unable to rename the stage.", 2000);
+        } else {
+            MakeWidget(`
+                <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
+                    <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabRenameInput" class="username-modal_text-input_3z1ni" spellcheck="false" autocomplete="off" value="${htmlsafe(Scratch.vm.runtime.getEditingTarget().sprite.name)}"></div>
+                    <p class="username-modal_help-text_3dN2-"><span>
+                        Enter a new name for ${htmlsafe(Scratch.vm.runtime.getEditingTarget().sprite.name)}
+                    </span></p>
+
+                    <div class="username-modal_button-row_2amuh box_box_2jjDp">
+                        <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
+                        <button class="username-modal_cancel-button_3bs7j" onclick="window.resolve8501435(false); document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
+                        <button class="username-modal_ok-button_UEZfz" onclick="window.resolve8501435(document.getElementById('ColabRenameInput').value); document.getElementById('widgetoverlay').remove()"><span>Rename sprite</span></button>
+                    </div>
+                </div>
+            `, "Rename sprite", "600px", "251px");
+
+            window.resolve8501435;
+            var newName = new Promise((res, rej) => {
+                window.resolve8501435 = res;
+            });
+
+            document.querySelector("#ColabRenameInput").focus();
+            document.querySelector("#ColabRenameInput").setSelectionRange(document.querySelector("#ColabRenameInput").value.length, document.querySelector("#ColabRenameInput").value.length);
+
+            document.querySelector("#ColabRenameInput").onkeydown = function(e) {
+                if (e.key === "Enter") {
+                    window.resolve8501435(document.getElementById('ColabRenameInput').value);
+                    document.getElementById('widgetoverlay').remove();
+                }
+            };
+
+            newName = await newName;
+            if (!newName) return;
+
+            sendmsg("rename", JSON.stringify({
+                sprite: Scratch.vm.runtime.getEditingTarget().getName(),
+                name: newName,
+                from: clientId
+            }));
+        }
     }
 
     function docommit(dat) {
@@ -1631,38 +1680,7 @@
         }
 
         async renameSprite() {
-            if (Scratch.vm.runtime.getEditingTarget().isStage) {
-                showalert("Unable to rename the stage.", 2000);
-            } else {
-                MakeWidget(`
-                    <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
-                        <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabRenameInput" class="username-modal_text-input_3z1ni" spellcheck="false" autocomplete="off" value="${htmlsafe(Scratch.vm.runtime.getEditingTarget().sprite.name)}"></div>
-                        <p class="username-modal_help-text_3dN2-"><span>
-                            Enter a new name for ${htmlsafe(Scratch.vm.runtime.getEditingTarget().sprite.name)}
-                        </span></p>
-
-                        <div class="username-modal_button-row_2amuh box_box_2jjDp">
-                            <button style="display:none;" class="username-modal_cancel-button_3bs7j"><span>Leave server</span></button>
-                            <button class="username-modal_cancel-button_3bs7j" onclick="window.resolve8501435(false); document.getElementById('widgetoverlay').remove()"><span>Cancel</span></button>
-                            <button class="username-modal_ok-button_UEZfz" onclick="window.resolve8501435(document.getElementById('ColabRenameInput').value); document.getElementById('widgetoverlay').remove()"><span>Rename sprite</span></button>
-                        </div>
-                    </div>
-                `, "Rename sprite", "600px", "251px");
-
-                window.resolve8501435;
-                var newName = new Promise((res, rej) => {
-                    window.resolve8501435 = res;
-                });
-
-                newName = await newName;
-                if (!newName) return;
-
-                sendmsg("rename", JSON.stringify({
-                    sprite: Scratch.vm.runtime.getEditingTarget().getName(),
-                    name: newName,
-                    from: clientId
-                }));
-            }
+            renameSpriteAndCommit();
         }
 
         deleteSprite() {
@@ -1696,6 +1714,8 @@
                     </div>
                 </div>
             `, "Server select", "600px", "251px");
+
+            document.querySelector("#ColabServerInput").focus();
         }
 
         leaveColab() {
