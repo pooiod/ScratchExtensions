@@ -2,6 +2,7 @@
 
 (async function(Scratch) {
     "use strict";
+
     if (!Scratch.extensions.unsandboxed) {
         throw new Error("This extension must be run unsandboxed");
     }
