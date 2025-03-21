@@ -1738,4 +1738,14 @@
         };
     }
     Scratch.extensions.register(new P7BlockLink());
+
+    setTimeout(function() {
+        if (window.location.search.includes("project_url=https://litter.catbox.moe") && document.querySelector(".crash-message_reloadButton_FoS7x")) {
+            document.querySelector(".crash-message_reloadButton_FoS7x").remove();
+            document.querySelector("#app > div > div > div > div > p:nth-child(3)").textContent = "This session is no-longer accepting joins.";
+            document.querySelector("#app > div > div > div > div > p.crash-message_error-message_1pX4X").remove();
+            document.querySelector("#app > div > div > div > div > img").remove();
+            document.querySelector("#app > div > div > div > div > p.crash-message_header_1tEXc > span").textContent = "Session error";
+        }
+    }, 2000);
 })(Scratch);
