@@ -1789,14 +1789,13 @@
                     menuItemElement.style.fontWeight = 'bold';
                     // menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.3)';
                 } else if (menuBlock.blockType === Scratch.BlockType.BUTTON) {
-                    menuItemElement.addEventListener('click', () => {
+                    menuItemElement.onclick = () => {
                         console.log("item clicked", menuBlock);
                         if (typeof this[menuBlock.func] === 'function') {
                             this[menuBlock.func]();
                         }
                         closeMenu();
-                    });
-
+                    };
                     menuItemElement.onmouseover = () => {
                         // menuItemElement.style.backgroundColor = 'var(--shadow-default, rgba(110, 110, 110, 0.2))';
                         menuItemElement.classList.add('menu_expanded_1-Ozh');
