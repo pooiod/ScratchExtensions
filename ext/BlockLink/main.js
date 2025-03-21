@@ -11,10 +11,13 @@
     }
 
     var isCancled = false;
+    var incompatable = false;
+    var editing = {};
 
     var compatability = [
         ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"],
         ["studio.penguinmod.com"],
+
         ["alpha.unsandboxed.org"],
         ["librekitten.org"]
     ];
@@ -28,8 +31,6 @@
     function isCompatible(str1, str2) {
         return str1 == str2 || compatability.some(arr => arr.includes(str1) && arr.includes(str2));
     }
-
-    var editing = {};
 
     function standardizeColor(color) {
         if (color.startsWith('#')) {
@@ -196,6 +197,37 @@
         });
     }
 
+    function strformat(STRING) {
+        console.log(STRING)
+		var str = String(STRING);
+		// strip harmful tags but allow basic user formated text
+		var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'br'];
+		str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (match, p1) {
+		  if (allowedTags.indexOf(p1.toLowerCase()) !== -1) {
+			return match;
+		  } else {
+			return '';
+		  }
+		});
+		// newline fixes
+		str = str.replace(/(?<!\\)\\n/g, " <br>");
+		str = str.replace(/\n/g, " <br>");
+		// @user links
+		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
+		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
+		// https links
+		str = str.replace(/(:\/\/)([^ \n]+)/g, '://<a href="https://$2" target="_blank">$2</a>');
+		// special links
+		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
+		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
+        // images
+        str = str.replace(/img:(\S+)/g, '<img src="//$1" style="max-width: 100%;" />');
+        // videos
+        str = str.replace(/vid:(\S+)/g, '<video src="//$1" controls style="max-width: 100%; margin-top: 5px;"></video>');
+        console.log(str)
+		return str;
+	};
+
     function showToast(text, html, time = 2000) {
         var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
         if (!targetElement) return;
@@ -266,36 +298,39 @@
         }, time + 500);
     }
 
-    function strformat(STRING) {
-        console.log(STRING)
-		var str = String(STRING);
-		// strip harmful tags but allow basic user formated text
-		var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'br'];
-		str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (match, p1) {
-		  if (allowedTags.indexOf(p1.toLowerCase()) !== -1) {
-			return match;
-		  } else {
-			return '';
-		  }
-		});
-		// newline fixes
-		str = str.replace(/(?<!\\)\\n/g, " <br>");
-		str = str.replace(/\n/g, " <br>");
-		// @user links
-		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
-		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
-		// https links
-		str = str.replace(/(:\/\/)([^ \n]+)/g, '://<a href="https://$2" target="_blank">$2</a>');
-		// special links
-		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
-		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
-        // images
-        str = str.replace(/img:(\S+)/g, '<img src="//$1" style="max-width: 100%;" />');
-        // videos
-        str = str.replace(/vid:(\S+)/g, '<video src="//$1" controls style="max-width: 100%; margin-top: 5px;"></video>');
-        console.log(str)
-		return str;
-	};
+    function showalert(txt, timeout, inst) {
+        var alertDiv = document.createElement('div');
+        alertDiv.style.position = 'fixed';
+        alertDiv.style.bottom = '-50px';
+        alertDiv.style.left = '0';
+        alertDiv.style.width = '100%';
+        alertDiv.style.backgroundColor = '#cc1d1d';
+        alertDiv.style.color = 'white';
+        alertDiv.style.textAlign = 'center';
+        alertDiv.style.padding = '5px';
+        alertDiv.style.fontSize = '20px';
+        alertDiv.style.transition = 'bottom 0.5s ease';
+        alertDiv.textContent = txt;
+        alertDiv.style.zIndex = '9999999999999999999999999999999999999999999';
+        alertDiv.style.pointerEvents = 'none';
+        alertDiv.style.backgroundColor = accent;
+        document.body.appendChild(alertDiv);
+
+        console.log(txt);
+
+        setTimeout(function() {
+            alertDiv.style.bottom = '0';
+        }, 10);
+        if (inst) {
+            alertDiv.style.bottom = '0';
+        }
+        setTimeout(function() {
+            alertDiv.style.bottom = '-50px';
+            setTimeout(function() {
+                document.body.removeChild(alertDiv);
+            }, 500);
+        }, timeout);
+    }
 
     function MakeWidget(html, pageTitle, width, height) {
         getTheme();
@@ -388,6 +423,46 @@
         });
 
         return [overlay, widgetframe, title, () => document.getElementById("widgetoverlay"), closeButton];
+    }
+
+    async function promptUsername() {
+        const editButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-item_oLDa-.menu-bar_hoverable_c6WFB'))
+            .find(el => el.textContent.trim() === "Edit");
+
+        async function waitForInputDisappear(inputField) {
+            while (inputField && inputField.offsetParent !== null) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        if (editButton) {
+            click(editButton);
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const changeUsernameButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-menu_239MD *'))
+                .find(el => el.textContent.trim() === "Change Username");
+
+            if (changeUsernameButton) {
+                click(changeUsernameButton);
+
+                const startTime = Date.now();
+                while (!document.querySelector('input.username-modal_text-input_3z1ni') && Date.now() - startTime < 1000) {
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+
+                const inputField = document.querySelector('input.username-modal_text-input_3z1ni');
+                if (inputField) inputField.value = '';
+
+                const helpTexts = document.querySelectorAll('p.username-modal_help-text_3dN2-');
+                if (helpTexts.length > 0) helpTexts[0].remove();
+                if (helpTexts.length > 1) helpTexts[1].innerHTML = "Please select suitable username so that everyone else on this colab can tell it's you.";
+                document.querySelector(".modal_header-item_2zQTd.modal_header-item-title_tLOU5").innerText = "Choose a Username";
+
+                document.querySelector("body > div.ReactModalPortal > div > div > div > div.username-modal_body_UaL6e.box_box_2jjDp > div.username-modal_button-row_2amuh.box_box_2jjDp > button:nth-child(1)")?.remove();
+
+                await waitForInputDisappear(inputField);
+            }
+        }
     }
 
 // yeetyourfiles.lol is not a temperary file hosting site, so it's best not to use if for temperary files
@@ -499,40 +574,6 @@
         }
     }
 
-    function showalert(txt, timeout, inst) {
-        var alertDiv = document.createElement('div');
-        alertDiv.style.position = 'fixed';
-        alertDiv.style.bottom = '-50px';
-        alertDiv.style.left = '0';
-        alertDiv.style.width = '100%';
-        alertDiv.style.backgroundColor = '#cc1d1d';
-        alertDiv.style.color = 'white';
-        alertDiv.style.textAlign = 'center';
-        alertDiv.style.padding = '5px';
-        alertDiv.style.fontSize = '20px';
-        alertDiv.style.transition = 'bottom 0.5s ease';
-        alertDiv.textContent = txt;
-        alertDiv.style.zIndex = '9999999999999999999999999999999999999999999';
-        alertDiv.style.pointerEvents = 'none';
-        alertDiv.style.backgroundColor = accent;
-        document.body.appendChild(alertDiv);
-
-        console.log(txt);
-
-        setTimeout(function() {
-            alertDiv.style.bottom = '0';
-        }, 10);
-        if (inst) {
-            alertDiv.style.bottom = '0';
-        }
-        setTimeout(function() {
-            alertDiv.style.bottom = '-50px';
-            setTimeout(function() {
-                document.body.removeChild(alertDiv);
-            }, 500);
-        }, timeout);
-    }
-
     function findSpriteVisual(name) {
         const container = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div");
         if (!container) return null;
@@ -546,11 +587,37 @@
         return null;
     }
 
-    var pgeurl = new URL(window.location.href);
-    var pgeparams = pgeurl.searchParams;
-    var serverid = false;
-    if (pgeparams.has("project_url")) {
-        serverid = pgeparams.get("project_url");
+    var published = "";
+    function doSpriteEventListeners() {
+        document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div")
+        ?.addEventListener("contextmenu", (event) => {
+            setTimeout(()=>{
+                if (document.querySelector(".react-contextmenu")) {
+                    var deleteButton = document.querySelector("div.react-contextmenu-item.context-menu_menu-item_3cioN.context-menu_menu-item-bordered_29CJG.context-menu_menu-item-danger_1tJg0");
+    
+                    if (deleteButton) {
+                        var clone = deleteButton.cloneNode(true);
+                        deleteButton.parentNode.insertBefore(clone, deleteButton);
+                        deleteButton.style.display = "none";
+                        // deleteButton.remove();
+                        clone.style.display = "block";
+                        clone.id = "colabDeleteSpriteContextButton";
+                        clone.innerText = "Delete for everyone";
+                        clone.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            var sprite = Array.from(deleteButton.parentElement.parentElement.getElementsByClassName("sprite-selector-item_sprite-name_1PXjh"));
+                            sprite = sprite[0].innerText;
+    
+                            showalert(`Deleting ${sprite}`, 1000, false);
+                            sendmsg("delete", JSON.stringify({
+                                sprite: sprite,
+                                from: clientId
+                            }));
+                        });
+                    }
+                }
+            })
+        }, 500);
     }
 
     function click(elm) {
@@ -562,44 +629,11 @@
         elm.click();
     }
 
-    async function promptUsername() {
-        const editButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-item_oLDa-.menu-bar_hoverable_c6WFB'))
-            .find(el => el.textContent.trim() === "Edit");
-
-        async function waitForInputDisappear(inputField) {
-            while (inputField && inputField.offsetParent !== null) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-        }
-
-        if (editButton) {
-            click(editButton);
-            await new Promise(resolve => setTimeout(resolve, 100));
-
-            const changeUsernameButton = Array.from(document.querySelectorAll('div.menu-bar_menu-bar-menu_239MD *'))
-                .find(el => el.textContent.trim() === "Change Username");
-
-            if (changeUsernameButton) {
-                click(changeUsernameButton);
-
-                const startTime = Date.now();
-                while (!document.querySelector('input.username-modal_text-input_3z1ni') && Date.now() - startTime < 1000) {
-                    await new Promise(resolve => setTimeout(resolve, 10));
-                }
-
-                const inputField = document.querySelector('input.username-modal_text-input_3z1ni');
-                if (inputField) inputField.value = '';
-
-                const helpTexts = document.querySelectorAll('p.username-modal_help-text_3dN2-');
-                if (helpTexts.length > 0) helpTexts[0].remove();
-                if (helpTexts.length > 1) helpTexts[1].innerHTML = "Please select suitable username so that everyone else on this colab can tell it's you.";
-                document.querySelector(".modal_header-item_2zQTd.modal_header-item-title_tLOU5").innerText = "Choose a Username";
-
-                document.querySelector("body > div.ReactModalPortal > div > div > div > div.username-modal_body_UaL6e.box_box_2jjDp > div.username-modal_button-row_2amuh.box_box_2jjDp > button:nth-child(1)")?.remove();
-
-                await waitForInputDisappear(inputField);
-            }
-        }
+    var pgeurl = new URL(window.location.href);
+    var pgeparams = pgeurl.searchParams;
+    var serverid = false;
+    if (pgeparams.has("project_url")) {
+        serverid = pgeparams.get("project_url");
     }
 
     var canTMPfile = false;
@@ -738,7 +772,6 @@
         client.send(message);
     }
 
-    var incompatable = false;
     function gotMessage(message) {
         // console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
         try {
@@ -828,40 +861,6 @@
 
         showalert("Request sent", 2000, false);
     }
-
-    var published = "";
-    function doSpriteEventListeners() {
-        document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div")
-        ?.addEventListener("contextmenu", (event) => {
-            setTimeout(()=>{
-                if (document.querySelector(".react-contextmenu")) {
-                    var deleteButton = document.querySelector("div.react-contextmenu-item.context-menu_menu-item_3cioN.context-menu_menu-item-bordered_29CJG.context-menu_menu-item-danger_1tJg0");
-    
-                    if (deleteButton) {
-                        var clone = deleteButton.cloneNode(true);
-                        deleteButton.parentNode.insertBefore(clone, deleteButton);
-                        deleteButton.style.display = "none";
-                        // deleteButton.remove();
-                        clone.style.display = "block";
-                        clone.id = "colabDeleteSpriteContextButton";
-                        clone.innerText = "Delete for everyone";
-                        clone.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            var sprite = Array.from(deleteButton.parentElement.parentElement.getElementsByClassName("sprite-selector-item_sprite-name_1PXjh"));
-                            sprite = sprite[0].innerText;
-    
-                            showalert(`Deleting ${sprite}`, 1000, false);
-                            sendmsg("delete", JSON.stringify({
-                                sprite: sprite,
-                                from: clientId
-                            }));
-                        });
-                    }
-                }
-            })
-        }, 500);
-    }
-    doSpriteEventListeners();
 
     function main() {
         var prevtarget = Scratch.vm.runtime.getEditingTarget();
