@@ -824,7 +824,8 @@
 
         var dat = await getdata(spr);
         sendmsg("commit", dat);
-		showalert("Sprite commited", 2000, false);
+
+        showalert("Request sent", 2000, false);
     }
 
     var published = "";
@@ -981,6 +982,7 @@
         } = parsedData;
 
         if (from == clientId) {
+            showalert("Sprite commited", 2000, false);
             // return;
         } else {
 			showalert(`Recived "${sprite}" from ${clientId}`, 2000, false);
@@ -1697,7 +1699,7 @@
                     };
                     menuItemElement.onmouseout = () => {
                         // menuItemElement.style.backgroundColor = '';
-                        menuItemElement.classList.remove('menu_expanded_1-Ozh')
+                        menuItemElement.classList.remove('menu_expanded_1-Ozh');
                     };
                 } else {
                     menuItemElement.style.height = "1px";
@@ -1705,7 +1707,6 @@
                     menuItemElement.classList.add('menu_expanded_1-Ozh')
                     itemCount--;
                     itemCount += "0.1";
-                    // menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.2)';
                 }
                 menuListElement.appendChild(menuItemElement);
                 itemCount++;
