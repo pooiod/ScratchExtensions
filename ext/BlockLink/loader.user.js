@@ -6,6 +6,7 @@
 // @include      	https://mirror.turbowarp.xyz*
 // @include     	https://turbowarp.org*
 // @include      	https://studio.penguinmod.com*
+// @include       https://snail-ide.js.org*
 // @include       https://alpha.unsandboxed.org*
 // @include       https://librekitten.org*
 // @run-at        document-start
