@@ -53,7 +53,15 @@
     Scratch.BlockType = { COMMAND: "command", REPORTER: "reporter", BUTTON: "button", BOOLEAN: "boolean", HAT: "hat", STACK: "stack" };
     Scratch.ArgumentType = { STRING: "string", NUMBER: "number", BOOLEAN: "boolean", MATRIX: "matrix", COLOR: "color" };
 
-		if (Scratch.vm.extensionManager.removeExtension) {
+    var pgeurl = new URL(window.location.href);
+    var pgeparams = pgeurl.searchParams;
+    var serverid = false;
+    if (pgeparams.has("project_url")) {
+      serverid = pgeparams.get("project_url");
+    }
+
+		// Extension loads only when needed
+		if (!serverid) {
 			updateWorkspace = () => {
 				var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
 
@@ -68,6 +76,7 @@
 					setTimeout(updateWorkspace, 1000);
 				}
 
+				if (document.getElementById("BlockLinkButton")) return;
 				if (!divider) return;
 
 				const button = document.createElement('div');
@@ -107,12 +116,13 @@
 				button.onclick = (event) => {
 					console.log("BlockLink: loading extension");
 					clearInterval(interval);
-					button.remove();
+					button.classList.add('menu-bar_active_2Lfqh');
 					loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
 						console.log("BlockLink: extension loaded");
 						window.Scratch = null;
 						function clickbtn() {
 							if (document.getElementById("BlockLinkButton")) {
+								button.remove();
 								document.getElementById("BlockLinkButton").click();
 							} else {
 								setTimeout(clickbtn, 500);
@@ -123,8 +133,6 @@
 				};
 
 				divider.parentNode.insertBefore(button, divider);
-
-				doSpriteEventListeners();
 			}
 			updateWorkspace();
 		} else {
