@@ -285,7 +285,7 @@
 		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
 		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
 		// https links
-		str = str.replace(/(:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">://$2</a>');
+		str = str.replace(/(:\/\/)([^ \n]+)/g, '://<a href="https://$2" target="_blank">$2</a>');
 		// special links
 		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
 		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
@@ -391,6 +391,7 @@
     }
 
 // yeetyourfiles.lol is not a temperary file hosting site, so it's best not to use if for temperary files
+// litterbox.catbox.moe gets blocked frequently, so yeetyourfiles is used as a backup
     async function YeetFile(BLOB, tmp) {
         if (typeof BLOB.then === 'function') {
             BLOB = await BLOB;
@@ -1305,6 +1306,82 @@
 	chatInput.style.marginRight = "10px";
 	chatInput.style.border = "0px";
 	chatInput.placeholder = "Type a message...";
+
+    chatInput.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'b') {
+            e.preventDefault();
+    
+            const start = chatInput.selectionStart;
+            const end = chatInput.selectionEnd;
+            const selectedText = chatInput.value.substring(start, end);
+    
+            if (selectedText.startsWith('<b>') && selectedText.endsWith('</b>')) {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    selectedText.slice(3, -4) +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end - 7);
+            } else {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    `<b>${selectedText}</b>` +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end + 7);
+            }
+        } else if (e.ctrlKey && e.key === 'i') {
+            e.preventDefault();
+    
+            const start = chatInput.selectionStart;
+            const end = chatInput.selectionEnd;
+            const selectedText = chatInput.value.substring(start, end);
+    
+            if (selectedText.startsWith('<i>') && selectedText.endsWith('</i>')) {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    selectedText.slice(3, -4) +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end - 7);
+            } else {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    `<i>${selectedText}</i>` +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end + 7);
+            }
+        } else if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+    
+            const start = chatInput.selectionStart;
+            const end = chatInput.selectionEnd;
+            const selectedText = chatInput.value.substring(start, end);
+    
+            if (selectedText.startsWith('<u>') && selectedText.endsWith('</u>')) {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    selectedText.slice(3, -4) +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end - 7);
+            } else {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    `<u>${selectedText}</u>` +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end + 7);
+            }
+        } else if (e.ctrlKey && e.key === 'd') {
+            e.preventDefault();
+    
+            const start = chatInput.selectionStart;
+            const end = chatInput.selectionEnd;
+            const selectedText = chatInput.value.substring(start, end);
+    
+            if (selectedText.startsWith('<del>') && selectedText.endsWith('</del>')) {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    selectedText.slice(5, -6) +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end - 11);
+            } else {
+                chatInput.value = chatInput.value.substring(0, start) +
+                    `<del>${selectedText}</del>` +
+                    chatInput.value.substring(end);
+                chatInput.setSelectionRange(start, end + 11);
+            }
+        }
+    });
 
     chatInput.addEventListener('paste', async (e) => {
         const items = e.clipboardData.items;
