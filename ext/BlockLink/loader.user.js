@@ -12,7 +12,7 @@
 // @grant         none
 // ==/UserScript==
 
-async (function() {
+(function() {
   const TIMEOUT_MS = 60000;
   const originalBind = Function.prototype.bind;
 	console.log("BlockLink: Waiting for VM");
