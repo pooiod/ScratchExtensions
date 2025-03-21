@@ -1033,6 +1033,11 @@
 
         if (from == clientId) {
             showalert("Sprite commited", 2000, false);
+            sendmsg("usrtrack", JSON.stringify({
+                sprite: Scratch.vm.runtime.getEditingTarget().getName(),
+                dothing: false,
+                from: clientId
+            }));
             // return;
         } else {
 			showalert(`Recived "${sprite}" from ${clientId}`, 2000, false);
