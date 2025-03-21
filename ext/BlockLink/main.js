@@ -1544,6 +1544,7 @@
 
                 const button = document.createElement('div');
                 button.classList.add('menu-bar_menu-bar-item_oLDa-', 'menu-bar_hoverable_c6WFB');
+                button.id = "BlockLinkButton";
                 button.style.paddingLeft = '10px';
                 button.style.paddingRight = '10px';
 
