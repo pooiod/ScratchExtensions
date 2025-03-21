@@ -45,7 +45,7 @@
 
 		// Simulate extension register without adding blocks
     Scratch.extensions.register = function(extension) {
-      console.log("BlockLink: extension registered", extension);
+      // console.log("BlockLink: extension registered", extension);
     };
 
     Scratch.extensions.unsandboxed = true;
@@ -134,7 +134,12 @@
 
 				divider.parentNode.insertBefore(button, divider);
 			}
-			updateWorkspace();
+			if (document.getElementById("BlockLinkButton")) {
+				return;
+			} else {
+				console.log("BlockLink: waiting for user interaction");
+				updateWorkspace();
+			}
 		} else {
 			loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
 				console.log("BlockLink: extension loaded");
