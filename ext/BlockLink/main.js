@@ -184,6 +184,18 @@
         return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
     }
 
+    function htmlsafe(str) {
+        return str.replace(/[&<>"']/g, function(match) {
+            switch (match) {
+                case '&': return '&amp;';
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '"': return '&quot;';
+                case "'": return '&#39;';
+            }
+        });
+    }
+
     function showToast(text, html, time = 2000) {
         var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
         if (!targetElement) return;
@@ -272,7 +284,7 @@
 		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
 		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
 		// https links
-		str = str.replace(/(\/\/|www\.)([^ \n]+)/g, '$1<a href="https://$2" target="_blank">$2</a>');
+		str = str.replace(/(:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
 		// special links
 		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
 		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
@@ -1523,9 +1535,9 @@
             } else {
                 MakeWidget(`
                     <div class="username-modal_body_UaL6e box_box_2jjDp" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; padding-bottom: 25px;">
-                        <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabRenameInput" class="username-modal_text-input_3z1ni" spellcheck="false" autocomplete="off" value="${Scratch.vm.runtime.getEditingTarget().sprite.name}"></div>
+                        <div class="box_box_2jjDp" style="width: calc(100% - 30px)"><input id="ColabRenameInput" class="username-modal_text-input_3z1ni" spellcheck="false" autocomplete="off" value="${htmlsafe(Scratch.vm.runtime.getEditingTarget().sprite.name)}"></div>
                         <p class="username-modal_help-text_3dN2-"><span>
-                            Enter a new name for ${Scratch.vm.runtime.getEditingTarget().sprite.name}
+                            Enter a new name for ${htmlsafe(Scratch.vm.runtime.getEditingTarget().sprite.name)}
                         </span></p>
 
                         <div class="username-modal_button-row_2amuh box_box_2jjDp">
