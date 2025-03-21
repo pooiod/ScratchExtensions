@@ -48,6 +48,7 @@
     };
 
     Scratch.extensions.unsandboxed = true;
+		Scratch.extensions.userscript = true;
     Scratch.BlockType = { COMMAND: "command", REPORTER: "reporter", BOOLEAN: "boolean", HAT: "hat", STACK: "stack" };
     Scratch.ArgumentType = { STRING: "string", NUMBER: "number", BOOLEAN: "boolean", MATRIX: "matrix", COLOR: "color" };
     loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
