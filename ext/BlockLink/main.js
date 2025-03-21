@@ -267,9 +267,10 @@
     }
 
     function strformat(STRING) {
+        console.log(STRING)
 		var str = String(STRING);
 		// strip harmful tags but allow basic user formated text
-		var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'img'];
+		var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'br'];
 		str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (match, p1) {
 		  if (allowedTags.indexOf(p1.toLowerCase()) !== -1) {
 			return match;
@@ -284,10 +285,15 @@
 		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
 		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
 		// https links
-		str = str.replace(/(:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
+		str = str.replace(/(:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">://$2</a>');
 		// special links
 		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
 		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
+        // images
+        str = str.replace(/img:(\S+)/g, '<img src="//$1" style="max-width: 100%;" />');
+        // videos
+        str = str.replace(/vid:(\S+)/g, '<video src="//$1" controls style="max-width: 100%; margin-top: 5px;"></video>');
+        console.log(str)
 		return str;
 	};
 
@@ -1297,6 +1303,22 @@
 	chatInput.style.marginRight = "10px";
 	chatInput.style.border = "0px";
 	chatInput.placeholder = "Type a message...";
+
+    chatInput.addEventListener('paste', async (e) => {
+        const items = e.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.type.startsWith('image')) {
+                e.preventDefault();
+                showToast("Uploading image to chat", false);
+                const blob = item.getAsFile();
+                const url = await YeetFile(blob, true);
+                const modifiedUrl = url.replace(/^https:\/\//, `img:`);
+                chatInput.value += modifiedUrl;
+                e.preventDefault();
+            }
+        }
+    });
 
 	const sendButton = document.createElement("button");
 	sendButton.textContent = "Send";
