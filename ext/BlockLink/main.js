@@ -1790,6 +1790,7 @@
                     // menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.3)';
                 } else if (menuBlock.blockType === Scratch.BlockType.BUTTON) {
                     menuItemElement.onclick = () => {
+                        console.log("item clicked", menuBlock);
                         if (typeof this[menuBlock.func] === 'function') {
                             this[menuBlock.func]();
                         }
