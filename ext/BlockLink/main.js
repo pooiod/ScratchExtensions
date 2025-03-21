@@ -946,6 +946,8 @@
                     var edit = getEditingSprite(target.getName());
                     if (edit && edit != clientId) {
                         showalert(`Warning: ${edit} is already editing "${target.getName()}"`, 2000);
+                    } else if (target.isStage) {
+                        showalert(`Warning: Stage is not committable`, 2000);
                     }
 
                     sendmsg("usrtrack", JSON.stringify({

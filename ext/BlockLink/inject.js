@@ -1,65 +1,86 @@
 // ==UserScript==
-// @name         	BlockLink
-// @namespace    	https://p7scratchextensions.pages.dev
-// @version      	1
-// @description  	Auto-load BlockLink in supported mods
-// @include      	https://mirror.turbowarp.xyz*
-// @include     	https://turbowarp.org*
-// @include      	https://studio.penguinmod.com*
-// @include       https://snail-ide.js.org*
-// @include       https://alpha.unsandboxed.org*
-// @include       https://librekitten.org*
-// @run-at        document-start
-// @grant         none
+// @name         BlockLink
+// @namespace    https://p7scratchextensions.pages.dev
+// @version      1
+// @description  Auto-load BlockLink in supported mods
+// @include      https://mirror.turbowarp.xyz*
+// @include      https://turbowarp.org*
+// @include      https://studio.penguinmod.com*
+// @include      https://snail-ide.js.org*
+// @include      https://alpha.unsandboxed.org*
+// @include      https://librekitten.org*
+// @run-at       document-start
+// @grant        none
 // ==/UserScript==
 
 (function() {
-  const TIMEOUT_MS = 60000;
-  const originalBind = Function.prototype.bind;
+	const TIMEOUT_MS = 60000;
+	const originalBind = Function.prototype.bind;
 	console.log("BlockLink: Waiting for VM");
 
-  new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      Function.prototype.bind = originalBind;
-      reject(new Error("Timeout"));
-    }, TIMEOUT_MS);
+	new Promise((resolve, reject) => {
+		const timeoutId = setTimeout(() => {
+			Function.prototype.bind = originalBind;
+			reject(new Error("Timeout"));
+		}, TIMEOUT_MS);
 
-    Function.prototype.bind = function(...args) {
-      if (Function.prototype.bind === originalBind) return originalBind.apply(this, args);
-      if (args[0] && args[0].editingTarget && args[0].runtime) {
-        console.log("BlockLink: VM found");
-        Function.prototype.bind = originalBind;
-        clearTimeout(timeoutId);
-        resolve(args[0]);
-        return originalBind.apply(this, args);
-      }
-      return originalBind.apply(this, args);
-    };
-  }).then(vm => {
-		console.log("BlockLink: exporting VM functions", vm);
-    window.Scratch = {};
-    Scratch.vm = vm;
-    Scratch.runtime = vm.runtime,
-    Scratch.renderer = vm.runtime.renderer,
-    Scratch.extensions = {};
+		Function.prototype.bind = function(...args) {
+			if (Function.prototype.bind === originalBind) return originalBind.apply(this, args);
+			if (args[0] && args[0].editingTarget && args[0].runtime) {
+				Function.prototype.bind = originalBind;
+				clearTimeout(timeoutId);
+				resolve(args[0]);
+				return originalBind.apply(this, args);
+			}
+			return originalBind.apply(this, args);
+		};
+	}).then(vm => {
+		var Scratch = {};
+		Scratch.vm = vm;
+		Scratch.runtime = vm.runtime,
+		Scratch.renderer = vm.runtime.renderer,
+		Scratch.extensions = {};
 
 		// Simulate extension register without adding blocks
-    Scratch.extensions.register = function(extension) {};
+		Scratch.extensions.register = function() {};
 
-    Scratch.extensions.unsandboxed = true;
+		Scratch.extensions.unsandboxed = true;
 		Scratch.extensions.noblocks = true;
-    Scratch.BlockType = { COMMAND: "command", REPORTER: "reporter", BUTTON: "button", BOOLEAN: "boolean", HAT: "hat", STACK: "stack" };
-    Scratch.ArgumentType = { STRING: "string", NUMBER: "number", BOOLEAN: "boolean", MATRIX: "matrix", COLOR: "color" };
 
-    var pgeurl = new URL(window.location.href);
-    var pgeparams = pgeurl.searchParams;
-    var serverid = false;
-    if (pgeparams.has("project_url")) {
-      serverid = pgeparams.get("project_url");
-    }
+		Scratch.BlockType = {
+			COMMAND: "command",
+			REPORTER: "reporter",
+			BUTTON: "button",
+			BOOLEAN: "boolean",
+			HAT: "hat",
+			STACK: "stack"
+		};
+
+		Scratch.ArgumentType = {
+			STRING: "string",
+			NUMBER: "number",
+			BOOLEAN: "boolean",
+			MATRIX: "matrix",
+			COLOR: "color"
+		};
+
+		loadScript = (src, callback) => {
+			const script = document.createElement("script");
+			script.src = src;
+			window.Scratch = Scratch;
+			script.onload = () => {
+				window.Scratch = null;
+				callback && callback();
+			};
+			script.onerror = () => {
+				window.Scratch = null;
+				console.log("BlockLink: failed to load extension", scr);
+			};
+			document.head.appendChild(script);
+		};
 
 		// Extension loads only when needed
-		if (!serverid) {
+		if (!new URL(window.location.href).searchParams.has("project_url")) {
 			updateWorkspace = () => {
 				var divider = document.querySelector('.divider_divider_1_Adi.menu-bar_divider_2VFCm');
 
@@ -117,7 +138,7 @@
 					button.classList.add('menu-bar_active_2Lfqh');
 					loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
 						console.log("BlockLink: extension loaded");
-						window.Scratch = null;
+
 						function clickbtn() {
 							if (document.getElementById("BlockLinkButton")) {
 								button.remove();
@@ -135,28 +156,16 @@
 			if (document.getElementById("BlockLinkButton")) {
 				return;
 			} else {
-				console.log("BlockLink: waiting for user interaction");
+				console.log("BlockLink: ready and waiting for user interaction");
 				updateWorkspace();
 			}
 		} else {
+			console.log("BlockLink: loading extension");
 			loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
 				console.log("BlockLink: extension loaded");
-				window.Scratch = null;
 			});
 		}
-  }).catch(err => {
+	}).catch(err => {
 		console.log("BlockLink: failed to acquire VM", err);
-  });
-
-  function loadScript(src, callback) {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = () => {
-			callback && callback();
-		};
-    script.onerror = () => {
-			console.log("BlockLink: failed to load extension", scr);
-		};
-    document.head.appendChild(script);
-  }
+	});
 })();
