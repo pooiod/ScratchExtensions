@@ -1387,6 +1387,7 @@
         }
     };
 
+    var hasmenu = true;
     class P7BlockLink {
         constructor() {
             this.updateWorkspace = () => {
@@ -1405,6 +1406,8 @@
                 if (!divider) {
                     setTimeout(this.updateWorkspace, 1000);
                 }
+
+                hasmenu == !!divider;
 
                 const button = document.createElement('div');
                 button.classList.add('menu-bar_menu-bar-item_oLDa-', 'menu-bar_hoverable_c6WFB');
@@ -1468,7 +1471,7 @@
             return {
                 id: 'P7BlockLink',
                 name: 'BlockLink',
-                blocks: [],
+                blocks: hasmenu?[]:getblocks().blocks,
             };
         }
 
@@ -1500,10 +1503,7 @@
                         text: serverid?"Join another colab":"Join a colab"
                     },
 
-                    {
-                        blockType: "spacer",
-                        hideFromPalette: !serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH")
-                    },
+                    "---",
 
                     {
                         func: "commitSprite",
