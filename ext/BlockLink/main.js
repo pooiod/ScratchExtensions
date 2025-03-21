@@ -7,7 +7,7 @@
         throw new Error("This extension must be run unsandboxed");
     }
 
-    if (typeof ScratchBlocks == "undefined") {
+    if (!typeof scaffolding === "undefined") {
         return; // Backup for if the extension exports with the project
     }
 
