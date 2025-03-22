@@ -20,6 +20,7 @@
         ["studio.penguinmod.com"],
 
         ["alpha.unsandboxed.org"],
+        ["ampmod.codeberg.page"],
         ["librekitten.org"]
     ];
 
