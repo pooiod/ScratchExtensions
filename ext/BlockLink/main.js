@@ -806,8 +806,21 @@
                 if (clientId == message.payloadString) {
                     showToast(`Connected to server`, false);
 
-                    // if (document.cookie.split('; ').some(cookie => cookie.startsWith('remove-sprite-confirm=') && (() => { try { return JSON.parse(decodeURIComponent(cookie.split('=')[1])).enabled === true; } catch { return false; } })())) {
-                    //     showToast(`Please disable the "<a href="https://turbowarp.org/addons#confirmation">Sprite deletion confirmation</a>" addon.`, true);
+                    const key = 'tw:addons';
+                    let data = localStorage.getItem(key);
+
+                    if (data && data["remove-sprite-confirm"] && data["remove-sprite-confirm"].enabled) {
+                        showToast(`Please disable the "<a href="addons.html#confirmation">Sprite deletion confirmation</a>" addon.`, true);
+                    }
+
+                    if (!data) {
+                      data = { "_": 5, "remove-sprite-confirm": { "enabled": false } };
+                      localStorage.setItem(key, JSON.stringify(data));
+                    }
+                    // else {
+                    //   data = JSON.parse(data);
+                    //   data["remove-sprite-confirm"] = { "enabled": false };
+                    //   localStorage.setItem(key, JSON.stringify(data));
                     // }
                 } else {
                     showToast(`${message.payloadString} has joined the colab`, false);
