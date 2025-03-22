@@ -806,11 +806,13 @@
                 if (clientId == message.payloadString) {
                     showToast(`Connected to server`, false);
 
-                    const key = 'tw:addons';
-                    let data = localStorage.getItem(key);
+                    var data = localStorage.getItem('tw:addons');
+                    if (data) {
+                        data = JSON.parse(data);
+                    }
 
                     if (data && data["remove-sprite-confirm"] && data["remove-sprite-confirm"].enabled) {
-                        showToast(`Please disable the "<a href="addons.html#confirmation">Sprite deletion confirmation</a>" addon.`, true);
+                        showToast(`Please disable the "<a target="_blank" href="addons.html#confirmation">Sprite deletion confirmation</a>" addon.`, true);
                     }
 
                     if (!data) {
