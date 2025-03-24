@@ -1498,7 +1498,7 @@
 	document.body.appendChild(chatContainer);
 
 	const chatToggle = document.createElement("button");
-	chatToggle.id = "chat-toggle";
+	chatToggle.id = "BlockLive-chat-toggle";
 	chatToggle.style.position = "fixed";
 	chatToggle.style.background = "transparent";
 	chatToggle.style.color = "white";
