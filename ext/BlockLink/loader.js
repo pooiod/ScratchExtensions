@@ -1,9 +1,8 @@
-// BlockLink
+// BlockLink: A collaberation system for TurboWarp based Scratch mods.
 
 (function() {
 	const TIMEOUT_MS = 60000;
 	const originalBind = Function.prototype.bind;
-	console.log("BlockLink: Waiting for VM");
 
 	new Promise((resolve, reject) => {
 		const timeoutId = setTimeout(() => {
@@ -33,6 +32,7 @@
 
 		Scratch.extensions.unsandboxed = true;
 		Scratch.extensions.noblocks = true;
+		Scratch.extensions.included = true;
 
 		Scratch.BlockType = {
 			COMMAND: "command",
@@ -120,12 +120,9 @@
 				}, 1000);
 
 				button.onclick = (event) => {
-					console.log("BlockLink: loading extension");
 					clearInterval(interval);
 					button.classList.add('menu-bar_active_2Lfqh');
 					loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
-						console.log("BlockLink: extension loaded");
-
 						function clickbtn() {
 							if (document.getElementById("BlockLinkButton")) {
 								button.remove();
@@ -147,10 +144,7 @@
 				updateWorkspace();
 			}
 		} else {
-			console.log("BlockLink: loading extension");
-			loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
-				console.log("BlockLink: extension loaded");
-			});
+			loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {});
 		}
 	}).catch(err => {
 		console.log("BlockLink: failed to acquire VM", err);

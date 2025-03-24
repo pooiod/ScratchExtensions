@@ -1,4 +1,5 @@
-// A commit system for scratch (wip)
+// A collaberation system for TurboWarp based Scratch mods.
+// This is a work in progress, please report any bugs
 
 (async function(Scratch) {
     "use strict";
@@ -1631,6 +1632,15 @@
             return {
                 blocks: [
                     {
+                        func: "reportBug",
+                        blockType: Scratch.BlockType.BUTTON,
+                        hideFromPalette: Scratch.extensions.included,
+                        text: "Report a bug"
+                    },
+
+                    (Scratch.extensions.included)?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
+
+                    {
                         func: "inviteColab",
                         blockType: Scratch.BlockType.BUTTON,
                         hideFromPalette: !serverid,
@@ -1677,6 +1687,10 @@
                     },
                 ],
             };
+        }
+
+        reportBug() {
+            window.open("https://github.com/pooiod/ScratchExtensions/issues/new?template=bug_report.md");
         }
 
         inviteColab() {
