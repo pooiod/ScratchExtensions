@@ -2,7 +2,7 @@
 // This extension is a work in progress, please report any bugs
 
 // Current servers used:
-// test.mosquitto.org - port:8081 (for client communications)
+// wss://broker.emqx.io:8084/mqtt (for client communications)
 // litterbox.catbox.moe (tmp storage of sprite files)
 // yeetyourfiles.lol (backup storage)
 
@@ -727,7 +727,7 @@
         }
     }, 1000);
 
-    const mqttBroker = "wss://test.mosquitto.org:8081/mqtt";
+    const mqttBroker = "wss://broker.emqx.io:8084/mqtt";
     var clientId = Scratch.vm.runtime.ioDevices.userData._username
 	clientId = clientId || "Scratcher-" + Math.random().toString(16).substr(2, 8);
     var client;
