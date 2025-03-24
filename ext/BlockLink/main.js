@@ -1,6 +1,11 @@
 // A collaberation system for TurboWarp based Scratch mods.
 // This extension is a work in progress, please report any bugs
 
+// Current servers used:
+// test.mosquitto.org (for client communications)
+// litterbox.catbox.moe (tmp storage of sprite files)
+// yeetyourfiles.lol (backup storage)
+
 (async function(Scratch) {
     "use strict";
 
