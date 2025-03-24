@@ -32,7 +32,8 @@
 
 		Scratch.extensions.unsandboxed = true;
 		Scratch.extensions.noblocks = true;
-		Scratch.extensions.included = true;
+		Scratch.extensions.version = "lib";
+		Scratch.extensions.lib = true;
 
 		Scratch.BlockType = {
 			COMMAND: "command",

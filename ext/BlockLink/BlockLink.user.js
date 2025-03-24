@@ -46,6 +46,7 @@
 
 		Scratch.extensions.unsandboxed = true;
 		Scratch.extensions.noblocks = true;
+		Scratch.extensions.version = "userscript";
 
 		Scratch.BlockType = {
 			COMMAND: "command",

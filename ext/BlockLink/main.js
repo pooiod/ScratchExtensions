@@ -1,5 +1,5 @@
 // A collaberation system for TurboWarp based Scratch mods.
-// This is a work in progress, please report any bugs
+// This extension is a work in progress, please report any bugs
 
 (async function(Scratch) {
     "use strict";
@@ -19,9 +19,9 @@
     var compatability = [
         ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"],
         ["studio.penguinmod.com"],
-
+        ["snail-ide.js.org"],
         ["alpha.unsandboxed.org"],
-        ["ampmod.codeberg.page"],
+        ["ampmod.codeberg.page", "50-scratch-tabs.github.io"],
         ["librekitten.org"]
     ];
 
@@ -218,8 +218,9 @@
 		// @user links
 		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
 		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
-		// https links
-		str = str.replace(/(:\/\/)([^ \n]+)/g, '://<a href="https://$2" target="_blank">$2</a>');
+		// links
+		str = str.replace(/(https:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
+        str = str.replace(/(http:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
 		// special links
 		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
 		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
@@ -468,7 +469,7 @@
         }
     }
 
-// yeetyourfiles.lol is not a temperary file hosting site, so it's best not to use if for temperary files
+// yeetyourfiles.lol is not a temperary file hosting site, so litterbox.catbox.moe is used where possible
 // litterbox.catbox.moe gets blocked frequently, so yeetyourfiles is used as a backup
     async function YeetFile(BLOB, tmp) {
         if (typeof BLOB.then === 'function') {
@@ -755,10 +756,12 @@
 
     function onConnectionLost(response) {
         if (response.errorCode !== 0) {
-            showalert("Reconnecting: " + response.errorMessage, 1000, true);
-            // console.error("Connection lost: ", response.errorMessage);
-            client = null;
-            start(); // reconnect
+            setTimeout(()=>{
+                showalert("Reconnecting: " + response.errorMessage, 1000, true);
+                // console.error("Connection lost: ", response.errorMessage);
+                client = null;
+                start();
+            }, 1000);
         }
     }
 
@@ -1634,11 +1637,11 @@
                     {
                         func: "reportBug",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: Scratch.extensions.included,
+                        hideFromPalette: Scratch.extensions.lib || warnCompatableIssue.includes(window.location.host),
                         text: "Report a bug"
                     },
 
-                    (Scratch.extensions.included)?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
+                    (Scratch.extensions.lib || warnCompatableIssue.includes(window.location.host))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
 
                     {
                         func: "inviteColab",
@@ -1702,7 +1705,7 @@
                 .then(() => console.log('Successfully shared'))
                 .catch((error) => console.error('Error sharing:', error));
             } else {
-            console.log('Web Share API not supported.');
+                console.log('Web Share API not supported.');
             }
         }
 
