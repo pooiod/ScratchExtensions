@@ -1,17 +1,4 @@
-// ==UserScript==
-// @name         BlockLink
-// @namespace    https://p7scratchextensions.pages.dev
-// @version      1
-// @description  Auto-load BlockLink in supported mods
-// @include      https://mirror.turbowarp.xyz*
-// @include      https://turbowarp.org*
-// @include      https://studio.penguinmod.com*
-// @include      https://snail-ide.js.org*
-// @include      https://alpha.unsandboxed.org*
-// @include      https://librekitten.org*
-// @run-at       document-start
-// @grant        none
-// ==/UserScript==
+// BlockLink
 
 (function() {
 	const TIMEOUT_MS = 60000;
