@@ -2,7 +2,7 @@
 // This extension is a work in progress, please report any bugs
 
 // Current servers used:
-// test.mosquitto.org (for client communications)
+// test.mosquitto.org - port:8081 (for client communications)
 // litterbox.catbox.moe (tmp storage of sprite files)
 // yeetyourfiles.lol (backup storage)
 
