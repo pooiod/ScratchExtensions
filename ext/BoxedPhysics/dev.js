@@ -379,7 +379,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             opcode: 'whenImpactDetected',
             text: 'When [NAME] has an impact',
             shouldRestartExistingThreads: false,
-            isEdgeActivated: false,
+            isEdgeActivated: true,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
