@@ -734,6 +734,8 @@
 
     var firstTimeConnect = true;
     function onConnect() {
+        if (document.getElementById("BlockLinkButtonStatusIcon")) document.getElementById("BlockLinkButtonStatusIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/IconMono.svg';
+
         console.log("Connected to MQTT broker");
 
         client.onMessageArrived = gotMessage;
@@ -755,13 +757,16 @@
     }
 
     function onFailure(err) {
+        if (document.getElementById("BlockLinkButtonStatusIcon")) document.getElementById("BlockLinkButtonStatusIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/error.svg';
         showalert("Connection lost", 10000, true);
         console.error("Failed to connect to MQTT broker: ", err);
     }
 
     function onConnectionLost(response) {
         if (response.errorCode !== 0) {
+            if (document.getElementById("BlockLinkButtonStatusIcon")) document.getElementById("BlockLinkButtonStatusIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/error.svg';
             setTimeout(()=>{
+                if (document.getElementById("BlockLinkButtonStatusIcon")) document.getElementById("BlockLinkButtonStatusIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/loading.svg';
                 showalert("Reconnecting: " + response.errorMessage, 1000, true);
                 // console.error("Connection lost: ", response.errorMessage);
                 client = null;
@@ -1530,6 +1535,8 @@
 	setPos();
 
     window.JoinColabServer = async (id) => {
+        if (document.getElementById("BlockLinkButtonStatusIcon")) document.getElementById("BlockLinkButtonStatusIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/loading.svg';
+
         if (id) {
             var match = id.match(/[?&]project_url=([^&#]+)/);
             if (match) id = decodeURIComponent(match[1]);
@@ -1577,6 +1584,7 @@
 
                 const img = document.createElement('img');
                 img.src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/IconMono.svg';
+                img.id = "BlockLinkButtonStatusIcon";
                 img.setAttribute('draggable', 'false');
                 img.width = 20;
                 img.height = 20;
@@ -1673,12 +1681,12 @@
                         text: serverid?"Join another colab":"Join a colab"
                     },
 
-                    (!serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
+                    (!serverid || !canmanual || Scratch.vm.runtime.getEditingTarget().isStage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
 
                     {
                         func: "commitSprite",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: !serverid || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
+                        hideFromPalette: !serverid || Scratch.vm.runtime.getEditingTarget().isStage || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
                         text: "Save and commit"
                     },
                     {
