@@ -12,8 +12,10 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 (function(Scratch) {
   'use strict';
+
   var b2Dupdated = "03/25/2025";
-  var publishedUpdateIndex = 20;
+  var publishedUpdateIndex = 21;
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -49,7 +51,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
   const menuIconURI = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
 
-  class BoxPhys {
+  class BoxedPhys {
     constructor() {
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime
@@ -378,6 +380,18 @@ but has since deviated to be its own thing. (made with box2D js es6)
             text: 'When [NAME] has an impact',
             shouldRestartExistingThreads: false,
             isEdgeActivated: false,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object',
+              },
+            },
+          },
+
+          {
+            blockType: Scratch.BlockType.BOOLEAN,
+            opcode: 'impactDetectionBool',
+            text: '[NAME] had an impact',
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -835,7 +849,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           BodyTypePK: ['dynamic', 'static'],
           BodyTypePK2: ['dynamic', 'static', 'any'],
           bodyAttr: ['damping', 'rotational damping'],
-          bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake'],
+          bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type'],
           ForceType: ['Impulse', 'World Impulse'],
           AngForceType: ['Impulse'],
           JointType: ['Rotating', 'Spring', 'Weld', 'Slider'/*, 'Mouse'*/],
@@ -888,7 +902,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
       b2Dworld = new b2World(
         new b2Vec2(args.WIND, args.GRAVITY) // args.GRAVITY (10)
-        , true                     // allow sleep (for performance)
+        , true // allow sleep (for performance)
       );
 
       b2Dzoom = args.SCALE;
@@ -950,6 +964,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
       fixDef.shape = new b2CircleShape; // Default shape is circle 100
       fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+
+      this.impacts = [];
     }
 
     setWorldForces(args) {
@@ -1297,7 +1313,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           if (body) {
             switch (args.BODYATTR) {
               case 'damping': body.SetLinearDamping(args.VALUE); break;
-              case 'rotational damping': body.GetAngularDamping(args.VALUE); break;
+              case 'rotational damping': body.SetAngularDamping(args.VALUE); break;
             }
           }
         }
@@ -1311,10 +1327,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
         case 'x': return body.GetPosition().x * b2Dzoom;
         case 'y': return body.GetPosition().y * b2Dzoom;
         case 'direction': return 90 - (body.GetAngle() / toRad);
+
         case 'Xvel': return body.GetLinearVelocity().x;
         case 'Yvel': return body.GetLinearVelocity().y;
         case 'Dvel': return body.GetAngularVelocity();
+
+        case 'damping': return body.GetAngularDamping();
+        case 'rotational damping': return body.GetLinearDamping();
+
         case 'awake': return body.IsAwake() ? 1 : 0;
+
+        case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
 
         case 'Tension':
           var force = 0;
@@ -1327,10 +1350,9 @@ but has since deviated to be its own thing. (made with box2D js es6)
             force += impulseMagnitude;
             contact = contact.next;
           }
-          // console.log("The force applied to the object by other objects is " + force + " N");
-          return force;
+        return force;
 
-        //case 'touching': return JSON.stringify(this.getTouching({NAME: args.NAME}));
+        //case 'touching': return JSON.stringify(this.getTouching({NAME: args.NAME})); // use getTouching instead
       }
       return '';
     }
@@ -1371,7 +1393,13 @@ but has since deviated to be its own thing. (made with box2D js es6)
       var body = bodies[NAME];
       if (!body) return '';
       var result = this.impacts.includes(NAME);
-      // this.impacts = this.impacts.filter(item => item !== NAME);
+      return result;
+    }
+
+    impactDetectionBool({ NAME }) {
+      var body = bodies[NAME];
+      if (!body) return '';
+      var result = this.impacts.includes(NAME);
       return result;
     }
 
@@ -1580,7 +1608,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           md.bodyB = body2;
           md.localAnchorA = { x: x / b2Dzoom, y: y / b2Dzoom };
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
-          break;
+        break;
 
         case 'Rotating':
           md = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
@@ -1588,19 +1616,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
           md.bodyB = body2;
           md.localAnchorA = { x: x / b2Dzoom, y: y / b2Dzoom };
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
-          break;
+        break;
 
         case 'Slider':
           md = new Box2D.Dynamics.Joints.b2PrismaticJointDef();
           md.Initialize(body, body2, body.GetWorldCenter(), new b2Vec2(prb2djaxisX, prb2djaxisY));
-          md.enableLimit = true;
-          md.lowerTranslation = prb2djl;
-          md.upperTranslation = prb2dju;
-          md.bodyA = body;
-          md.bodyB = body2;
           md.localAnchorA = { x: x / b2Dzoom, y: y / b2Dzoom };
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
-          break;
+          md.enableLimit = true;
+          md.lowerTranslation = prb2djl / (b2Dzoom / 1.1);
+          md.upperTranslation = prb2dju / (b2Dzoom / 1.1);
+        break;
 
         case 'Weld':
           md = new Box2D.Dynamics.Joints.b2WeldJointDef();
@@ -1610,7 +1636,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           md.localAnchorB = { x: x2 / b2Dzoom, y: y2 / b2Dzoom };
           const angleDifference = body2.GetAngle() - body.GetAngle();
           md.referenceAngle = angleDifference;
-          break;
+        break;
 
         case 'Mouse':
           var md = new b2MouseJointDef();
@@ -1624,7 +1650,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           md.bodyA = b2Dworld.GetGroundBody();
           md.collideConnected = true;
           md.maxForce = 300.0 * body.GetMass();
-          break;
+        break;
       }
 
       //md.collideConnected = true;
@@ -1700,7 +1726,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
               if (!joint.GetBodyA().IsAwake() && !joint.GetBodyB().IsAwake()) {
                 tension = 0;
               }
-              return Math.floor(tension * 100) / 10;
+            return Math.floor(tension * 100) / 10;
 
             // Sliders only
             case 'Lower Limit': return joint.GetLowerLimit();
@@ -13393,5 +13419,5 @@ but has since deviated to be its own thing. (made with box2D js es6)
   let i;
   for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 
-  Scratch.extensions.register(new BoxPhys());
+  Scratch.extensions.register(new BoxedPhys());
 })(Scratch);

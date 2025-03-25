@@ -5,9 +5,6 @@
 Boxed Physics is an implementation of the Box2D physics engine that allows for the use of joints, springs, sliders, and other complex physics interactions within your projects. <br>
 This documentation will guide you through the process of using Boxed Physics.
 
-> This documentation has recently been redone, and I may have overlooked something. <br>
-> Please report any issues [here](/reportissue).
-
 ---
 
 ## Working with Worlds
@@ -88,7 +85,7 @@ Polygons are the most complex object type, having the ability to match almost an
 Dеfine polygon as this costume :: #2cb0c0
 Make object [Object2] at X: [50] y: [50] Dir: [0] :: #2cb0c0
 
-Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 // Triangle
+Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 //Triangle
 Make object [Object3] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
@@ -102,7 +99,7 @@ Customize objects with the `Define base` block:
 - **Density, Friction, Bounce** Control physical properties like weight, surface interaction, and bounciness.
 
 ```scratch3
-when gf clicked :: cat // Super bouncy imovable triangle
+when gf clicked :: cat //Super bouncy imovable triangle
 Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0
 Dеfine base, Type: [static v] Density: [0.1] Friction: [0.5] Bounce: [2] :: #2cb0c0
 Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
