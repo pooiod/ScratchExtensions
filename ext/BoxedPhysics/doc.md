@@ -242,7 +242,7 @@ Set physics options, Position iterations: [10] Velocity iterations: [10] Continu
 ---
 
 ## Math Utilities
-Boxed Physics also includes some math blocks for convenience:
+Boxed Physics also includes some basic math blocks for convenience:
 - **Rotate a point:** Rotate a point around the origin (0, 0).
 - **Get rotation from:** Find the direction from one point to another.
 - **Magnitude:** Calculate the vector length.
