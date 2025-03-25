@@ -13,7 +13,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
   'use strict';
   var b2Dupdated = "03/25/2025";
-  var publishedUpdateIndex = 19;
+  var publishedUpdateIndex = 20;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error('Boxed Physics can\'t run in the sandbox');
   }
@@ -61,7 +61,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
       this.docs = this.isFromPenguinMod && this.onPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
       'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
 
-      this.impact = [];
+      this.impacts = [];
       
       this.vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
@@ -387,19 +387,9 @@ but has since deviated to be its own thing. (made with box2D js es6)
           },
 
           {
-            opcode: 'getBodyAttr',
+            opcode: 'getImpacts',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Get [BODYATTRREAD] from object [NAME]',
-            arguments: {
-              BODYATTRREAD: {
-                type: Scratch.ArgumentType.STRING,
-                menu: 'bodyAttrRead',
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Object',
-              },
-            },
+            text: 'Get all impacts',
           },
           {
             opcode: 'getTouching',
@@ -429,6 +419,21 @@ but has since deviated to be its own thing. (made with box2D js es6)
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: 'getBodyAttr',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get [BODYATTRREAD] from object [NAME]',
+            arguments: {
+              BODYATTRREAD: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'bodyAttrRead',
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object',
               },
             },
           },
@@ -1358,11 +1363,15 @@ but has since deviated to be its own thing. (made with box2D js es6)
       return true;
     };
 
+    getImpacts() {
+      return this.impacts.join(', ');
+    }
+
     whenImpactDetected({ NAME }) {
       var body = bodies[NAME];
       if (!body) return '';
-      var result = this.impact.includes(NAME);
-      // this.impact = this.impact.filter(item => item !== NAME);
+      var result = this.impacts.includes(NAME);
+      // this.impacts = this.impacts.filter(item => item !== NAME);
       return result;
     }
 
@@ -1728,7 +1737,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
       var secondsimspeed = Math.abs(simspeed + 30);
       if (secondsimspeed == 0) secondsimspeed = 1;
 
-      this.impact = [];
+      this.impacts = [];
 
       for (let name in bodies) {
         const body = bodies[name];
@@ -1737,14 +1746,14 @@ but has since deviated to be its own thing. (made with box2D js es6)
         let contacts = body.GetContactList();
         while (contacts) {
           if (contacts.contact.IsTouching()) {
-            this.impact.push(name);
+            this.impacts.push(name);
             break;
           }
           contacts = contacts.next;
         }
       }
 
-      if (this.impact.length > 0) console.log(this.impact)
+      if (this.impacts.length > 0) console.log(this.impacts)
 
       Scratch.vm.runtime.startHats('P7BoxPhys_whenImpactDetected');
 

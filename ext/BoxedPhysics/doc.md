@@ -170,7 +170,7 @@ Apply Angular Impulse to object [Wheel1] power: [20] :: #2cb0c0
 ```
 
 ## Handling Impacts
-Boxed Physics comes with 2 blocks that can be used to handle impacts.
+Boxed Physics comes with 3 blocks that can be used to handle impacts.
 
 ### On impact
 When an object collides with another, this hat block is triggered.
@@ -181,6 +181,13 @@ This simple block allows you to run code any time an object is hit.
 ```scratch3
 When [Object] has an impact :: cat #2cb0c0
 say [I HAVE BEEN HIT!]
+```
+
+### Getting every impact
+You can also get a list of all object impacts with the `getImpacts` block.
+
+```scratch3
+(Get all impacts :: #2cb0c0)
 ```
 
 ### What hit me?
