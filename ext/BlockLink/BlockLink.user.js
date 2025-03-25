@@ -16,7 +16,6 @@
 (function() {
 	const TIMEOUT_MS = 60000;
 	const originalBind = Function.prototype.bind;
-	console.log("BlockLink: Waiting for VM");
 
 	new Promise((resolve, reject) => {
 		const timeoutId = setTimeout(() => {
@@ -46,7 +45,8 @@
 
 		Scratch.extensions.unsandboxed = true;
 		Scratch.extensions.noblocks = true;
-		Scratch.extensions.version = "userscript";
+		Scratch.extensions.version = "lib";
+		Scratch.extensions.lib = true;
 
 		Scratch.BlockType = {
 			COMMAND: "command",
@@ -66,6 +66,7 @@
 		};
 
 		loadScript = (src, callback) => {
+			if (document.getElementById("BlocklinkPreImageIcon")) document.getElementById("BlocklinkPreImageIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/loading.svg';
 			const script = document.createElement("script");
 			script.src = src;
 			window.Scratch = Scratch;
@@ -75,6 +76,7 @@
 			};
 			script.onerror = () => {
 				window.Scratch = null;
+				if (document.getElementById("BlocklinkPreImageIcon")) document.getElementById("BlocklinkPreImageIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/error.svg';
 				console.log("BlockLink: failed to load extension", scr);
 			};
 			document.head.appendChild(script);
@@ -107,6 +109,7 @@
 				const img = document.createElement('img');
 				img.src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/IconMono.svg';
 				img.setAttribute('draggable', 'false');
+				img.id = "BlocklinkPreImageIcon";
 				img.width = 20;
 				img.height = 20;
 				img.setAttribute('data-alt-listener', 'true');
@@ -134,13 +137,9 @@
 				}, 1000);
 
 				button.onclick = (event) => {
-					console.log("BlockLink: loading extension");
 					clearInterval(interval);
 					button.classList.add('menu-bar_active_2Lfqh');
-					img.src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/loading.svg';
 					loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
-						console.log("BlockLink: extension loaded");
-
 						function clickbtn() {
 							if (document.getElementById("BlockLinkButton")) {
 								button.remove();
@@ -162,10 +161,7 @@
 				updateWorkspace();
 			}
 		} else {
-			console.log("BlockLink: loading extension");
-			loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
-				console.log("BlockLink: extension loaded");
-			});
+			loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {});
 		}
 	}).catch(err => {
 		console.log("BlockLink: failed to acquire VM", err);
