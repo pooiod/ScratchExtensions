@@ -137,6 +137,7 @@
 					console.log("BlockLink: loading extension");
 					clearInterval(interval);
 					button.classList.add('menu-bar_active_2Lfqh');
+					img.src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/loading.svg';
 					loadScript("https://p7scratchextensions.pages.dev/ext/BlockLink/main.js", () => {
 						console.log("BlockLink: extension loaded");
 
