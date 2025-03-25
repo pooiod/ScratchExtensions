@@ -187,7 +187,7 @@ You can also use a boolean version that returns true if an object had an impact 
 
 ```scratch3
 wait until <[Object] had an impact :: #2cb0c0>
-say [I HAVE BEEN HIT!]
+say [I got hit during the last tick]
 ```
 
 ### Getting every impact
