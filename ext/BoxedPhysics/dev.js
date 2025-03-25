@@ -387,6 +387,18 @@ but has since deviated to be its own thing. (made with box2D js es6)
           },
 
           {
+            blockType: Scratch.BlockType.BOOLEAN,
+            opcode: 'impactDetectionBool',
+            text: '[NAME] had an impact',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object',
+              },
+            },
+          },
+
+          {
             opcode: 'getImpacts',
             blockType: Scratch.BlockType.REPORTER,
             text: 'Get all impacts',
@@ -1371,7 +1383,13 @@ but has since deviated to be its own thing. (made with box2D js es6)
       var body = bodies[NAME];
       if (!body) return '';
       var result = this.impacts.includes(NAME);
-      // this.impacts = this.impacts.filter(item => item !== NAME);
+      return result;
+    }
+
+    impactDetectionBool({ NAME }) {
+      var body = bodies[NAME];
+      if (!body) return '';
+      var result = this.impacts.includes(NAME);
       return result;
     }
 
