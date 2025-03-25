@@ -142,10 +142,10 @@ Set object [Object1] to be on collision layer [1, 2, -3] :: #2cb0c0
 ### Destroying Objects
 You can delete individual objects or clear all objects at once.
 ```scratch3
-when I receive [Destroy Object1 v]
+when I receive [Destroy Object1 v] :: cat
 Destroy object [Object1] :: #2cb0c0
 
-when I receive [Nuke everything! v]
+when I receive [Nuke everything! v] :: cat
 Destroy every object :: #2cb0c0 //This will also remove all joints
 ```
 
