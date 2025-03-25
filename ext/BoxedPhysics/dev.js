@@ -60,6 +60,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
       this.origin = "https://p7scratchextensions.pages.dev/#BoxedPhysics";
       this.docs = this.isFromPenguinMod && this.onPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
       'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
+
+      this.impact = [];
       
       this.vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
@@ -81,6 +83,19 @@ but has since deviated to be its own thing. (made with box2D js es6)
         menuIconURI: menuIconURI,
         docsURI: this.docs,
         blocks: [
+          {
+            opcode: 'get_debug',
+            hideFromPalette: !physdebugmode,
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'Get debug [VAL]',
+            arguments: {
+              VAL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "version",
+              },
+            },
+          },
+
           { blockType: Scratch.BlockType.LABEL, text: "Define objects" }, // ---- Define objects ---
           {
             opcode: 'setBodyAttrs',
@@ -356,6 +371,20 @@ but has since deviated to be its own thing. (made with box2D js es6)
               },
             },
           },
+
+          {
+            blockType: Scratch.BlockType.HAT,
+            opcode: 'whenImpactDetected',
+            text: 'When [NAME] has an impact',
+            isEdgeActivated: false,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object',
+              },
+            },
+          },
+
           {
             opcode: 'getBodyAttr',
             blockType: Scratch.BlockType.REPORTER,
@@ -775,12 +804,12 @@ but has since deviated to be its own thing. (made with box2D js es6)
             hideFromPalette: !physdebugmode,
             blockType: Scratch.BlockType.LABEL, // --------------------- Debug blocks ----
             text: "Debug blocks (can brake projects)"
-          }, // the ids on any of the following can change, so it's YOUR fault if you use them and your project brakes
+          }, // the ids on any of the following can change because these are used for debugging while making the extension (not for debugging projects), so it's YOUR fault if you use them and your project brakes
           {
             opcode: 'ignore',
             hideFromPalette: !wipblocks && !physdebugmode,
             blockType: Scratch.BlockType.COMMAND,
-            text: 'the ids on any of the following blocks can change or be removed, so it\'s YOUR fault if you use them and your project brakes [VALUE]',
+            text: 'the ids on any of the following blocks can change or be removed, so it\'s YOUR fault if you use them and your project brakes',
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
@@ -788,25 +817,12 @@ but has since deviated to be its own thing. (made with box2D js es6)
               },
             },
           },
-          
-          {
-            opcode: 'get_debug',
-            hideFromPalette: !physdebugmode,
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Get debug [VAL]',
-            arguments: { // this is the only debug block I don't plan on removing
-              VAL: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "version",
-              },
-            },
-          },
 
-          // {
-          //   hideFromPalette: !wipblocks,
-          //   blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-          //   text: "Upcoming blocks (project corruption warning)"
-          // }
+          {
+            hideFromPalette: !wipblocks,
+            blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
+            text: "Upcoming blocks (project corruption warning)"
+          }
         ],
         menus: {
           sceneType: ['semi-closed stage', 'boxed stage', 'opened stage', 'nothing'],
@@ -1341,8 +1357,16 @@ but has since deviated to be its own thing. (made with box2D js es6)
       return true;
     };
 
-    getTouching(args) {
-      var body = bodies[args.NAME];
+    whenImpactDetected({ NAME }) {
+      var body = bodies[NAME];
+      if (!body) return '';
+      var result = this.impact.includes(NAME);
+      // this.impact = this.impact.filter(item => item !== NAME);
+      return result;
+    }
+
+    getTouching({ NAME }) {
+      var body = bodies[NAME];
       if (!body) return '';
       
       var touchingObjects = [];
@@ -1702,6 +1726,26 @@ but has since deviated to be its own thing. (made with box2D js es6)
     stepSimulation() {
       var secondsimspeed = Math.abs(simspeed + 30);
       if (secondsimspeed == 0) secondsimspeed = 1;
+
+      this.impact = [];
+
+      for (let name in bodies) {
+        const body = bodies[name];
+        if (!body) continue;
+    
+        let contacts = body.GetContactList();
+        while (contacts) {
+          if (contacts.contact.IsTouching()) {
+            this.impact.push(name);
+            break;
+          }
+          contacts = contacts.next;
+        }
+      }
+
+      if (this.impact.length > 0) console.log(this.impact)
+
+      Scratch.vm.runtime.startHats('P7BoxPhys_whenImpactDetected');
 
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
