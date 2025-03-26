@@ -1438,26 +1438,22 @@ but has since deviated to be its own thing. (made with box2D js es6)
         const contact = contactEdge.contact;
         if (!contact.IsTouching()) continue;
 
-        const otherBody = contactEdge.other;
-        const worldManifold = new Box2D.Collision.b2WorldManifold();
-        contact.GetWorldManifold(worldManifold);
+        const fixtureA = contact.GetFixtureA();
+        const fixtureB = contact.GetFixtureB();
 
-        for (let i = 0; i < worldManifold.m_points.length; i++) {
-          const contactPoint = worldManifold.m_points[i];
+        const manifold = contact.GetManifold();
+        if (!manifold || manifold.m_points.length === 0) continue;
 
-          const velocityA = body.GetLinearVelocityFromWorldPoint(contactPoint);
-          const velocityB = otherBody.GetLinearVelocityFromWorldPoint(contactPoint);
+        for (let i = 0; i < manifold.m_points.length; i++) {
+          const contactPoint = manifold.m_points[i];
 
-          const relativeVelocity = new b2Vec2(velocityB.x - velocityA.x, velocityB.y - velocityA.y);
+          const normalImpulse = contactPoint.normalImpulse;
+          if (normalImpulse === 0) continue;
 
-          const tangent = new b2Vec2(-worldManifold.m_normal.y, worldManifold.m_normal.x);
-
-          const relativeTangentSpeed = relativeVelocity.x * tangent.x + relativeVelocity.y * tangent.y;
-
-          const fixtureA = contact.GetFixtureA();
-          const fixtureB = contact.GetFixtureB();
           const frictionCoefficient = Math.sqrt(fixtureA.GetFriction() * fixtureB.GetFriction());
-          const frictionForce = Math.abs(relativeTangentSpeed) * body.GetMass() * frictionCoefficient;
+
+          console.log(frictionCoefficient, normalImpulse);
+          const frictionForce = frictionCoefficient * normalImpulse;
 
           totalFrictionForce += frictionForce;
         }
