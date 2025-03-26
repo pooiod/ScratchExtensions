@@ -404,7 +404,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
           {
             blockType: Scratch.BlockType.BOOLEAN,
             opcode: 'scrapingDetectionBool',
-            text: '[NAME] is scraping against something',
+            text: '[NAME] is touching anything',
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,

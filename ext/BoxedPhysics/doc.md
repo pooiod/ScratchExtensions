@@ -204,13 +204,12 @@ When [Object1] has an impact :: cat #2cb0c0
 say (join [I was hit by ] (Get all objects touching [Object1] :: #2cb0c0))
 ```
 
-### Scraping
-Boxed Physics also comes with some blocks that can be used to detect when an object is scraping.
+Or you can just get if the object is touching anyting if you don't care what was hit.
 
 ```scratch3
 when gf clicked :: cat
 forever
-    if <[Object] is scraping against something :: #2cb0c0> then
+    if <[Object] is touching anything :: #2cb0c0> then
         say [AAAAAAAAAAAAAAAAAHHHHHHHHHHHHHH!!!!!!]
     else
         say []
