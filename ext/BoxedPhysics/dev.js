@@ -883,17 +883,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
         return publishedUpdateIndex;
       } else if (input == "lib") {
         return "Box2D JS es6 (Uli Hecht's port of Box2D flash)";
-      } else if (input === "maker") {
+      } else if (input == "maker") {
         return "pooiod7";
-      } else if (input === "base") {
+      } else if (input == "base") {
         return "Box2D Physics by griffpatch for ScratchX (Scratch 2.0)";
-      } else if (input === "docs") {
+      } else if (input == "docs") {
         return this.docs;
-      } else if (input = "lastupdated") {
+      } else if (input == "lastupdated") {
         return b2Dupdated;
-      } else if (input = "fromPenguinMod") {
+      } else if (input == "fromPenguinMod") {
         return this.isFromPenguinMod;
-      } else if (input = "origin") {
+      } else if (input == "origin") {
         return this.origin;
       } else {
         return '["version", "lib", "maker", "base", "docs", "lastupdated", "fromPenguinMod", "origin"]';
@@ -1407,18 +1407,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
       return this.impacts.join(', ');
     }
 
+    lastimpacts = []
     whenImpactDetected({ NAME }) {
       var body = bodies[NAME];
       if (!body) return '';
-      var result = this.impacts.includes(NAME);
-      return result;
+      return this.impacts.includes(NAME) && (this.lastimpacts.filter(item => item === NAME).length != this.impacts.filter(item => item === NAME).length);
     }
 
     impactDetectionBool({ NAME }) {
       var body = bodies[NAME];
       if (!body) return '';
-      var result = this.impacts.includes(NAME);
-      return result;
+      return this.impacts.includes(NAME) && (this.lastimpacts.filter(item => item === NAME).length > this.impacts.filter(item => item === NAME).length);
     }
 
     scrapingDetectionBool({ NAME }) {
@@ -1833,27 +1832,32 @@ but has since deviated to be its own thing. (made with box2D js es6)
         while (contacts) {
           const contact = contacts.contact;
           if (contact.IsTouching()) {
-            const manifold = contact.GetManifold();
-            console.log(manifold);
-            if (manifold && manifold.pointCount > 0) {
-              const impulse = manifold.points[0].normalImpulse || 0;
-              if (impulse > 0) {
-                this.impacts.push(name);
-              } else {
-                this.scraping.push(name);
-              }
-            }
+            this.scraping.push(name);
+            this.impacts.push(name);
+
+            // const manifold = contact.GetManifold();
+            // if (manifold && manifold.m_pointCount > 0) {
+            //   const impulse = manifold.m_points[0].normalImpulse || 0;
+            //   if (impulse > 0) {
+            //     this.impacts.push(name);
+            //   }
+            // }
           }
           contacts = contacts.next;
         }
       }
 
-      console.log( this.impacts, this.scraping );
-
       Scratch.vm.runtime.startHats('P7BoxPhys_whenImpactDetected');
 
       b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
       b2Dworld.ClearForces();
+
+      console.clear()
+      console.log(this.lastimpacts, this.impacts);
+
+      setTimeout(()=>{
+        this.lastimpacts = this.impacts;
+      }, 10);
     }
   }
 
