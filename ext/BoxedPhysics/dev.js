@@ -63,7 +63,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
       this.docs = this.isFromPenguinMod && this.onPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
       'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
 
-      this.impacts = [];
+      this.scraping = [];
+      this.scraping = [];
       
       this.vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
@@ -379,7 +380,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
             opcode: 'whenImpactDetected',
             text: 'When [NAME] has an impact',
             shouldRestartExistingThreads: false,
-            isEdgeActivated: true,
+            isEdgeActivated: false,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -401,10 +402,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
           },
 
           {
-            opcode: 'getImpacts',
-            blockType: Scratch.BlockType.REPORTER,
-            text: 'Get all impacts',
+            blockType: Scratch.BlockType.BOOLEAN,
+            opcode: 'scrapingDetectionBool',
+            text: '[NAME] is scraping against something',
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Object',
+              },
+            },
           },
+
           {
             opcode: 'getTouching',
             blockType: Scratch.BlockType.REPORTER,
@@ -839,6 +847,13 @@ but has since deviated to be its own thing. (made with box2D js es6)
           },
 
           {
+            opcode: 'getImpacts',
+            blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: !physdebugmode,
+            text: 'Get all impacts',
+          },
+
+          {
             hideFromPalette: !wipblocks,
             blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
             text: "Upcoming blocks (project corruption warning)"
@@ -849,12 +864,12 @@ but has since deviated to be its own thing. (made with box2D js es6)
           BodyTypePK: ['dynamic', 'static'],
           BodyTypePK2: ['dynamic', 'static', 'any'],
           bodyAttr: ['damping', 'rotational damping'],
-          bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type'],
+          bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction'],
           ForceType: ['Impulse', 'World Impulse'],
           AngForceType: ['Impulse'],
           JointType: ['Rotating', 'Spring', 'Weld', 'Slider'/*, 'Mouse'*/],
           JointAttr: ['Motor On', 'Motor Speed', 'Max Torque', 'Limits On', 'Lower Limit', 'Upper Limit'],
-          JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'Tension'],
+          JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'tension'],
           xyp: ['x', 'y', 'point'],
           xy: ['x', 'y'],
         },
@@ -966,6 +981,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
       fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
 
       this.impacts = [];
+      this.scraping = [];
     }
 
     setWorldForces(args) {
@@ -1339,7 +1355,9 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
         case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
 
-        case 'Tension':
+        case 'friction': return this.getFriction({ NAME: args.NAME });
+
+        case 'tension':
           var force = 0;
           var contact = body.GetContactList();
           while (contact) {
@@ -1401,6 +1419,51 @@ but has since deviated to be its own thing. (made with box2D js es6)
       if (!body) return '';
       var result = this.impacts.includes(NAME);
       return result;
+    }
+
+    scrapingDetectionBool({ NAME }) {
+      var body = bodies[NAME];
+      if (!body) return '';
+      var result = this.scraping.includes(NAME);
+      return result;
+    }
+
+    getFriction({ NAME }) {
+      const body = bodies[NAME];
+      if (!body) return 0;
+
+      let totalFrictionForce = 0;
+
+      for (let contactEdge = body.GetContactList(); contactEdge; contactEdge = contactEdge.next) {
+        const contact = contactEdge.contact;
+        if (!contact.IsTouching()) continue;
+
+        const otherBody = contactEdge.other;
+        const worldManifold = new Box2D.Collision.b2WorldManifold();
+        contact.GetWorldManifold(worldManifold);
+
+        for (let i = 0; i < worldManifold.m_points.length; i++) {
+          const contactPoint = worldManifold.m_points[i];
+
+          const velocityA = body.GetLinearVelocityFromWorldPoint(contactPoint);
+          const velocityB = otherBody.GetLinearVelocityFromWorldPoint(contactPoint);
+
+          const relativeVelocity = new b2Vec2(velocityB.x - velocityA.x, velocityB.y - velocityA.y);
+
+          const tangent = new b2Vec2(-worldManifold.m_normal.y, worldManifold.m_normal.x);
+
+          const relativeTangentSpeed = relativeVelocity.x * tangent.x + relativeVelocity.y * tangent.y;
+
+          const fixtureA = contact.GetFixtureA();
+          const fixtureB = contact.GetFixtureB();
+          const frictionCoefficient = Math.sqrt(fixtureA.GetFriction() * fixtureB.GetFriction());
+          const frictionForce = Math.abs(relativeTangentSpeed) * body.GetMass() * frictionCoefficient;
+
+          totalFrictionForce += frictionForce;
+        }
+      }
+
+      return totalFrictionForce;
     }
 
     getTouching({ NAME }) {
@@ -1764,22 +1827,32 @@ but has since deviated to be its own thing. (made with box2D js es6)
       if (secondsimspeed == 0) secondsimspeed = 1;
 
       this.impacts = [];
+      this.scraping = [];
 
       for (let name in bodies) {
         const body = bodies[name];
         if (!body) continue;
-    
+
         let contacts = body.GetContactList();
         while (contacts) {
-          if (contacts.contact.IsTouching()) {
-            this.impacts.push(name);
-            break;
+          const contact = contacts.contact;
+          if (contact.IsTouching()) {
+            const manifold = contact.GetManifold();
+            console.log(manifold);
+            if (manifold && manifold.pointCount > 0) {
+              const impulse = manifold.points[0].normalImpulse || 0;
+              if (impulse > 0) {
+                this.impacts.push(name);
+              } else {
+                this.scraping.push(name);
+              }
+            }
           }
           contacts = contacts.next;
         }
       }
 
-      if (this.impacts.length > 0) console.log(this.impacts)
+      console.log( this.impacts, this.scraping );
 
       Scratch.vm.runtime.startHats('P7BoxPhys_whenImpactDetected');
 

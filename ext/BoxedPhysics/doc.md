@@ -167,7 +167,7 @@ Apply Angular Impulse to object [Wheel1] power: [20] :: #2cb0c0
 ```
 
 ## Handling Impacts
-Boxed Physics comes with 4 blocks that can be used to handle impacts.
+Boxed Physics comes with a few blocks that can be used to handle impacts.
 
 ### On impact
 When an object collides with another, this hat block is triggered.
@@ -183,24 +183,39 @@ say [I HAVE BEEN HIT!]
 You can also use a boolean version that returns true if an object had an impact during the last tick.
 
 ```scratch3
+when gf clicked :: cat
 wait until <[Object] had an impact :: #2cb0c0>
 say [I got hit during the last tick]
 ```
 
 ### Getting every impact
-You can also get a list of all object impacts with the `getImpacts` block.
+You can also get a list of all object impacts with the `Get all impacts` block.
 
 ```scratch3
 (Get all impacts :: #2cb0c0)
 ```
 
 ### What hit me?
-You can also check what objects are colliding with the `getTouching` block.
+You can also check what objects are colliding with the `Get all objects touching [NAME]` block.
 This block simply lists all the names that hit the object.
 
 ```scratch3
 When [Object1] has an impact :: cat #2cb0c0
 say (join [I was hit by ] (Get all objects touching [Object1] :: #2cb0c0))
+```
+
+### Scraping
+Boxed Physics also comes with some blocks that can be used to detect when an object is scraping.
+
+```scratch3
+when gf clicked :: cat
+forever
+    if <[Object] is scraping against something :: #2cb0c0> then
+        say [AAAAAAAAAAAAAAAAAHHHHHHHHHHHHHH!!!!!!]
+    else
+        say []
+    end
+end
 ```
 
 ---
