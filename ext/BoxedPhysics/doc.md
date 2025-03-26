@@ -188,13 +188,6 @@ wait until <[Object] had an impact :: #2cb0c0>
 say [I got hit during the last tick]
 ```
 
-### Getting every impact
-You can also get a list of all object impacts with the `Get all impacts` block.
-
-```scratch3
-(Get all impacts :: #2cb0c0)
-```
-
 ### What hit me?
 You can also check what objects are colliding with the `Get all objects touching [NAME]` block.
 This block simply lists all the names that hit the object.
