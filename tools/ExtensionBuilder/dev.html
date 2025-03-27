@@ -254,10 +254,47 @@
         editor.container.style.lineHeight = 1.5;
         editor.renderer.updateFontSize();
 
-        // Button setup
-        document.getElementById('LoadExtension').onclick = () => {};
+        // Extension interaction functions
+        function getExtensionProp(prop) {
+            const regex = new RegExp(`(?<=${prop}:)([^,]*?)(?=(,\\s*|\\n|\\n\\s*//))`, 'gs');
+            const match = regex.exec(ext);
+            if (match) {
+                let result = match[1].trim();
+                if (/['"]/.test(result[0])) {
+                    result = result.slice(1, -1);
+                }
+                return result;
+            }
+            return null;
+        }
 
-        document.getElementById('LoadExtension').onclick = () => {};
+        // Button setup
+        document.getElementById('LoadExtension').onclick = () => {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.js';
+            input.onchange = (event) => {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+
+                reader.onload = () => {
+                    if (!file.name.endsWith('.js') || !reader.result.includes('Scratch') || !reader.result.includes('Scratch.extensions.register(') || !reader.result.includes('id:') || !reader.result.includes('name:') || !reader.result.includes('blocks:')) {
+                        alert("Unable to load Scratch extension");
+                    } else {
+                        ext = reader.result;
+                    }
+                };
+
+                reader.readAsText(file);
+            };
+
+            input.click();
+        };
+
+        document.getElementById('SaveExtension').onclick = () => {
+            var filename = getExtensionProp("id");
+            alert(filename);
+        };
 
         setTimeout(function() {
             document.getElementById('loader').style.opacity = '0';
