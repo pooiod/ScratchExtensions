@@ -49,15 +49,47 @@
             height: calc(100% - 35px);
         }
 
+        button {
+            border: none;
+            background: #e2e2e2;
+        }
+
+        button:hover {
+            background: #d8d8d8;
+        }
+
         #SideBar button {
             height: 30px;
             width: 100%;
             margin-bottom: 5px;
         }
+
+        #TopBar button {
+            height: 100%;
+            width: 100px;
+        }
+
+        /* #TopBar button:first-child {
+            margin-left: 5px;
+        } */
+
+        #AppTitle {
+            height: 30px;
+            width: 100%;
+            /* margin-bottom: 5px; */
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <div id="SideBar">
+        <div id="AppTitle">
+            Pooiod7's ext builder
+        </div>
         <button></button>
         <button></button>
         <button></button>
@@ -66,7 +98,14 @@
         <button></button>
     </div>
     <div id="Container">
-        <div id="TopBar"></div>
+        <div id="TopBar">
+            <button></button>
+            <button></button>
+            <button></button>
+            <button></button>
+            <button></button>
+            <button></button>
+        </div>
         <div id="Content">
             <iframe src="/wip.html" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
