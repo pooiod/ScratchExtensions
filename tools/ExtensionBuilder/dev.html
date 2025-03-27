@@ -22,7 +22,7 @@
             /* background-color: #eaf7e7; */
         }
 
-        #SideBar {
+        .SideBar {
             width: 200px;
             background-color: #f0f0f0;
             border-right: 1px solid #e0e0e0;
@@ -32,14 +32,14 @@
             justify-content: center; */
         }
 
-        #Container {
+        .Container {
             margin: 0px;
             padding: 0px;
             width: 100%;
             height: 100vh;
         }
 
-        #TopBar {
+        .TopBar {
             margin: 0px;
             padding: 0px;
             width: 100%;
@@ -48,7 +48,7 @@
             border-bottom: 1px solid #e0e0e0;
         }
 
-        #Content {
+        .Content {
             margin: 0px;
             padding: 0px;
             width: 100%;
@@ -63,24 +63,31 @@
             border: none;
         }
 
+        #Tabs {
+            width: 100%;
+            max-height: 100%;
+            overflow: auto;
+        }
+
         button {
             border: none;
             background: #e2e2e2;
+            margin: 0px;
         }
 
         button:hover {
             background: #d8d8d8;
         }
 
-        #SideBar button {
+        #Tabs button {
             height: 30px;
             width: 100%;
             margin-bottom: 5px;
         }
 
-        #TopBar button {
+        .TopBar button {
             height: 100%;
-            width: 100px;
+            width: auto;
         }
 
         /* #TopBar button:first-child {
@@ -100,30 +107,28 @@
     </style>
 </head>
 <body>
-    <div id="SideBar">
+    <div class="SideBar">
         <div id="AppTitle">
             Pooiod7's ext builder
         </div>
 
-        <button></button>
-        <button></button>
-        <button></button>
-        <button></button>
-        <button></button>
-        <button></button>
+        <div id="Tabs">
+            <button>Block1</button>
+            <button>Block2</button>
+            <button>Block3</button>
+            <button>Block4</button>
+            <button>Block5</button>
+            <button>Block6</button>
+        </div>
     </div>
 
-    <div id="Container">
-        <div id="TopBar">
-            <button></button>
-            <button></button>
-            <button></button>
-            <button></button>
-            <button></button>
-            <button></button>
+    <div class="Container">
+        <div class="TopBar">
+            <button>Load extension</button>
+            <button>Save extension</button>
         </div>
 
-        <div id="Content">
+        <div class="Content">
             <div id="EditorCode"></div>
         </div>
     </div>
