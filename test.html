@@ -9,6 +9,10 @@
         document.open();
         document.write(text);
         document.close();
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+        script.onload = () => eruda.init();
+        document.body.appendChild(script);
       } catch (error) {
         const textarea = document.createElement('textarea');
         textarea.placeholder = 'Paste your HTML here';
@@ -20,6 +24,10 @@
           document.open();
           document.write(textarea.value);
           document.close();
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+          script.onload = () => eruda.init();
+          document.body.appendChild(script);
         });
       }
     }
