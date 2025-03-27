@@ -124,14 +124,21 @@
         </div>
 
         <div id="Content">
-            <div id="EditorCode">Code here</div>
+            <div id="EditorCode"></div>
         </div>
     </div>
 
     <script>
         var editor = ace.edit("EditorCode");
-        editor.setTheme("ace/theme/monokai");
+        editor.setTheme("ace/theme/chrome");
         editor.session.setMode("ace/mode/javascript");
+        
+        var settings = {
+            fontSize: "14px",
+            showPrintMargin: false
+        };
+
+        editor.setOptions(settings);
     </script>
 </body>
 </html>
