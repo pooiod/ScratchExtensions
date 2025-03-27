@@ -180,8 +180,8 @@
 
     <div class="Container">
         <div class="TopBar">
-            <button>Load extension</button>
-            <button>Save extension</button>
+            <button id="LoadExtension">Load extension</button>
+            <button id="SaveExtension">Save extension</button>
         </div>
 
         <div class="Content">
@@ -190,6 +190,56 @@
     </div>
 
     <script>
+        // Teplate extension setup
+        var templates = [
+            `// Basic extension
+
+/** This is a basic template extension */
+
+(function(Scratch) {
+    'use strict';
+
+    if (!Scratch.extensions.unsandboxed) {
+        throw new Error('This extension must run unsandboxed');
+    }
+
+    class extexample {
+        constructor() {
+            this.thing = 0;
+        }
+
+        getInfo() {
+            return {
+                id: 'extexample',
+                name: 'Example Extension',
+                blocks: [
+                    {
+                        opcode: 'Block1',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'A block [VAL]',
+                        arguments: {
+                            VAL: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'REEEEEEEEEE',
+                            },
+                        },
+                    }
+                ]
+            };
+        }
+
+        Block1(args) {
+            console.log(args);
+        }
+    }
+    Scratch.extensions.register(new extexample());
+})(Scratch);
+`
+        ];
+
+        var ext = templates[0];
+
+        // Ace editor setup
         var editor = ace.edit("EditorCode");
         editor.setTheme("ace/theme/chrome");
         editor.session.setMode("ace/mode/javascript");
@@ -203,6 +253,11 @@
 
         editor.container.style.lineHeight = 1.5;
         editor.renderer.updateFontSize();
+
+        // Button setup
+        document.getElementById('LoadExtension').onclick = () => {};
+
+        document.getElementById('LoadExtension').onclick = () => {};
 
         setTimeout(function() {
             document.getElementById('loader').style.opacity = '0';
