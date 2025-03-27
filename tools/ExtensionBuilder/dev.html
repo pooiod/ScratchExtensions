@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,14 +11,65 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: row;
             height: 100vh;
-            background-color: #eaf7e7;
+            /* background-color: #eaf7e7; */
+        }
+
+        #SideBar {
+            width: 200px;
+            background-color: #f0f0f0;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            /* align-items: center;
+            justify-content: center; */
+        }
+
+        #Container {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100vh;
+        }
+
+        #TopBar {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 30px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        #Content {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: calc(100% - 35px);
+        }
+
+        #SideBar button {
+            height: 30px;
+            width: 100%;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
-
+    <div id="SideBar">
+        <button></button>
+        <button></button>
+        <button></button>
+        <button></button>
+        <button></button>
+        <button></button>
+    </div>
+    <div id="Container">
+        <div id="TopBar"></div>
+        <div id="Content">
+            <iframe src="/wip.html" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
 </body>
 </html>
