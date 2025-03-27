@@ -192,49 +192,7 @@
 
     <script>
         var templates = [
-            `// Basic extension
-
-/** This is a basic template extension */
-
-(function(Scratch) {
-    'use strict';
-
-    if (!Scratch.extensions.unsandboxed) {
-        throw new Error('This extension must run unsandboxed');
-    }
-
-    class extexample {
-        constructor() {
-            this.thing = 0;
-        }
-
-        getInfo() {
-            return {
-                id: 'extexample',
-                name: 'Example Extension',
-                blocks: [
-                    {
-                        opcode: 'Block1',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'A block [VAL]',
-                        arguments: {
-                            VAL: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'REEEEEEEEEE',
-                            },
-                        },
-                    }
-                ]
-            };
-        }
-
-        Block1(args) {
-            console.log(args);
-        }
-    }
-    Scratch.extensions.register(new extexample());
-})(Scratch);
-`
+            ``
         ];
 
         var ext = templates[0];
@@ -271,130 +229,9 @@
         }
 
         function getExtensionFunc(func) {
-        let clsIndex = ext.indexOf("class ");
-        if (clsIndex === -1) return null;
-        let openIndex = ext.indexOf("{", clsIndex);
-        if (openIndex === -1) return null;
-        let count = 0, i = openIndex, classEnd;
-        for (; i < ext.length; i++) {
-            if (ext[i] === "{") count++;
-            if (ext[i] === "}") count--;
-            if (count === 0) { classEnd = i; break; }
-        }
-        let classBody = ext.slice(openIndex + 1, classEnd);
-        let j = 0;
-        while (j < classBody.length) {
-            if (classBody[j] === '"' || classBody[j] === "'" || classBody[j] === "`") {
-            let quote = classBody[j];
-            j++;
-            while (j < classBody.length && classBody[j] !== quote) {
-                if (classBody[j] === "\\" && j + 1 < classBody.length) j += 2;
-                else j++;
-            }
-            j++;
-            continue;
-            }
-            if (/[a-zA-Z_$]/.test(classBody[j])) {
-            let start = j;
-            while (j < classBody.length && /[a-zA-Z0-9_$]/.test(classBody[j])) j++;
-            let name = classBody.slice(start, j);
-            if (name === func) {
-                while (j < classBody.length && /\s/.test(classBody[j])) j++;
-                if (classBody[j] === "(") {
-                let sigStart = start;
-                let parenCount = 0;
-                while (j < classBody.length) {
-                    if (classBody[j] === "(") parenCount++;
-                    if (classBody[j] === ")") parenCount--;
-                    j++;
-                    if (parenCount === 0) break;
-                }
-                while (j < classBody.length && /\s/.test(classBody[j])) j++;
-                if (classBody[j] === "{") {
-                    let braceCount = 0, funcEnd, k = j;
-                    for (; k < classBody.length; k++) {
-                    if (classBody[k] === '"' || classBody[k] === "'" || classBody[k] === "`") {
-                        let quote = classBody[k];
-                        k++;
-                        while (k < classBody.length && classBody[k] !== quote) {
-                        if (classBody[k] === "\\" && k + 1 < classBody.length) k += 2;
-                        else k++;
-                        }
-                    }
-                    if (classBody[k] === "{") braceCount++;
-                    if (classBody[k] === "}") { braceCount--; if (braceCount === 0) { funcEnd = k; break; } }
-                    }
-                    return classBody.slice(sigStart, funcEnd + 1);
-                }
-                }
-            }
-            }
-            j++;
-        }
-        return null;
         }
 
         function getExtensionFuncs() {
-            let cls = ext.indexOf("class ");
-            if (cls === -1) return [];
-            let open = ext.indexOf("{", cls);
-            if (open === -1) return [];
-            let count = 0, i = open, end;
-            for (; i < ext.length; i++) {
-                if (ext[i] === "{") count++;
-                if (ext[i] === "}") count--;
-                if (count === 0) {
-                    end = i;
-                    break;
-                }
-            }
-            let body = ext.slice(open + 1, end);
-            let funcs = [];
-            let level = 0, j = 0;
-            while (j < body.length) {
-                if (body[j] === '"' || body[j] === "'" || body[j] === "`") {
-                    let quote = body[j];
-                    j++;
-                    while (j < body.length && body[j] !== quote) {
-                        if (body[j] === "\\" && j + 1 < body.length) j += 2;
-                        else j++;
-                    }
-                    j++;
-                    continue;
-                }
-                if (body[j] === "{") { level++; j++; continue; }
-                if (body[j] === "}") { level--; j++; continue; }
-                if (level === 0 && /[a-zA-Z_$]/.test(body[j])) {
-                    let start = j;
-                    while (j < body.length && /[a-zA-Z0-9_$]/.test(body[j])) j++;
-                    let name = body.slice(start, j);
-                    let k = j;
-                    while (k < body.length && /\s/.test(body[k])) k++;
-                    if (body[k] === "(" && name !== "getInfo") {
-                        funcs.push(name);
-                        while (k < body.length && body[k] !== "{") k++;
-                        if (body[k] === "{") {
-                            let funcCount = 0;
-                            for (; k < body.length; k++) {
-                                if (body[k] === '"' || body[k] === "'" || body[k] === "`") {
-                                    let quote = body[k];
-                                    k++;
-                                    while (k < body.length && body[k] !== quote) {
-                                        if (body[k] === "\\" && k + 1 < body.length) k += 2;
-                                        else k++;
-                                    }
-                                }
-                                if (body[k] === "{") { funcCount++; }
-                                if (body[k] === "}") { funcCount--; if (funcCount === 0) { k++; break; } }
-                            }
-                            j = k;
-                            continue;
-                        }
-                    }
-                }
-                j++;
-            }
-            return funcs;
         }
 
         // ------------------------ Editor functions ------------------------ //
@@ -432,8 +269,13 @@
                     if (!file.name.endsWith('.js') || !reader.result.includes('Scratch') || !reader.result.includes('getInfo') || !reader.result.includes('Scratch.extensions.register(') || !reader.result.includes('id:') || !reader.result.includes('name:') || !reader.result.includes('blocks:')) {
                         alert("Provided file is not a scratch extension");
                     } else {
-                        ext = reader.result;
-                        updateButtons();
+                        if (!reader.result.includes('')) {
+                            alert("This extension is not compatable");
+                        } else {
+                            ext = reader.result;
+                            updateButtons();
+                            editor.setValue();
+                        }
                     }
                 };
 
