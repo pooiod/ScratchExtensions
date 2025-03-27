@@ -412,7 +412,7 @@
                 document.getElementById('Tabs').appendChild(button);
 
                 button.onclick = () => {
-                    editor.setValue(formatJS("function " + getExtensionFunc(func)));
+                    editor.setValue(formatJS("async function " + getExtensionFunc(func)));
                     editor.selection.moveCursorTo(0, 0);
                 }
             });
