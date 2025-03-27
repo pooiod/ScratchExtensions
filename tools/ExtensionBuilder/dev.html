@@ -190,7 +190,6 @@
     </div>
 
     <script>
-        // Teplate extension setup
         var templates = [
             `// Basic extension
 
@@ -239,7 +238,8 @@
 
         var ext = templates[0];
 
-        // Ace editor setup
+        // ------------------------ Ace editor setup ------------------------ //
+
         var editor = ace.edit("EditorCode");
         editor.setTheme("ace/theme/chrome");
         editor.session.setMode("ace/mode/javascript");
@@ -254,7 +254,8 @@
         editor.container.style.lineHeight = 1.5;
         editor.renderer.updateFontSize();
 
-        // Extension interaction functions
+        // ------------------------ Extension interaction functions ------------------------ //
+
         function getExtensionProp(prop) {
             const regex = new RegExp(`(?<=${prop}:)([^,]*?)(?=(,\\s*|\\n|\\n\\s*//))`, 'gs');
             const match = regex.exec(ext);
@@ -268,7 +269,46 @@
             return null;
         }
 
-        // Button setup
+        function getExtensionFunc(func) {
+            const regex = new RegExp(`\\b${func}\\s*\\(.*?\\)\\s*{([\\s\\S]*?)}(?=\\s*\\b\\w+\\s*\\()|$)`, 'g');
+            const match = regex.exec(ext);
+            if (match) {
+                return `{${match[1]}}`;
+            }
+            return null;
+        }
+
+        function getExtensionFuncs() {
+            const regex = /class\s+\w+\s*{([\s\S]*?)}/;
+            const classMatch = regex.exec(ext);
+            if (classMatch) {
+                const funcs = [];
+                const funcRegex = /\b(\w+)\s*\(/g;
+                let funcMatch;
+                while ((funcMatch = funcRegex.exec(classMatch[1]))) {
+                    if (funcMatch[1] !== 'getInfo') {
+                        funcs.push(funcMatch[1]);
+                    }
+                }
+                return funcs;
+            }
+            return [];
+        }
+
+        // ------------------------ Editor functions ------------------------ //
+
+        function updateButtons() {
+            document.getElementById('Tabs').innerHTML = '';
+
+            getExtensionFuncs().forEach(func => {
+                const button = document.createElement('button');
+                button.textContent = func;
+                document.getElementById('Tabs').appendChild(button);
+            });
+        }
+
+        // ------------------------ Button setup ------------------------ //
+
         document.getElementById('LoadExtension').onclick = () => {
             var input = document.createElement('input');
             input.type = 'file';
@@ -278,8 +318,8 @@
                 var reader = new FileReader();
 
                 reader.onload = () => {
-                    if (!file.name.endsWith('.js') || !reader.result.includes('Scratch') || !reader.result.includes('Scratch.extensions.register(') || !reader.result.includes('id:') || !reader.result.includes('name:') || !reader.result.includes('blocks:')) {
-                        alert("Unable to load Scratch extension");
+                    if (!file.name.endsWith('.js') || !reader.result.includes('Scratch') || !reader.result.includes('getInfo') || !reader.result.includes('Scratch.extensions.register(') || !reader.result.includes('id:') || !reader.result.includes('name:') || !reader.result.includes('blocks:')) {
+                        alert("Provided file is not a scratch extension");
                     } else {
                         ext = reader.result;
                     }
@@ -292,9 +332,16 @@
         };
 
         document.getElementById('SaveExtension').onclick = () => {
-            var filename = getExtensionProp("id");
-            alert(filename);
+            const blob = new Blob([ext], { type: 'application/javascript' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = getExtensionProp("id") + ".js";
+            link.click();
         };
+
+        updateButtons();
+
+        // ------------------------ Hide loader ------------------------ //
 
         setTimeout(function() {
             document.getElementById('loader').style.opacity = '0';
