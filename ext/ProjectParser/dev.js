@@ -40,15 +40,39 @@
                         arguments: {
                             URL: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "https://yeetyourfiles.lol/file/94139be7/Box2D.sb3" // https://extensions.turbowarp.org/samples/Box2D.sb3
+                                defaultValue: "https://p7scratchextensions.pages.dev/ext/ProjectParser/proj.sb3" // https://yeetyourfiles.lol/file/94139be7/Box2D.sb3
                             }
                         }
                     },
+                    {
+                        opcode: "loadCurrentProject",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Load current project",
+                        arguments: {
+                            FILENAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "project.json"
+                            },
+                            DATA: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "{}"
+                            }
+                        }
+                    },
+
                     {
                         opcode: "runProject",
                         blockType: Scratch.BlockType.COMMAND,
                         text: "Run loaded project"
                     },
+
+                    {
+                        opcode: "projectLoaded",
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: "Project loaded"
+                    },
+
+
                     {
                         opcode: "getProgress",
                         blockType: Scratch.BlockType.REPORTER,
@@ -59,6 +83,46 @@
                         blockType: Scratch.BlockType.REPORTER,
                         text: "Last error"
                     },
+
+                    {
+                        opcode: "exportProject",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Export project"
+                    },
+
+                    {
+                        opcode: "setFile",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: "Set file [FILENAME] with data [DATA]",
+                        arguments: {
+                            FILENAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "test.txt"
+                            },
+                            DATA: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "This is a test"
+                            }
+                        }
+                    },
+                    {
+                        opcode: "getFile",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get file [FILENAME]",
+                        arguments: {
+                            FILENAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "project.json"
+                            }
+                        }
+                    },
+
+                    {
+                        opcode: "getAllFileNames",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get all file names"
+                    },
+
                     {
                         opcode: "getProp",
                         blockType: Scratch.BlockType.REPORTER,
@@ -70,6 +134,7 @@
                             }
                         }
                     },
+
                     {
                         opcode: "getCostume",
                         blockType: Scratch.BlockType.REPORTER,
@@ -85,10 +150,27 @@
                             }
                         }
                     },
+
+                    {
+                        opcode: "getSound",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get sound [SOUND] from sprite [SPRITE]",
+                        arguments: {
+                            SPRITE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Sprite1"
+                            },
+                            SOUND: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Meow"
+                            }
+                        }
+                    },
+
                     {
                         opcode: "getThumbnail",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "Generate project thumbnail of width [WIDTH] and height [HEIGHT] in the direction [DIRECTION]",
+                        text: "Generate project thumbnail of width [WIDTH] and height [HEIGHT]",
                         arguments: {
                             WIDTH: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -104,10 +186,14 @@
                 menus: {
                     props: {
                         acceptReporters: true,
-                        items: ["sprites", "costumes", "sounds", "extensions", "platform"]
+                        items: ["sprites", "costumes", "sounds", "extension ids", "extension urls", "platform name", "platform url"]
                     }
                 }
             };
+        }
+
+        projectLoaded() {
+            return !! (progress == 100 && projectData && fetchedBuffer);
         }
 
         loadProject({ URL }) {
@@ -152,6 +238,105 @@
                     });
                 }
                 return read();
+            }).catch((error) => {
+                console.error(error);
+                lastError = error.toString();
+            });
+        }
+
+        loadCurrentProject() {
+            lastError = "";
+            fetchedBuffer = null;
+            projectData = null;
+            progress = 0;
+
+            vm.saveProjectSb3().then((blob) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    fetchedBuffer = reader.result;
+                    return LoadJSZIP()
+                        .then(() => JSZip.loadAsync(fetchedBuffer))
+                        .then((zip) => zip.file("project.json").async("string"))
+                        .then((data) => {
+                            progress = 100;
+                            projectData = JSON.parse(data);
+                        });
+                };
+                reader.readAsArrayBuffer(blob);
+            }).catch((error) => {
+                console.error(error);
+                lastError = error.toString();
+            });
+        }
+
+        getFile({ FILENAME }) {
+            if (!fetchedBuffer) {
+                lastError = "No project loaded.";
+                console.error(lastError);
+                return lastError;
+            }
+            return LoadJSZIP().then(() => JSZip.loadAsync(fetchedBuffer)).then((zip) => {
+                const file = zip.file(FILENAME);
+                if (!file) throw new Error("File not found in project");
+                return file.async("string");
+            }).catch((error) => {
+                console.error(error);
+                lastError = error.toString();
+                return lastError;
+            });
+        }
+
+        getAllFileNames() {
+            if (!fetchedBuffer) {
+                lastError = "No project loaded.";
+                console.error(lastError);
+                return JSON.stringify([]);
+            }
+
+            return LoadJSZIP()
+                .then(() => JSZip.loadAsync(fetchedBuffer))
+                .then((zip) => JSON.stringify(Object.keys(zip.files)))
+                .catch((error) => {
+                    console.error(error);
+                    lastError = error.toString();
+                    return JSON.stringify([]);
+                });
+        }
+
+        exportProject() {
+            if (!fetchedBuffer) {
+                lastError = "No project loaded.";
+                console.error(lastError);
+                return lastError;
+            }
+
+            return LoadJSZIP()
+                .then(() => JSZip.loadAsync(fetchedBuffer))
+                .then((zip) => zip.generateAsync({ type: "base64" }))
+                .then((base64Data) => `data:application/x.scratch.sb3;base64,${base64Data}`)
+                .catch((error) => {
+                    console.error(error);
+                    lastError = error.toString();
+                    return lastError;
+                });
+        }
+
+        setFile({ FILENAME, DATA }) {
+            if (!fetchedBuffer) {
+                lastError = "No project loaded.";
+                console.error(lastError);
+                return lastError;
+            }
+
+            return LoadJSZIP().then(() => JSZip.loadAsync(fetchedBuffer)).then((zip) => {
+                if (DATA === "") {
+                    zip.remove(FILENAME);
+                } else {
+                    zip.file(FILENAME, DATA);
+                }
+                return zip.generateAsync({ type: "arraybuffer" });
+            }).then((buffer) => {
+                fetchedBuffer = buffer;
             }).catch((error) => {
                 console.error(error);
                 lastError = error.toString();
@@ -217,10 +402,14 @@
                         });
                     }
                     return JSON.stringify(soundsArr);
-                case "extensions":
-                    return JSON.stringify(projectData.extensions || {});
-                case "platform":
+                case "extension ids":
+                    return JSON.stringify(projectData.extensions || []);
+                case "extension urls":
+                    return JSON.stringify(projectData.extensionURLs || {});
+                case "platform name":
                     return projectData.meta?.platform?.name || "scratch";
+                case "platform url":
+                    return projectData.meta?.platform?.url || "https://scratch.mit.edu";
                 default:
                     return projectData.meta[PROP] || "";
             }
@@ -263,18 +452,15 @@
 
             const sprite = projectData.targets.find(t => t.name === SPRITE);
             if (!sprite) return "No sprite found";
-            const sound = sprite.sounds.find(c => c.name === SOUND);
-            if (!sound) return "No costume found";
+            const sound = sprite.sounds.find(s => s.name === SOUND);
+            if (!sound) return "No sound found";
 
             return LoadJSZIP().then(() => JSZip.loadAsync(fetchedBuffer)).then((zip) => {
                 const file = zip.file(sound.md5ext);
                 if (!file) throw new Error("Sound file not found in zip");
                 return file.async("base64");
             }).then((data) => {
-                if (sound.dataFormat === "svg") {
-                    return `data:image/svg+xml;base64,${data}`;
-                }
-                return `data:image/png;base64,${data}`;
+                return `data:audio/wav;base64,${data}`;
             }).catch((error) => {
                 console.error(error);
                 lastError = error.toString();
