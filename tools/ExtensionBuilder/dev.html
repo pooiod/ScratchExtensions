@@ -191,11 +191,36 @@
     </div>
 
     <script>
-        var templates = [
-            ``
-        ];
+        var basic = {
+            libs: [],
+            unsandboxed: {
+                status: true,
+                message: "This extension must run unsansboxed"
+            },
+            props: {
+                id: 'extexample',
+                name: '"Example Extension"',
+                color1: '"#0fbd8c"',
+                color2: '"#0b8e69"',
+                color3: '"#4cbd68"'
+            },
+            blocks: [
+                {
+                    opcode: 'func',
+                    blockType: 'COMMAND',
+                    text: '"a block [VAL]"',
+                    arguments: {
+                        VAL: {
+                            type: 'STRING',
+                            defaultValue: '"REEEEEEEEEE"',
+                        },
+                    },
+                    code: 'async function func(args) {\n    console.log(args);\n}'
+                }
+            ]
+        };
 
-        var ext = templates[0];
+        var ext = basic;
 
         // ------------------------ Ace editor setup ------------------------ //
 
@@ -216,29 +241,19 @@
         // ------------------------ Extension interaction functions ------------------------ //
 
         function getExtensionProp(prop) {
-            const regex = new RegExp(`(?<=${prop}:)([^,]*?)(?=(,\\s*|\\n|\\n\\s*//))`, 'gs');
-            const match = regex.exec(ext);
-            if (match) {
-                let result = match[1].trim();
-                if (/['"]/.test(result[0])) {
-                    result = result.slice(1, -1);
-                }
-                return result;
-            }
-            return null;
+            return ext.props[prop];
         }
 
-        function getExtensionFunc(func) {
+        function getExtensionFunc(func, edit) {
+            var func = ext.blocks.find(block => block.opcode === func);
+            return func ? func.code : "// Block code does not exist";
         }
 
         function getExtensionFuncs() {
+            return ext.blocks.map(block => block.opcode);
         }
 
         // ------------------------ Editor functions ------------------------ //
-
-        function formatJS(js) {
-            return js_beautify(js, { indent_size: 2, preserve_newlines: true });
-        }
 
         function updateButtons() {
             document.getElementById('Tabs').innerHTML = '';
@@ -249,7 +264,7 @@
                 document.getElementById('Tabs').appendChild(button);
 
                 button.onclick = () => {
-                    editor.setValue(formatJS("async function " + getExtensionFunc(func)));
+                    editor.setValue(getExtensionFunc(func, true));
                     editor.selection.moveCursorTo(0, 0);
                 }
             });
@@ -266,16 +281,12 @@
                 var reader = new FileReader();
 
                 reader.onload = () => {
-                    if (!file.name.endsWith('.js') || !reader.result.includes('Scratch') || !reader.result.includes('getInfo') || !reader.result.includes('Scratch.extensions.register(') || !reader.result.includes('id:') || !reader.result.includes('name:') || !reader.result.includes('blocks:')) {
-                        alert("Provided file is not a scratch extension");
+                    if (!file.name.endsWith('.json')) {
+                        alert("Provided file is not a scratch extension source");
                     } else {
-                        if (!reader.result.includes('')) {
-                            alert("This extension is not compatable");
-                        } else {
-                            ext = reader.result;
-                            updateButtons();
-                            editor.setValue();
-                        }
+                        ext = reader.result;
+                        updateButtons();
+                        editor.setValue();
                     }
                 };
 
