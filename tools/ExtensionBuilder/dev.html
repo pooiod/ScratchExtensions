@@ -220,7 +220,7 @@
             },
             blocks: [
                 {
-                    opcode: 'func',
+                    opcode: 'block1',
                     blockType: 'COMMAND',
                     text: '"a block [VAL]"',
                     arguments: {
@@ -229,12 +229,12 @@
                             defaultValue: '"REEEEEEEEEE"',
                         },
                     },
-                    code: 'async function func(args, util) {\n    console.log(args);\n}'
+                    code: 'async function block1(args, util) {\n    console.log(args);\n}'
                 }
             ]
         };
 
-        var ext = basic;
+        var ext = structuredClone(basic);
         var currentFunc = null;
 
         // ------------------------ Ace editor setup ------------------------ //
@@ -312,6 +312,20 @@
                     }, 1);
                 };
             });
+
+            var button = document.createElement('button');
+                button.classList.add("FuncEditButton");
+                button.textContent = "Add function";
+                document.getElementById('Tabs').appendChild(button);
+
+                button.onclick = () => {
+                    var name = window.prompt("Function opcode");
+                    var newfunc = structuredClone(basic.blocks[0]);
+                    newfunc.opcode = name;
+                    newfunc.code = newfunc.code.replace("block1", name);
+                    ext.blocks.push(newfunc);
+                    updateButtons();
+                };
         }
 
         // ------------------------ Button setup ------------------------ //
