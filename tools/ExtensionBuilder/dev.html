@@ -320,6 +320,7 @@
 
                 button.onclick = () => {
                     var name = window.prompt("Function opcode");
+                    if (!name) return;
                     var newfunc = structuredClone(basic.blocks[0]);
                     newfunc.opcode = name;
                     newfunc.code = newfunc.code.replace("block1", name);
