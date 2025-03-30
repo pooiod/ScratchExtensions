@@ -166,9 +166,11 @@
             width: 100%;
             /* margin-bottom: 5px; */
 
+            padding-left: 5px;
+
             display: flex;
             flex-direction: column;
-            align-items: center;
+            /* align-items: center; */
             justify-content: center;
         }
 
@@ -315,7 +317,7 @@
 
             var button = document.createElement('button');
                 button.classList.add("FuncEditButton");
-                button.textContent = "Add function";
+                button.textContent = "Add a block";
                 document.getElementById('Tabs').appendChild(button);
 
                 button.onclick = () => {
@@ -347,6 +349,7 @@
                         ext = JSON.parse(reader.result);
                         updateButtons();
                         editor.setValue();
+                        // document.getElementById('AppTitle').innerText = ext.id;
                     }
                 };
 
