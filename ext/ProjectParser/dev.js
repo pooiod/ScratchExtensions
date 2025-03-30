@@ -412,7 +412,7 @@
                 case "platform url":
                     return projectData.meta?.platform?.url || "https://scratch.mit.edu";
                 default:
-                    return projectData.meta[PROP] || "";
+                    return JSON.stringify(projectData.meta[PROP] || undefined);
             }
         }
 
