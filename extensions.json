@@ -184,11 +184,11 @@
         "description": "Load and parse Scratch3 projects",
         "created": "Mar 30, 2025",
         "subtext": "",
-        "icon": "/extras/images/icons/wip.png",
-        "iconText": "This extension is in development, and may be changed frequently",
+        "icon": "/extras/images/icons/new.svg",
+        "iconText": "",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
         "tags": ["unfinished"],
         "type": ["unsandboxed", "wip"],
