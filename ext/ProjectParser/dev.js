@@ -185,6 +185,7 @@
                 ],
                 menus: {
                     props: {
+                        isTypeable: true,
                         acceptReporters: true,
                         items: ["sprites", "costumes", "sounds", "extension ids", "extension urls", "platform name", "platform url"]
                     }
