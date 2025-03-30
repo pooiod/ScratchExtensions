@@ -192,13 +192,13 @@
 
     <script>
         var basic = {
+            id: 'extexample',
             libs: [],
             unsandboxed: {
                 status: true,
                 message: "This extension must run unsansboxed"
             },
             props: {
-                id: 'extexample',
                 name: '"Example Extension"',
                 color1: '"#0fbd8c"',
                 color2: '"#0b8e69"',
@@ -215,12 +215,13 @@
                             defaultValue: '"REEEEEEEEEE"',
                         },
                     },
-                    code: 'async function func(args) {\n    console.log(args);\n}'
+                    code: 'async function func(args, util) {\n    console.log(args);\n}'
                 }
             ]
         };
 
         var ext = basic;
+        var currentFunc = null;
 
         // ------------------------ Ace editor setup ------------------------ //
 
@@ -240,8 +241,9 @@
 
         // ------------------------ Extension interaction functions ------------------------ //
 
-        function getExtensionProp(prop) {
-            return ext.props[prop];
+        function setExtensionFunc(func, content) {
+            var block = ext.blocks.find(block => block.opcode === func);
+            if (block) block.code = content;
         }
 
         function getExtensionFunc(func, edit) {
@@ -265,7 +267,14 @@
                 document.getElementById('Tabs').appendChild(button);
 
                 button.onclick = () => {
+                    if (currentFunc) {
+                        setExtensionFunc(currentFunc, editor.getValue())
+                    }
+
+                    currentFunc = func;
+
                     editor.setValue(getExtensionFunc(func, true));
+                    editor.session.getUndoManager().reset();
                     editor.selection.moveCursorTo(0, 0);
                 }
             });
@@ -285,6 +294,7 @@
                     if (!file.name.endsWith('.json') || !reader.result.includes("libs") || !reader.result.includes("unsandboxed") || !reader.result.includes("props") || !reader.result.includes("blocks")) {
                         alert("Provided file is not a scratch extension source");
                     } else {
+                        currentFunc = null;
                         ext = JSON.parse(reader.result);
                         updateButtons();
                         editor.setValue();
@@ -301,7 +311,7 @@
             const blob = new Blob([JSON.stringify(ext)], { type: 'txt/json' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = getExtensionProp("id") + "-source.json";
+            link.download = ext.id + "-source.json";
             link.click();
         };
 
