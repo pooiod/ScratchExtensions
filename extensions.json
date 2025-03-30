@@ -190,8 +190,8 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed", "wip"],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
         "hidden": false
     },
     {
