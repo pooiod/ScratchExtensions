@@ -259,7 +259,8 @@
             document.getElementById('Tabs').innerHTML = '';
 
             getExtensionFuncs().forEach(func => {
-                const button = document.createElement('button');
+                var button = document.createElement('button');
+                button.classList.add("FuncEditButton");
                 button.textContent = func;
                 document.getElementById('Tabs').appendChild(button);
 
@@ -275,16 +276,16 @@
         document.getElementById('LoadExtension').onclick = () => {
             var input = document.createElement('input');
             input.type = 'file';
-            input.accept = '.js';
+            input.accept = '.json';
             input.onchange = (event) => {
                 var file = event.target.files[0];
                 var reader = new FileReader();
 
                 reader.onload = () => {
-                    if (!file.name.endsWith('.json')) {
+                    if (!file.name.endsWith('.json') || !reader.result.includes("libs") || !reader.result.includes("unsandboxed") || !reader.result.includes("props") || !reader.result.includes("blocks")) {
                         alert("Provided file is not a scratch extension source");
                     } else {
-                        ext = reader.result;
+                        ext = JSON.parse(reader.result);
                         updateButtons();
                         editor.setValue();
                     }
@@ -297,10 +298,10 @@
         };
 
         document.getElementById('SaveExtension').onclick = () => {
-            const blob = new Blob([ext], { type: 'application/javascript' });
+            const blob = new Blob([JSON.stringify(ext)], { type: 'txt/json' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = getExtensionProp("id") + ".js";
+            link.download = getExtensionProp("id") + "-source.json";
             link.click();
         };
 
