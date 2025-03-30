@@ -40,7 +40,7 @@
                         arguments: {
                             URL: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "https://extensions.turbowarp.org/samples/Box2D.sb3"
+                                defaultValue: "https://yeetyourfiles.lol/file/94139be7/Box2D.sb3" // https://extensions.turbowarp.org/samples/Box2D.sb3
                             }
                         }
                     },
@@ -88,13 +88,23 @@
                     {
                         opcode: "getThumbnail",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "Generate project thumbnail"
+                        text: "Generate project thumbnail of width [WIDTH] and height [HEIGHT] in the direction [DIRECTION]",
+                        arguments: {
+                            WIDTH: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "480"
+                            },
+                            HEIGHT: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "360"
+                            },
+                        }
                     }
                 ],
                 menus: {
                     props: {
                         acceptReporters: true,
-                        items: ["sprites", "costumes", "extensions", "platform"]
+                        items: ["sprites", "costumes", "sounds", "extensions", "platform"]
                     }
                 }
             };
@@ -184,17 +194,31 @@
                     if (projectData.targets) {
                         const stage = projectData.targets.find(t => t.isStage);
                         if (stage && stage.costumes && stage.costumes.length > 0) {
-                            costumesArr.push(`Stage: ["${stage.costumes.map(c => c.name).join('", "')}"]`);
+                            costumesArr.push(["Stage", stage.costumes.map(c => c.name)]);
                         }
                         projectData.targets.filter(t => !t.isStage).forEach(sprite => {
                             if (sprite.costumes && sprite.costumes.length > 0) {
-                                costumesArr.push(`${sprite.name}: ["${sprite.costumes.map(c => c.name).join('", "')}"]`);
+                                costumesArr.push([sprite.name, sprite.costumes.map(c => c.name)]);
                             }
                         });
                     }
                     return JSON.stringify(costumesArr);
+                case "sounds":
+                    let soundsArr = [];
+                    if (projectData.targets) {
+                        const stage = projectData.targets.find(t => t.isStage);
+                        if (stage && stage.sounds && stage.sounds.length > 0) {
+                            soundsArr.push(["Stage", stage.sounds.map(c => c.name)]);
+                        }
+                        projectData.targets.filter(t => !t.isStage).forEach(sprite => {
+                            if (sprite.sounds && sprite.sounds.length > 0) {
+                                soundsArr.push([sprite.name, sprite.sounds.map(c => c.name)]);
+                            }
+                        });
+                    }
+                    return JSON.stringify(soundsArr);
                 case "extensions":
-                    return JSON.stringify(projectData.extensions || []);
+                    return JSON.stringify(projectData.extensions || {});
                 case "platform":
                     return projectData.meta?.platform?.name || "scratch";
                 default:
@@ -230,7 +254,35 @@
             });
         }
 
-        getThumbnail() {
+        getSound({ SPRITE, SOUND }) {
+            if (!projectData) {
+                lastError = "No project loaded.";
+                console.error(lastError);
+                return lastError;
+            }
+
+            const sprite = projectData.targets.find(t => t.name === SPRITE);
+            if (!sprite) return "No sprite found";
+            const sound = sprite.sounds.find(c => c.name === SOUND);
+            if (!sound) return "No costume found";
+
+            return LoadJSZIP().then(() => JSZip.loadAsync(fetchedBuffer)).then((zip) => {
+                const file = zip.file(sound.md5ext);
+                if (!file) throw new Error("Sound file not found in zip");
+                return file.async("base64");
+            }).then((data) => {
+                if (sound.dataFormat === "svg") {
+                    return `data:image/svg+xml;base64,${data}`;
+                }
+                return `data:image/png;base64,${data}`;
+            }).catch((error) => {
+                console.error(error);
+                lastError = error.toString();
+                return lastError;
+            });
+        }
+
+        getThumbnail({ WIDTH, HEIGHT }) {
             if (!projectData) {
                 lastError = "No project loaded.";
                 console.error(lastError);
@@ -239,8 +291,8 @@
 
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            canvas.width = 480;
-            canvas.height = 360;
+            canvas.width = WIDTH;
+            canvas.height = HEIGHT;
 
             return LoadJSZIP()
                 .then(() => JSZip.loadAsync(fetchedBuffer))
@@ -266,8 +318,8 @@
                                 img.onload = () => {
                                     clearTimeout(timer);
                                     ctx.save();
-                                    ctx.translate(240 + (target.x || 0), 180 - (target.y || 0));
-                                    ctx.rotate(((target.direction || 0) - 90) * (Math.PI / 180));
+                                    ctx.translate(WIDTH / 2 + (target.x || 0), HEIGHT / 2 - (target.y || 0));
+                                    ctx.rotate(((target.direction || 90) - 90) * (Math.PI / 180));
                                     ctx.scale((target.size || 100) / 100, (target.size || 100) / 100);
                                     const rotationCenterX = costume.rotationCenterX || 0;
                                     const rotationCenterY = costume.rotationCenterY || 0;
