@@ -127,6 +127,29 @@
             height: 30px;
             width: 100%;
             margin-bottom: 5px;
+            padding-top: 5px;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #Tabs button button {
+            height: 15px;
+            width: 15px;
+            font-size: 10px;
+            background: rgba(255, 0, 0, 0.082);
+            padding-top: 2px;
+            border-radius: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #Tabs button button:hover {
+            background: rgba(255, 138, 138, 0.403);
         }
 
         .TopBar button {
@@ -134,11 +157,9 @@
             width: auto;
             padding-left: 15px;
             padding-right: 15px;
-        }
-
-        /* #TopBar button:first-child {
             margin-left: 5px;
-        } */
+            float: right;
+        }
 
         #AppTitle {
             height: 30px;
@@ -169,14 +190,7 @@
             Pooiod7's ext builder
         </div>
 
-        <div id="Tabs">
-            <button>Block1</button>
-            <button>Block2</button>
-            <button>Block3</button>
-            <button>Block4</button>
-            <button>Block5</button>
-            <button>Block6</button>
-        </div>
+        <div id="Tabs"></div>
     </div>
 
     <div class="Container">
@@ -255,6 +269,11 @@
             return ext.blocks.map(block => block.opcode);
         }
 
+        function removeExtensionFunc(func) {
+            var index = ext.blocks.findIndex(block => block.opcode === func);
+            if (index !== -1) ext.blocks.splice(index, 1);
+        }
+
         // ------------------------ Editor functions ------------------------ //
 
         function updateButtons() {
@@ -266,6 +285,11 @@
                 button.textContent = func;
                 document.getElementById('Tabs').appendChild(button);
 
+                var button2 = document.createElement('button');
+                button2.classList.add("FuncDeleteButton");
+                button2.textContent = "X";
+                button.appendChild(button2);
+
                 button.onclick = () => {
                     if (currentFunc) {
                         setExtensionFunc(currentFunc, editor.getValue())
@@ -276,7 +300,17 @@
                     editor.setValue(getExtensionFunc(func, true));
                     editor.session.getUndoManager().reset();
                     editor.selection.moveCursorTo(0, 0);
-                }
+                };
+
+                button2.onclick = () => {
+                    setTimeout(()=>{
+                        removeExtensionFunc(func, editor.getValue())
+                        currentFunc = null;
+                        editor.setValue("");
+                        editor.session.getUndoManager().reset();
+                        updateButtons();
+                    }, 1);
+                };
             });
         }
 
