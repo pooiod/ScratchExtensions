@@ -74,7 +74,8 @@
                     {
                         opcode: "exportProject",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "Export project"
+                        text: "Project data uri",
+                        disableMonitor: true
                     },
 
                     {
@@ -107,7 +108,8 @@
                     {
                         opcode: "getAllFileNames",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "Get all file names"
+                        text: "Project file names",
+                        disableMonitor: true
                     },
 
                     {
