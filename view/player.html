@@ -66,11 +66,15 @@
                 projectUrl = window.location.origin + projectUrl;
             }
 
-            const type = urlParams.get('edit') === "true" ? "editor" : "embed";
-            const iframe = document.getElementById('iframe');
-            iframe.src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart') ? "autostart=true&" : ""}project_url=${encodeURIComponent(projectUrl)}`;
-            iframe.style.display = "block";
-            this.style.display = "none";
+            if (!urlParams.get('edit')) {
+                window.location.href = `demo?${urlParams.get('autostart') ? "autostart=true&" : ""}q=${encodeURIComponent(projectUrl)}`;
+            } else {
+                const type = urlParams.get('edit') === "true" ? "editor" : "embed";
+                const iframe = document.getElementById('iframe');
+                iframe.src = `https://studio.penguinmod.com/${type}.html?${urlParams.get('autostart') ? "autostart=true&" : ""}project_url=${encodeURIComponent(projectUrl)}`;
+                iframe.style.display = "block";
+                this.style.display = "none";
+            }
         }//);
     </script>
 </body>
