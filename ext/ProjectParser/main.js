@@ -258,6 +258,18 @@
                         }
                     },
 
+                    {
+                        opcode: 'toScratchblocks',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Convert stack [INPUT] to scratchblocks',
+                        arguments: {
+                            INPUT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "{}"
+                            }
+                        }
+                    },
+
                     { blockType: Scratch.BlockType.LABEL, text: "Comment Parser" },
 
                     {
@@ -774,6 +786,36 @@
                 case 'x': return json.x || 0;
                 case 'y': return json.y || 0;
                 default: return json[PROP] ? JSON.stringify(json[PROP]) : '';
+            }
+        }
+
+        async toScratchblocks({ INPUT }) {
+            if (typeof parseSB3Blocks === 'undefined' && !document.querySelector('script[src="https://cdn.jsdelivr.net/npm/parse-sb3-blocks@0.5.0/dist/parse-sb3-blocks.browser.js"]')) {
+                await new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/parse-sb3-blocks@0.5.0/dist/parse-sb3-blocks.browser.js';
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+            }
+
+            var json = INPUT;
+
+            try {
+                json = JSON.parse(json);
+            } catch(e) {
+                return "";
+            }
+
+            if (!json) return "";
+
+            const blockIds = Object.keys(json);
+            const startBlockId = blockIds.find(id => json[id].topLevel) || blockIds[0];
+            try {
+                return parseSB3Blocks.toScratchblocks(startBlockId, json, 'en', {tabs: ' '.repeat(2), variableStyle: "as-needed"});
+            } catch(e) {
+                return "";
             }
         }
 
