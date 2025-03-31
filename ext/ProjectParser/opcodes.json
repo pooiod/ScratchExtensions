@@ -12,7 +12,18 @@
     },
     "motion_turnright": {
         "type": "command",
-        "text": "move [DEGREES] steps",
+        "text": "turn @right [DEGREES] degrees",
+        "inputs": {
+            "DEGREES": {
+                "type": "number",
+                "default": "15"
+            }
+        }
+    }
+    ,
+    "motion_turnleft": {
+        "type": "command",
+        "text": "turn @left [DEGREES] degrees",
         "inputs": {
             "DEGREES": {
                 "type": "number",
