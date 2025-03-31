@@ -59,7 +59,6 @@
                         text: "Project loaded"
                     },
 
-
                     {
                         opcode: "getProgress",
                         blockType: Scratch.BlockType.REPORTER,
