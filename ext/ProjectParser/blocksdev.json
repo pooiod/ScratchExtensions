@@ -1,0 +1,834 @@
+{
+    "motion_movesteps": {
+        "STEPS": [
+            1,
+            [
+                4,
+                "10"
+            ]
+        ]
+    },
+    "motion_turnright": {
+        "DEGREES": [
+            1,
+            [
+                4,
+                "15"
+            ]
+        ]
+    },
+    "motion_turnleft": {
+        "DEGREES": [
+            1,
+            [
+                4,
+                "15"
+            ]
+        ]
+    },
+    "motion_goto": {
+        "TO": [
+            1,
+            "xUtt.J?Y#{FW2kvvC5Im"
+        ]
+    },
+    "motion_goto_menu": {},
+    "motion_gotoxy": {
+        "X": [
+            1,
+            [
+                4,
+                "0"
+            ]
+        ],
+        "Y": [
+            1,
+            [
+                4,
+                "0"
+            ]
+        ]
+    },
+    "motion_glideto": {
+        "SECS": [
+            1,
+            [
+                4,
+                "1"
+            ]
+        ],
+        "TO": [
+            1,
+            ".KOQMxB7$f)r;[NK8H]?"
+        ]
+    },
+    "motion_glideto_menu": {},
+    "motion_glidesecstoxy": {
+        "SECS": [
+            1,
+            [
+                4,
+                "1"
+            ]
+        ],
+        "X": [
+            1,
+            [
+                4,
+                "0"
+            ]
+        ],
+        "Y": [
+            1,
+            [
+                4,
+                "0"
+            ]
+        ]
+    },
+    "motion_pointindirection": {
+        "DIRECTION": [
+            1,
+            [
+                8,
+                "90"
+            ]
+        ]
+    },
+    "motion_pointtowards": {
+        "TOWARDS": [
+            1,
+            "Y$qXz[x6hPQzwul~YNiu"
+        ]
+    },
+    "motion_pointtowards_menu": {},
+    "motion_changexby": {
+        "DX": [
+            1,
+            [
+                4,
+                "10"
+            ]
+        ]
+    },
+    "motion_setx": {
+        "X": [
+            1,
+            [
+                4,
+                "0"
+            ]
+        ]
+    },
+    "motion_changeyby": {
+        "DY": [
+            1,
+            [
+                4,
+                "10"
+            ]
+        ]
+    },
+    "motion_sety": {
+        "Y": [
+            1,
+            [
+                4,
+                "0"
+            ]
+        ]
+    },
+    "motion_ifonedgebounce": {},
+    "motion_setrotationstyle": {},
+    "motion_xposition": {},
+    "motion_yposition": {},
+    "motion_direction": {},
+    "looks_sayforsecs": {
+        "MESSAGE": [
+            1,
+            [
+                10,
+                "Hello!"
+            ]
+        ],
+        "SECS": [
+            1,
+            [
+                4,
+                "2"
+            ]
+        ]
+    },
+    "looks_say": {
+        "MESSAGE": [
+            1,
+            [
+                10,
+                "see inside"
+            ]
+        ]
+    },
+    "looks_thinkforsecs": {
+        "MESSAGE": [
+            1,
+            [
+                10,
+                "Hmm..."
+            ]
+        ],
+        "SECS": [
+            1,
+            [
+                4,
+                "2"
+            ]
+        ]
+    },
+    "looks_think": {
+        "MESSAGE": [
+            1,
+            [
+                10,
+                "Hmm..."
+            ]
+        ]
+    },
+    "looks_switchcostumeto": {
+        "COSTUME": [
+            1,
+            "98p_xP_T6]VgTx`H7AF~"
+        ]
+    },
+    "looks_costume": {},
+    "looks_nextcostume": {},
+    "looks_switchbackdropto": {
+        "BACKDROP": [
+            1,
+            "2IZ~=h1U{lRR!k2$opsG"
+        ]
+    },
+    "looks_backdrops": {},
+    "looks_nextbackdrop": {},
+    "looks_changesizeby": {
+        "CHANGE": [
+            1,
+            [
+                4,
+                "10"
+            ]
+        ]
+    },
+    "looks_setsizeto": {
+        "SIZE": [
+            1,
+            [
+                4,
+                "100"
+            ]
+        ]
+    },
+    "looks_changeeffectby": {
+        "CHANGE": [
+            1,
+            [
+                4,
+                "25"
+            ]
+        ]
+    },
+    "looks_seteffectto": {
+        "VALUE": [
+            1,
+            [
+                4,
+                "0"
+            ]
+        ]
+    },
+    "looks_cleargraphiceffects": {},
+    "looks_show": {},
+    "looks_hide": {},
+    "looks_gotofrontback": {},
+    "looks_goforwardbackwardlayers": {
+        "NUM": [
+            1,
+            [
+                7,
+                "1"
+            ]
+        ]
+    },
+    "looks_costumenumbername": {},
+    "looks_backdropnumbername": {},
+    "looks_size": {},
+    "sound_playuntildone": {
+        "SOUND_MENU": [
+            1,
+            "k:%zyyFa(@t`60bRL*$j"
+        ]
+    },
+    "sound_sounds_menu": {},
+    "sound_play": {
+        "SOUND_MENU": [
+            1,
+            "{XbE!5{EJ~m1K]L3o0nv"
+        ]
+    },
+    "sound_stopallsounds": {},
+    "sound_changeeffectby": {
+        "VALUE": [
+            1,
+            [
+                4,
+                "10"
+            ]
+        ]
+    },
+    "sound_seteffectto": {
+        "VALUE": [
+            1,
+            [
+                4,
+                "100"
+            ]
+        ]
+    },
+    "sound_cleareffects": {},
+    "sound_changevolumeby": {
+        "VOLUME": [
+            1,
+            [
+                4,
+                "-10"
+            ]
+        ]
+    },
+    "sound_setvolumeto": {
+        "VOLUME": [
+            1,
+            [
+                4,
+                "100"
+            ]
+        ]
+    },
+    "sound_volume": {},
+    "event_whenflagclicked": {},
+    "event_whenkeypressed": {},
+    "event_whenthisspriteclicked": {},
+    "event_whenbackdropswitchesto": {},
+    "event_whengreaterthan": {
+        "VALUE": [
+            1,
+            [
+                4,
+                "10"
+            ]
+        ]
+    },
+    "event_whenbroadcastreceived": {},
+    "event_broadcast": {
+        "BROADCAST_INPUT": [
+            1,
+            [
+                11,
+                "message1",
+                "BGKl;x;_Fu0kl=S$rx|]"
+            ]
+        ]
+    },
+    "event_broadcastandwait": {
+        "BROADCAST_INPUT": [
+            1,
+            [
+                11,
+                "message1",
+                "BGKl;x;_Fu0kl=S$rx|]"
+            ]
+        ]
+    },
+    "control_wait": {
+        "DURATION": [
+            1,
+            [
+                5,
+                "1"
+            ]
+        ]
+    },
+    "control_repeat": {
+        "TIMES": [
+            1,
+            [
+                6,
+                "10"
+            ]
+        ],
+        "SUBSTACK": [
+            2,
+            "F!twf?Hd3OI+;7?V~u0t"
+        ]
+    },
+    "control_forever": {
+        "SUBSTACK": [
+            2,
+            "Gb{P-6#Gfz,-OOX!bASc"
+        ]
+    },
+    "control_if": {
+        "SUBSTACK": [
+            2,
+            "iqco5/p)NIE?LSCl),{+"
+        ]
+    },
+    "control_if_else": {
+        "SUBSTACK": [
+            2,
+            "t):irn9QZmM^n8?-iAZb"
+        ],
+        "SUBSTACK2": [
+            2,
+            "OF6yFWoJ;N@W)-*QKgN,"
+        ]
+    },
+    "control_wait_until": {},
+    "control_repeat_until": {
+        "SUBSTACK": [
+            2,
+            "6aU]YGRU0~F1=kghZaX3"
+        ]
+    },
+    "control_stop": {},
+    "control_start_as_clone": {},
+    "control_create_clone_of": {
+        "CLONE_OPTION": [
+            1,
+            "GZVA95uUy=o:Ow,QF=]`"
+        ]
+    },
+    "control_create_clone_of_menu": {},
+    "control_delete_this_clone": {},
+    "sensing_touchingobject": {
+        "TOUCHINGOBJECTMENU": [
+            1,
+            "OIo:B!`p%uqOzzWeY:EZ"
+        ]
+    },
+    "sensing_touchingobjectmenu": {},
+    "sensing_touchingcolor": {
+        "COLOR": [
+            1,
+            [
+                9,
+                "#10564e"
+            ]
+        ]
+    },
+    "sensing_coloristouchingcolor": {
+        "COLOR": [
+            1,
+            [
+                9,
+                "#5775f4"
+            ]
+        ],
+        "COLOR2": [
+            1,
+            [
+                9,
+                "#42820a"
+            ]
+        ]
+    },
+    "sensing_distanceto": {
+        "DISTANCETOMENU": [
+            1,
+            "//E/Nb6A0.qtXU+@Ig$d"
+        ]
+    },
+    "sensing_distancetomenu": {},
+    "sensing_askandwait": {
+        "QUESTION": [
+            1,
+            [
+                10,
+                "What's your name?"
+            ]
+        ]
+    },
+    "sensing_answer": {},
+    "sensing_keypressed": {
+        "KEY_OPTION": [
+            1,
+            "=8qWi|ME+KmcEx^Dc7j7"
+        ]
+    },
+    "sensing_keyoptions": {},
+    "sensing_mousedown": {},
+    "sensing_mousex": {},
+    "sensing_mousey": {},
+    "sensing_setdragmode": {},
+    "sensing_loudness": {},
+    "sensing_timer": {},
+    "sensing_resettimer": {},
+    "sensing_of": {
+        "OBJECT": [
+            1,
+            "a:0a%68wRQOhXl8N.kgK"
+        ]
+    },
+    "sensing_of_object_menu": {},
+    "sensing_current": {},
+    "sensing_dayssince2000": {},
+    "sensing_username": {},
+    "operator_add": {
+        "NUM1": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ],
+        "NUM2": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ]
+    },
+    "operator_subtract": {
+        "NUM1": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ],
+        "NUM2": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ]
+    },
+    "operator_multiply": {
+        "NUM1": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ],
+        "NUM2": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ]
+    },
+    "operator_divide": {
+        "NUM1": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ],
+        "NUM2": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ]
+    },
+    "operator_random": {
+        "FROM": [
+            1,
+            [
+                4,
+                "1"
+            ]
+        ],
+        "TO": [
+            1,
+            [
+                4,
+                "10"
+            ]
+        ]
+    },
+    "operator_gt": {
+        "OPERAND1": [
+            1,
+            [
+                10,
+                ""
+            ]
+        ],
+        "OPERAND2": [
+            1,
+            [
+                10,
+                "50"
+            ]
+        ]
+    },
+    "operator_lt": {
+        "OPERAND1": [
+            1,
+            [
+                10,
+                ""
+            ]
+        ],
+        "OPERAND2": [
+            1,
+            [
+                10,
+                "50"
+            ]
+        ]
+    },
+    "operator_equals": {
+        "OPERAND1": [
+            1,
+            [
+                10,
+                ""
+            ]
+        ],
+        "OPERAND2": [
+            1,
+            [
+                10,
+                "50"
+            ]
+        ]
+    },
+    "operator_and": {},
+    "operator_or": {},
+    "operator_not": {},
+    "operator_join": {
+        "STRING1": [
+            1,
+            [
+                10,
+                "apple "
+            ]
+        ],
+        "STRING2": [
+            1,
+            [
+                10,
+                "banana"
+            ]
+        ]
+    },
+    "operator_letter_of": {
+        "LETTER": [
+            1,
+            [
+                6,
+                "1"
+            ]
+        ],
+        "STRING": [
+            1,
+            [
+                10,
+                "apple"
+            ]
+        ]
+    },
+    "operator_length": {
+        "STRING": [
+            1,
+            [
+                10,
+                "apple"
+            ]
+        ]
+    },
+    "operator_contains": {
+        "STRING1": [
+            1,
+            [
+                10,
+                "apple"
+            ]
+        ],
+        "STRING2": [
+            1,
+            [
+                10,
+                "a"
+            ]
+        ]
+    },
+    "operator_mod": {
+        "NUM1": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ],
+        "NUM2": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ]
+    },
+    "operator_round": {
+        "NUM": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ]
+    },
+    "operator_mathop": {
+        "NUM": [
+            1,
+            [
+                4,
+                ""
+            ]
+        ]
+    },
+    "data_setvariableto": {
+        "VALUE": [
+            1,
+            [
+                10,
+                "0"
+            ]
+        ]
+    },
+    "data_changevariableby": {
+        "VALUE": [
+            1,
+            [
+                4,
+                "1"
+            ]
+        ]
+    },
+    "data_showvariable": {},
+    "data_hidevariable": {},
+    "data_addtolist": {
+        "ITEM": [
+            1,
+            [
+                10,
+                "thing"
+            ]
+        ]
+    },
+    "data_deleteoflist": {
+        "INDEX": [
+            1,
+            [
+                7,
+                "1"
+            ]
+        ]
+    },
+    "data_deletealloflist": {},
+    "data_insertatlist": {
+        "ITEM": [
+            1,
+            [
+                10,
+                "thing"
+            ]
+        ],
+        "INDEX": [
+            1,
+            [
+                7,
+                "1"
+            ]
+        ]
+    },
+    "data_replaceitemoflist": {
+        "INDEX": [
+            1,
+            [
+                7,
+                "1"
+            ]
+        ],
+        "ITEM": [
+            1,
+            [
+                10,
+                "thing"
+            ]
+        ]
+    },
+    "data_itemoflist": {
+        "INDEX": [
+            1,
+            [
+                7,
+                "1"
+            ]
+        ]
+    },
+    "data_itemnumoflist": {
+        "ITEM": [
+            1,
+            [
+                10,
+                "thing"
+            ]
+        ]
+    },
+    "data_lengthoflist": {},
+    "data_listcontainsitem": {
+        "ITEM": [
+            1,
+            [
+                10,
+                "thing"
+            ]
+        ]
+    },
+    "data_showlist": {},
+    "data_hidelist": {},
+    "procedures_definition": {
+        "custom_block": [
+            1,
+            "%a{/5RXU3Vg14DCC{.p8"
+        ]
+    },
+    "procedures_prototype": {
+        "|NZ2A1+!.MfxUXMQ6Lj4": [
+            1,
+            "jv$l;u@0uG|=wDt9i$ow"
+        ],
+        "K1R!d^uBvI2Y+5%nN{po": [
+            1,
+            "xAEz!fY0FmQlP1r_[%~*"
+        ]
+    },
+    "argument_reporter_string_number": {},
+    "argument_reporter_boolean": {},
+    "procedures_call": {
+        "|NZ2A1+!.MfxUXMQ6Lj4": [
+            1,
+            [
+                10,
+                ""
+            ]
+        ]
+    }
+}

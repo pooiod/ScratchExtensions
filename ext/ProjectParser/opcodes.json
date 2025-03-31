@@ -1,0 +1,23 @@
+
+{
+    "motion_movesteps": {
+        "type": "command",
+        "text": "move [STEPS] steps",
+        "inputs": {
+            "STEPS": {
+                "type": "number",
+                "default": "10"
+            }
+        }
+    },
+    "motion_turnright": {
+        "type": "command",
+        "text": "move [DEGREES] steps",
+        "inputs": {
+            "DEGREES": {
+                "type": "number",
+                "default": "15"
+            }
+        }
+    }
+}
