@@ -156,6 +156,22 @@
                     },
 
                     {
+                        opcode: "getThing",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: "Get [THING] from sprite [SPRITE]",
+                        arguments: {
+                            SPRITE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Sprite1"
+                            },
+                            THING: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: "sprthings"
+                            }
+                        }
+                    },
+
+                    {
                         opcode: "getThumbnail",
                         blockType: Scratch.BlockType.REPORTER,
                         text: "Generate project thumbnail of width [WIDTH] and height [HEIGHT]",
@@ -176,6 +192,11 @@
                         isTypeable: true,
                         acceptReporters: true,
                         items: ["sprites", "costumes", "sounds", "extension ids", "extension urls", "platform name", "platform url"]
+                    },
+                    sprthings: {
+                        isTypeable: true,
+                        acceptReporters: true,
+                        items: ["blocks", "comments", "currentCostume", "layerOrder", "variables", "lists", "broadcasts", "volume", "x", "y", "size", "direction", "draggable", "rotationStyle"]
                     }
                 }
             };
@@ -451,6 +472,24 @@
                 lastError = error.toString();
                 return lastError;
             });
+        }
+
+        getThing({ SPRITE, THING }) {
+            if (!projectData) {
+                lastError = "No project loaded.";
+                console.error(lastError);
+                return lastError;
+            }
+
+            const sprite = projectData.targets.find(t => t.name === SPRITE);
+            if (!sprite) return "No sprite found";
+
+            var thing = sprite[THING];
+            if (typeof thing === "array" || typeof thing === "object") {
+                thing = JSON.stringify(thing);
+            }
+
+            return thing;
         }
 
         getThumbnail({ WIDTH, HEIGHT }) {

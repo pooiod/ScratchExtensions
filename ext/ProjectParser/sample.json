@@ -10,7 +10,10 @@
 				]
 			},
 			"lists": {},
-			"broadcasts": {},
+			"broadcasts": {
+				":d.sqc6Ll2N`OJD,Nu3-": "message1",
+				"2%@?V8e7AJ=n4w%L_~Lo": "Super cool event"
+			},
 			"blocks": {},
 			"comments": {},
 			"currentCostume": 0,
@@ -39,29 +42,137 @@
 			"lists": {},
 			"broadcasts": {},
 			"blocks": {
-				"a": {
-					"opcode": "P7KoboldAI_apiStatus",
-					"next": null,
+				"c": {
+					"opcode": "event_whenflagclicked",
+					"next": "a",
 					"parent": null,
 					"inputs": {},
 					"fields": {},
 					"shadow": false,
 					"topLevel": true,
-					"x": 150,
-					"y": 227
+					"x": 377,
+					"y": 364,
+					"comment": "d"
+				},
+				"a": {
+					"opcode": "control_repeat",
+					"next": "b",
+					"parent": "c",
+					"inputs": {
+						"TIMES": [
+							1,
+							[
+								6,
+								"10"
+							]
+						],
+						"SUBSTACK": [
+							2,
+							"e"
+						]
+					},
+					"fields": {},
+					"shadow": false,
+					"topLevel": false
+				},
+				"e": {
+					"opcode": "motion_turnright",
+					"next": null,
+					"parent": "a",
+					"inputs": {
+						"DEGREES": [
+							1,
+							[
+								4,
+								"15"
+							]
+						]
+					},
+					"fields": {},
+					"shadow": false,
+					"topLevel": false
+				},
+				"b": {
+					"opcode": "looks_say",
+					"next": "f",
+					"parent": "a",
+					"inputs": {
+						"MESSAGE": [
+							3,
+							"g",
+							[
+								10,
+								"Hello!"
+							]
+						]
+					},
+					"fields": {},
+					"shadow": false,
+					"topLevel": false
+				},
+				"g": {
+					"opcode": "P7KoboldAI_getmodels",
+					"next": null,
+					"parent": "b",
+					"inputs": {},
+					"fields": {
+						"TYPE": [
+							"text",
+							null
+						]
+					},
+					"shadow": false,
+					"topLevel": false
+				},
+				"f": {
+					"opcode": "event_broadcast",
+					"next": null,
+					"parent": "b",
+					"inputs": {
+						"BROADCAST_INPUT": [
+							1,
+							[
+								11,
+								"Super cool event",
+								"2%@?V8e7AJ=n4w%L_~Lo"
+							]
+						]
+					},
+					"fields": {},
+					"shadow": false,
+					"topLevel": false
 				}
 			},
-			"comments": {},
+			"comments": {
+				"d": {
+					"blockId": "c",
+					"x": 634.5574089332862,
+					"y": 363.5925925925927,
+					"width": 145.1851806640625,
+					"height": 85.9259033203125,
+					"minimized": false,
+					"text": "Stack comment"
+				},
+				"h": {
+					"blockId": null,
+					"x": 608,
+					"y": 235,
+					"width": 106,
+					"height": 85,
+					"minimized": true,
+					"text": "Hello!"
+				}
+			},
 			"currentCostume": 0,
 			"costumes": [
 				{
 					"name": "costume1",
 					"bitmapResolution": 1,
 					"dataFormat": "svg",
-					"assetId": "927d672925e7b99f7813735c484c6922",
-					"md5ext": "927d672925e7b99f7813735c484c6922.svg",
-					"rotationCenterX": 30.74937882782359,
-					"rotationCenterY": 58.864768144346826
+					"assetId": "3f5ffa25b136c626c61690d6bcd9ce49",
+					"md5ext": "3f5ffa25b136c626c61690d6bcd9ce49.svg",
+					"rotationCenterX": 30.749377884038495,
+					"rotationCenterY": 58.864764433040534
 				}
 			],
 			"sounds": [
@@ -70,7 +181,7 @@
 					"assetId": "83c36d806dc92327b9e7049a565c6bff",
 					"dataFormat": "wav",
 					"rate": 48000,
-					"sampleCount": 40681,
+					"sampleCount": 40682,
 					"md5ext": "83c36d806dc92327b9e7049a565c6bff.wav"
 				}
 			],
