@@ -67,7 +67,7 @@
             }
 
             if (urlParams.get('edit') != "true") {
-                window.open(`demo?${urlParams.get('autostart') ? "autostart=true&" : ""}q=${projectUrl}`);
+                window.location.href = `demo?${urlParams.get('autostart') ? "autostart=true&" : ""}q=${encodeURIComponent(projectUrl)}`;
             } else {
                 const type = urlParams.get('edit') === "true" ? "editor" : "embed";
                 const iframe = document.getElementById('iframe');
