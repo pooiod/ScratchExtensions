@@ -425,7 +425,7 @@
         }
 
         // Error pages are removed on other domains for compatability with things like archive.org
-        if (window.location.pathname !== "/" && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
+        if ((window.location.pathname !== "/" || window.location.pathname !== "/serious") && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
             document.body.innerHTML = '';
             document.title += " - page not found";
 
