@@ -46,11 +46,11 @@
         "description": "A collaberation system for TurboWarp based Scratch mods",
         "created": "---",
         "subtext": "Work in progress",
-        "icon": "/extras/images/icons/wip.svg",
+        "icon": "/extras/images/icons/wip.png",
         "iconText": "Work in progress",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+            { "text": "Test extension", "color": "#cbe0f2", "link": "/ext/[id]" }
         ],
         "tags": ["finished"],
         "type": ["unsandboxed"],
