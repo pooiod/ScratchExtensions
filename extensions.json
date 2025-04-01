@@ -50,7 +50,7 @@
         "iconText": "Work in progress",
         "unsandboxed": true,
         "buttons": [
-            { "text": "Test extension", "color": "#cbe0f2", "link": "/ext/[id]" }
+            { "text": "Test extension", "color": "#cbe0f2", "link": "/ext/[id]/#/ext" }
         ],
         "tags": ["finished"],
         "type": ["unsandboxed"],
