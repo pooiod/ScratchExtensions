@@ -329,7 +329,7 @@
                     props: {
                         isTypeable: true,
                         acceptReporters: true,
-                        items: ["blockId", "costumes", "sounds", "extension ids", "extension urls", "platform name", "platform url"]
+                        items: ["costumes", "sounds", "extension ids", "extension urls", "platform name", "platform url"]
                     },
                     sprthings: {
                         isTypeable: true,

@@ -40,6 +40,23 @@
         "hidden": false
     },
     {
+        "id": "BlockLink",
+        "image": "/ext/[id]/cover.svg",
+        "title": "BlockLink",
+        "description": "A collaberation system for TurboWarp based Scratch mods",
+        "created": "---",
+        "subtext": "Work in progress",
+        "icon": "/extras/images/icons/wip.svg",
+        "iconText": "Work in progress",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": true
+    },
+    {
         "id": "HTMLcanvas",
         "image": "/ext/[id]/cover.svg",
         "title": "HTML Canvas",
