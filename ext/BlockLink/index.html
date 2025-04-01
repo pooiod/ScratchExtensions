@@ -19,6 +19,7 @@
             align-items: center;
             min-height: 100vh;
         }
+
         .icon {
             position: fixed;
             top: 15px;
@@ -28,6 +29,7 @@
             z-index: 1000;
             transform: rotateY(180deg);
         }
+
         .header {
             display: flex;
             align-items: center;
@@ -51,6 +53,7 @@
             margin: 0;
             line-height: 1.5;
         }
+
         .notice {
             text-align: center;
             margin: 0px;
@@ -63,6 +66,7 @@
             left: 0px;
             right: 0px;
         }
+
         .footer {
             text-align: center;
             margin: 0px;
@@ -81,6 +85,7 @@
         .footer a {
             color: inherit;
         }
+
         .screenshots {
             display: flex;
             flex-wrap: wrap;
@@ -89,6 +94,7 @@
             max-width: 900px;
             margin: 10px 0;
         }
+
         .screenshot {
             width: 100%;
             max-width: 700px;
@@ -111,6 +117,7 @@
             border-radius: 0px;
             cursor: zoom-out;
         }
+
         .buttons {
             display: flex;
             flex-wrap: wrap;
@@ -120,6 +127,7 @@
             width: calc(100% - 40px);
             padding: 20px;
         }
+
         .button {
             display: inline-block;
             padding: 14px 20px;
@@ -140,10 +148,12 @@
             border: 3px solid #aaa;
             cursor: not-allowed;
         }
-        @media (max-width: 600px) {
+
+        @media (max-width: 700px) {
             .icon {
                 display: none;
             }
+
             .header h1 {
                 font-size: 2em;
             }
@@ -151,9 +161,11 @@
                 font-size: 1em;
                 padding: 0 15px;
             }
+
             .screenshot {
                 max-width: 90%;
             }
+
             .buttons {
                 flex-direction: column;
                 align-items: center;
@@ -166,7 +178,7 @@
 </head>
 <body>
     <img src="icon.svg" alt="BlockLink Icon" class="icon">
-    
+
     <div class="header">
         <div class="header-content">
             <h1>BlockLink</h1>
@@ -175,16 +187,16 @@
     </div>
 
     <div class="notice">
-        BlockLink is still a work in progress
+        This project is still a work in progress
     </div>
 
     <div class="buttons">
         <a href="/view/#/BlockLink" class="button">View Source</a>
         <a href="BlockLink.user.js" class="button">Install Userscript</a>
         <a class="button disabled">Download Extension</a>
-        <a class="button disabled">Get BlockLink for your mod</a>
+        <a href="loader.js" class="button">Get BlockLink for your mod</a>
     </div>
-    
+
     <div class="screenshots">
         <img src="https://yeetyourfiles.lol/file/3e3963c1/Screenshot%202025-04-01%2012.08.25%20PM.png" alt="User tracking" class="screenshot" onclick="toggleExpand(this)">
         <img src="https://yeetyourfiles.lol/file/5d1e76ae/Screenshot%202025-04-01%2011.49.31%20AM.png" alt="User tracking" class="screenshot" onclick="toggleExpand(this)">
