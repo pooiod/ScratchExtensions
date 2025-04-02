@@ -149,21 +149,23 @@
             cursor: not-allowed;
         }
 
-        @media (max-width: 700px) {
+        @media (max-width: 750px) {
             .icon {
                 display: none;
             }
 
+            .screenshot {
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 550px) {
             .header h1 {
                 font-size: 2em;
             }
             .header p {
                 font-size: 1em;
                 padding: 0 15px;
-            }
-
-            .screenshot {
-                max-width: 90%;
             }
 
             .buttons {
