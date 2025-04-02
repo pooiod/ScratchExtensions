@@ -1789,6 +1789,11 @@
                 serverid = false;
                 client.disconnect();
 
+                const elements = document.querySelectorAll('#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div.sprite-selector_items-wrapper_4bcOj.box_box_2jjDp .sprite-selector-item_sprite-info_-I0i_');
+                for (const element of elements) {
+                    element.parentElement.style = "";
+                }
+
                 try {
                     Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
                 } catch(e) {}
@@ -1839,7 +1844,6 @@
                     // menuItemElement.style.borderBottom = '1px solid rgba(110, 110, 110, 0.3)';
                 } else if (menuBlock.blockType === Scratch.BlockType.BUTTON) {
                     menuItemElement.onclick = () => {
-                        console.log("item clicked", menuBlock);
                         if (typeof this[menuBlock.func] === 'function') {
                             this[menuBlock.func]();
                         }
