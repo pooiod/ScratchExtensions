@@ -1857,6 +1857,12 @@
                         // menuItemElement.style.backgroundColor = '';
                         menuItemElement.classList.remove('menu_expanded_1-Ozh');
                     };
+                } else if (!menuBlock.blockType) {
+                    menuItemElement.style.height = "1px";
+                    menuItemElement.style.marginBottom = "1px";
+                    menuItemElement.classList.add('menu_expanded_1-Ozh')
+                    itemCount--;
+                    itemCount += "0.1";
                 } else {
                     menuItemElement.style.height = "1px";
                     menuItemElement.style.marginBottom = "1px";
