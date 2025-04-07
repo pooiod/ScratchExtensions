@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BlockLink
 // @namespace    https://p7scratchextensions.pages.dev
-// @version      1
+// @version      wip
 // @description  A collaberation system for TurboWarp based Scratch mods.
 // @include      https://mirror.turbowarp.xyz*
 // @include      https://turbowarp.org*
