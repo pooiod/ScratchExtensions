@@ -1,38 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #eaf7e7;
-        }
-        .container {
-            text-align: center;
-        }
-        .subtitle {
-            font-size: 1.2rem;
-            color: #555;
-            margin-top: 20px;
-        }
-        img {
-            max-width: 300px;
-            margin: 0 auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pooiod7's Scratch project extension manager (wip)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; background: #f9f9f9; color: #111; }
+#container { display: flex; height: 100%; width: 100%; transition: all 0.5s ease; }
+#file-picker { aspect-ratio: 4/3; margin: auto; background: #eaeaea; border: 2px dashed #bbb; display: flex; align-items: center; justify-content: center; width: 100%; max-height: 100%; position: relative; transition: opacity 0.5s ease; background-size: contain; background-repeat: no-repeat; background-position: center; }
+#file-picker.dragover { background-color: #ddd; }
+#file-picker span { font-size: 1.5em; color: #666; transition: opacity 0.3s ease; }
+#menu { width: 0; opacity: 0; overflow: hidden; background: #fff; color: #111; transition: all 0.5s ease; border-left: 1px solid #ccc; display: flex; flex-direction: column; }
+#menu.visible { width: 300px; opacity: 1; padding: 20px 10px; }
+#menu h1 { font-size: 1.2em; margin: 0 0 10px 0; text-align: center; }
+#extensions-container { flex: 1; overflow-y: auto; margin-bottom: 10px; }
+.ext-item { width: 100%; margin-bottom: 5px; }
+.ext-button { width: 100%; padding: 10px; background: #eee; border: 1px solid #ccc; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+.ext-button:hover { background: #ddd; }
+.ext-arrow { transition: transform 0.3s ease; }
+.ext-arrow.open { transform: rotate(90deg); }
+.ext-dropdown { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.ext-dropdown.open { max-height: 200px; }
+.ext-dropdown input { width: 100%; padding: 5px; margin: 5px 0; border: 1px solid #ccc; background: #f9f9f9; }
+.ext-dropdown button { width: 100%; padding: 5px; margin-bottom: 5px; border: 1px solid #ccc; background: #eee; cursor: pointer; }
+.ext-dropdown button:disabled { cursor: not-allowed; background: #ddd; }
+#project-buttons { display: flex; flex-direction: column; }
+#project-buttons button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; background: #eee; cursor: pointer; }
+#project-buttons button:disabled { cursor: not-allowed; background: #ddd; }
+.fade-img { animation: fadeIn 0.5s ease forwards; }
+@keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+#add-extension-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(249,249,249,0.95); display: none; align-items: center; justify-content: center; z-index: 10; }
+#popup-content { background: #fff; border: 1px solid #ccc; width: 400px; max-width: 90%; padding: 20px; box-sizing: border-box; }
+#popup-tabs { display: flex; margin-bottom: 10px; }
+.tab-button { flex: 1; padding: 10px; background: #eee; border: 1px solid #ccc; cursor: pointer; text-align: center; }
+.tab-button.active { background: #ddd; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+#popup-back { margin-top: 10px; width: 100%; padding: 10px; background: #eee; border: 1px solid #ccc; cursor: pointer; }
+#popup-set { margin-top: 10px; width: 100%; padding: 10px; background: #eee; border: 1px solid #ccc; cursor: pointer; }
+textarea { width: 100%; height: 150px; resize: vertical; padding: 5px; border: 1px solid #ccc; box-sizing: border-box; background: #f9f9f9; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <img src="/extras/images/WipPageAxolotl.svg" alt="Don't look yet!">
-        <p class="subtitle">This page isn't ready yet. Check back later to see what's new!</p>
+<div id="container">
+  <div id="file-picker"><span>Load a Scratch project</span></div>
+  <div id="menu">
+    <h1></h1>
+    <div id="extensions-container"></div>
+    <div id="project-buttons">
+      <button id="save-project">Save project</button>
+      <button id="load-project">Load project</button>
+      <button id="add-extension">Add extension</button>
     </div>
+  </div>
+</div>
+<div id="add-extension-popup">
+  <div id="popup-content">
+    <div id="popup-tabs">
+      <div class="tab-button active" data-tab="url-tab">URL</div>
+      <div class="tab-button" data-tab="file-tab">File</div>
+      <div class="tab-button" data-tab="code-tab">Code</div>
+    </div>
+    <div id="url-tab" class="tab-content active">
+      <input type="text" id="ext-url-input" placeholder="Enter extension URL">
+      <button id="ext-url-set">Set</button>
+    </div>
+    <div id="file-tab" class="tab-content">
+      <input type="file" id="ext-file-input" accept=".js">
+    </div>
+    <div id="code-tab" class="tab-content">
+      <textarea id="ext-code-input" placeholder="Paste JS code here"></textarea>
+      <button id="ext-code-set">Set</button>
+    </div>
+    <button id="popup-set">Add Extension</button>
+    <button id="popup-back">Back</button>
+  </div>
+</div>
+<input type="file" id="hidden-input" accept=".sb3,.pmp" style="display:none">
+<script>
+let projectData, fetchedBuffer, lastError, originalFileName;
+const picker = document.getElementById('file-picker');
+const menu = document.getElementById('menu');
+const input = document.getElementById('hidden-input');
+const extensionsContainer = document.getElementById('extensions-container');
+const header = menu.querySelector('h1');
+const saveProjectBtn = document.getElementById('save-project');
+const loadProjectBtn = document.getElementById('load-project');
+const addExtensionBtn = document.getElementById('add-extension');
+const addExtPopup = document.getElementById('add-extension-popup');
+const popupBack = document.getElementById('popup-back');
+const popupSet = document.getElementById('popup-set');
+const extUrlInput = document.getElementById('ext-url-input');
+const extUrlSet = document.getElementById('ext-url-set');
+const extFileInput = document.getElementById('ext-file-input');
+const extCodeInput = document.getElementById('ext-code-input');
+const extCodeSet = document.getElementById('ext-code-set');
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabContents = document.querySelectorAll('.tab-content');
+picker.addEventListener('click', () => input.click());
+picker.addEventListener('dragover', e => { e.preventDefault(); picker.classList.add('dragover'); });
+picker.addEventListener('dragleave', () => picker.classList.remove('dragover'));
+picker.addEventListener('drop', e => { e.preventDefault(); picker.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+input.addEventListener('change', () => { if (input.files.length > 0) handleFile(input.files[0]); });
+saveProjectBtn.addEventListener('click', () => {
+  if (!fetchedBuffer || !originalFileName) return;
+  const blob = new Blob([new Uint8Array(fetchedBuffer)]);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = originalFileName;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+loadProjectBtn.addEventListener('click', () => { input.click(); });
+addExtensionBtn.addEventListener('click', () => { addExtPopup.style.display = "flex"; });
+popupBack.addEventListener('click', () => { addExtPopup.style.display = "none"; });
+tabButtons.forEach(btn => { btn.addEventListener('click', () => { tabButtons.forEach(b => b.classList.remove('active')); tabContents.forEach(c => c.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.getAttribute('data-tab')).classList.add('active'); }); });
+extUrlSet.addEventListener('click', () => { let url = extUrlInput.value.trim(); if(url === "") { alert("Enter a URL"); return; } fetch(url).then(r => r.text()).then(code => { processExtension(code, url); }).catch(() => { alert("Failed to fetch URL"); }); });
+extFileInput.addEventListener('change', () => { if(extFileInput.files.length > 0) { const file = extFileInput.files[0]; const fr = new FileReader(); fr.onload = () => { const code = fr.result; let dataUri = "data:text/javascript;base64," + btoa(code); processExtension(code, dataUri); }; fr.readAsText(file); } });
+extCodeSet.addEventListener('click', () => { let code = extCodeInput.value; if(code.trim() === "") { alert("Enter code"); return; } processExtension(code, null); });
+popupSet.addEventListener('click', () => { 
+  let activeTab = document.querySelector('.tab-content.active').id; 
+  if(activeTab === "url-tab") { 
+    let url = extUrlInput.value.trim(); 
+    if(url === "") { alert("Enter a URL"); return; } 
+    fetch(url).then(r => r.text()).then(code => { processExtension(code, url); }).catch(() => { alert("Failed to fetch URL"); }); 
+  } else if(activeTab === "file-tab") { 
+    if(extFileInput.files.length > 0) { 
+      const file = extFileInput.files[0]; 
+      const fr = new FileReader(); 
+      fr.onload = () => { const code = fr.result; let dataUri = "data:text/javascript;base64," + btoa(code); processExtension(code, dataUri); }; 
+      fr.readAsText(file); 
+    } else { alert("Select a file"); } 
+  } else if(activeTab === "code-tab") { 
+    let code = extCodeInput.value; 
+    if(code.trim() === "") { alert("Enter code"); return; } 
+    processExtension(code, null); 
+  } 
+});
+function processExtension(code, source) {
+  let m = code.match(/id\s*:\s*(?:"([^"]+)"|'([^']+)'|([^,"}]+))/);
+  if(m) {
+    let extId = (m[1]||m[2]||m[3]).trim();
+    if(!projectData.extensions) { projectData.extensions = []; }
+    if(!projectData.extensionURLs) { projectData.extensionURLs = {}; }
+    if(projectData.extensions.indexOf(extId) === -1) {
+      projectData.extensions.push(extId);
+      if(source) { projectData.extensionURLs[extId] = source; }
+    }
+    buildExtensions();
+    addExtPopup.style.display = "none";
+    extUrlInput.value = "";
+    extCodeInput.value = "";
+    extFileInput.value = "";
+  } else { alert("Error: id not found"); }
+}
+function handleFile(file) {
+  if (!file) return;
+  originalFileName = file.name;
+  if (menu.classList.contains('visible')) { menu.classList.remove('visible'); setTimeout(() => process(file), 500); } else { process(file); }
+}
+function process(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    fetchedBuffer = reader.result;
+    JSZip.loadAsync(fetchedBuffer).then(zip => { return zip.file('project.json').async('string'); })
+    .then(json => { projectData = JSON.parse(json); return getThumbnail({ WIDTH: 480, HEIGHT: 360 }); })
+    .then(bg => {
+      if (bg.startsWith('data:image')) {
+        picker.style.opacity = 0;
+        setTimeout(() => {
+          picker.style.backgroundImage = `url(${bg})`;
+          picker.innerHTML = '';
+          picker.classList.add('fade-img');
+          header.textContent = file.name;
+          menu.classList.add('visible');
+          buildExtensions();
+        }, 5);
+      }
+    }).catch(() => {});
+  };
+  reader.readAsArrayBuffer(file);
+}
+function buildExtensions() {
+  extensionsContainer.innerHTML = '';
+  if (projectData.extensions && projectData.extensions.length > 0) {
+    projectData.extensions.forEach(extId => {
+      const extItem = document.createElement('div');
+      extItem.className = 'ext-item';
+      const extButton = document.createElement('button');
+      extButton.className = 'ext-button';
+      extButton.style.background = "#eee";
+      const spanText = document.createElement('span');
+      spanText.textContent = extId;
+      const arrow = document.createElement('span');
+      arrow.className = 'ext-arrow';
+      arrow.textContent = '▶';
+      extButton.appendChild(spanText);
+      extButton.appendChild(arrow);
+      const dropdown = document.createElement('div');
+      dropdown.className = 'ext-dropdown';
+      const inputUrl = document.createElement('input');
+      inputUrl.type = 'text';
+      inputUrl.value = (projectData.extensionURLs && projectData.extensionURLs[extId]) ? projectData.extensionURLs[extId] : "";
+      inputUrl.placeholder = "Add a url";
+      inputUrl.addEventListener('change', () => {
+        const newUrl = inputUrl.value.trim();
+        if(newUrl === "") {
+          delete projectData.extensionURLs[extId];
+          extButton.style.background = "#eee";
+        } else {
+          projectData.extensionURLs[extId] = newUrl;
+          fetch(newUrl).then(r => r.text()).then(text => {
+            if(text.indexOf("Scratch.extensions.register") !== -1) {
+              extButton.style.background = "#a0f0e0";
+            } else {
+              extButton.style.background = "#f0e0a0";
+            }
+          }).catch(() => { extButton.style.background = "#f0e0a0"; });
+        }
+      });
+      const genDummy = document.createElement('button');
+      genDummy.textContent = "Generate dummy";
+      genDummy.disabled = true;
+      const findArchive = document.createElement('button');
+      findArchive.textContent = "Find archive";
+      findArchive.disabled = true;
+      const removeExt = document.createElement('button');
+      removeExt.textContent = "Remove extension";
+      removeExt.disabled = true;
+      dropdown.appendChild(inputUrl);
+      dropdown.appendChild(genDummy);
+      dropdown.appendChild(findArchive);
+      dropdown.appendChild(removeExt);
+      extButton.addEventListener('click', () => {
+        dropdown.classList.toggle('open');
+        arrow.classList.toggle('open');
+      });
+      extItem.appendChild(extButton);
+      extItem.appendChild(dropdown);
+      extensionsContainer.appendChild(extItem);
+      if(projectData.extensionURLs && projectData.extensionURLs[extId]) {
+        fetch(projectData.extensionURLs[extId]).then(r => r.text()).then(text => {
+          if(text.indexOf("Scratch.extensions.register") !== -1) {
+            extButton.style.background = "#a0f0e0";
+          } else {
+            extButton.style.background = "#f0e0a0";
+          }
+        }).catch(() => { extButton.style.background = "#f0e0a0"; });
+      }
+    });
+  }
+}
+function getThumbnail({ WIDTH, HEIGHT }) {
+  if (!projectData) { lastError = "No project loaded."; console.error(lastError); return Promise.resolve(lastError); }
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = WIDTH;
+  canvas.height = HEIGHT;
+  return JSZip.loadAsync(fetchedBuffer)
+  .then(zip => {
+    const targets = projectData.targets.filter(t => t.visible !== false)
+      .sort((a, b) => (a.layerOrder || 0) - (b.layerOrder || 0));
+    const drawPromises = targets.map(target => {
+      const costume = target.costumes[target.currentCostume];
+      if (!costume) return Promise.resolve();
+      return zip.file(costume.md5ext).async("base64").then(imageData => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = costume.dataFormat === "svg" ? `data:image/svg+xml;base64,${imageData}` : `data:image/png;base64,${imageData}`;
+          const timer = setTimeout(() => reject("Image load timeout"), 5000);
+          img.onload = () => {
+            clearTimeout(timer);
+            ctx.save();
+            ctx.translate(WIDTH / 2 + (target.x || 0), HEIGHT / 2 - (target.y || 0));
+            ctx.rotate(((target.direction || 90) - 90) * (Math.PI / 180));
+            ctx.scale((target.size || 100) / 100, (target.size || 100) / 100);
+            const rotationCenterX = costume.rotationCenterX || 0;
+            const rotationCenterY = costume.rotationCenterY || 0;
+            ctx.drawImage(img, -rotationCenterX, -rotationCenterY);
+            ctx.restore();
+            resolve();
+          };
+          img.onerror = () => { clearTimeout(timer); reject("Image failed to load"); };
+        });
+      });
+    });
+    return Promise.all(drawPromises);
+  }).then(() => canvas.toDataURL("image/png")).catch(error => { console.error(error); lastError = error.toString(); return lastError; });
+}
+</script>
 </body>
 </html>
