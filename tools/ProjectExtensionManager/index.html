@@ -570,16 +570,17 @@
 
 		function generateDummy(extId) {
 			try {
-				let blocksMap = {};
-				projectData.targets.forEach(target => {
-					if (target.blocks) {
-						Object.values(target.blocks).forEach(block => {
+			let blocksMap = {};
+			let allBlocks = {};
+			projectData.targets.forEach(target => {
+				if (target.blocks) {
+					Object.entries(target.blocks).forEach(([BlockKey, block]) => {
 						if (typeof block.opcode === "string" && block.opcode.startsWith(extId + "_")) {
 							let blockId = block.opcode.slice(extId.length + 1);
 							if (!blocksMap[blockId]) {
 								blocksMap[blockId] = { inputs: {}, reporter: false };
 							}
-							if (block.parent !== null && block.parent !== undefined) {
+							if (block.parent !== null && block.parent !== undefined && target.blocks.inputs && JSON.stringify(target.blocks.inputs).includes(`"${BlockKey}"`)) {
 								blocksMap[blockId].reporter = true;
 							}
 							if (block.inputs) {
@@ -588,9 +589,9 @@
 								});
 							}
 						}
-						});
-					}
-				});
+					});
+				}
+			});
 				let blocksArr = [];
 				Object.keys(blocksMap).forEach(blockId => {
 					let argKeys = Object.keys(blocksMap[blockId].inputs);
