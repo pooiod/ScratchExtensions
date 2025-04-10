@@ -570,37 +570,42 @@
 
 		function generateDummy(extId) {
 			try {
-			let blocksMap = {};
-			let allBlocks = {};
-			projectData.targets.forEach(target => {
-				if (target.blocks) {
-					Object.entries(target.blocks).forEach(([BlockKey, block]) => {
-						if (typeof block.opcode === "string" && block.opcode.startsWith(extId + "_")) {
-							let blockId = block.opcode.slice(extId.length + 1);
+				let blocksMap = {};
+				let allBlocks = {};
+				projectData.targets.forEach(target => {
+					if (target.blocks) {
+						Object.entries(target.blocks).forEach(([BlockKey, block]) => {
+							if (typeof block.opcode === "string" && block.opcode.startsWith(extId + "_")) {
+								let blockId = block.opcode.slice(extId.length + 1);
 
-							if (!blocksMap[blockId]) {
-								blocksMap[blockId] = { inputs: {}, reporter: false };
-							}
+								if (!blocksMap[blockId]) {
+									blocksMap[blockId] = { inputs: {}, reporter: false };
+								}
 
-							// Most C blocks in Scratch seem to use "SUBSTACK" at the start for each input
-							if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent]) {
-								var thingy = BlockKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-								thingy = JSON.stringify(target.blocks[block.parent].inputs).replace(new RegExp(`"${thingy}":`, 'g'), '');
+								// Most C blocks in Scratch seem to use "SUBSTACK" at the start for each input
+								if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent]) {
+									var thingy = BlockKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+									thingy = JSON.stringify(target.blocks[block.parent].inputs).replace(new RegExp(`"${thingy}":`, 'g'), '');
 
-								if (!JSON.stringify(target.blocks[block.parent].inputs).includes(`"SUBSTACK`) && thingy.includes(`"${BlockKey}"`)){
-									blocksMap[blockId].reporter = true;
+									if (!JSON.stringify(target.blocks[block.parent].inputs).includes(`"SUBSTACK`) && thingy.includes(`"${BlockKey}"`)){
+										blocksMap[blockId].reporter = true;
+									}
+
+									if (JSON.stringify(blocksMap[blockId]).includes(`"SUBSTACK`)) {
+										blocksMap[blockId].reporter = false;
+										blocksMap[blockId].Cblock = true;
+									}
+								}
+
+								if (block.inputs) {
+									Object.keys(block.inputs).forEach(inputKey => {
+										blocksMap[blockId].inputs[inputKey] = true;
+									});
 								}
 							}
-
-							if (block.inputs) {
-								Object.keys(block.inputs).forEach(inputKey => {
-									blocksMap[blockId].inputs[inputKey] = true;
-								});
-							}
-						}
-					});
-				}
-			});
+						});
+					}
+				});
 				let blocksArr = [];
 				Object.keys(blocksMap).forEach(blockId => {
 					let argKeys = Object.keys(blocksMap[blockId].inputs);
@@ -609,7 +614,14 @@
 					argKeys.forEach(a => {
 						args[a] = { type: "string", defaultValue: a };
 					});
-					let blockType = blocksMap[blockId].reporter ? "reporter" : "command";
+					let blockType = "";
+					if (blocksMap[blockId].reporter) {
+						blockType = "reporter";
+					} else if (blocksMap[blockId].Cblock) {
+						blockType = "conditional";
+					} else {
+						blockType = "command";
+					}
 					blocksArr.push({
 						opcode: blockId,
 						blockType: blockType,
@@ -692,9 +704,13 @@
 		            })
 		            .then(json => {
 		                projectData = JSON.parse(json);
+
+						if (projectData && projectData.info && projectData.info.flashVersion) throw new Error("Scratch2 projects are unsuported");
+						if (!projectData || !projectData.meta) throw new Error("Unknown project format");
+
 		                return getThumbnail({
-		                    WIDTH: 480*2,
-		                    HEIGHT: 360*2
+		                    WIDTH: 480*1.5,
+		                    HEIGHT: 360*1.5
 		                });
 		            })
 		            .then(bg => {
@@ -709,7 +725,9 @@
 		                        buildExtensions();
 		                    }, 600);
 		                }
-		            }).catch(() => {});
+		            }).catch((err) => {
+						alert(err);
+					});
 		    };
 		    reader.readAsArrayBuffer(file);
 		}
