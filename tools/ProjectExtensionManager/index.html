@@ -726,6 +726,8 @@
 		                    }, 600);
 		                }
 		            }).catch((err) => {
+						picker.style.background = "white";
+						picker.innerHTML = 'Load a scratch project';
 						alert(err);
 					});
 		    };
