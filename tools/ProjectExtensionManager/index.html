@@ -405,13 +405,23 @@
 		    if (input.files.length > 0) handleFile(input.files[0]);
 		});
 		saveProjectBtn.addEventListener('click', () => {
-		    if (!fetchedBuffer || !originalFileName) return;
-		    const blob = new Blob([new Uint8Array(fetchedBuffer)]);
-		    const a = document.createElement("a");
-		    a.href = URL.createObjectURL(blob);
-		    a.download = originalFileName;
-		    a.click();
-		    URL.revokeObjectURL(a.href);
+		JSZip.loadAsync(fetchedBuffer)
+			.then(zip => {
+				zip.file("project.json", JSON.stringify(projectData, null, 2));
+				return zip.generateAsync({ type: "blob" });
+			})
+			.then(blob => {
+				if (!fetchedBuffer || !originalFileName) return;
+				const a = document.createElement('a');
+				const url = URL.createObjectURL(blob);
+				a.href = url;
+				a.download = originalFileName;
+				document.body.appendChild(a);
+				a.click();
+				a.remove();
+				URL.revokeObjectURL(url);
+			})
+			.catch(err => { alert(`Error saving project: ${err}`); });
 		});
 		loadProjectBtn.addEventListener('click', () => {
 		    input.click();
@@ -559,58 +569,64 @@
 		}
 
 		function generateDummy(extId) {
-		    let blocksMap = {};
-		    projectData.targets.forEach(target => {
-		        if (target.blocks) {
-		            Object.values(target.blocks).forEach(block => {
-		                if (typeof block.opcode === "string" && block.opcode.startsWith(extId + "_")) {
-		                    let blockId = block.opcode.slice(extId.length + 1);
-		                    if (!blocksMap[blockId]) {
-		                        blocksMap[blockId] = {};
-		                    }
-		                    if (block.inputs) {
-		                        Object.keys(block.inputs).forEach(inputKey => {
-		                            blocksMap[blockId][inputKey] = true;
-		                        });
-		                    }
-		                }
-		            });
-		        }
-		    });
-		    let blocksArr = [];
-		    Object.keys(blocksMap).forEach(blockId => {
-		        let argKeys = Object.keys(blocksMap[blockId]);
-		        let text = blockId + argKeys.map(a => " [" + a + "]").join("");
-		        let args = {};
-		        argKeys.forEach(a => {
-		            args[a] = {
-		                type: "Scratch.ArgumentType.STRING",
-		                defaultValue: ""
-		            };
-		        });
-		        blocksArr.push({
-		            opcode: blockId,
-		            blockType: "Scratch.BlockType.COMMAND",
-		            text: text,
-		            arguments: args
-		        });
-		    });
-		    let generated = "// Generated extension template\n" +
-		        "(function(Scratch) {\n" +
-		        "    'use strict';\n" +
-		        "    class " + extId + " {\n" +
-		        "        getInfo() {\n" +
-		        "            return {\n" +
-		        "                id: '" + extId + "',\n" +
-		        "                name: '" + extId + "',\n" +
-		        "                blocks: " + JSON.stringify(blocksArr, null, 16) + "\n" +
-		        "            };\n" +
-		        "        }\n" +
-		        "        " + blocksArr.map(b => b.opcode + "(args) {}").join("\n        ") + "\n" +
-		        "    }\n" +
-		        "    Scratch.extensions.register(new " + extId + "());\n" +
-		        "})(Scratch);\n";
-		    return generated;
+			try {
+				let blocksMap = {};
+				projectData.targets.forEach(target => {
+					if (target.blocks) {
+						Object.values(target.blocks).forEach(block => {
+						if (typeof block.opcode === "string" && block.opcode.startsWith(extId + "_")) {
+							let blockId = block.opcode.slice(extId.length + 1);
+							if (!blocksMap[blockId]) {
+								blocksMap[blockId] = { inputs: {}, reporter: false };
+							}
+							if (block.parent !== null && block.parent !== undefined) {
+								blocksMap[blockId].reporter = true;
+							}
+							if (block.inputs) {
+								Object.keys(block.inputs).forEach(inputKey => {
+									blocksMap[blockId].inputs[inputKey] = true;
+								});
+							}
+						}
+						});
+					}
+				});
+				let blocksArr = [];
+				Object.keys(blocksMap).forEach(blockId => {
+					let argKeys = Object.keys(blocksMap[blockId].inputs);
+					let text = `${blockId}${argKeys.map(a => ` [${a}]`).join('')}`;
+					let args = {};
+					argKeys.forEach(a => {
+						args[a] = { type: "string", defaultValue: a };
+					});
+					let blockType = blocksMap[blockId].reporter ? "reporter" : "command";
+					blocksArr.push({
+						opcode: blockId,
+						blockType: blockType,
+						text: text,
+						arguments: args
+					});
+				});
+				let generated = `// Generated extension template
+(function(Scratch) {
+	'use strict';
+	class ${extId} {
+		getInfo() {
+			return {
+				id: '${extId}',
+				name: '${extId}',
+				color1: '#ed4242',
+				blocks: ${JSON.stringify(blocksArr, null, 16)}
+			};
+		}
+		${blocksArr.map(b => `${b.opcode}(args) {}`).join('\n        ')}
+	}
+	Scratch.extensions.register(new ${extId}());
+})(Scratch);`;
+				return generated;
+			} catch (err) {
+				alert(err);
+			}
 		}
 
 		function generateDummyForExtension(extButton, inputUrl, extId, genDummy) {
