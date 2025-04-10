@@ -726,8 +726,9 @@
 		                    }, 600);
 		                }
 		            }).catch((err) => {
-						picker.style.background = "white";
-						picker.innerHTML = 'Load a scratch project';
+						picker.style.background = "#eaeaea";
+						picker.innerHTML = `<span>Load a Scratch project</span>`;
+						picker.style.opacity = 1;
 						alert(err);
 					});
 		    };
