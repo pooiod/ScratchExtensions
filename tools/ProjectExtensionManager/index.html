@@ -577,12 +577,21 @@
 					Object.entries(target.blocks).forEach(([BlockKey, block]) => {
 						if (typeof block.opcode === "string" && block.opcode.startsWith(extId + "_")) {
 							let blockId = block.opcode.slice(extId.length + 1);
+
 							if (!blocksMap[blockId]) {
 								blocksMap[blockId] = { inputs: {}, reporter: false };
 							}
-							if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent] && JSON.stringify(target.blocks[block.parent].inputs).includes(`"${BlockKey}"`) && !JSON.stringify(target.blocks[block.parent].inputs).includes(`"SUBSTACK`)) {
-								blocksMap[blockId].reporter = true;
+
+							// Most C blocks in Scratch seem to use "SUBSTACK" at the start for each input
+							if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent]) {
+								var thingy = BlockKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+								thingy = JSON.stringify(target.blocks[block.parent].inputs).replace(new RegExp(`"${thingy}":`, 'g'), '');
+
+								if (!JSON.stringify(target.blocks[block.parent].inputs).includes(`"SUBSTACK`) && thingy.includes(`"${BlockKey}"`)){
+									blocksMap[blockId].reporter = true;
+								}
 							}
+
 							if (block.inputs) {
 								Object.keys(block.inputs).forEach(inputKey => {
 									blocksMap[blockId].inputs[inputKey] = true;
