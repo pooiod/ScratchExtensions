@@ -580,7 +580,7 @@
 							if (!blocksMap[blockId]) {
 								blocksMap[blockId] = { inputs: {}, reporter: false };
 							}
-							if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent] && (JSON.stringify(target.blocks[block.parent].inputs).includes(`"${BlockKey}"`) || JSON.stringify(target.blocks[block.parent].fields).includes(`"${BlockKey}"`))) {
+							if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent] && JSON.stringify(target.blocks[block.parent].inputs).includes(`"${BlockKey}"`) && !JSON.stringify(target.blocks[block.parent].inputs).includes(`"SUBSTACK`)) {
 								blocksMap[blockId].reporter = true;
 							}
 							if (block.inputs) {
