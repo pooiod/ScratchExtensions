@@ -710,8 +710,8 @@
 						if (!projectData || !projectData.meta) throw new Error("Unknown project format");
 
 		                return getThumbnail({
-		                    WIDTH: 480*1.5,
-		                    HEIGHT: 360*1.5
+		                    WIDTH: 480,
+		                    HEIGHT: 360
 		                });
 		            })
 		            .then(bg => {
@@ -727,7 +727,8 @@
 		                    }, 600);
 		                }
 		            }).catch((err) => {
-						picker.style.background = "#eaeaea";
+						picker.style.backgroundColor = "#eaeaea";
+						picker.style.backgroundImage = `none`;
 						picker.innerHTML = `<span>Load a Scratch project</span>`;
 						picker.style.opacity = 1;
 						alert(err);
