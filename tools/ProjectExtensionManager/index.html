@@ -580,7 +580,7 @@
 							if (!blocksMap[blockId]) {
 								blocksMap[blockId] = { inputs: {}, reporter: false };
 							}
-							if (block.parent !== null && block.parent !== undefined && target.blocks.inputs && JSON.stringify(target.blocks.inputs).includes(`"${BlockKey}"`)) {
+							if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent] && (JSON.stringify(target.blocks[block.parent].inputs).includes(`"${BlockKey}"`) || JSON.stringify(target.blocks[block.parent].fields).includes(`"${BlockKey}"`))) {
 								blocksMap[blockId].reporter = true;
 							}
 							if (block.inputs) {
@@ -615,7 +615,7 @@
 		getInfo() {
 			return {
 				id: '${extId}',
-				name: '${extId}',
+				name: '${extId} Generated',
 				color1: '#ed4242',
 				blocks: ${JSON.stringify(blocksArr, null, 16)}
 			};
