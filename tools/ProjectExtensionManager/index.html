@@ -593,7 +593,7 @@
 
 							matches.push(result);
 
-						if (percent == 100) return result;
+							if (percent == 100) return result;
 						} catch {}
 					}
 				}
@@ -832,7 +832,7 @@
 		        });
 		}
 
-		function updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive) {
+		function updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId) {
 		    let url = inputUrl.value.trim();
 		    if (url === "" || url.startsWith("data:")) {
 		        findArchive.disabled = true;
@@ -847,6 +847,12 @@
 		        findArchive.textContent = "Find archive";
 		        removeArchive.style.display = "none";
 		    }
+
+			if (!projectData.extensionURLs[extId]) {
+				validateSource.disabled = true;
+			} else {
+				validateSource.disabled = false;
+			}
 		}
 		picker.addEventListener('click', () => input.click());
 		picker.addEventListener('dragover', e => {
@@ -1233,7 +1239,7 @@
 		                    projectData.extensionURLs[extId] = newUrl;
 		                    validateExtension(extButton, newUrl);
 		                }
-		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive);
+		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId);
 		            });
 		            const genDummy = document.createElement('button');
 		            genDummy.textContent = "Generate replacement";
@@ -1310,7 +1316,7 @@
 		            extButton.addEventListener('click', () => {
 		                dropdown.classList.toggle('open');
 		                arrow.classList.toggle('open');
-		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive);
+		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId);
 		            });
 		            extItem.appendChild(extButton);
 		            extItem.appendChild(dropdown);
@@ -1318,7 +1324,7 @@
 		            if (projectData.extensionURLs && projectData.extensionURLs[extId]) {
 		                validateExtension(extButton, projectData.extensionURLs[extId]);
 		            }
-		            updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive);
+		            updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId);
 		        });
 		    }
 		}
