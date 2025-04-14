@@ -795,6 +795,57 @@
 				console.warn("unable to pull repo", "https://snail-ide.js.org/editor.html");
 			}
 
+			try {
+				console.log("pulling repo", "https://sharkpools-extensions.vercel.app");
+
+				async function fetchJSFiles() {
+					const apiUrl = 'https://api.github.com/repos/SharkPool-SP/SharkPools-Extensions/contents/extension-code?ref=main';
+					const response = await fetch(apiUrl);
+					if (!response.ok) {
+						throw new Error(`GitHub API responded with status ${response.status}`);
+					}
+					const data = await response.json();
+					const jsFiles = data
+						.filter(item => item.type === 'file' && item.name.endsWith('.js'))
+						.map(item => "https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-code/" + item.name);
+					return jsFiles;
+				}
+				var extensions = await fetchJSFiles();
+
+				if (!extensions || extensions == []) throw new Error("No extensions found");
+
+				for (const ext of extensions) {
+					try {
+						console.log("pulling ext", ext);
+						const extCode = await fetch(ext).then(res => res.text());
+						const len = Math.max(extCode.length, code.length);
+
+						let same = 0;
+						for (let i = 0; i < Math.min(extCode.length, code.length); i++) {
+							if (extCode[i] === code[i]) same++;
+						}
+
+						const percent = (same / len) * 100;
+						var result = {
+							percent,
+							source: "SharkPool's Extension Collection",
+							base: "https://sharkpools-extensions.vercel.app",
+							ext: ext.replace("https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-code/", ""),
+							name: ext.replace("https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-code/", "").replace(".js", ""),
+							url: ext,
+							build: "public",
+							match: `${percent.toFixed(0)}%`
+						};
+						matches.push(result);
+
+						if (percent == 100) return result;
+					} catch {}
+				}
+			} catch {
+				reposkips += 1;
+				console.warn("unable to pull repo", "https://sharkpools-extensions.vercel.app");
+			}
+
 			matches.sort((a, b) => b.percent - a.percent);
 
 			console.log(matches);
