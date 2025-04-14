@@ -63,12 +63,14 @@
 			background: #f9f9f9;
 			color: #111;
 		}
+
 		#container {
 			display: flex;
 			height: 100%;
 			width: 100%;
 			transition: all 0.5s ease;
 		}
+
 		#file-picker {
 			margin: 0px;
 			background: #eaeaea;
@@ -93,6 +95,7 @@
 			color: #666;
 			transition: opacity 0.3s ease;
 		}
+
 		#menu {
 			width: 0;
 			opacity: 0;
@@ -114,11 +117,13 @@
 			margin: 0 0 10px 0;
 			text-align: center;
 		}
+
 		#extensions-container {
 			flex: 1;
 			overflow-y: auto;
 			margin-bottom: 10px;
 		}
+
 		.ext-item {
 			width: 100%;
 			margin-bottom: 5px;
@@ -170,6 +175,7 @@
 			cursor: not-allowed;
 			background: #ddd;
 		}
+
 		#project-buttons {
 			display: flex;
 			flex-direction: column;
@@ -186,14 +192,7 @@
 			cursor: not-allowed;
 			background: #ddd;
 		}
-		@keyframes fadeIn {
-			from {
-				opacity: 0;
-			}
-			to {
-				opacity: 1;
-			}
-		}
+
 		#add-extension-popup, #archive-popup {
 			position: fixed;
 			top: 0;
@@ -218,6 +217,7 @@
 			display: flex;
 			margin-bottom: 10px;
 		}
+
 		.tab-button {
 			flex: 1;
 			padding: 10px;
@@ -246,6 +246,7 @@
 		.tab-content #ext-url-input {
 			width: calc(100% - 6px);
 		}
+
 		textarea {
 			width: 100%;
 			height: 150px;
@@ -255,6 +256,7 @@
 			box-sizing: border-box;
 			background: #f9f9f9;
 		}
+
 		#archive-content {
 			background: #fff;
 			border: 1px solid #ccc;
@@ -268,6 +270,15 @@
 			padding: 5px;
 			width: 100%;
 			margin-bottom: 10px;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
 		}
 	</style>
 </head>
@@ -351,6 +362,76 @@
 		const archiveClose = document.getElementById('archive-close');
 		let currentExtInfo = null;
 
+		var BuiltIn = [
+			"music",
+			"pen",
+			"videoSensing",
+			"text2speech",
+			"translate",
+			"makeymakey",
+			"microbit",
+			"ev3",
+			"boost",
+			"wedo2",
+			"gdxfor"
+		];
+
+		var safe = [
+			"p7scratchextensions.pages.dev",
+			"extensions.turbowarp.org",
+			"extensions.penguinmod.com",
+			"sharkpools-extensions.vercel.app"
+		];
+
+		async function validateExtensounSource(code) {
+			if (code.startsWith("https://") || code.startsWith("data:")) {
+				// if (code.startsWith("https://")) {
+				// 	safe.forEach(s => {
+				// 		if (code.startsWith("https://" + s)) {
+				// 			return true;
+				// 		}
+				// 	});
+				// }
+				await fetch(code).then(r => r.text()).then(text => {
+					if (text.indexOf("Scratch.extensions.register") !== -1) {
+						code = text;
+					}
+				}).catch(() => {});
+			}
+
+			try {
+				const extensions = await fetch(`https://p7scratchextensions.pages.dev/extensions.json`).then(res => res.json());
+
+				for (const ext of extensions) {
+					for (const build of ["main", "dev"]) {
+						const url = `https://p7scratchextensions.pages.dev/ext/${ext.id}/${build}.js`;
+
+						try {
+							const extCode = await fetch(url).then(res => res.text());
+							if (extCode.trim() === code.trim()) {
+								var result = {
+									source: "Pooiod7's Extension Gallery",
+									ext: ext.id,
+									name: ext.title,
+									url,
+									build
+								};
+
+								console.log("Extension validated:", result);
+								return result;
+							}
+						} catch (e) {
+							continue;
+						}
+					}
+				}
+			} catch (err) {
+				console.error("Error validating extension source:", err);
+			}
+
+			return false;
+		}
+
 		function formatToday() {
 		    let today = new Date();
 		    let dd = String(today.getDate()).padStart(2, '0');
@@ -365,19 +446,19 @@
 		        .then(r => r.text())
 		        .then(text => {
 		            if (text.indexOf("Scratch.extensions.register") !== -1) {
-		                elm.style.background = "#a0f0e0";
+		                elm.style.background = "#f0fffc";
 		            } else {
-		                elm.style.background = "#f0e0a0";
+		                elm.style.background = "#fffbeb";
 		            }
 		        })
 		        .catch(() => {
-		            elm.style.background = "#f0e0a0";
+		            elm.style.background = "#fffbeb";
 		        });
 		}
 
 		function updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive) {
 		    let url = inputUrl.value.trim();
-		    if (url === "") {
+		    if (url === "" || url.startsWith("data:")) {
 		        findArchive.disabled = true;
 		        findArchive.textContent = "Find archive";
 		        removeArchive.style.display = "none";
@@ -616,7 +697,7 @@
 						args[a] = { type: "string", defaultValue: a };
 					});
 					let blockType = "";
-					if (blocksMap[blockId].reporter) {
+					if (blocksMap[blockId].reporter && !blocksMap[blockId].Cblock) {
 						blockType = "reporter";
 					} else if (blocksMap[blockId].Cblock) {
 						blockType = "conditional";
@@ -709,6 +790,8 @@
 						if (projectData && projectData.info && projectData.info.flashVersion) throw new Error("Scratch2 projects are unsuported");
 						if (!projectData || !projectData.meta) throw new Error("Unknown project format");
 
+						if (!projectData.extensionURLs) projectData.extensionURLs = {};
+
 		                return getThumbnail({
 		                    WIDTH: 480,
 		                    HEIGHT: 360
@@ -745,7 +828,10 @@
 		            extItem.className = 'ext-item';
 		            const extButton = document.createElement('button');
 		            extButton.className = 'ext-button';
-		            extButton.style.background = "#eee";
+		            extButton.style.background = "#f0f0f0";
+					if (BuiltIn.includes(extId)) {
+						extButton.style.background = "#f5fff5";
+					}
 		            const spanText = document.createElement('span');
 		            spanText.textContent = extId;
 		            const arrow = document.createElement('span');
@@ -763,7 +849,10 @@
 		                const newUrl = inputUrl.value.trim();
 		                if (newUrl === "") {
 		                    delete projectData.extensionURLs[extId];
-		                    extButton.style.background = "#eee";
+		                    extButton.style.background = "#f0f0f0";
+							if (BuiltIn.includes(extId)) {
+								extButton.style.background = "#f5fff5";
+							}
 		                } else {
 		                    projectData.extensionURLs[extId] = newUrl;
 		                    validateExtension(extButton, newUrl);
@@ -771,13 +860,13 @@
 		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive);
 		            });
 		            const genDummy = document.createElement('button');
-		            genDummy.textContent = "Generate dummy";
+		            genDummy.textContent = "Generate replacement";
 		            genDummy.disabled = false;
 		            genDummy.addEventListener('click', () => {
 		                generateDummyForExtension(extButton, inputUrl, extId, genDummy);
 		            });
 		            const findArchive = document.createElement('button');
-		            let hasUrl = (projectData.extensionURLs && projectData.extensionURLs[extId]);
+		            let hasUrl = (projectData.extensionURLs && projectData.extensionURLs[extId] && !projectData.extensionURLs[extId].startsWith("data:"));
 		            if (!hasUrl) {
 		                findArchive.disabled = true;
 		            }
@@ -815,7 +904,23 @@
 		            removeArchive.addEventListener('click', () => {
 		                removeArchiveForExtension(extButton, inputUrl);
 		            });
+		            const validateSource = document.createElement('button');
+		            validateSource.textContent = "Validate source";
+		            validateSource.disabled = false;
+		            if (!hasUrl) {
+		                validateSource.disabled = true;
+		            }
+		            validateSource.addEventListener('click', async () => {
+						var result = await validateExtensounSource(projectData.extensionURLs[extId]);
+		                if (result) {
+							var text = `This extension is "${result.name}" from "${result.source}"`;
+							alert(text);
+		                } else {
+		                    alert("Extension may not have come from a reputable source");
+		                }
+		            });
 		            dropdown.appendChild(inputUrl);
+					dropdown.appendChild(validateSource);
 		            dropdown.appendChild(genDummy);
 		            dropdown.appendChild(findArchive);
 		            dropdown.appendChild(removeArchive);
