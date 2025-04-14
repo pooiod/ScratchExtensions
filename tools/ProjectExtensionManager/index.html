@@ -546,7 +546,7 @@
 		}
 
 		var reposkips = 0;
-		async function validateExtensounSource(ourl, byid) {
+		async function validateExtensounSource(ourl) {
 			reposkips = 0;
 			showPopup();
 
@@ -872,6 +872,7 @@
 			}
 
 			matches.sort((a, b) => b.percent - a.percent);
+			matches2.sort((a, b) => b.percent - a.percent);
 
 			console.log(matches);
 
@@ -883,7 +884,6 @@
 			if (matches2[0]) {
 				hidePopup();
 				matches2[0].percent = 1;
-				matches2[0].match = "1%";
 				return matches2[0];
 			}
 
@@ -1378,10 +1378,12 @@
 		            validateSource.addEventListener('click', async () => {
 						var result = await validateExtensounSource(projectData.extensionURLs[extId]);
 		                if (result) {
-							if (result.match <= 95) {
-								showPopup("Close match found", `This extension might be a modified version of "<a target="_blank" href="${result.url}">${result.name}<a>" ${result.build=="public"?"":`(${result.build} build)`} from <a target="_blank" href="${result.base}">${result.source}</a>`)
+							if (result.percent <= 30) {
+								showPopup("Possible match found", `This extension might be a modified version of "<a target="_blank" href="${result.url}">${result.name}<a>" ${result.build=="public"?"":`(${result.build} build)`}<br>Found on <a target="_blank" href="${result.base}">${result.source}</a>`);
+							} else if (result.percent <= 80) {
+								showPopup("Close match found", `This extension could be an old version of "<a target="_blank" href="${result.url}">${result.name}<a>" ${result.build=="public"?"":`(${result.build} build)`} from <a target="_blank" href="${result.base}">${result.source}</a><br>(${result.match} match)`);
 							} else {
-								showPopup("Extension source found", `This extension is "<a target="_blank" href="${result.url}">${result.name}<a>" ${result.build=="public"?"":`(${result.build} build)`}<br>You may find it on <a target="_blank" href="${result.base}">${result.source}</a>`)
+								showPopup("Extension source found", `This extension is "<a target="_blank" href="${result.url}">${result.name}<a>" ${result.build=="public"?"":`(${result.build} build)`}<br>You may find it on <a target="_blank" href="${result.base}">${result.source}</a>`);
 							}
 		                } else {
 							if (reposkips) {
