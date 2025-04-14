@@ -880,6 +880,13 @@
 				return matches[0];
 			}
 
+			if (matches2[0]) {
+				hidePopup();
+				matches2[0].percent = 1;
+				matches2[0].match = "1%";
+				return matches2[0];
+			}
+
 			hidePopup();
 			return false;
 		}
