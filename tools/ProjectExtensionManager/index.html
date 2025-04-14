@@ -272,6 +272,76 @@
 			margin-bottom: 10px;
 		}
 
+		.popup-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background: rgba(249, 249, 249, 0.95);
+			transition: opacity 0.3s ease;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+		}
+
+		.popup-content {
+			background: white;
+			border: 1px solid #ccc;
+			transition: transform 0.3s ease, opacity 0.3s ease;
+			padding: 20px;
+			box-sizing: border-box;
+			max-width: 500px;
+			width: 100%;
+		}
+
+		.popup-content a {
+			color: inherit;
+		}
+
+		.popup-content h2 {
+			margin: 0 0 10px 0;
+			font-size: 1.5em;
+			color: #000;
+		}
+
+		.popup-content p {
+			margin: 0 0 20px 0;
+			color: #000;
+		}
+
+		.popup-button {
+			width: calc(100% - 25px);
+			padding: 10px;
+			background: #eee;
+			border: 1px solid #ccc;
+			cursor: pointer;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			transition: background 0.3s;
+		}
+
+		.popup-button:hover {
+			background: #ddd;
+		}
+
+		.spinner {
+			border: 4px solid #f3f3f3;
+			border-top: 4px solid #3498db;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			animation: spin 2s linear infinite;
+			margin: 10px auto;
+		}
+
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+
 		@keyframes fadeIn {
 			from {
 				opacity: 0;
@@ -383,15 +453,105 @@
 			"sharkpools-extensions.vercel.app"
 		];
 
-		async function validateExtensounSource(code) {
+		function HideLoader() {
+		    document.getElementById('loader').style.opacity = '0';
+			document.getElementById('loader').style.pointerEvents = "none";
+		    setTimeout(function() {
+		        // document.getElementById('loader').remove();
+				document.getElementById('loader').style.zIndex = 0;
+				document.getElementById('loader').style.opacity = 1;
+				document.getElementById('loader').style.background = "transparent";
+		    }, 500);
+		}
+
+		function ShowLoader() {
+		    document.getElementById('loader').style.opacity = '0';
+			document.getElementById('loader').style.pointerEvents = "all";
+		    setTimeout(function() {
+		        // document.getElementById('loader').remove();
+				document.getElementById('loader').style.zIndex = 99999;
+				document.getElementById('loader').style.opacity = 1;
+				document.getElementById('loader').style.background = "white";
+		    }, 500);
+		}
+
+		function hidePopup() {
+			const existing = document.querySelector('.popup-overlay');
+			if (existing) {
+				const content = existing.querySelector('.popup-content');
+				content.style.transform = "translateY(-40px)";
+				existing.style.opacity = "0";
+				setTimeout(() => existing.remove(), 300);
+			}
+		}
+
+		function showPopup(t1, t2) {
+			const existing = document.querySelector('.popup-overlay');
+			if (existing) {
+				const content = existing.querySelector('.popup-content');
+				content.style.transform = "translateY(-40px)";
+				existing.style.opacity = "0";
+				setTimeout(() => existing.remove(), 300);
+			}
+
+			const popup = document.createElement('div');
+			popup.className = 'popup-overlay';
+			popup.style.zIndex = '9999';
+
+			const popupContent = document.createElement('div');
+			popupContent.className = 'popup-content';
+
+			popup.style.opacity = "0";
+			popupContent.style.transform = "translateY(40px)";
+
+			const title = document.createElement('h2');
+			title.innerHTML = t1;
+
+			if (t2) {
+				const content = document.createElement('p');
+				content.innerHTML = t2;
+
+				const closeBtn = document.createElement('div');
+				closeBtn.className = 'popup-button';
+				closeBtn.textContent = 'Close';
+				closeBtn.onclick = () => {
+					popup.style.opacity = "0";
+					popupContent.style.transform = "translateY(40px)";
+					setTimeout(()=>{
+						popup.remove();
+					}, 500);
+				};
+
+				popupContent.appendChild(title);
+				popupContent.appendChild(content);
+				popupContent.appendChild(closeBtn);
+			} else {
+				const spinner = document.createElement('div');
+				spinner.className = 'spinner';
+
+				popupContent.style.width = "80px";
+				popupContent.style.padding = "5px";
+				popupContent.style.height = popupContent.style.width;
+
+				popupContent.appendChild(spinner);
+			}
+
+			popup.appendChild(popupContent);
+			document.body.appendChild(popup);
+
+			setTimeout(()=>{
+				popup.style.opacity = "1";
+				popupContent.style.transform = "translateY(0px)";
+			}, 50);
+		}
+
+		var reposkips = 0;
+		async function validateExtensounSource(ourl) {
+			reposkips = 0;
+			showPopup();
+
+			var code = ourl;
 			if (code.startsWith("https://") || code.startsWith("data:")) {
-				// if (code.startsWith("https://")) {
-				// 	safe.forEach(s => {
-				// 		if (code.startsWith("https://" + s)) {
-				// 			return true;
-				// 		}
-				// 	});
-				// }
 				await fetch(code).then(r => r.text()).then(text => {
 					if (text.indexOf("Scratch.extensions.register") !== -1) {
 						code = text;
@@ -399,36 +559,252 @@
 				}).catch(() => {});
 			}
 
+			var matches = [];
+
 			try {
-				const extensions = await fetch(`https://p7scratchextensions.pages.dev/extensions.json`).then(res => res.json());
+				console.log("pulling repo", "https://p7scratchextensions.pages.dev");
+				var extensions = await fetch(`https://p7scratchextensions.pages.dev/extensions.json`).then(res => res.json());
 
 				for (const ext of extensions) {
 					for (const build of ["main", "dev"]) {
 						const url = `https://p7scratchextensions.pages.dev/ext/${ext.id}/${build}.js`;
 
 						try {
+							console.log("pulling ext", url);
 							const extCode = await fetch(url).then(res => res.text());
-							if (extCode.trim() === code.trim()) {
-								var result = {
-									source: "Pooiod7's Extension Gallery",
-									ext: ext.id,
-									name: ext.title,
-									url,
-									build
-								};
+							const len = Math.max(extCode.length, code.length);
 
-								console.log("Extension validated:", result);
-								return result;
+							let same = 0;
+							for (let i = 0; i < Math.min(extCode.length, code.length); i++) {
+								if (extCode[i] === code[i]) same++;
 							}
-						} catch (e) {
-							continue;
-						}
+
+							const percent = (same / len) * 100;
+							var result = {
+								percent,
+								source: "Pooiod7's Extension Gallery",
+								base: "https://p7scratchextensions.pages.dev",
+								ext: ext.id,
+								name: ext.title,
+								url: url.replace("https://p7scratchextensions.pages.dev/ext/", "https://p7scratchextensions.pages.dev/view/#/"),
+								build,
+								match: `${percent.toFixed(0)}%`
+							};
+
+							matches.push(result);
+
+						if (percent == 100) return result;
+						} catch {}
 					}
 				}
-			} catch (err) {
-				console.error("Error validating extension source:", err);
+
+				if (ourl.startsWith("https://p7scratchextensions.pages.dev/ext/")) {
+					matches.sort((a, b) => b.percent - a.percent);
+					if (matches[0] && matches[0].percent >= 60) {
+						hidePopup();
+						return matches[0];
+					}
+				}
+			} catch {
+				reposkips += 1;
+				console.warn("unable to pull repo", "https://p7scratchextensions.pages.dev");
 			}
 
+			try {
+				console.log("pulling repo", "https://extensions.turbowarp.org");
+				var extensions = await fetch("https://extensions.turbowarp.org/").then(res => res.text())
+					.then(html => {
+						const parser = new DOMParser();
+						const doc = parser.parseFromString(html, "text/html");
+						const buttons = doc.querySelectorAll('button[data-copy]');
+						const links = Array.from(buttons).map(btn => btn.getAttribute('data-copy'));
+						return links;
+					});
+
+				if (!extensions || extensions == []) throw new Error("No extensions found");
+
+				async function getExtensionNameByLink(link) {
+					const res = await fetch("https://extensions.turbowarp.org/");
+					const html = await res.text();
+					const parser = new DOMParser();
+					const doc = parser.parseFromString(html, "text/html");
+					const button = doc.querySelector(`button[data-copy="${link}"]`);
+					if (!button) return null;
+					var par = button.parentElement.parentElement.parentElement;
+					var h2s = par.getElementsByTagName("h2")
+					return h2s[0].innerText.trim();
+				}
+
+				if (ourl.startsWith("https://extensions.turbowarp.org/")) {
+					console.log("skipped search");
+					hidePopup();
+					return {
+							percent: 100,
+							source: "TurboWarp Extension Gallery",
+							base: "https://extensions.turbowarp.org",
+							ext: ourl.replace("https://extensions.turbowarp.org/", ""),
+							name: await getExtensionNameByLink(ourl) || ourl.replace("https://extensions.turbowarp.org/", "").replace("lab/", "").replace(".js", ""),
+							url: ourl,
+							build: ourl.includes("lab/")?"experimental":"public",
+							match: `100%`
+					};
+				}
+
+				for (const ext of extensions) {
+					try {
+						console.log("pulling ext", ext);
+						const extCode = await fetch(ext).then(res => res.text());
+						const len = Math.max(extCode.length, code.length);
+
+						let same = 0;
+						for (let i = 0; i < Math.min(extCode.length, code.length); i++) {
+							if (extCode[i] === code[i]) same++;
+						}
+
+						const percent = (same / len) * 100;
+						var result = {
+							percent,
+							source: "TurboWarp Extension Gallery",
+							base: "https://extensions.turbowarp.org",
+							ext: ext.replace("https://extensions.turbowarp.org/", ""),
+							name: await getExtensionNameByLink(ext) || ext.replace("https://extensions.turbowarp.org/", "").replace("lab/", "").replace(".js", ""),
+							url: ext,
+							build: ext.includes("lab/")?"experimental":"public",
+							match: `${percent.toFixed(0)}%`
+						};
+						matches.push(result);
+
+						if (percent == 100) return result;
+					} catch {}
+				}
+			} catch {
+				reposkips += 1;
+				console.warn("unable to pull repo", "https://extensions.turbowarp.org");
+			}
+
+			try {
+				console.log("pulling repo", "https://extensions.penguinmod.com");
+				var extensions = await fetch("https://api.allorigins.win/raw?url=https://extensions.penguinmod.com/").then(response => response.text())
+				.then(html => {
+					const parser = new DOMParser();
+					const doc = parser.parseFromString(html, "text/html");
+					const links = Array.from(doc.querySelectorAll("a"))
+						.map(a => a.href)
+						.filter(href => href.includes("extensions/"))
+						.map(href => href.replace("https://studio.penguinmod.com/editor.html?extension=", ""));
+					return links;
+				});
+
+				if (!extensions || extensions == []) throw new Error("No extensions found");
+
+				if (ourl.startsWith("https://extensions.penguinmod.com/extensions/")) {
+					console.log("skipped search");
+					hidePopup();
+					return {
+						percent: 100,
+						source: "PenguinMod Extra Extensions",
+						base: "https://extensions.penguinmod.com",
+						ext: ourl.replace("https://extensions.penguinmod.com/extensions/", ""),
+						name: ourl.replace("https://extensions.penguinmod.com/extensions/", "").replace("/", "'s ").replace(".js", "").replace("pooiod's", "pooiod7's"),
+						url: ourl,
+						build: "public",
+						match: `100%`
+					};
+				}
+
+				for (const ext of extensions) {
+					try {
+						console.log("pulling ext", ext);
+						const extCode = await fetch(ext).then(res => res.text());
+						const len = Math.max(extCode.length, code.length);
+
+						let same = 0;
+						for (let i = 0; i < Math.min(extCode.length, code.length); i++) {
+							if (extCode[i] === code[i]) same++;
+						}
+
+						const percent = (same / len) * 100;
+						var result = {
+							percent,
+							source: "PenguinMod Extra Extensions",
+							base: "https://extensions.penguinmod.com",
+							ext: ext.replace("https://extensions.penguinmod.com/extensions/", ""),
+							name: ext.replace("https://extensions.penguinmod.com/extensions/", "").replace("/", "'s ").replace(".js", ""),
+							url: ext,
+							build: "public",
+							match: `${percent.toFixed(0)}%`
+						};
+						matches.push(result);
+
+						if (percent == 100) return result;
+					} catch {}
+				}
+			} catch {
+				reposkips += 1;
+				console.warn("unable to pull repo", "https://extensions.penguinmod.com");
+			}
+
+			try {
+				console.log("pulling repo", "https://github.com/Snail-IDE/snail-ide.github.io");
+
+				async function fetchJSFiles() {
+					const apiUrl = 'https://api.github.com/repos/Snail-IDE/snail-ide.github.io/contents/static?ref=develop';
+					const response = await fetch(apiUrl);
+					if (!response.ok) {
+						throw new Error(`GitHub API responded with status ${response.status}`);
+					}
+					const data = await response.json();
+					const jsFiles = data
+						.filter(item => item.type === 'file' && item.name.endsWith('.js'))
+						.map(item => "https://raw.githubusercontent.com/Snail-IDE/snail-ide.github.io/refs/heads/develop/static/" + item.name);
+					return jsFiles;
+				}
+				var extensions = await fetchJSFiles();
+
+				if (!extensions || extensions == []) throw new Error("No extensions found");
+
+				for (const ext of extensions) {
+					try {
+						console.log("pulling ext", ext);
+						const extCode = await fetch(ext).then(res => res.text());
+						const len = Math.max(extCode.length, code.length);
+
+						let same = 0;
+						for (let i = 0; i < Math.min(extCode.length, code.length); i++) {
+							if (extCode[i] === code[i]) same++;
+						}
+
+						const percent = (same / len) * 100;
+						var result = {
+							percent,
+							source: "Snail ide",
+							base: "https://snail-ide.js.org/editor.html",
+							ext: ext.replace("https://raw.githubusercontent.com/Snail-IDE/snail-ide.github.io/refs/heads/develop/static/", ""),
+							name: ext.replace("https://raw.githubusercontent.com/Snail-IDE/snail-ide.github.io/refs/heads/develop/static/", "").replace(".js", ""),
+							url: ext,
+							build: "public",
+							match: `${percent.toFixed(0)}%`
+						};
+						matches.push(result);
+
+						if (percent == 100) return result;
+					} catch {}
+				}
+			} catch {
+				reposkips += 1;
+				console.warn("unable to pull repo", "https://snail-ide.js.org/editor.html");
+			}
+
+			matches.sort((a, b) => b.percent - a.percent);
+
+			console.log(matches);
+
+			if (matches[0] && matches[0].percent >= 60) {
+				hidePopup();
+				return matches[0];
+			}
+
+			hidePopup();
 			return false;
 		}
 
@@ -866,7 +1242,7 @@
 		                generateDummyForExtension(extButton, inputUrl, extId, genDummy);
 		            });
 		            const findArchive = document.createElement('button');
-		            let hasUrl = (projectData.extensionURLs && projectData.extensionURLs[extId] && !projectData.extensionURLs[extId].startsWith("data:"));
+		            let hasUrl = (projectData.extensionURLs[extId] && !projectData.extensionURLs[extId].startsWith("data:"));
 		            if (!hasUrl) {
 		                findArchive.disabled = true;
 		            }
@@ -907,16 +1283,23 @@
 		            const validateSource = document.createElement('button');
 		            validateSource.textContent = "Validate source";
 		            validateSource.disabled = false;
-		            if (!hasUrl) {
+		            if (!projectData.extensionURLs[extId]) {
 		                validateSource.disabled = true;
 		            }
 		            validateSource.addEventListener('click', async () => {
 						var result = await validateExtensounSource(projectData.extensionURLs[extId]);
 		                if (result) {
-							var text = `This extension is "${result.name}" from "${result.source}"`;
-							alert(text);
+							if (result.match <= 95) {
+								showPopup("Close match found", `This extension might be a modified version of "<a target="_blank" href="${result.url}">${result.name}<a>" ${result.build=="public"?"":`(${result.build} build)`} from <a target="_blank" href="${result.base}">${result.source}</a>`)
+							} else {
+								showPopup("Extension source found", `This extension is "<a target="_blank" href="${result.url}">${result.name}<a>" ${result.build=="public"?"":`(${result.build} build)`}<br>You may find it on <a target="_blank" href="${result.base}">${result.source}</a>`)
+							}
 		                } else {
-		                    alert("Extension may not have come from a reputable source");
+							if (reposkips) {
+								showPopup("No extension was found", `This extension was not found in any reputable repositories<br>(${reposkips} repos could not be searched)`);
+							} else {
+								showPopup("No extension was found", `This extension was not found in any reputable repositories`);
+							}
 		                }
 		            });
 		            dropdown.appendChild(inputUrl);
@@ -993,16 +1376,7 @@
 		        });
 		}
 
-		setTimeout(function() {
-		    document.getElementById('loader').style.opacity = '0';
-			document.getElementById('loader').style.pointerEvents = "none";
-		    setTimeout(function() {
-		        // document.getElementById('loader').remove();
-				document.getElementById('loader').style.zIndex = 0;
-				document.getElementById('loader').style.opacity = 1;
-				document.getElementById('loader').style.background = "transparent";
-		    }, 500);
-		}, 500);
+		setTimeout(HideLoader, 500);
 	</script>
 </body>
 </html>
