@@ -546,9 +546,14 @@
 		}
 
 		var reposkips = 0;
-		async function validateExtensounSource(ourl) {
+		async function validateExtensounSource(ourl, byid) {
 			reposkips = 0;
 			showPopup();
+
+			function extractId(text) {
+				const match = text.match(/id\s*:\s*(['"`])([^'"`]+?)\1/);
+				return match ? match[2] : null;
+			}
 
 			var code = ourl;
 			if (code.startsWith("https://") || code.startsWith("data:")) {
@@ -560,6 +565,7 @@
 			}
 
 			var matches = [];
+			var matches2 = [];
 
 			try {
 				console.log("pulling repo", "https://p7scratchextensions.pages.dev");
@@ -591,6 +597,9 @@
 								match: `${percent.toFixed(0)}%`
 							};
 
+							if (extractId(extCode) == extractId(code)) {
+								matches2.push(result);
+							}
 							matches.push(result);
 
 							if (percent == 100) return result;
@@ -672,6 +681,10 @@
 							build: ext.includes("lab/")?"experimental":"public",
 							match: `${percent.toFixed(0)}%`
 						};
+
+						if (extractId(extCode) == extractId(code)) {
+							matches2.push(result);
+						}
 						matches.push(result);
 
 						if (percent == 100) return result;
@@ -734,6 +747,10 @@
 							build: "public",
 							match: `${percent.toFixed(0)}%`
 						};
+
+						if (extractId(extCode) == extractId(code)) {
+							matches2.push(result);
+						}
 						matches.push(result);
 
 						if (percent == 100) return result;
@@ -785,6 +802,10 @@
 							build: "public",
 							match: `${percent.toFixed(0)}%`
 						};
+
+						if (extractId(extCode) == extractId(code)) {
+							matches2.push(result);
+						}
 						matches.push(result);
 
 						if (percent == 100) return result;
@@ -836,6 +857,10 @@
 							build: "public",
 							match: `${percent.toFixed(0)}%`
 						};
+
+						if (extractId(extCode) == extractId(code)) {
+							matches2.push(result);
+						}
 						matches.push(result);
 
 						if (percent == 100) return result;
