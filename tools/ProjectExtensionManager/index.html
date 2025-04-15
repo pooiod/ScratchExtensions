@@ -112,9 +112,19 @@
 		.scratchblockscontainer.visible {
 			border-left: 1px solid #ccc;
 			width: 800px;
-		} 
+		}
+
+		.scratchblockscontainer::before {
+			content: "";
+			position: sticky;
+			top: 0px;
+			display: block;
+			height: 30px;
+			background: linear-gradient(to bottom, white, transparent);
+		}
 
 		#scratchblocks {
+			overflow: hidden;
 			margin: 20px;
 			zoom: 80%;
 		}
@@ -533,6 +543,7 @@
 					REPORTER: "reporter",
 					BOOLEAN: "boolean",
 					CONDITIONAL: "conditional",
+					LOOP: "loop",
 					EVENT: "event",
 					HAT: "hat"
 				},
@@ -1106,7 +1117,7 @@
 							formattedText = formattedText.replace(new RegExp(`\\[${argName}\\]`, 'g'), argStr);
 						}
 
-						const colorTag = ` :: ${ext.getInfo().color1 || "#0fbd8c"}`;
+						const colorTag = `:: ${ext.getInfo().color1 || "#0fbd8c"}`;
 						var blockFormatted = `//${formattedText}`;
 						if (blockType === Scratch.BlockType.COMMAND) {
 							blockFormatted = formattedText.replace("ef", "еf").replace("en", "еn") + colorTag;
@@ -1116,8 +1127,8 @@
 							blockFormatted = `<${formattedText} ${colorTag}>`;
 						} else if (blockType === Scratch.BlockType.EVENT || blockType === Scratch.BlockType.HAT) {
 							blockFormatted = `${formattedText} ${colorTag} hat`;
-						} else if (blockType === Scratch.BlockType.CONDITIONAL) {
-							blockFormatted = `${formattedText} ${colorTag}{\n}`;
+						} else if (blockType === Scratch.BlockType.CONDITIONAL || blockType === Scratch.BlockType.LOOP) {
+							blockFormatted = `${formattedText} {\n} ${colorTag}`;
 						} else if (!blockType && !formattedText) {
 							blockFormatted = `//---`;
 						}
