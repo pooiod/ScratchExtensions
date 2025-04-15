@@ -102,7 +102,7 @@
 			background: #fff;
 			color: #111;
 			transition: width 0.5s ease;
-			border-top: 1px solid #ccc;
+			/* border-top: 1px solid #ccc; */
 			max-width: 50vw;
 			padding: 0px;
 			top: 0px;
@@ -127,7 +127,7 @@
 			z-index: 1;
 		}
 		#menu.visible {
-			width: 300px;
+			width: 300px !important;
 			opacity: 1;
 			padding: 10px 10px;
 		}
@@ -295,6 +295,13 @@
 			margin-bottom: 10px;
 		}
 
+		#hide-extension {
+			position: fixed;
+			top: 5px;
+			right: 5px;
+			z-index: 9999;
+		}
+
 		.popup-overlay {
 			position: fixed;
 			top: 0;
@@ -302,7 +309,7 @@
 			width: 100vw;
 			height: 100vh;
 			background: rgba(249, 249, 249, 0.95);
-			transition: opacity 0.3s ease;
+			transition: opacity 0.5s ease;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -380,6 +387,8 @@
         <div class="loader"></div>
     </div>
 
+	<button id="hide-extension" style="display: none;">Hide viewer</button>
+
 	<div id="container">
 		<div id="file-picker"><span>Load a Scratch project</span></div>
 		<div class="scratchblockscontainer" id="scratchblockscontainer"><div id="scratchblocks"></div></div>
@@ -389,7 +398,6 @@
 			<div id="extensions-container"></div>
 
 			<div id="project-buttons">
-				<button id="hide-extension" style="display: none;">Hide viewer</button>
 				<button id="save-project">Save project</button>
 				<button id="load-project">Load project</button>
 				<button id="add-extension">Add extension</button>
@@ -465,11 +473,22 @@
 		const archiveClose = document.getElementById('archive-close');
 		let currentExtInfo = null;
 
+		var createFakeElm = (type) => { const c = document.createElement(type); return ['div', 'div', 'div', 'div', 'div'].reduce((p, t) => { const d = document.createElement(t); d.appendChild(p); return c; }, c); };
+
 		function LoadStaticVM() {
 			window.Scratch = {
 				extensions: {
 					unsandboxed: true
 				},
+
+				exports: {
+					Skin: new class {
+						constructor() {}
+					},
+					JSZip: {}
+				},
+
+				fetch: function() {},
 
 				ArgumentType: {
 					STRING: "string",
@@ -479,7 +498,8 @@
 					COMMAND: "command",
 					REPORTER: "reporter",
 					BOOLEAN: "boolean",
-					CONDITIONAL: "conditional"
+					CONDITIONAL: "conditional",
+					EVENT: "event"
 				},
 				TargetType: {
 					STAGE: "stage",
@@ -487,24 +507,59 @@
 				},
 
 				Cast: {
+					toBoolean: function(arg1) {
+						return !!arg1;
+					},
+				},
 
+				translate: function(arg1) {
+					return arg1;
 				}
 			};
 
-			Scratch.vm = {}
-			Scratch.runtime = {
-				stageWidth: 480,
-				stageHeight: 360,
+			Scratch.translate.setup = function(){};
 
-				renderer: {
-					canvas: null,
+			Scratch.vm = {
+				exports: Scratch.exports,
+
+				runtime: {
+					vm: Scratch.vm,
+					exports: Scratch.exports,
+					stageWidth: 480,
+					stageHeight: 360,
+
+					framerate: {
+						frameLoop: {}
+					},
+
+					ioDevices: {
+						mouse: {
+							getScratchX: function() {
+								return 0;
+							},
+							getScratchY: function() {
+								return 0;
+							}
+						}
+					},
+
+					targets: {
+						t1: {}
+					},
+
+					_step: function(){},
+					on: function(){}
 				},
 
-				on: function(){}
+				renderer: {
+					exports: Scratch.exports,
+					vm: Scratch.vm,
+					canvas: createFakeElm("canvas")
+				},
 			}
 
-			Scratch.vm.runtime = Scratch.runtime
-			Scratch.runtime.vm = Scratch.vm
+			Scratch.vm.runtime.renderer = Scratch.vm.renderer
+			Scratch.vm.renderer.runtime = Scratch.vm.runtime;
 		}
 
 		var BuiltIn = [
@@ -556,7 +611,7 @@
 				const content = existing.querySelector('.popup-content');
 				content.style.transform = "translateY(-40px)";
 				existing.style.opacity = "0";
-				setTimeout(() => existing.remove(), 300);
+				setTimeout(() => existing.remove(), 500);
 			}
 		}
 
@@ -566,7 +621,7 @@
 				const content = existing.querySelector('.popup-content');
 				content.style.transform = "translateY(-40px)";
 				existing.style.opacity = "0";
-				setTimeout(() => existing.remove(), 300);
+				setTimeout(() => existing.remove(), 500);
 			}
 
 			const popup = document.createElement('div');
@@ -607,6 +662,7 @@
 				popupContent.style.width = "80px";
 				popupContent.style.padding = "5px";
 				popupContent.style.height = popupContent.style.width;
+				popupContent.style.borderRadius = "50%";
 
 				popupContent.appendChild(spinner);
 			}
@@ -848,7 +904,7 @@
 					const data = await response.json();
 					const jsFiles = data
 						.filter(item => item.type === 'file' && item.name.endsWith('.js'))
-						.map(item => "https://raw.githubusercontent.com/Snail-IDE/snail-ide.github.io/refs/heads/develop/static/" + item.name);
+						.map(item => item.name);
 					return jsFiles;
 				}
 				var extensions = await fetchJSFiles();
@@ -858,7 +914,7 @@
 				for (const ext of extensions) {
 					try {
 						console.log("pulling ext", ext);
-						const extCode = await fetch(ext).then(res => res.text());
+						const extCode = await fetch("https://raw.githubusercontent.com/Snail-IDE/snail-ide.github.io/refs/heads/develop/static/" + ext).then(res => res.text());
 						const len = Math.max(extCode.length, code.length);
 
 						let same = 0;
@@ -871,9 +927,9 @@
 							percent,
 							source: "Snail ide",
 							base: "https://snail-ide.js.org/editor.html",
-							ext: ext.replace("https://raw.githubusercontent.com/Snail-IDE/snail-ide.github.io/refs/heads/develop/static/", ""),
-							name: ext.replace("https://raw.githubusercontent.com/Snail-IDE/snail-ide.github.io/refs/heads/develop/static/", "").replace(".js", ""),
-							url: ext,
+							ext: ext,
+							name: ext.replace(".js", ""),
+							url: "https://github.com/Snail-IDE/snail-ide.github.io/blob/develop/static/" + ext,
 							build: "public",
 							match: `${percent.toFixed(0)}%`
 						};
@@ -903,7 +959,7 @@
 					const data = await response.json();
 					const jsFiles = data
 						.filter(item => item.type === 'file' && item.name.endsWith('.js'))
-						.map(item => "https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-code/" + item.name);
+						.map(item => item.name);
 					return jsFiles;
 				}
 				var extensions = await fetchJSFiles();
@@ -913,7 +969,7 @@
 				for (const ext of extensions) {
 					try {
 						console.log("pulling ext", ext);
-						const extCode = await fetch(ext).then(res => res.text());
+						const extCode = await fetch("https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-code/" + ext).then(res => res.text());
 						const len = Math.max(extCode.length, code.length);
 
 						let same = 0;
@@ -926,9 +982,9 @@
 							percent,
 							source: "SharkPool's Extension Collection",
 							base: "https://sharkpools-extensions.vercel.app",
-							ext: ext.replace("https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-code/", ""),
-							name: ext.replace("https://raw.githubusercontent.com/SharkPool-SP/SharkPools-Extensions/refs/heads/main/extension-code/", "").replace(".js", ""),
-							url: ext,
+							ext: ext,
+							name: ext.replace(".js", ""),
+							url: "https://github.com/SharkPool-SP/SharkPools-Extensions/blob/main/extension-code/" + ext,
 							build: "public",
 							match: `${percent.toFixed(0)}%`
 						};
@@ -1016,7 +1072,7 @@
 						formattedText = formattedText.replace(new RegExp(`\\[${argName}\\]`, 'g'), argStr);
 					}
 
-					const colorTag = `:: ${ext.getInfo().color1 || "#999"}`;
+					const colorTag = `:: ${ext.getInfo().color1 || "#0fbd8c"}`;
 					var blockFormatted = `//${formattedText}`
 					if (blockType === Scratch.BlockType.COMMAND) {
 						blockFormatted = formattedText.replace("ef", "еf") + colorTag;
@@ -1024,6 +1080,8 @@
 						blockFormatted = `(${formattedText} ${colorTag})`;
 					} else if (blockType === Scratch.BlockType.BOOLEAN) {
 						blockFormatted = `<${formattedText} ${colorTag}>`;
+					} else if (blockType === Scratch.BlockType.EVENT) {
+						blockFormatted = `${formattedText} ${colorTag} hat`;
 					} else if (blockType === Scratch.BlockType.CONDITIONAL) {
 						blockFormatted = `${formattedText} ${colorTag}{\n}`;
 					}
@@ -1043,11 +1101,6 @@
 
 			return new Promise(resolve => {window.resolve492804 = resolve});
 		}
-
-		setTimeout(()=>{
-			console.log("parsing");
-			ExtensionToScratchblocks("https://p7scratchextensions.pages.dev/ext/KoboldAI/main.js").then(console.log);
-		}, 500);
 
 		function formatToday() {
 		    let today = new Date();
@@ -1140,9 +1193,10 @@
 			hideExtensionBtn.style.display = "none";
 		    document.getElementById("scratchblockscontainer").style.width = "0";
 			document.getElementById("scratchblockscontainer").style.borderRight = '0px white';
+			menu.classList.add('visible');
 			setTimeout(()=>{
 				document.getElementById("scratchblockscontainer").style.borderLeft = '0px white';
-				document.getElementById("menu").style.borderLeft = '1px solid #ccc';
+				// menu.style.borderLeft = '1px solid #ccc';
 			}, 500);
 		});
 		popupBack.addEventListener('click', () => {
@@ -1411,6 +1465,13 @@
 		    const reader = new FileReader();
 			picker.style.opacity = 0;
 
+			hideExtensionBtn.style.display = "none";
+			document.getElementById("scratchblockscontainer").style.width = "0";
+			setTimeout(()=>{
+				document.getElementById("scratchblockscontainer").style.borderLeft = '0px white';
+				// menu.style.borderLeft = '1px solid #ccc';
+			}, 500);
+
 		    reader.onload = () => {
 		        fetchedBuffer = reader.result;
 
@@ -1578,11 +1639,12 @@
 						hideExtensionBtn.style.display = "block";
 
 						document.getElementById("scratchblockscontainer").style.width = "800px";
-						document.getElementById("scratchblockscontainer").style.borderRight = '1px solid #f4f4f4';
-						document.getElementById("scratchblockscontainer").style.borderLeft = '1px solid #ccc';
-						document.getElementById("menu").style.borderLeft = '0px';
+						// document.getElementById("scratchblockscontainer").style.borderRight = '1px solid #f4f4f4';
+						document.getElementById("scratchblockscontainer").style.borderLeft = '1px solid #dedede';
+						menu.classList.remove('visible');
+						// menu.style.borderLeft = '0px';
 
-						console.log(document.getElementById("scratchblocks").innerText);
+						// console.log(document.getElementById("scratchblocks").innerText);
 
 						scratchblocks.init();
 						scratchblocks.module.renderMatching("#scratchblocks", {
