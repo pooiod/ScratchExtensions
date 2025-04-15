@@ -82,7 +82,7 @@
 			width: 100%;
 			height: 100%;
 			position: relative;
-			transition: opacity 0.5s ease;
+			transition: opacity 0.5s ease, width 0.5s ease;
 			background-size: contain;
 			background-repeat: no-repeat;
 			background-position: center;
@@ -103,15 +103,37 @@
 			color: #111;
 			transition: width 0.5s ease;
 			/* border-top: 1px solid #ccc; */
-			max-width: 50vw;
+			/* max-width: 50vw; */
 			padding: 0px;
 			top: 0px;
 			z-index: 1;
 		}
 
+		.scratchblockscontainer.visible {
+			border-left: 1px solid #ccc;
+			width: 800px;
+		} 
+
 		#scratchblocks {
 			margin: 20px;
 			zoom: 80%;
+		}
+
+		#hide-extension {
+			position: fixed;
+			top: 5px;
+			right: 5px;
+			z-index: 9999;
+
+			padding: 10px;
+			background: #eee;
+			border: 1px solid #ccc;
+			cursor: pointer;
+			transition: background 0.3s, padding 0.3s, opacity 0.3s;
+		}
+
+		#hide-extension:hover {
+			background: #ddd;
 		}
 
 		#menu {
@@ -127,7 +149,7 @@
 			z-index: 1;
 		}
 		#menu.visible {
-			width: 300px !important;
+			width: 350px !important;
 			opacity: 1;
 			padding: 10px 10px;
 		}
@@ -293,25 +315,8 @@
 		}
 		#archive-popup input[type="date"] {
 			padding: 5px;
-			width: 100%;
+			width: calc(100% - 15px);
 			margin-bottom: 10px;
-		}
-
-		#hide-extension {
-			position: fixed;
-			top: 5px;
-			right: 5px;
-			z-index: 9999;
-
-			padding: 10px;
-			background: #eee;
-			border: 1px solid #ccc;
-			cursor: pointer;
-			transition: background 0.3s, padding 0.3s, opacity 0.3s;
-		}
-
-		#hide-extension:hover {
-			background: #ddd;
 		}
 
 		.popup-overlay {
@@ -390,6 +395,23 @@
 			}
 			to {
 				opacity: 1;
+			}
+		}
+
+		@media (max-width: 550px) {
+			#menu.visible {
+				width: 100vw !important;
+				border: 0px !important;
+			}
+
+			.scratchblockscontainer.visible {
+				max-width: 100vw;
+				width: 100vw !important;
+				border: 0px;
+			}
+
+			#file-picker.picked {
+				width: 0px;
 			}
 		}
 	</style>
@@ -1221,14 +1243,12 @@
 		    addExtPopup.style.display = "flex";
 		});
 		hideExtensionBtn.addEventListener('click', () => {
-		    document.getElementById("scratchblockscontainer").style.width = "0";
-			document.getElementById("scratchblockscontainer").style.borderRight = '0px white';
 			hideExtensionBtn.style.opacity = "0";
 			hideExtensionBtn.style.padding = "0";
+			document.getElementById("scratchblockscontainer").classList.remove("visible");
 			menu.classList.add('visible');
 			setTimeout(()=>{
 				hideExtensionBtn.style.display = "none";
-				document.getElementById("scratchblockscontainer").style.borderLeft = '0px white';
 				// menu.style.borderLeft = '1px solid #ccc';
 			}, 500);
 		});
@@ -1498,12 +1518,13 @@
 		    const reader = new FileReader();
 			picker.style.opacity = 0;
 
-			document.getElementById("scratchblockscontainer").style.width = "0";
+			picker.classList.add("picked");
+
 			hideExtensionBtn.style.opacity = "0";
 			hideExtensionBtn.style.padding = "0";
+			document.getElementById("scratchblockscontainer").classList.remove("visible");
 			setTimeout(()=>{
 				hideExtensionBtn.style.display = "none";
-				document.getElementById("scratchblockscontainer").style.borderLeft = '0px white';
 				// menu.style.borderLeft = '1px solid #ccc';
 			}, 500);
 
@@ -1560,7 +1581,7 @@
 		            extButton.className = 'ext-button';
 		            extButton.style.background = "#f0f0f0";
 					if (BuiltIn.includes(extId)) {
-						extButton.style.background = "#f5fff5";
+						extButton.style.background = "#edffed";
 					}
 		            const spanText = document.createElement('span');
 		            spanText.textContent = extId;
@@ -1581,7 +1602,7 @@
 		                    delete projectData.extensionURLs[extId];
 		                    extButton.style.background = "#f0f0f0";
 							if (BuiltIn.includes(extId)) {
-								extButton.style.background = "#f5fff5";
+								extButton.style.background = "#edffed";
 							}
 		                } else {
 		                    projectData.extensionURLs[extId] = newUrl;
@@ -1667,23 +1688,20 @@
 		            renderExtension.addEventListener('click', async () => {
 						renderExtension.disabled = true; // showPopup();
 						hideExtensionBtn.style.padding = "0";
+						document.getElementById("scratchblockscontainer").classList.remove("visible");
 						hideExtensionBtn.style.opacity = "0";
 						hideExtensionBtn.style.display = "none";
-						document.getElementById("scratchblockscontainer").style.width = "0";
 						document.getElementById("scratchblocks").innerText = await ExtensionToScratchblocks(projectData.extensionURLs[extId]);
 						renderExtension.disabled = !projectData.extensionURLs[extId]; // hidePopup();
 
 						hideExtensionBtn.style.display = "block";
 
-						document.getElementById("scratchblockscontainer").style.width = "800px";
-						// document.getElementById("scratchblockscontainer").style.borderRight = '1px solid #f4f4f4';
-						document.getElementById("scratchblockscontainer").style.borderLeft = '1px solid #ccc';
+						document.getElementById("scratchblockscontainer").classList.add("visible");
 						menu.classList.remove('visible');
 						setTimeout(()=>{
 							hideExtensionBtn.style.padding = "10px";
 							hideExtensionBtn.style.opacity = "1";
 						}, 1);
-						// menu.style.borderLeft = '0px';
 
 						// console.log(document.getElementById("scratchblocks").innerText);
 
