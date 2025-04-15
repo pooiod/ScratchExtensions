@@ -1,0 +1,10 @@
+[
+    {
+        "ext": "WPILIB",
+        "name": "WPILIB",
+        "base": "https://robo-code.pages.dev",
+        "source": "RoboCode",
+        "build": "wip",
+        "url": "https://robo-code.pages.dev/blocks.js"
+    }
+]
