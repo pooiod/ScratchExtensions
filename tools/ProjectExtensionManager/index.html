@@ -122,7 +122,7 @@
 			top: 0px;
 			display: block;
 			height: 100%;
-			margin-top: -100vh;
+			margin-top: calc(-100vh + 20px);
 			pointer-events: none;
 			background: linear-gradient(
 				to bottom,
@@ -136,6 +136,7 @@
 		#scratchblocks {
 			overflow: hidden;
 			margin: 20px;
+			margin-bottom: 40px;
 			zoom: 80%;
 		}
 
@@ -564,97 +565,6 @@
 		updateContainerHeight();
 		window.addEventListener('resize', updateContainerHeight);
 		setInterval(updateContainerHeight, 1000);
-
-		var createFakeElm = (type) => { const c = document.createElement(type); return ['div', 'div', 'div', 'div', 'div'].reduce((p, t) => { const d = document.createElement(t); d.appendChild(p); return c; }, c); };
-
-		function LoadStaticVM() {
-			window.Scratch = {
-				extensions: {
-					unsandboxed: true
-				},
-
-				exports: {
-					Skin: new class {
-						constructor() {}
-					},
-					JSZip: {}
-				},
-
-				fetch: function() {},
-
-				ArgumentType: {
-					STRING: "string",
-					BOOLEAN: "boolean"
-				},
-				BlockType: {
-					COMMAND: "command",
-					REPORTER: "reporter",
-					BOOLEAN: "boolean",
-					CONDITIONAL: "conditional",
-					LOOP: "loop",
-					EVENT: "event",
-					HAT: "hat"
-				},
-				TargetType: {
-					STAGE: "stage",
-					SPRITE: "sprite"
-				},
-
-				Cast: {
-					toBoolean: function(arg1) {
-						return !!arg1;
-					},
-				},
-
-				translate: function(arg1) {
-					return arg1;
-				}
-			};
-
-			Scratch.translate.setup = function(){};
-
-			Scratch.vm = {
-				exports: Scratch.exports,
-
-				runtime: {
-					vm: Scratch.vm,
-					exports: Scratch.exports,
-					stageWidth: 480,
-					stageHeight: 360,
-
-					framerate: {
-						frameLoop: {}
-					},
-
-					ioDevices: {
-						mouse: {
-							getScratchX: function() {
-								return 0;
-							},
-							getScratchY: function() {
-								return 0;
-							}
-						}
-					},
-
-					targets: {
-						t1: {}
-					},
-
-					_step: function(){},
-					on: function(){}
-				},
-
-				renderer: {
-					exports: Scratch.exports,
-					vm: Scratch.vm,
-					canvas: createFakeElm("canvas")
-				},
-			}
-
-			Scratch.vm.runtime.renderer = Scratch.vm.renderer
-			Scratch.vm.renderer.runtime = Scratch.vm.runtime;
-		}
 
 		var BuiltIn = [
 			"music",
@@ -1117,6 +1027,94 @@
 		}
 
 		async function ExtensionToScratchblocks(url) {
+			var Scratch = {
+				extensions: {
+					unsandboxed: true
+				},
+
+				exports: {
+					Skin: new class {
+						constructor() {}
+					},
+					JSZip: {}
+				},
+
+				fetch: function() {},
+
+				ArgumentType: {
+					STRING: "string",
+					BOOLEAN: "boolean"
+				},
+				BlockType: {
+					COMMAND: "command",
+					REPORTER: "reporter",
+					BOOLEAN: "boolean",
+					CONDITIONAL: "conditional",
+					LOOP: "loop",
+					EVENT: "event",
+					HAT: "hat"
+				},
+				TargetType: {
+					STAGE: "stage",
+					SPRITE: "sprite"
+				},
+
+				Cast: {
+					toBoolean: function(arg1) {
+						return !!arg1;
+					},
+				},
+
+				translate: function(arg1) {
+					if (arg1.default) return arg1.default;
+					return arg1;
+				}
+			};
+
+			Scratch.translate.setup = function(){};
+
+			Scratch.vm = {
+				exports: Scratch.exports,
+
+				runtime: {
+					vm: Scratch.vm,
+					exports: Scratch.exports,
+					stageWidth: 480,
+					stageHeight: 360,
+
+					frameLoop: {
+						framerate: {}
+					},
+
+					ioDevices: {
+						mouse: {
+							getScratchX: function() {
+								return 0;
+							},
+							getScratchY: function() {
+								return 0;
+							}
+						}
+					},
+
+					targets: {
+						t1: {}
+					},
+
+					_step: function(){},
+					on: function(){}
+				},
+
+				renderer: {
+					exports: Scratch.exports,
+					vm: Scratch.vm,
+					canvas: null
+				},
+			}
+
+			Scratch.vm.runtime.renderer = Scratch.vm.renderer
+			Scratch.vm.renderer.runtime = Scratch.vm.runtime;
+
 			async function ext2sblock(url) {
 				const script = document.createElement('script');
 				script.src = url;
@@ -1203,12 +1201,19 @@
 				return new Promise(resolve => {window.resolve492804 = resolve});
 			}
 
-			LoadStaticVM();
 			var iframe = document.createElement('iframe');
 			iframe.style.display = 'none';
 			document.body.appendChild(iframe);
 			var sandboxWindow = iframe.contentWindow;
+			var sandboxDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+			sandboxDoc.open();
+			sandboxDoc.write(`<head></head><body><div><div><div><div><div><canvas id="6734827468294793829"></canvas></div></div></div></div></div></body>`);
+			sandboxDoc.close();
+
+			Scratch.vm.runtime.renderer.canvas = sandboxWindow.document.getElementById("6734827468294793829");
 			sandboxWindow.Scratch = Scratch;
+
 			return await sandboxWindow.eval(`(${ext2sblock.toString()})("${url}")`).finally(() => {
 				document.body.removeChild(iframe);
 			});
