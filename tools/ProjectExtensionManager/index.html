@@ -96,6 +96,24 @@
 			transition: opacity 0.3s ease;
 		}
 
+		.scratchblockscontainer {
+			width: 0;
+			overflow: auto;
+			background: #fff;
+			color: #111;
+			transition: width 0.5s ease;
+			border-top: 1px solid #ccc;
+			max-width: 50vw;
+			padding: 0px;
+			top: 0px;
+			z-index: 1;
+		}
+
+		#scratchblocks {
+			margin: 20px;
+			zoom: 80%;
+		}
+
 		#menu {
 			width: 0;
 			opacity: 0;
@@ -106,6 +124,7 @@
 			border-left: 1px solid #ccc;
 			display: flex;
 			flex-direction: column;
+			z-index: 1;
 		}
 		#menu.visible {
 			width: 300px;
@@ -363,10 +382,14 @@
 
 	<div id="container">
 		<div id="file-picker"><span>Load a Scratch project</span></div>
+		<div class="scratchblockscontainer" id="scratchblockscontainer"><div id="scratchblocks"></div></div>
+
 		<div id="menu">
 			<h1></h1>
 			<div id="extensions-container"></div>
+
 			<div id="project-buttons">
+				<button id="hide-extension" style="display: none;">Hide viewer</button>
 				<button id="save-project">Save project</button>
 				<button id="load-project">Load project</button>
 				<button id="add-extension">Add extension</button>
@@ -381,17 +404,21 @@
 				<div class="tab-button" data-tab="file-tab">File</div>
 				<div class="tab-button" data-tab="code-tab">Code</div>
 			</div>
+
 			<div id="url-tab" class="tab-content active">
 				<input type="text" id="ext-url-input" placeholder="Enter extension URL">
 				<button id="ext-url-set" style="display: none;">Set</button>
 			</div>
+
 			<div id="file-tab" class="tab-content">
 				<input type="file" id="ext-file-input" accept=".js">
 			</div>
+
 			<div id="code-tab" class="tab-content">
 				<textarea id="ext-code-input" placeholder="Paste JS code here"></textarea>
 				<button id="ext-code-set" style="display: none;">Set</button>
 			</div>
+
 			<button id="popup-set">Add Extension</button>
 			<button id="popup-back">Back</button>
 		</div>
@@ -409,6 +436,7 @@
 	<input type="file" id="hidden-input" accept=".sb3,.pmp" style="display:none">
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+	<script src="https://pooiod7.neocities.org/markdown/scratchblocks.js"></script>
 
 	<script>
 		let projectData, fetchedBuffer, lastError, originalFileName;
@@ -420,6 +448,7 @@
 		const saveProjectBtn = document.getElementById('save-project');
 		const loadProjectBtn = document.getElementById('load-project');
 		const addExtensionBtn = document.getElementById('add-extension');
+		const hideExtensionBtn = document.getElementById('hide-extension');
 		const addExtPopup = document.getElementById('add-extension-popup');
 		const popupBack = document.getElementById('popup-back');
 		const popupSet = document.getElementById('popup-set');
@@ -435,6 +464,48 @@
 		const archiveConfirm = document.getElementById('archive-confirm');
 		const archiveClose = document.getElementById('archive-close');
 		let currentExtInfo = null;
+
+		function LoadStaticVM() {
+			window.Scratch = {
+				extensions: {
+					unsandboxed: true
+				},
+
+				ArgumentType: {
+					STRING: "string",
+					BOOLEAN: "boolean"
+				},
+				BlockType: {
+					COMMAND: "command",
+					REPORTER: "reporter",
+					BOOLEAN: "boolean",
+					CONDITIONAL: "conditional"
+				},
+				TargetType: {
+					STAGE: "stage",
+					SPRITE: "sprite"
+				},
+
+				Cast: {
+
+				}
+			};
+
+			Scratch.vm = {}
+			Scratch.runtime = {
+				stageWidth: 480,
+				stageHeight: 360,
+
+				renderer: {
+					canvas: null,
+				},
+
+				on: function(){}
+			}
+
+			Scratch.vm.runtime = Scratch.runtime
+			Scratch.runtime.vm = Scratch.vm
+		}
 
 		var BuiltIn = [
 			"music",
@@ -895,6 +966,89 @@
 			return false;
 		}
 
+		async function ExtensionToScratchblocks(url) {
+			LoadStaticVM();
+
+			const script = document.createElement('script');
+			script.src = url;
+
+			script.onerror = (err) => {
+				document.head.removeChild(script);
+				console.warn(err);
+			}
+
+			var timeout298498 = setTimeout(function() {
+				resolve492804("//Unable to load");
+			}, 5000);
+
+			Scratch.extensions.register = (ext) => {
+				var scratchblocks = [];
+				var blocks = ext.getInfo().blocks;
+
+				for (const block of blocks) {
+					const { opcode, blockType, text, arguments: args = {} } = block;
+					let formattedText = text;
+
+					for (const [argName, argInfo] of Object.entries(args)) {
+						var defaultVal = argInfo.defaultValue || '';
+
+						if (argInfo.menu && !defaultVal) {
+							defaultVal = ext.getInfo().menus[argInfo.menu];
+							if (defaultVal.items) {
+								defaultVal = defaultVal.items[0];
+
+								if (defaultVal.text) {
+									defaultVal = defaultVal.text;
+								}
+							} else {
+								defaultVal = defaultVal[0];
+							}
+						}
+						if (argInfo.menu) defaultVal = defaultVal + " v";
+
+						var argStr = defaultVal + ""
+							.replace(new RegExp(`\n`, 'g'), ` `)
+							.replace(new RegExp(`]`, 'g'), `\\]`)
+							.replace(new RegExp(`>`, 'g'), `\\>`)
+							.replace(new RegExp(`}`, 'g'), `\\}`);
+						argStr = `[${argStr}]`;
+
+						formattedText = formattedText.replace(new RegExp(`\\[${argName}\\]`, 'g'), argStr);
+					}
+
+					const colorTag = `:: ${ext.getInfo().color1 || "#999"}`;
+					var blockFormatted = `//${formattedText}`
+					if (blockType === Scratch.BlockType.COMMAND) {
+						blockFormatted = formattedText.replace("ef", "еf") + colorTag;
+					} else if (blockType === Scratch.BlockType.REPORTER) {
+						blockFormatted = `(${formattedText} ${colorTag})`;
+					} else if (blockType === Scratch.BlockType.BOOLEAN) {
+						blockFormatted = `<${formattedText} ${colorTag}>`;
+					} else if (blockType === Scratch.BlockType.CONDITIONAL) {
+						blockFormatted = `${formattedText} ${colorTag}{\n}`;
+					}
+
+					if (block.hideFromPalette) blockFormatted = blockFormatted + "//hidden block";
+
+					scratchblocks.push(blockFormatted);
+				}
+
+				document.head.removeChild(script);
+
+				clearTimeout(timeout298498);
+				resolve492804(scratchblocks.join('\n\n'));
+			};
+
+			document.head.appendChild(script);
+
+			return new Promise(resolve => {window.resolve492804 = resolve});
+		}
+
+		setTimeout(()=>{
+			console.log("parsing");
+			ExtensionToScratchblocks("https://p7scratchextensions.pages.dev/ext/KoboldAI/main.js").then(console.log);
+		}, 500);
+
 		function formatToday() {
 		    let today = new Date();
 		    let dd = String(today.getDate()).padStart(2, '0');
@@ -919,7 +1073,7 @@
 		        });
 		}
 
-		function updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId) {
+		function updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, renderExtension, extId,) {
 		    let url = inputUrl.value.trim();
 		    if (url === "" || url.startsWith("data:")) {
 		        findArchive.disabled = true;
@@ -937,8 +1091,10 @@
 
 			if (!projectData.extensionURLs[extId]) {
 				validateSource.disabled = true;
+				renderExtension.disabled = true;
 			} else {
 				validateSource.disabled = false;
+				renderExtension.disabled = false;
 			}
 		}
 		picker.addEventListener('click', () => input.click());
@@ -979,6 +1135,15 @@
 		});
 		addExtensionBtn.addEventListener('click', () => {
 		    addExtPopup.style.display = "flex";
+		});
+		hideExtensionBtn.addEventListener('click', () => {
+			hideExtensionBtn.style.display = "none";
+		    document.getElementById("scratchblockscontainer").style.width = "0";
+			document.getElementById("scratchblockscontainer").style.borderRight = '0px white';
+			setTimeout(()=>{
+				document.getElementById("scratchblockscontainer").style.borderLeft = '0px white';
+				document.getElementById("menu").style.borderLeft = '1px solid #ccc';
+			}, 500);
 		});
 		popupBack.addEventListener('click', () => {
 		    addExtPopup.style.display = "none";
@@ -1326,7 +1491,7 @@
 		                    projectData.extensionURLs[extId] = newUrl;
 		                    validateExtension(extButton, newUrl);
 		                }
-		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId);
+		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, renderExtension, extId);
 		            });
 		            const genDummy = document.createElement('button');
 		            genDummy.textContent = "Generate replacement";
@@ -1397,15 +1562,43 @@
 							}
 		                }
 		            });
+		            const renderExtension = document.createElement('button');
+		            renderExtension.textContent = "Render extension";
+		            renderExtension.disabled = false;
+		            if (!projectData.extensionURLs[extId]) {
+		                renderExtension.disabled = true;
+		            }
+		            renderExtension.addEventListener('click', async () => {
+						renderExtension.disabled = true; // showPopup();
+						hideExtensionBtn.style.display = "none";
+						document.getElementById("scratchblockscontainer").style.width = "0";
+						document.getElementById("scratchblocks").innerText = await ExtensionToScratchblocks(projectData.extensionURLs[extId]);
+						renderExtension.disabled = !projectData.extensionURLs[extId]; // hidePopup();
+
+						hideExtensionBtn.style.display = "block";
+
+						document.getElementById("scratchblockscontainer").style.width = "800px";
+						document.getElementById("scratchblockscontainer").style.borderRight = '1px solid #f4f4f4';
+						document.getElementById("scratchblockscontainer").style.borderLeft = '1px solid #ccc';
+						document.getElementById("menu").style.borderLeft = '0px';
+
+						console.log(document.getElementById("scratchblocks").innerText);
+
+						scratchblocks.init();
+						scratchblocks.module.renderMatching("#scratchblocks", {
+							style: "scratch3",
+						});
+		            });
 		            dropdown.appendChild(inputUrl);
 					dropdown.appendChild(validateSource);
 		            dropdown.appendChild(genDummy);
 		            dropdown.appendChild(findArchive);
 		            dropdown.appendChild(removeArchive);
+					dropdown.appendChild(renderExtension);
 		            extButton.addEventListener('click', () => {
 		                dropdown.classList.toggle('open');
 		                arrow.classList.toggle('open');
-		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId);
+		                updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, renderExtension, extId);
 		            });
 		            extItem.appendChild(extButton);
 		            extItem.appendChild(dropdown);
@@ -1413,7 +1606,7 @@
 		            if (projectData.extensionURLs && projectData.extensionURLs[extId]) {
 		                validateExtension(extButton, projectData.extensionURLs[extId]);
 		            }
-		            updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, extId);
+		            updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, renderExtension, extId);
 		        });
 		    }
 		}
