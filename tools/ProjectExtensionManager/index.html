@@ -120,8 +120,15 @@
 			position: sticky;
 			top: 0px;
 			display: block;
-			height: 30px;
-			background: linear-gradient(to bottom, white, transparent);
+			height: 100%;
+			margin-top: -100vh;
+			background: linear-gradient(
+				to bottom,
+				white 0,
+				transparent 20px,
+				transparent calc(100% - 20px),
+				white 100%
+			);
 		}
 
 		#scratchblocks {
@@ -168,7 +175,7 @@
 		#menu h1 {
 			font-size: 1.2em;
 			margin: 0px;
-			margin-bottom: 20px;
+			margin-bottom: 10px;
 			margin-top: 10px;
 			text-align: center;
 		}
@@ -177,6 +184,35 @@
 			flex: 1;
 			overflow-y: auto;
 			margin-bottom: 10px;
+			--container-height: 100%;
+		}
+
+		#extensions-container .ext-item:first-child {
+			margin-top: 10px;
+		}
+		#extensions-container .ext-item:last-child {
+			margin-bottom: 10px;
+		}
+
+		#extensions-container::before {
+			content: "";
+			display: block;
+			position: sticky;
+
+			top: 0;
+			height: var(--container-height);
+			margin-top: calc(var(--container-height) * -1);
+
+			pointer-events: none;
+			z-index: 999;
+
+			background: linear-gradient(
+				to bottom,
+				white 0,
+				transparent 10px,
+				transparent calc(100% - 10px),
+				white 100%
+			);
 		}
 
 		.ext-item {
@@ -517,6 +553,15 @@
 		const archiveConfirm = document.getElementById('archive-confirm');
 		const archiveClose = document.getElementById('archive-close');
 		let currentExtInfo = null;
+
+		function updateContainerHeight() {
+		const container = document.getElementById('extensions-container');
+			const containerHeight = container.offsetHeight;
+			container.style.setProperty('--container-height', `${containerHeight}px`);
+		}
+		updateContainerHeight();
+		window.addEventListener('resize', updateContainerHeight);
+		setInterval(updateContainerHeight, 1000);
 
 		var createFakeElm = (type) => { const c = document.createElement(type); return ['div', 'div', 'div', 'div', 'div'].reduce((p, t) => { const d = document.createElement(t); d.appendChild(p); return c; }, c); };
 
@@ -1712,9 +1757,11 @@
 							showPopup("No blocks", "This extension has no blocks");
 						} else {
 							hideExtensionBtn.style.display = "block";
-
-							document.getElementById("scratchblockscontainer").classList.add("visible");
 							menu.classList.remove('visible');
+
+							document.getElementById("scratchblockscontainer").scrollTop = 0;
+							document.getElementById("scratchblockscontainer").classList.add("visible");
+
 							setTimeout(()=>{
 								hideExtensionBtn.style.padding = "10px";
 								hideExtensionBtn.style.opacity = "1";
