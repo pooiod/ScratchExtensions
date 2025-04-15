@@ -112,6 +112,7 @@
 
 		.scratchblockscontainer.visible {
 			border-left: 1px solid #ccc;
+			overflow: scroll;
 			width: 800px;
 		}
 
@@ -122,6 +123,7 @@
 			display: block;
 			height: 100%;
 			margin-top: -100vh;
+			pointer-events: none;
 			background: linear-gradient(
 				to bottom,
 				white 0,
@@ -329,7 +331,7 @@
 		.tab-content.active {
 			display: block;
 		}
-		#popup-back, #popup-set, #archive-close {
+		#popup-back, #popup-set, #archive-close, #archive-confirm {
 			margin-top: 10px;
 			width: 100%;
 			padding: 10px;
