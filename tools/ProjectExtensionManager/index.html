@@ -1068,7 +1068,7 @@
 				}
 
 				var timeout298498 = setTimeout(function() {
-					resolve492804("//Unable to load");
+					resolve492804("failedtoload");
 				}, 5000);
 
 				Scratch.extensions.register = (ext) => {
@@ -1694,21 +1694,25 @@
 						document.getElementById("scratchblocks").innerText = await ExtensionToScratchblocks(projectData.extensionURLs[extId]);
 						renderExtension.disabled = !projectData.extensionURLs[extId]; // hidePopup();
 
-						hideExtensionBtn.style.display = "block";
+						if (document.getElementById("scratchblocks").innerText == "failedtoload") {
+							showPopup("Extension error", "Failed to load extension");
+						} else if (!document.getElementById("scratchblocks").innerText) {
+							showPopup("No blocks", "This extension has no blocks");
+						} else {
+							hideExtensionBtn.style.display = "block";
 
-						document.getElementById("scratchblockscontainer").classList.add("visible");
-						menu.classList.remove('visible');
-						setTimeout(()=>{
-							hideExtensionBtn.style.padding = "10px";
-							hideExtensionBtn.style.opacity = "1";
-						}, 1);
+							document.getElementById("scratchblockscontainer").classList.add("visible");
+							menu.classList.remove('visible');
+							setTimeout(()=>{
+								hideExtensionBtn.style.padding = "10px";
+								hideExtensionBtn.style.opacity = "1";
+							}, 1);
 
-						// console.log(document.getElementById("scratchblocks").innerText);
-
-						scratchblocks.init();
-						scratchblocks.module.renderMatching("#scratchblocks", {
-							style: "scratch3",
-						});
+							scratchblocks.init();
+							scratchblocks.module.renderMatching("#scratchblocks", {
+								style: "scratch3",
+							});
+						}
 		            });
 		            dropdown.appendChild(inputUrl);
 					dropdown.appendChild(validateSource);
