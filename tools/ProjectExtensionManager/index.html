@@ -134,7 +134,9 @@
 
 		#menu h1 {
 			font-size: 1.2em;
-			margin: 0 0 10px 20px;
+			margin: 0px;
+			margin-bottom: 20px;
+			margin-top: 10px;
 			text-align: center;
 		}
 
@@ -300,6 +302,16 @@
 			top: 5px;
 			right: 5px;
 			z-index: 9999;
+
+			padding: 10px;
+			background: #eee;
+			border: 1px solid #ccc;
+			cursor: pointer;
+			transition: background 0.3s, padding 0.3s, opacity 0.3s;
+		}
+
+		#hide-extension:hover {
+			background: #ddd;
 		}
 
 		.popup-overlay {
@@ -499,7 +511,8 @@
 					REPORTER: "reporter",
 					BOOLEAN: "boolean",
 					CONDITIONAL: "conditional",
-					EVENT: "event"
+					EVENT: "event",
+					HAT: "hat"
 				},
 				TargetType: {
 					STAGE: "stage",
@@ -1023,83 +1036,101 @@
 		}
 
 		async function ExtensionToScratchblocks(url) {
-			LoadStaticVM();
+			async function ext2sblock(url) {
+				const script = document.createElement('script');
+				script.src = url;
 
-			const script = document.createElement('script');
-			script.src = url;
-
-			script.onerror = (err) => {
-				document.head.removeChild(script);
-				console.warn(err);
-			}
-
-			var timeout298498 = setTimeout(function() {
-				resolve492804("//Unable to load");
-			}, 5000);
-
-			Scratch.extensions.register = (ext) => {
-				var scratchblocks = [];
-				var blocks = ext.getInfo().blocks;
-
-				for (const block of blocks) {
-					const { opcode, blockType, text, arguments: args = {} } = block;
-					let formattedText = text;
-
-					for (const [argName, argInfo] of Object.entries(args)) {
-						var defaultVal = argInfo.defaultValue || '';
-
-						if (argInfo.menu && !defaultVal) {
-							defaultVal = ext.getInfo().menus[argInfo.menu];
-							if (defaultVal.items) {
-								defaultVal = defaultVal.items[0];
-
-								if (defaultVal.text) {
-									defaultVal = defaultVal.text;
-								}
-							} else {
-								defaultVal = defaultVal[0];
-							}
-						}
-						if (argInfo.menu) defaultVal = defaultVal + " v";
-
-						var argStr = defaultVal + ""
-							.replace(new RegExp(`\n`, 'g'), ` `)
-							.replace(new RegExp(`]`, 'g'), `\\]`)
-							.replace(new RegExp(`>`, 'g'), `\\>`)
-							.replace(new RegExp(`}`, 'g'), `\\}`);
-						argStr = `[${argStr}]`;
-
-						formattedText = formattedText.replace(new RegExp(`\\[${argName}\\]`, 'g'), argStr);
-					}
-
-					const colorTag = `:: ${ext.getInfo().color1 || "#0fbd8c"}`;
-					var blockFormatted = `//${formattedText}`
-					if (blockType === Scratch.BlockType.COMMAND) {
-						blockFormatted = formattedText.replace("ef", "еf") + colorTag;
-					} else if (blockType === Scratch.BlockType.REPORTER) {
-						blockFormatted = `(${formattedText} ${colorTag})`;
-					} else if (blockType === Scratch.BlockType.BOOLEAN) {
-						blockFormatted = `<${formattedText} ${colorTag}>`;
-					} else if (blockType === Scratch.BlockType.EVENT) {
-						blockFormatted = `${formattedText} ${colorTag} hat`;
-					} else if (blockType === Scratch.BlockType.CONDITIONAL) {
-						blockFormatted = `${formattedText} ${colorTag}{\n}`;
-					}
-
-					if (block.hideFromPalette) blockFormatted = blockFormatted + "//hidden block";
-
-					scratchblocks.push(blockFormatted);
+				script.onerror = (err) => {
+					document.head.removeChild(script);
+					console.warn(err);
 				}
 
-				document.head.removeChild(script);
+				var timeout298498 = setTimeout(function() {
+					resolve492804("//Unable to load");
+				}, 5000);
 
-				clearTimeout(timeout298498);
-				resolve492804(scratchblocks.join('\n\n'));
-			};
+				Scratch.extensions.register = (ext) => {
+					var scratchblocks = [];
+					var blocks = ext.getInfo().blocks;
 
-			document.head.appendChild(script);
+					for (const block of blocks) {
+						const { opcode, blockType, text, arguments: args = {} } = block;
+						let formattedText = text;
 
-			return new Promise(resolve => {window.resolve492804 = resolve});
+						for (const [argName, argInfo] of Object.entries(args)) {
+							var defaultVal = argInfo.defaultValue || '';
+
+							if (argInfo.menu && !defaultVal) {
+								defaultVal = ext.getInfo().menus[argInfo.menu];
+								if (defaultVal.items) {
+									defaultVal = defaultVal.items[0];
+
+									if (defaultVal.text) {
+										defaultVal = defaultVal.text;
+									}
+								} else {
+									defaultVal = defaultVal[0];
+								}
+							}
+							if (argInfo.menu) defaultVal = defaultVal + " v";
+
+							var argStr = defaultVal + ""
+								.replace(new RegExp(`\n`, 'g'), ` `)
+								.replace(new RegExp(`]`, 'g'), `\\]`)
+								.replace(new RegExp(`>`, 'g'), `\\>`)
+								.replace(new RegExp(`}`, 'g'), `\\}`);
+							argStr = `[${argStr}]`;
+
+							formattedText = formattedText.replace(new RegExp(`\\[${argName}\\]`, 'g'), argStr);
+						}
+
+						const colorTag = ` :: ${ext.getInfo().color1 || "#0fbd8c"}`;
+						var blockFormatted = `//${formattedText}`;
+						if (blockType === Scratch.BlockType.COMMAND) {
+							blockFormatted = formattedText.replace("ef", "еf").replace("en", "еn") + colorTag;
+						} else if (blockType === Scratch.BlockType.REPORTER) {
+							blockFormatted = `(${formattedText} ${colorTag})`;
+						} else if (blockType === Scratch.BlockType.BOOLEAN) {
+							blockFormatted = `<${formattedText} ${colorTag}>`;
+						} else if (blockType === Scratch.BlockType.EVENT || blockType === Scratch.BlockType.HAT) {
+							blockFormatted = `${formattedText} ${colorTag} hat`;
+						} else if (blockType === Scratch.BlockType.CONDITIONAL) {
+							blockFormatted = `${formattedText} ${colorTag}{\n}`;
+						} else if (!blockType && !formattedText) {
+							blockFormatted = `//---`;
+						}
+
+						if (block.hideFromPalette) {
+							if (blockFormatted.startsWith("//")) {
+								blockFormatted = blockFormatted + " - hidden lable";
+							} else {
+								blockFormatted = blockFormatted + "//hidden block";
+							}
+						}
+
+						scratchblocks.push(blockFormatted);
+					}
+
+					document.head.removeChild(script);
+
+					clearTimeout(timeout298498);
+					resolve492804(scratchblocks.join('\n\n'));
+				};
+
+				document.head.appendChild(script);
+
+				return new Promise(resolve => {window.resolve492804 = resolve});
+			}
+
+			LoadStaticVM();
+			var iframe = document.createElement('iframe');
+			iframe.style.display = 'none';
+			document.body.appendChild(iframe);
+			var sandboxWindow = iframe.contentWindow;
+			sandboxWindow.Scratch = Scratch;
+			return await sandboxWindow.eval(`(${ext2sblock.toString()})("${url}")`).finally(() => {
+				document.body.removeChild(iframe);
+			});
 		}
 
 		function formatToday() {
@@ -1190,11 +1221,13 @@
 		    addExtPopup.style.display = "flex";
 		});
 		hideExtensionBtn.addEventListener('click', () => {
-			hideExtensionBtn.style.display = "none";
 		    document.getElementById("scratchblockscontainer").style.width = "0";
 			document.getElementById("scratchblockscontainer").style.borderRight = '0px white';
+			hideExtensionBtn.style.opacity = "0";
+			hideExtensionBtn.style.padding = "0";
 			menu.classList.add('visible');
 			setTimeout(()=>{
+				hideExtensionBtn.style.display = "none";
 				document.getElementById("scratchblockscontainer").style.borderLeft = '0px white';
 				// menu.style.borderLeft = '1px solid #ccc';
 			}, 500);
@@ -1465,9 +1498,11 @@
 		    const reader = new FileReader();
 			picker.style.opacity = 0;
 
-			hideExtensionBtn.style.display = "none";
 			document.getElementById("scratchblockscontainer").style.width = "0";
+			hideExtensionBtn.style.opacity = "0";
+			hideExtensionBtn.style.padding = "0";
 			setTimeout(()=>{
+				hideExtensionBtn.style.display = "none";
 				document.getElementById("scratchblockscontainer").style.borderLeft = '0px white';
 				// menu.style.borderLeft = '1px solid #ccc';
 			}, 500);
@@ -1631,6 +1666,8 @@
 		            }
 		            renderExtension.addEventListener('click', async () => {
 						renderExtension.disabled = true; // showPopup();
+						hideExtensionBtn.style.padding = "0";
+						hideExtensionBtn.style.opacity = "0";
 						hideExtensionBtn.style.display = "none";
 						document.getElementById("scratchblockscontainer").style.width = "0";
 						document.getElementById("scratchblocks").innerText = await ExtensionToScratchblocks(projectData.extensionURLs[extId]);
@@ -1640,8 +1677,12 @@
 
 						document.getElementById("scratchblockscontainer").style.width = "800px";
 						// document.getElementById("scratchblockscontainer").style.borderRight = '1px solid #f4f4f4';
-						document.getElementById("scratchblockscontainer").style.borderLeft = '1px solid #dedede';
+						document.getElementById("scratchblockscontainer").style.borderLeft = '1px solid #ccc';
 						menu.classList.remove('visible');
+						setTimeout(()=>{
+							hideExtensionBtn.style.padding = "10px";
+							hideExtensionBtn.style.opacity = "1";
+						}, 1);
 						// menu.style.borderLeft = '0px';
 
 						// console.log(document.getElementById("scratchblocks").innerText);
