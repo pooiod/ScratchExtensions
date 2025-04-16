@@ -572,22 +572,24 @@
 		let currentExtInfo = null;
 
 		try {
-			if (new URLSearchParams(window.location.search).get('q')) {
-				document.getElementById("load-project").innerHTML = "Import project";
-				document.getElementById("save-project").innerHTML = "Export project";
+			async function dothing() {
+				if (new URLSearchParams(window.location.search).get('q')) {
+					document.getElementById("load-project").innerHTML = "Import project";
+					document.getElementById("save-project").innerHTML = "Export project";
 
-				const response = await fetch(new URLSearchParams(window.location.search).get('q'));
-				const blob = await response.blob();
+					const response = await fetch(new URLSearchParams(window.location.search).get('q'));
+					const blob = await response.blob();
 
-				const fileName = "project";
-				const file = new File([blob], fileName, { type: blob.type });
+					const fileName = "project";
+					const file = new File([blob], fileName, { type: blob.type });
 
-				const dataTransfer = new DataTransfer();
-				dataTransfer.items.add(file);
-				input.files = dataTransfer.files;
+					const dataTransfer = new DataTransfer();
+					dataTransfer.items.add(file);
+					input.files = dataTransfer.files;
 
-				input.dispatchEvent(new Event("change"));
-			}
+					input.dispatchEvent(new Event("change"));
+				}
+			} dothing();
 		} catch(e) {
 			console.warn(e);
 			showPopup("Project error", "Unable to load project");
