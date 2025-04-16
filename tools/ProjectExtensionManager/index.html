@@ -111,9 +111,12 @@
 		}
 
 		.scratchblockscontainer.visible {
-			border-left: 1px solid #ccc;
-			overflow: scroll;
+			overflow: auto;
 			width: 800px;
+		}
+
+		.scratchblockscontainer.outline {
+			border-left: 1px solid #ccc;
 		}
 
 		.scratchblockscontainer::before {
@@ -163,8 +166,7 @@
 			overflow: hidden;
 			background: #fff;
 			color: #111;
-			transition: all 0.5s ease;
-			border-left: 1px solid #ccc;
+			transition: all 0.5s ease, border 0s;
 			display: flex;
 			flex-direction: column;
 			z-index: 1;
@@ -173,6 +175,10 @@
 			width: 350px !important;
 			opacity: 1;
 			padding: 10px 10px;
+		}
+
+		#menu.outline {
+			border-left: 1px solid #ccc;
 		}
 
 		#menu h1 {
@@ -451,17 +457,24 @@
 		@media (max-width: 550px) {
 			#menu.visible {
 				width: 100vw !important;
+			}
+			#menu.outline {
 				border: 0px !important;
 			}
 
 			.scratchblockscontainer.visible {
 				max-width: 100vw;
 				width: 100vw !important;
-				border: 0px;
+			}
+			.scratchblockscontainer.outline {
+				border-left: 0px;
 			}
 
 			#file-picker.picked {
 				width: 0px;
+			}
+			#file-picker {
+				border: 0px !important;
 			}
 		}
 	</style>
@@ -477,7 +490,7 @@
 		<div id="file-picker"><span>Load a Scratch project</span></div>
 		<div class="scratchblockscontainer" id="scratchblockscontainer"><div id="scratchblocks"></div></div>
 
-		<div id="menu">
+		<div id="menu" class="outline">
 			<h1></h1>
 			<div id="extensions-container"></div>
 
@@ -1039,7 +1052,8 @@
 					JSZip: JSZip
 				},
 
-				fetch: function() {},
+				fetch: fetch,
+				canFetch: true,
 
 				ArgumentType: {
 					STRING: "string",
@@ -1193,30 +1207,42 @@
 					document.head.removeChild(script);
 
 					clearTimeout(timeout298498);
-					resolve492804(scratchblocks.join('\n\n'));
+					window.resolve492804(scratchblocks.join('\n\n'));
 				};
 
 				document.head.appendChild(script);
 
-				return new Promise(resolve => {window.resolve492804 = resolve});
+				return new Promise(resolve => {
+					window.resolve492804 = (input)=> {
+						window.resolve492804 = null;
+						resolve(input);
+					};
+				});
 			}
 
-			var iframe = document.createElement('iframe');
-			iframe.style.display = 'none';
-			document.body.appendChild(iframe);
-			var sandboxWindow = iframe.contentWindow;
-			var sandboxDoc = iframe.contentDocument || iframe.contentWindow.document;
+			if (navigator.userAgent.toLowerCase().includes('firefox')) {
+				Scratch.vm.runtime.renderer.canvas = document.getElementById("6734827468294793829");
+				window.Scratch = Scratch;
 
-			sandboxDoc.open();
-			sandboxDoc.write(`<head></head><body><div><div><div><div><div><canvas id="6734827468294793829"></canvas></div></div></div></div></div></body>`);
-			sandboxDoc.close();
+				return await ext2sblock(url);
+			} else {
+				var iframe = document.createElement('iframe');
+				iframe.style.display = 'none';
+				document.body.appendChild(iframe);
+				var sandboxWindow = iframe.contentWindow;
+				var sandboxDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-			Scratch.vm.runtime.renderer.canvas = sandboxWindow.document.getElementById("6734827468294793829");
-			sandboxWindow.Scratch = Scratch;
+				sandboxDoc.open();
+				sandboxDoc.write(`<head></head><body><div><div><div><div><div><canvas id="6734827468294793829"></canvas></div></div></div></div></div></body>`);
+				sandboxDoc.close();
 
-			return await sandboxWindow.eval(`(${ext2sblock.toString()})("${url}")`).finally(() => {
-				document.body.removeChild(iframe);
-			});
+				Scratch.vm.runtime.renderer.canvas = sandboxWindow.document.getElementById("6734827468294793829");
+				sandboxWindow.Scratch = Scratch;
+
+				return await sandboxWindow.eval(`(${ext2sblock.toString()})("${url}")`).finally(() => {
+					document.body.removeChild(iframe);
+				});
+			}
 		}
 
 		function formatToday() {
@@ -1309,12 +1335,16 @@
 		hideExtensionBtn.addEventListener('click', () => {
 			hideExtensionBtn.style.opacity = "0";
 			hideExtensionBtn.style.padding = "0";
-			document.getElementById("scratchblockscontainer").classList.remove("visible");
-			menu.classList.add('visible');
 			setTimeout(()=>{
-				hideExtensionBtn.style.display = "none";
-				// menu.style.borderLeft = '1px solid #ccc';
-			}, 500);
+				document.getElementById("scratchblockscontainer").classList.remove("visible");
+				menu.classList.add('visible');
+				setTimeout(()=>{
+					menu.classList.add('outline');
+					document.getElementById("scratchblockscontainer").classList.remove("outline");
+					hideExtensionBtn.style.display = "none";
+					// menu.style.borderLeft = '1px solid #ccc';
+				}, 500);
+			}, 300);
 		});
 		popupBack.addEventListener('click', () => {
 		    addExtPopup.style.display = "none";
@@ -1588,6 +1618,8 @@
 			hideExtensionBtn.style.padding = "0";
 			document.getElementById("scratchblockscontainer").classList.remove("visible");
 			setTimeout(()=>{
+				menu.classList.add('outline');
+				document.getElementById("scratchblockscontainer").classList.remove("outline");
 				hideExtensionBtn.style.display = "none";
 				// menu.style.borderLeft = '1px solid #ccc';
 			}, 500);
@@ -1753,6 +1785,8 @@
 						renderExtension.disabled = true; // showPopup();
 						hideExtensionBtn.style.padding = "0";
 						document.getElementById("scratchblockscontainer").classList.remove("visible");
+						document.getElementById("scratchblockscontainer").classList.remove("outline");
+						menu.classList.add('outline');
 						hideExtensionBtn.style.opacity = "0";
 						hideExtensionBtn.style.display = "none";
 						document.getElementById("scratchblocks").innerText = await ExtensionToScratchblocks(projectData.extensionURLs[extId]);
@@ -1768,11 +1802,13 @@
 
 							document.getElementById("scratchblockscontainer").scrollTop = 0;
 							document.getElementById("scratchblockscontainer").classList.add("visible");
+							document.getElementById("scratchblockscontainer").classList.add("outline");
+							menu.classList.remove('outline');
 
 							setTimeout(()=>{
 								hideExtensionBtn.style.padding = "10px";
 								hideExtensionBtn.style.opacity = "1";
-							}, 1);
+							}, 500);
 
 							scratchblocks.init();
 							scratchblocks.module.renderMatching("#scratchblocks", {
@@ -1857,5 +1893,7 @@
 
 		setTimeout(HideLoader, 500);
 	</script>
+
+<div><div><div><div><div><canvas id="6734827468294793829"></canvas></div></div></div></div></div>
 </body>
 </html>
