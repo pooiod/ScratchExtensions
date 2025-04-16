@@ -571,6 +571,28 @@
 		var dopost = false;
 		let currentExtInfo = null;
 
+		try {
+			if (new URLSearchParams(window.location.search).get('q')) {
+				document.getElementById("load-project").innerHTML = "Import project";
+				document.getElementById("save-project").innerHTML = "Export project";
+
+				const response = await fetch(new URLSearchParams(window.location.search).get('q'));
+				const blob = await response.blob();
+
+				const fileName = "project";
+				const file = new File([blob], fileName, { type: blob.type });
+
+				const dataTransfer = new DataTransfer();
+				dataTransfer.items.add(file);
+				input.files = dataTransfer.files;
+
+				input.dispatchEvent(new Event("change"));
+			}
+		} catch(e) {
+			console.warn(e);
+			showPopup("Project error", "Unable to load project");
+		}
+
 		window.addEventListener("message", async (event) => {
 			const data = event.data;
 
@@ -1772,7 +1794,8 @@
 						picker.style.backgroundImage = `none`;
 						picker.innerHTML = `<span>Load a Scratch project</span>`;
 						picker.style.opacity = 1;
-						alert(err);
+						showPopup("Project error", err.message);
+						console.error(err);
 					});
 		    };
 		    reader.readAsArrayBuffer(file);
