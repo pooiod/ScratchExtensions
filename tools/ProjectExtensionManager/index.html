@@ -592,6 +592,7 @@
 					const dataTransfer = new DataTransfer();
 					dataTransfer.items.add(file);
 					input.files = dataTransfer.files;
+
 					input.dispatchEvent(new Event("change"));
 
 					dopost = true;
