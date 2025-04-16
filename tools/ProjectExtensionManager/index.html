@@ -1408,7 +1408,7 @@
 			.then(blob => {
 				if (!fetchedBuffer || !originalFileName) return;
 				if (dopost) {
-					if (blob.size < 1024 * 1024 * 1024) {
+					if (blob.size < 1024 * 1024 * 1024 || true) {
 						const reader = new FileReader();
 
 						reader.onload = function () {

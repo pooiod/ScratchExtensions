@@ -153,7 +153,7 @@
     window.addEventListener('message', async function(event) {
         if (event.data && event.data.exploreprojectloaded === true) {
             var proj = await Scratch.vm.saveProjectSb3();
-            if (proj.size < 1024 * 1024 * 1024) {
+            if (proj.size < 1024 * 1024 * 1024 || true) {
                 var reader = new FileReader();
                 reader.onloadend = function() {
                     var dataUri = reader.result;
