@@ -568,7 +568,37 @@
 		const archiveDatePicker = document.getElementById('archive-date-picker');
 		const archiveConfirm = document.getElementById('archive-confirm');
 		const archiveClose = document.getElementById('archive-close');
+		var dopost = false;
 		let currentExtInfo = null;
+
+		window.addEventListener("message", async (event) => {
+			const data = event.data;
+
+			if (
+				data &&
+				typeof data === "object" &&
+				"exploreproject" in data &&
+				typeof data.exploreproject === "string" &&
+				data.exploreproject.startsWith("data:")
+			) {
+				try {
+					const response = await fetch(data.exploreproject);
+					const blob = await response.blob();
+
+					const fileName = "project";
+					const file = new File([blob], fileName, { type: blob.type });
+
+					const dataTransfer = new DataTransfer();
+					dataTransfer.items.add(file);
+					input.files = dataTransfer.files;
+					input.dispatchEvent(new Event("change"));
+
+					dopost = true;
+				} catch (error) {
+					console.error("Error processing file:", error);
+				}
+			}
+		});
 
 		function updateContainerHeight() {
 		const container = document.getElementById('extensions-container');
@@ -1315,14 +1345,29 @@
 			})
 			.then(blob => {
 				if (!fetchedBuffer || !originalFileName) return;
-				const a = document.createElement('a');
-				const url = URL.createObjectURL(blob);
-				a.href = url;
-				a.download = originalFileName;
-				document.body.appendChild(a);
-				a.click();
-				a.remove();
-				URL.revokeObjectURL(url);
+				if (dopost) {
+					const reader = new FileReader();
+
+					reader.onload = function () {
+						const dataUri = reader.result;
+						window.parent.postMessage({ exploreproject: dataUri }, "*");
+					};
+
+					reader.onerror = function (err) {
+						console.error("Failed to convert blob to data URI:", err);
+					};
+
+					reader.readAsDataURL(blob);
+				} else {
+					const a = document.createElement('a');
+					const url = URL.createObjectURL(blob);
+					a.href = url;
+					a.download = originalFileName;
+					document.body.appendChild(a);
+					a.click();
+					a.remove();
+					URL.revokeObjectURL(url);
+				}
 			})
 			.catch(err => { alert(`Error saving project: ${err}`); });
 		});
@@ -1890,6 +1935,8 @@
 		            return lastError;
 		        });
 		}
+
+		window.parent.postMessage({ exploreprojectloaded: true }, "*");
 
 		setTimeout(HideLoader, 500);
 	</script>
