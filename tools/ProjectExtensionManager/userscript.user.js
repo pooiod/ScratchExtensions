@@ -49,7 +49,7 @@
             var reader = new FileReader();
             reader.onloadend = function() {
                 var dataUri = reader.result;
-                iframe.contentWindow.postMessage({ exploreproject: dataUri });
+                iframe.contentWindow.postMessage({ exploreproject: dataUri }, "*");
             };
             reader.readAsDataURL(proj);
         }

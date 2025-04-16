@@ -583,6 +583,10 @@
 				data.exploreproject.startsWith("data:")
 			) {
 				try {
+					const style = document.createElement('style');
+					style.textContent = '#menu > h1 { display: none; }';
+					document.head.appendChild(style);
+
 					const response = await fetch(data.exploreproject);
 					const blob = await response.blob();
 
@@ -601,6 +605,8 @@
 				}
 			}
 		});
+
+		window.parent.postMessage({ exploreprojectloaded: true }, "*");
 
 		function updateContainerHeight() {
 		const container = document.getElementById('extensions-container');
@@ -1937,8 +1943,6 @@
 		            return lastError;
 		        });
 		}
-
-		window.parent.postMessage({ exploreprojectloaded: true }, "*");
 
 		setTimeout(HideLoader, 500);
 	</script>
