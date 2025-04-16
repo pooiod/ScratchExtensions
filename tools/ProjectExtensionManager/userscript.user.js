@@ -112,6 +112,19 @@
         } else if (event.data && event.data.exportproject) {
             document.body.removeChild(overlay);
 
+            if (Scratch.vm.extensionManager.removeExtension) {
+                for (const ext of Scratch.vm.extensionManager._loadedExtensions.keys()) {
+                    Scratch.vm.extensionManager.removeExtension(ext);
+                }
+            } else {
+                const response = await fetch("http://p7scratchextensions.pages.dev/view/Project.zip");
+                const blob = await response.blob();
+                const arrayBuffer = await blob.arrayBuffer();
+                const buffer = new Uint8Array(arrayBuffer);
+
+                await Scratch.vm.loadProject(buffer);
+            }
+
             const response = await fetch(event.data.exportproject);
             const blob = await response.blob();
             const arrayBuffer = await blob.arrayBuffer();
