@@ -577,9 +577,7 @@
 			if (
 				data &&
 				typeof data === "object" &&
-				"exploreproject" in data &&
-				typeof data.exploreproject === "string" &&
-				data.exploreproject.startsWith("data:")
+				"exploreproject" in data
 			) {
 				try {
 					const style = document.createElement('style');
