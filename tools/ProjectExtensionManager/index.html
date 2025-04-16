@@ -573,11 +573,11 @@
 
 		try {
 			async function dothing() {
-				if (new URLSearchParams(window.location.search).get('q')) {
+				if (new URLSearchParams(window.location.search).get('project_url')) {
 					document.getElementById("load-project").innerHTML = "Import project";
 					document.getElementById("save-project").innerHTML = "Export project";
 
-					const response = await fetch(decodeURIComponent(new URLSearchParams(window.location.search).get('q')));
+					const response = await fetch(decodeURIComponent(new URLSearchParams(window.location.search).get('project_url')));
 					const blob = await response.blob();
 
 					const fileName = "project";
