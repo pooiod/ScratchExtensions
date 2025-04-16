@@ -11,6 +11,7 @@
 
 (function() {
     var Scratch = {};
+    var overlay;
     var iframe;
 
 	const TIMEOUT_MS = 60000;
@@ -52,6 +53,9 @@
                 iframe.contentWindow.postMessage({ exploreproject: dataUri }, "*");
             };
             reader.readAsDataURL(proj);
+        } else if (event.data && event.data.exportproject) {
+            document.body.removeChild(overlay);
+            Scratch.vm.loadProject(event.data.exportproject);
         }
     });
 
@@ -63,7 +67,7 @@
 
                 if (document.getElementById("widgetoverlay")) return;
         
-                const overlay = document.createElement('div');
+                overlay = document.createElement('div');
                 overlay.style.position = 'fixed';
                 overlay.style.top = '0';
                 overlay.style.left = '0';

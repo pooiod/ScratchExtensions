@@ -454,7 +454,7 @@
 			}
 		}
 
-		@media (max-width: 550px) {
+		@media (max-width: 560px) {
 			#menu.visible {
 				width: 100vw !important;
 			}
@@ -573,7 +573,6 @@
 
 		window.addEventListener("message", async (event) => {
 			const data = event.data;
-			console.log(data);
 
 			if (
 				data &&
@@ -584,7 +583,7 @@
 			) {
 				try {
 					const style = document.createElement('style');
-					style.textContent = '#menu > h1 { display: none; }';
+					style.textContent = '#menu > h1, #load-project { display: none; }';
 					document.head.appendChild(style);
 
 					const response = await fetch(data.exploreproject);
@@ -1358,7 +1357,7 @@
 
 					reader.onload = function () {
 						const dataUri = reader.result;
-						window.parent.postMessage({ exploreproject: dataUri }, "*");
+						window.parent.postMessage({ exportproject: dataUri }, "*");
 					};
 
 					reader.onerror = function (err) {
