@@ -577,7 +577,7 @@
 					document.getElementById("load-project").innerHTML = "Import project";
 					document.getElementById("save-project").innerHTML = "Export project";
 
-					const response = await fetch(new URLSearchParams(window.location.search).get('q'));
+					const response = await fetch(decodeURIComponent(new URLSearchParams(window.location.search).get('q')));
 					const blob = await response.blob();
 
 					const fileName = "project";
