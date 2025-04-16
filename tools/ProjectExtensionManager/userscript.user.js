@@ -1,18 +1,74 @@
 // ==UserScript==
-// @name         PenguinMod extension manager
-// @namespace    https://studio.penguinmod.com
+// @name         Project extension manager
+// @namespace    https://p7scratchextensions.pages.dev
 // @version      2025-04-16
-// @description  wip
+// @description  Manage project extensions
 // @author       Pooiod7
-// @match        https://studio.penguinmod.com/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=penguinmod.com
+// @include      https://mirror.turbowarp.xyz*
+// @include      https://turbowarp.org*
+// @include      https://studio.penguinmod.com*
+// @include      https://snail-ide.js.org*
+// @include      https://alpha.unsandboxed.org*
+// @include      https://librekitten.org*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=p7scratchextensions.pages.dev
 // @grant        none
 // ==/UserScript==
+
+// work in progress
 
 (function() {
     var Scratch = {};
     var overlay;
     var iframe;
+
+    var accent = "#e01f1f";
+    var theme = "light";
+    var backColor = "rgba(0, 0, 0, 0.7)";
+    
+    function getTheme() {
+        function standardizeColor(color) {
+            if (color.startsWith('#')) {
+                let r = parseInt(color.slice(1, 3), 16);
+                let g = parseInt(color.slice(3, 5), 16);
+                let b = parseInt(color.slice(5, 7), 16);
+                return `rgb(${r}, ${g}, ${b})`;
+            } else if (color.startsWith('rgb')) {
+                return color;
+            } else if (color.startsWith('rgba')) {
+                return color.slice(0, color.length - 4) + '1)';
+            }
+            return color;
+        }
+    
+        try {
+            accent = "#e01f1f";
+            theme = "light";
+            backColor = "rgba(0, 0, 0, 0.7)";
+            var themeSetting = localStorage.getItem('tw:theme');
+            var parsed = JSON.parse(themeSetting);
+    
+            if (parsed.gui) {
+                theme = parsed.gui;
+            }
+    
+            if (parsed.accent === 'purple') {
+                accent = '#855cd6';
+            } else if (parsed.accent === 'blue') {
+                accent = '#4c97ff';
+            }
+        } catch (err) {
+            err = err;
+        }
+    
+        if (document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")) {
+            var accent2 = window.getComputedStyle(document.querySelector("#app > div > div > div > div.gui_menu-bar-position_3U1T0.menu-bar_menu-bar_JcuHF.box_box_2jjDp")).backgroundColor;
+            if (accent2 && accent != "transparent") {
+                accent = accent2;
+            }
+        }
+    
+        backColor = standardizeColor(accent).replace('rgb', 'rgba').replace(')', ', 0.7)');
+    } getTheme();
 
 	const TIMEOUT_MS = 60000;
 	const originalBind = Function.prototype.bind;
@@ -38,7 +94,8 @@
             vm: vm
         };
 
-        console.log("Acquired VM", vm);
+        console.log("Extension manager loaded")
+        // console.log("Acquired VM", vm);
 	}).catch(err => {
 		console.log("Failed to acquire VM", err);
 	});
@@ -46,7 +103,6 @@
     window.addEventListener('message', async function(event) {
         if (event.data && event.data.exploreprojectloaded === true) {
             var proj = await Scratch.vm.saveProjectSb3();
-            console.log(proj);
             var reader = new FileReader();
             reader.onloadend = function() {
                 var dataUri = reader.result;
@@ -55,7 +111,13 @@
             reader.readAsDataURL(proj);
         } else if (event.data && event.data.exportproject) {
             document.body.removeChild(overlay);
-            Scratch.vm.loadProject(event.data.exportproject);
+
+            const response = await fetch(event.data.exportproject);
+            const blob = await response.blob();
+            const arrayBuffer = await blob.arrayBuffer();
+            const buffer = new Uint8Array(arrayBuffer);
+
+            Scratch.vm.loadProject(buffer);
         }
     });
 
@@ -64,6 +126,7 @@
         if (btn && !btn.dataset.listenerAdded) {
             btn.addEventListener('contextmenu', e => {
                 e.preventDefault();
+                getTheme();
 
                 if (document.getElementById("widgetoverlay")) return;
         
@@ -73,7 +136,7 @@
                 overlay.style.left = '0';
                 overlay.style.width = '100%';
                 overlay.style.height = '100%';
-                overlay.style.backgroundColor = 'rgba(0, 195, 255, 0.7)';
+                overlay.style.backgroundColor = backColor;
                 overlay.style.zIndex = '9999';
                 overlay.id = "widgetoverlay";
 
@@ -104,7 +167,7 @@
                 title.style.left = '0';
                 title.style.width = '100%';
                 title.style.height = '50px';
-                title.style.backgroundColor = 'rgb(0, 195, 255)';
+                title.style.backgroundColor = accent;
                 title.style.display = 'flex';
                 title.style.justifyContent = 'center';
                 title.style.alignItems = 'center';
@@ -112,7 +175,7 @@
                 title.style.fontSize = '24px';
                 title.style.borderTopLeftRadius = '10px';
                 title.style.borderTopRightRadius = '10px';
-                title.innerHTML = "Addons";
+                title.innerHTML = "Extension Manager";
 
                 iframe = document.createElement('iframe');
                 iframe.src = 'https://p7scratchextensions.pages.dev/tools/ProjectExtensionManager';

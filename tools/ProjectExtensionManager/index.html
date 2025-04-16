@@ -585,6 +585,7 @@
 					const style = document.createElement('style');
 					style.textContent = '#menu > h1, #load-project { display: none; }';
 					document.head.appendChild(style);
+					document.getElementById("save-project").innerHTML = "Save changes (reloads project)";
 
 					const response = await fetch(data.exploreproject);
 					const blob = await response.blob();
