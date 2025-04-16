@@ -4,17 +4,11 @@
 // @version      2025-04-16
 // @description  Manage project extensions
 // @author       Pooiod7
-// @include      https://mirror.turbowarp.xyz*
-// @include      https://turbowarp.org*
-// @include      https://studio.penguinmod.com*
 // @include      https://snail-ide.js.org*
-// @include      https://alpha.unsandboxed.org*
-// @include      https://librekitten.org*
+// @include      https://studio.penguinmod.com*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=p7scratchextensions.pages.dev
 // @grant        none
 // ==/UserScript==
-
-// work in progress
 
 (function() {
     var Scratch = {};
@@ -117,12 +111,13 @@
                     Scratch.vm.extensionManager.removeExtension(ext);
                 }
             } else {
-                const response = await fetch("http://p7scratchextensions.pages.dev/view/Project.zip");
-                const blob = await response.blob();
-                const arrayBuffer = await blob.arrayBuffer();
-                const buffer = new Uint8Array(arrayBuffer);
+                console.warn("Unable to remove old extension instances");
 
-                await Scratch.vm.loadProject(buffer);
+                // const response = await fetch("http://p7scratchextensions.pages.dev/view/Project.zip");
+                // const blob = await response.blob();
+                // const arrayBuffer = await blob.arrayBuffer();
+                // const buffer = new Uint8Array(arrayBuffer);
+                // await Scratch.vm.loadProject(buffer);
             }
 
             const response = await fetch(event.data.exportproject);
