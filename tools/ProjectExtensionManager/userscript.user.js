@@ -94,15 +94,75 @@
 		console.log("Failed to acquire VM", err);
 	});
 
+    async function YeetFile(BLOB) {
+        if (typeof BLOB.then === 'function') {
+            BLOB = await BLOB;
+        }
+
+        const formData = new FormData();
+        formData.append('reqtype', 'fileupload');
+        formData.append('time', '1h');
+        formData.append('fileToUpload', BLOB);
+
+        try {
+            const response = await fetch('https://litterbox.catbox.moe/resources/internals/api.php', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('File upload to tmp failed');
+            }
+
+            const url = await response.text();
+            return url.trim();
+        } catch (tmpError) {
+            const backupFormData = new FormData();
+            backupFormData.append('file', BLOB);
+
+            return new Promise(async (resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://yeetyourfiles.lol/api/upload', true);
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // xhr.upload.onprogress = function(e) {
+                //     if (e.lengthComputable) {
+                //         const percentComplete = (e.loaded / e.total) * 100;
+                //     }
+                // };
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        resolve(`https://yeetyourfiles.lol${response.fileUrl}`);
+                    } else {
+                        reject(new Error('Upload failed with status: ' + xhr.status));
+                    }
+                };
+
+                xhr.onerror = function() {
+                    reject(new Error('An error occurred during the file upload.'));
+                };
+
+                xhr.send(backupFormData);
+            });
+        }
+    }
+
     window.addEventListener('message', async function(event) {
         if (event.data && event.data.exploreprojectloaded === true) {
             var proj = await Scratch.vm.saveProjectSb3();
-            var reader = new FileReader();
-            reader.onloadend = function() {
-                var dataUri = reader.result;
-                iframe.contentWindow.postMessage({ exploreproject: dataUri }, "*");
-            };
-            reader.readAsDataURL(proj);
+            if (proj.size < 1024 * 1024 * 1024) {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    var dataUri = reader.result;
+                    iframe.contentWindow.postMessage({ exploreproject: dataUri }, "*");
+                };
+                reader.readAsDataURL(proj);
+            } else {
+                iframe.contentWindow.postMessage({ exploreproject: YeetFile(proj) }, "*");
+            }
         } else if (event.data && event.data.exportproject) {
             document.body.removeChild(overlay);
 
