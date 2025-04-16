@@ -41,10 +41,11 @@
 		console.log("Failed to acquire VM", err);
 	});
 
-    window.addEventListener('message', function(event) {
+    window.addEventListener('message', async function(event) {
         console.log(event)
         if (event.data && event.data.exploreprojectloaded === true) {
-            var proj = Scratch.vm.saveProjectSb3();
+            var proj = await Scratch.vm.saveProjectSb3();
+            console.log(proj)
             var reader = new FileReader();
             reader.onloadend = function() {
                 var dataUri = reader.result;
