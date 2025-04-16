@@ -4,10 +4,11 @@
 // @version      2025-04-16
 // @description  wip
 // @author       Pooiod7
-// @match        https://studio.penguinmod.com*
+// @match        https://studio.penguinmod.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=penguinmod.com
 // @grant        none
 // ==/UserScript==
+
 (function() {
     var Scratch = {};
     var iframe;
@@ -42,14 +43,13 @@
 	});
 
     window.addEventListener('message', async function(event) {
-        console.log(event)
         if (event.data && event.data.exploreprojectloaded === true) {
             var proj = await Scratch.vm.saveProjectSb3();
-            console.log(proj)
+            console.log(proj);
             var reader = new FileReader();
             reader.onloadend = function() {
                 var dataUri = reader.result;
-                iframe.contentWindow.postMessage({ type: 'projectDataUri', dataUri: dataUri });
+                iframe.contentWindow.postMessage({ exploreproject: dataUri });
             };
             reader.readAsDataURL(proj);
         }
