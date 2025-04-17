@@ -62,7 +62,7 @@
         "title": "HTML Canvas",
         "description": "Use HTML and CSS to make projects with complex visual interfaces.",
         "created": "May 29, 2024",
-        "subtext": "Requires PenguinMod",
+        "subtext": "Requires PenguinMod for some inputs",
         "icon": "/extras/images/icons/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
