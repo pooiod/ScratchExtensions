@@ -1,5 +1,4 @@
-// Onscreen Inputs - Manage touch inputs (work in progress)
-// Made by pooiod7
+// Onscreen Inputs (work in progress) - by pooiod7
 
 (function(Scratch) {
 	'use strict';
