@@ -1,4 +1,4 @@
-// TouchMaster - Manage touch inputs (work in progress)
+// Onscreen Inputs - Manage touch inputs (work in progress)
 // Made by pooiod7
 
 (function(Scratch) {
