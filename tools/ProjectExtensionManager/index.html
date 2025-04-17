@@ -453,8 +453,8 @@
 				opacity: 1;
 			}
 		}
-		
-        @media (prefers-color-scheme: light) {
+
+        @media (prefers-color-scheme: dark) {
 			body, html {
 				background: #1c1c1c;
 				color: #f8f8f8;
@@ -882,7 +882,7 @@
 		        // document.getElementById('loader').remove();
 				document.getElementById('loader').style.zIndex = 99999;
 				document.getElementById('loader').style.opacity = 1;
-				document.getElementById('loader').style.background = "white";
+				document.getElementById('loader').style.background = window.matchMedia('(prefers-color-scheme: dark)').matches?"black":"white";
 		    }, 500);
 		}
 
@@ -1986,7 +1986,7 @@
 		            .then(bg => {
 		                if (bg.startsWith('data:image')) {
 		                    setTimeout(() => {
-								picker.style.backgroundColor = "white";
+								picker.style.backgroundColor = window.matchMedia('(prefers-color-scheme: dark)').matches?"black":"white";
 		                        picker.style.backgroundImage = `url(${bg})`;
 		                        picker.innerHTML = '';
 		                        picker.style.opacity = 1;
