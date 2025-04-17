@@ -775,6 +775,10 @@
 		var dopost = false;
 		let currentExtInfo = null;
 
+		if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000000');
+		}
+
 		try {
 			async function dothing() {
 				if (new URLSearchParams(window.location.search).get('project_url')) {
