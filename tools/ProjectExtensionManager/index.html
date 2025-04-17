@@ -453,6 +453,210 @@
 				opacity: 1;
 			}
 		}
+		
+        @media (prefers-color-scheme: light) {
+			body, html {
+				background: #1c1c1c;
+				color: #f8f8f8;
+			}
+
+            .loader-wrapper {
+                background: black;
+            }
+
+			#file-picker {
+				background-color: #202020;
+				border-top: 1px solid #181818;
+			}
+
+			#file-picker span {
+				color: #b5b5b5;
+			}
+
+			#menu {
+				background: #000;
+				color: #fff;
+			}
+
+			#menu.outline {
+				border-left: 1px solid #181818;
+			}
+
+			#extensions-container::before {
+				content: "";
+				display: block;
+				position: sticky;
+
+				top: 0;
+				height: var(--container-height);
+				margin-top: calc(var(--container-height) * -1);
+
+				pointer-events: none;
+				z-index: 999;
+
+				background: linear-gradient(
+					to bottom,
+					black 0,
+					transparent 10px,
+					transparent calc(100% - 10px),
+					black 100%
+				);
+			}
+
+			.scratchblockscontainer {
+				background: #000;
+				color: #fff;
+			}
+
+			.scratchblockscontainer::before {
+				content: "";
+				position: sticky;
+				top: 0px;
+				display: block;
+				height: 100%;
+				margin-top: calc(-100vh + 20px);
+				pointer-events: none;
+				background: linear-gradient(
+					to bottom,
+					#000 0,
+					transparent 20px,
+					transparent calc(100% - 20px),
+					#000 100%
+				);
+			}
+
+			#hide-extension {
+				background: #353535;
+				border: 1px solid #2e2e2e;
+				color: #fff;
+			}
+
+			#hide-extension:hover {
+				background: #3b3b3b;
+			}
+
+			.ext-button {
+				filter: invert();
+			}
+
+			.ext-dropdown input, .tab-content #ext-url-input {
+				border: 1px solid #181818;
+				background: #191919;
+				color: white;
+			}
+
+			.ext-dropdown button {
+				border: 1px solid #2e2e2e;
+				background: #181818;
+				color: white;
+			}
+
+			.ext-dropdown button:disabled {
+				border: 1px solid #141414;
+				background: #000000;
+			}
+
+			#project-buttons button {
+				border: 1px solid #2e2e2e;
+					background: #181818;
+					color: white;
+			}
+
+			#project-buttons button:disabled {
+				border: 1px solid #141414;
+				background: #000000;
+			}
+
+			.popup-overlay, #add-extension-popup, #archive-popup {
+				background: rgba(0, 0, 0, 0.95);
+			}
+
+			.popup-content, #popup-content {
+				background: black;
+				border: 1px solid #181818;
+				transition: transform 0.3s ease, opacity 0.3s ease;
+				padding: 20px;
+				box-sizing: border-box;
+				max-width: 500px;
+				width: 100%;
+			}
+
+			.popup-content a {
+				color: inherit;
+			}
+
+			.popup-content h2 {
+				margin: 0 0 10px 0;
+				font-size: 1.5em;
+				color: #fff;
+			}
+
+			.popup-content p {
+				margin: 0 0 20px 0;
+				color: #fff;
+			}
+
+			.popup-button {
+				width: calc(100% - 25px);
+				padding: 10px;
+				background: #141414;
+				border: 1px solid #181818;
+				color: #fff;
+				cursor: pointer;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				transition: background 0.3s;
+			}
+
+			.popup-button:hover {
+				background: #3b3b3b;
+			}
+
+			.spinner {
+				border: 4px solid #1a1a1a;
+				border-top: 4px solid #3498db;
+				border-radius: 50%;
+				width: 40px;
+				height: 40px;
+				animation: spin 2s linear infinite;
+				margin: 10px auto;
+			}
+
+			.tab-button {
+				border: 1px solid #2e2e2e;
+				background: #181818;
+				color: white;
+			}
+
+			.tab-button.active {
+				background: #3b3b3b;
+			}
+
+			#popup-back, #popup-set, #archive-close, #archive-confirm {
+				border: 1px solid #2e2e2e;
+				background: #181818;
+				color: white;
+			}
+
+			textarea {
+				border: 1px solid #2e2e2e;
+				background: #181818;
+				color: white;
+			}
+
+			#archive-content {
+				border: 1px solid #2e2e2e;
+				background: #000000;
+				color: white;
+			}
+
+			#archive-popup input[type="date"] {
+				border: 1px solid #2e2e2e;
+				background: #181818;
+				color: white;
+			}
+        }
 
 		@media (max-width: 560px) {
 			#menu.visible {
@@ -477,12 +681,6 @@
 				border: 0px !important;
 			}
 		}
-		
-        @media (prefers-color-scheme: dark) {
-            .loader-wrapper {
-                background: black;
-            }
-        }
 	</style>
 </head>
 <body>
