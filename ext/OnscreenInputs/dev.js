@@ -165,6 +165,26 @@ buttonElement:active {
                         }
                     },
 
+                    {
+                        opcode: 'moveButton',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Move button [ID] to x: [X] y: [Y]',
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Button1"
+                            },
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0"
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: "0"
+                            }
+                        }
+                    },
+
                     "---",
 
                     {
@@ -289,6 +309,19 @@ buttonElement:active {
             button.classList.add("OnscreenInput", CLASS || "Default");
             this.stageadd(button);
 		}
+
+        moveButton({ X, Y, ID }) {
+            this.setVars();
+
+            if (document.getElementById(ID) && document.getElementById(ID).tagName === "BUTTON" && document.getElementById(ID).classList.contains("OnscreenInput")) {
+                document.getElementById(ID).style.left = ((X + (this.stagewidth / 2)) / this.stagewidth) * 100 + "%";
+                document.getElementById(ID).style.top = 100 - ((Y + (this.stageheight / 2)) / this.stageheight) * 100 + "%";
+            }
+
+            console.log(X)
+            console.log(this.stagewidth)
+            console.log(document.getElementById(ID).style.left);
+        }
 
         setInputButtonImage({ ID, IMG }) {
             if (document.getElementById(ID) && document.getElementById(ID).tagName === "BUTTON" && document.getElementById(ID).classList.contains("OnscreenInput")) {
