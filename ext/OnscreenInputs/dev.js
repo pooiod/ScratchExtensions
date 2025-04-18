@@ -9,7 +9,7 @@
 
     function setCSS(rawcss, id) {
         var css = rawcss.replace(/Element/g, `.OnscreenInput.${id}`)
-            .replace(/size:/g, "width:")
+            .replace(/button-size:/g, "width:")
             .replace(/transform:/g, "transform: translate(-50%, -50%)");
 
         if (document.getElementById(id) && document.getElementById(id).tagName === "STYLE" && document.getElementById(id).classList.contains("OnscreenInputStyle")) {
@@ -37,7 +37,7 @@
 }`, "OnscreenInput");
 
     setCSS(`buttonElement {
-    size: 20%;
+    button-size: 20%;
     aspect-ratio: 1;
     border-radius: 50%;
     border: 4px solid rgba(75, 75, 75, 0.2);
@@ -93,6 +93,20 @@ buttonElement:active {
                 color2: "#383747",
 				blocks: [
                     {
+                        opcode: 'setVisibility',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set inputs to be [VIS]',
+                        arguments: {
+                            VIS: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'visOptions'
+                            }
+                        }
+                    },
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Buttons" },
+
+                    {
                         opcode: 'addButton',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Add button [ID] with class [CLASS]',
@@ -118,6 +132,8 @@ buttonElement:active {
                             }
                         }
                     },
+
+                    "---",
 
                     {
                         opcode: 'whenPressed',
@@ -156,18 +172,6 @@ buttonElement:active {
                     },
 
                     {
-                        opcode: 'setVisibility',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set buttons to be [VIS]',
-                        arguments: {
-                            VIS: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: 'visOptions'
-                            }
-                        }
-                    },
-
-                    {
                         opcode: 'setButtonCostume',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'set [BUTTON] button image to current costume',
@@ -181,6 +185,25 @@ buttonElement:active {
                             }
                         }
                     },
+
+                    {
+                        opcode: 'setButtonImage',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'set [BUTTON] button image to current costume',
+                        hideFromPalette: true,
+                        arguments: {
+                            BUTTON: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'buttonOptions'
+                            },
+                            IMG: {
+                                type: Scratch.ArgumentType.STRING
+                            }
+                        }
+                    },
+
+
+                    { blockType: Scratch.BlockType.LABEL, text: "Classes" },
 
                     {
                         opcode: 'addClass',
@@ -214,6 +237,15 @@ buttonElement:active {
 			};
 		}
 
+        removeElm({ ID }) {
+            if (document.getElementById(ID).classList.contains("OnscreenInput")) {
+                document.getElementById(ID).remove();
+            }
+        }
+
+        removeButton(args) {
+            return this.removeElm(args);
+        }
 		addButton({ ID, CLASS }) {
             this.setVars();
 
