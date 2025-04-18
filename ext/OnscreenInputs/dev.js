@@ -33,6 +33,9 @@
     touch-action: none;
     position: absolute;
     user-select: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     transform:;
 }`, "OnscreenInput");
 
@@ -128,6 +131,35 @@ buttonElement:active {
                         text: 'Remove button [ID]',
                         arguments: {
                             ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Button1"
+                            }
+                        }
+                    },
+
+                    {
+                        opcode: 'setButtonCostume',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'set [ID] button image to current costume',
+                        arguments: {
+                            ID: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Button1"
+                            }
+                        }
+                    },
+
+                    {
+                        opcode: 'setInputButtonImage',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'set [BUTTON] button image to [IMG]',
+                        hideFromPalette: true,
+                        arguments: {
+                            BUTTON: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Button1"
+                            },
+                            IMG: {
                                 type: Scratch.ArgumentType.STRING
                             }
                         }
@@ -171,44 +203,12 @@ buttonElement:active {
                         }
                     },
 
-                    {
-                        opcode: 'setButtonCostume',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'set [BUTTON] button image to current costume',
-                        arguments: {
-                            BUTTON: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: 'buttonOptions'
-                            },
-                            IMG: {
-                                type: Scratch.ArgumentType.STRING
-                            }
-                        }
-                    },
-
-                    {
-                        opcode: 'setButtonImage',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'set [BUTTON] button image to current costume',
-                        hideFromPalette: true,
-                        arguments: {
-                            BUTTON: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: 'buttonOptions'
-                            },
-                            IMG: {
-                                type: Scratch.ArgumentType.STRING
-                            }
-                        }
-                    },
-
-
                     { blockType: Scratch.BlockType.LABEL, text: "Classes" },
 
                     {
-                        opcode: 'addClass',
+                        opcode: 'setClass',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Add class [CLASS] with css [CSS]',
+                        text: 'Set css of class [CLASS] to [CSS]',
                         arguments: {
                             CLASS: {
                                 type: Scratch.ArgumentType.STRING
@@ -237,11 +237,35 @@ buttonElement:active {
 			};
 		}
 
+        setVisibility({ VIS }) {
+            if (VIS == "hidden") {
+                setCSS(`Element {
+    display: none;
+}`, "OnscreenInput");
+            } else {
+                setCSS(`Element {
+    z-index: 9999;
+    touch-action: none;
+    position: absolute;
+    user-select: none;
+    transform:;
+}`, "OnscreenInput");
+            }
+        }
+
         removeElm({ ID }) {
-            if (document.getElementById(ID).classList.contains("OnscreenInput")) {
+            if (document.getElementById(ID) && document.getElementById(ID).classList.contains("OnscreenInput")) {
                 document.getElementById(ID).remove();
             }
         }
+
+        setClass({ CLASS, CSS }) {
+            setCSS(CSS, CLASS);
+        }
+        removeClass({ CLASS }) {
+            setCSS("", CLASS);
+        }
+
 
         removeButton(args) {
             return this.removeElm(args);
@@ -250,7 +274,12 @@ buttonElement:active {
             this.setVars();
 
             if (document.getElementById(ID)) {
-                return;
+                if (document.getElementById(ID).classList.contains("OnscreenInput")) {
+                    document.getElementById(ID).remove();
+                } else {
+                    conole.warn("Page already has an element with that ID", document.getElementById(ID));
+                    return;
+                }
             }
 
             var button = document.createElement("BUTTON");
@@ -260,6 +289,45 @@ buttonElement:active {
             button.classList.add("OnscreenInput", CLASS || "Default");
             this.stageadd(button);
 		}
+
+        setInputButtonImage({ ID, IMG }) {
+            if (document.getElementById(ID) && document.getElementById(ID).tagName === "BUTTON" && document.getElementById(ID).classList.contains("OnscreenInput")) {
+                document.getElementById(ID).style.backgroundImage = `url(${IMG})`;
+            }
+        }
+
+        setButtonCostume({ ID, COSTUME }, util) {
+            const sprite = util.target.sprite;
+            const costumeName = COSTUME;
+      
+            let selectedCostume;
+            if (!costumeName || costumeName === 'current') {
+                selectedCostume = sprite.costumes_[util.target.currentCostume];
+            } else {
+                selectedCostume = sprite.costumes_.find(costume => costume.name === costumeName);
+                if (!selectedCostume) selectedCostume = sprite.costumes_[util.target.currentCostume];
+            }
+
+            function uint8ArrayToBase64(uint8Array) {
+                let binary = '';
+                const len = uint8Array.byteLength;
+                for (let i = 0; i < len; i++) {
+                    binary += String.fromCharCode(uint8Array[i]);
+                }
+                return window.btoa(binary);
+            }
+
+            if (selectedCostume) {
+                const costumeData = selectedCostume.asset.data;
+                const mimeType = selectedCostume.asset.assetType.contentType;
+        
+                if (costumeData) {
+                    const base64Data = uint8ArrayToBase64(costumeData);
+                    var img = `data:${mimeType};base64,${base64Data}`;
+                    this.setInputButtonImage({ ID: ID, IMG: img });
+                }
+            }
+        }
 	}
 	Scratch.extensions.register(new P7OnscreenInputs());
 })(Scratch);
