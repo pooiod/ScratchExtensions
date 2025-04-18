@@ -8,7 +8,7 @@
 	}
 
     function setCSS(rawcss, id) {
-        var css = rawcss.replace(/ELEMENT/g, `.OnscreenInput.${id}`)
+        var css = rawcss.replace(/Element/g, `.OnscreenInput.${id}`)
             .replace(/size:/g, "width:")
             .replace(/transform:/g, "transform: translate(-50%, -50%)");
 
@@ -28,7 +28,7 @@
         }
     }
 
-    setCSS(`ELEMENT {
+    setCSS(`Element {
     z-index: 9999;
     touch-action: none;
     position: absolute;
@@ -36,7 +36,7 @@
     transform:;
 }`, "OnscreenInput");
 
-    setCSS(`buttonELEMENT {
+    setCSS(`buttonElement {
     size: 20%;
     aspect-ratio: 1;
     border-radius: 50%;
@@ -48,11 +48,11 @@
     transition: transform 0.1s ease, background-color 0.1s ease;
 }
 
-buttonELEMENT:hover {
+buttonElement:hover {
     transform: scale(0.97);
 }
 
-buttonELEMENT:active {
+buttonElement:active {
     transform: scale(0.9);
     background-color: rgba(29, 29, 29, 0.8);
 }`, "Default");
