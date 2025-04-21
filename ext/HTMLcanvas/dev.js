@@ -833,8 +833,8 @@ body > * {
       // @user links
       str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
       str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
-      // https links
-      str = str.replace(/(\/\/|www\.)([^ \n]+)/g, '$1<a href="https://$2" target="_blank">$2</a>');
+      // https links - commented out for causing issues
+      // str = str.replace(/(\/\/|www\.)([^ \n]+)/g, '$1<a href="https://$2" target="_blank">$2</a>');
       // special links
       str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
       str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');

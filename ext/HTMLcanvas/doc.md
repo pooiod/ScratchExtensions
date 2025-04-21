@@ -155,7 +155,7 @@ Set interaction with HTML to [true v] :: #6164ff
 Now that you can interact with the html, you have the ability to use the `When element clicked` block.
 
 ```scratch3
-When element [#element1] clicked :: #6164ff hat
+When element [#element1] clicked :: #6164ff cat
 Set [backgroundColor] of [#element1] to [yellow] :: #6164ff
 ```
 
@@ -215,7 +215,7 @@ While this *can* be used with reporter scripts, it's meant to be used with void 
 postToScratch("message");
 ```
 ```scratch3
-When message recived :: #6164ff hat
+When message recived :: #6164ff cat
 say (Last recived message :: #6164ff) for (0.5) seconds
 ```
 
