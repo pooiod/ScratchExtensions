@@ -3,7 +3,7 @@
 	var position = 'left';
 	var commitsPerPage = 20;
 	var totalcommits = 40;
-	var showRandomUpdates = true;
+	var showRandomUpdates = false;
 
 	var windowTheme = window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
 	var styleThingy = document.createElement('style');
