@@ -1,4 +1,4 @@
-// Name: Boxed Plysics
+// Name: Boxed Physics
 // ID: P7BoxPhys
 // Description: An implementation the Box2D physics engine with support for joints, springs, sliders, and more.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
@@ -64,7 +64,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
       'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
 
       this.scraping = [];
-      this.scraping = [];
+      this.impacts = [];
       
       this.vm.runtime.on('PROJECT_LOADED', () => {
         this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
