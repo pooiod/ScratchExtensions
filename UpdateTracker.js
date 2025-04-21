@@ -27,7 +27,7 @@
 			z-index: 9999;
 			transform: translateX(${position=="right"?"100%":"-100%"});
 			transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-			${document.body.clientWidth < 500? `width: 100%`: `border-${position=="right"?"left":"right"}: 1px solid ${windowTheme === 'light' ? '#ccc' : '#444'}`};
+			${document.body.clientWidth < 900 ? `width: 100%`: `border-${position=="right"?"left":"right"}: 1px solid ${windowTheme === 'light' ? '#ccc' : '#444'}`};
 		}
 
 		.commit-widget.open {
@@ -93,7 +93,7 @@
 			height: 40px;
 		}
 		.commit-toggle.open {
-			${document.body.clientWidth < 500?"":`${position}: 340px;`}
+			${document.body.clientWidth < 900?"":`${position}: 340px;`}
 		}
 
 		.commit-loader {
@@ -144,7 +144,7 @@
 		toggleBtn.innerHTML = expanded ? `${position=="left"?"⯇":"⯈"}` : `${position=="left"?"⯈":"⯇"}`;
 		if (expanded) {
 			widget.style.opacity = "100%";
-			if (document.body.clientWidth >= 500) {
+			if (document.body.clientWidth >= 900) {
 				document.body.style.width = "calc(100vw - 340px)";
 			}
 		} else {
