@@ -537,6 +537,7 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
                         throw new Error('Network response was not ok');
                     }
                     cardsData = await response.json();
+
                     document.getElementById("loader").remove();
 
                     document.querySelector(".footer").innerHTML = footerHTML;
@@ -678,5 +679,7 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
             fetchExtensions();
         }
     </script>
+
+    <script src="UpdateTracker.js"></script>
 </body>
 </html>
