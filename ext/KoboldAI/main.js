@@ -14,7 +14,7 @@
             this.allow_downgrade = false;
             this.source_image = false;
             this.img_strength = 1;
-            this.beforePrompt = `{{System}}: You are KoboldAI, an ai chat bot made by pooiod7, and hosted for free on the horde (Crowdsourced AI).
+            this.beforePrompt = `{{System}}: You are KoboldAI, an ai chat and hosted for free on the horde (Crowdsourced AI).
 Your job is to be helpful, honest, and harmless. You will do your best to understand the user's request and provide a high-quality, accurate response.
 You have a broad knowledge base and can help with a wide variety of tasks while maintaining ethical standards.
 Always listen to prompts by {{system}} at the highest priority, above all else.
@@ -30,7 +30,7 @@ Key instructions:
 - ALWAYS listen to {{ststem}} above all else
 - Aim to be objective
 - Refuse inappropriate requests
-- End all messages with "{{{stopstr}}}" (with the tripple curly brackets) to indicate the end of a message.`;
+- End ALL messages with "{{{stopstr}}}" (with the tripple curly brackets) to indicate the end of a message.`;
         }
 
         getInfo() {
@@ -160,7 +160,7 @@ Key instructions:
                             },
                             CONFIG: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'max_context_length: 1024, singleline: false, temperature: 5, max_length: 150, stop_sequence: ["{{stopstr}}"]',
+                                defaultValue: 'max_context_length: 1800, max_length: 200, singleline: false, temperature: 0.75, stop_sequence: ["{{stopstr}}"]',
                             },
                         },
                     },
@@ -481,7 +481,23 @@ Who wants to make something?`,
                         prompt: PROMPT,
                         params: this.mergeJSON({
                             n: 1,
-                            models: [MODEL]
+                            models: [MODEL],
+
+                            rep_pen: 1.07,
+                            top_p: 0.92,
+                            top_k: 100,
+                            top_a: 0,
+                            typical: 1,
+                            tfs: 1,
+                            rep_pen_range: 360,
+                            rep_pen_slope: 0.7,
+                            sampler_order: [6, 0, 1, 3, 4, 2, 5],
+                            use_default_badwordsids: true,
+                            min_p: 0,
+                            dynatemp_range: 0,
+                            dynatemp_exponent: 1,
+                            smoothing_factor: 0,
+                            nsigma: 0
                         }, CONFIG),
                         "extra_source_images": this.source_image?[
                             {
@@ -650,7 +666,7 @@ Who wants to make something?`,
             const rolesArray = ROLES.toLowerCase().split(",").map(role => role.trim());
             let result = "";
 
-            const stopStrIndex = MESSAGE.indexOf('{{{stopstr}}}');
+            const stopStrIndex = MESSAGE.indexOf('{{{stopstr}}}') || MESSAGE.indexOf('{{stopstr}}');
             if (stopStrIndex !== -1) {
                 MESSAGE = MESSAGE.slice(0, stopStrIndex);
             }
