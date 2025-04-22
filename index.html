@@ -299,6 +299,7 @@
     </div></noscript>
     <script>
         var PenguinPaint = "https://penguinpaint.statichost.app/?size=600x300&import=";
+        // https://studio.penguinmod.com/editor.html?project_url=https://yeetyourfiles.lol/file/b8cbb859/blob&size=600x300
         
         function showNotification(message, color, time) {
             let existingNotification = Array.from(document.querySelectorAll('.stacked-notification'))
@@ -513,9 +514,11 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
                     </div>
                 `;
 
+                // onclick="window.open(\`${PenguinPaint}\${encodeURIComponent(this.src)}\`, '_blank');"
+
                 cardDiv.innerHTML = `
                     ${iconHTML}
-                    <img src="${imageURL}" alt="${card.title}" onclick="window.open(\`${PenguinPaint}\${encodeURIComponent(this.src)}\`, '_blank');">
+                    <img src="${imageURL}" alt="${card.title}">
                     <div class="card-content">
                         ${sandboxStatusIconHTML}
                         <div class="card-title">${card.title}</div>
