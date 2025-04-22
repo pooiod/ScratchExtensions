@@ -1,7 +1,7 @@
 (async () => {
 	var repo = 'pooiod/ScratchExtensions';
 	var position = 'left';
-	var commitsPerPage = 20;
+	var commitsPerPage = 50;
 	var totalcommits = 100;
 	var showRandomUpdates = false;
 
