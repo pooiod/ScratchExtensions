@@ -24,6 +24,7 @@
 			transform: translateX(${position=="right"?"100%":"-100%"});
 			transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 			${document.body.clientWidth < 900 ? `width: 100%`: `border-${position=="right"?"left":"right"}: 1px solid ${windowTheme === 'light' ? '#ccc' : '#444'}`};
+			overflow-x: hidden;
 		}
 
 		.commit-widget.open {
@@ -99,6 +100,13 @@
 			color: ${windowTheme === 'light' ? '#999' : '#aaa'};
 		}
 
+		.commit-cached {
+			display: inline-block;
+			float: right;
+			/*font-style: italic;*/
+			color: ${windowTheme === 'light' ? '#d6d6d6' : '#545454'};
+		}
+
 		.load-more-btn {
 			background: ${windowTheme === 'light' ? '#f0f0f0' : '#333'};
 			color: ${windowTheme === 'light' ? '#000' : '#fff'};
@@ -155,7 +163,7 @@
 		}, 1000);
 	}
 
-	function renderCommits(commits) {
+	function renderCommits(commits, cached) {
 		const container = document.createElement('div');
 
 		commits.forEach(commit => {
@@ -186,7 +194,7 @@
 			}
 		});
 
-		widget.innerHTML = `<div class="commit-widget-header">Recent updates</div>`;
+		widget.innerHTML = cached ? `<div class="commit-widget-header">Recent updates <div class="commit-cached">(cached)</div></div>` : `<div class="commit-widget-header">Recent updates</div>`;
 		widget.appendChild(container);
 
 		if (allCommits.length > currentPage * commitsPerPage) {
@@ -206,7 +214,20 @@
 		if (loaded) return;
 		loaded = true;
 
+		const prefix = `commits_${repo.replace(/[^a-zA-Z0-9]/g, '_')}`;
+		const cached = document.cookie.includes('cached=true');
+
 		try {
+			if (cached) {
+				const data = localStorage.getItem(prefix);
+				if (data) {
+					const parsed = JSON.parse(data);
+					allCommits = parsed.commits;
+					renderCommits(parsed.detailed, true);
+					return;
+				}
+			}
+
 			const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=${totalcommits}`);
 			const commits = await res.json();
 			allCommits = commits;
@@ -215,7 +236,9 @@
 				commits.slice(0, commitsPerPage).map(c => fetch(c.url).then(res => res.json()))
 			);
 
-			renderCommits(detailed);
+			localStorage.setItem(prefix, JSON.stringify({ commits, detailed }));
+			document.cookie = `cached=true;max-age=3600;path=/;SameSite=Lax`;
+			renderCommits(detailed, false);
 		} catch (err) {
 			console.error(err);
 			widget.innerHTML = `<div class="commit-widget-header">Recent updates</div><div class="commit-loader">Error loading commits</div>`;
@@ -224,3 +247,8 @@
 
 	toggleBtn.style.transform = "translateX(0)";
 })();
+
+var repo = 'pooiod/ScratchExtensions';
+var position = 'left';
+var showRandomUpdates = false;
+var showbydefault = false;
