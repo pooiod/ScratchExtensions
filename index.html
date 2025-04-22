@@ -680,6 +680,15 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
         }
     </script>
 
-    <script src="UpdateTracker.js"></script>
+    <script>
+        var repo = 'pooiod/ScratchExtensions';
+        var position = 'left';
+        var showRandomUpdates = false;
+        var showbydefault = false;
+
+        var script = document.createElement('script');
+        script.src = '/UpdateTracker.js';
+        document.head.appendChild(script);
+    </script>
 </body>
 </html>

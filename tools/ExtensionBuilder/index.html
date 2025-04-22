@@ -1,9 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Coming Soon</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,5 +38,16 @@
         <img src="/extras/images/WipPageAxolotl.svg" alt="Don't look yet!">
         <p class="subtitle">This page isn't ready yet. Check back later to see what's new!</p>
     </div>
+
+    <script>
+        var repo = 'pooiod/ScratchExtensions';
+        var position = 'left';
+        var showRandomUpdates = false;
+        var showbydefault = true;
+
+        var script = document.createElement('script');
+        script.src = '/UpdateTracker.js';
+        document.head.appendChild(script);
+    </script>
 </body>
 </html>

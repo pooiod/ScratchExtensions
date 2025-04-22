@@ -1,9 +1,6 @@
 (async () => {
-	var repo = 'pooiod/ScratchExtensions';
-	var position = 'left';
 	var commitsPerPage = 50;
 	var totalcommits = 100;
-	var showRandomUpdates = false;
 
 	var windowTheme = window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
 	var styleThingy = document.createElement('style');
@@ -17,7 +14,6 @@
 			bottom: 0px;
 			${position}: 0;
 			width: 340px;
-			/*max-height: 80vh;*/
 			height: 100vh;
 			background: ${windowTheme === 'light' ? '#ffffff' : '#1a1a1a'};
 			color: ${windowTheme === 'light' ? '#000' : '#fff'};
@@ -153,6 +149,12 @@
 		}
 	});
 
+	if (showbydefault) {
+		setTimeout(() => {
+			toggleBtn.click();
+		}, 1000);
+	}
+
 	function renderCommits(commits) {
 		const container = document.createElement('div');
 
@@ -208,11 +210,11 @@
 			const res = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=${totalcommits}`);
 			const commits = await res.json();
 			allCommits = commits;
-	
+
 			const detailed = await Promise.all(
 				commits.slice(0, commitsPerPage).map(c => fetch(c.url).then(res => res.json()))
 			);
-	
+
 			renderCommits(detailed);
 		} catch (err) {
 			console.error(err);
