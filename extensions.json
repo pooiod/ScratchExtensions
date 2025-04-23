@@ -144,7 +144,7 @@
     },
     {
         "id": "Ace",
-        "image": "/ext/[id]/cover.png",
+        "image": "/ext/[id]/cover.svg",
         "title": "Ace Editor",
         "description": "Create and manipulate an instance of the Ace code editor.",
         "created": "June 18, 2023",
