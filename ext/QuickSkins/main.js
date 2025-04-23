@@ -1,5 +1,5 @@
 // A simple extension to render images from data uris super quickly
-// Feel free to add these functions to your extension
+// Feel free to add these functions to your extensions
 
 (function (Scratch) {
 	if (!Scratch.extensions.unsandboxed) {
