@@ -10,10 +10,11 @@
 	class ScrollExtension {
 		constructor() {
 			this.isScrolling = false;
+            this.timeout = null;
+
 			this.yvel = 0;
 			this.xvel = 0;
 			this.zvel = 0;
-			this.timeout = null;
 
 			document.addEventListener('wheel', this.handleScroll.bind(this), {
 				capture: true,
@@ -55,9 +56,9 @@
 					{
 						blockType: Scratch.BlockType.EVENT,
 						opcode: 'onscroll',
-						text: 'On page scrolled',
+						text: 'When page scrolled',
 						isEdgeActivated: false
-					  }
+					}
 				],
 			};
 		}

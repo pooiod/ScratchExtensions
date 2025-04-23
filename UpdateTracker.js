@@ -167,7 +167,7 @@
 		const container = document.createElement('div');
 
 		commits.forEach(commit => {
-			const date = new Date(commit.commit.author.date).toLocaleString();
+			var date = new Date(commit.commit.author.date).toLocaleDateString();
 			let message = commit.commit.message.trim();
 			const [title, ...rest] = message.split('\n');
 			var body = rest.join('<br>').trim();
@@ -247,8 +247,3 @@
 
 	toggleBtn.style.transform = "translateX(0)";
 })();
-
-var repo = 'pooiod/ScratchExtensions';
-var position = 'left';
-var showRandomUpdates = false;
-var showbydefault = false;
