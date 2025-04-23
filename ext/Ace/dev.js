@@ -236,41 +236,46 @@
             };
         }
 
-        addAceEditor() {
+        async addAceEditor() {
             this.removeAceEditor();
 
-            const aceScript = document.createElement('script');
-            aceScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js';
-            aceScript.onload = () => {
-                editorElement = document.createElement('div');
-                editorElement.id = 'editor';
-                editorElement.style.position = 'absolute';
-                editorElement.style.width = '60%';
-                editorElement.style.height = '55%';
-                editorElement.style.left = '20%';
-                editorElement.style.top = '20%';
-                stageAdd(editorElement);
+            await new Promise((resolve, reject) => {
+                const aceScript = document.createElement('script');
+                aceScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js';
+                aceScript.onload = resolve;
+                aceScript.onerror = reject;
+                document.head.appendChild(aceScript);
+            });
 
-                contextMenuData = [
-                  {
+            editorElement = document.createElement('div');
+            editorElement.id = 'editor';
+            editorElement.style.position = 'absolute';
+            editorElement.style.width = '0%';
+            editorElement.style.height = '0%';
+            editorElement.style.left = '100%';
+            editorElement.style.top = '100%';
+            stageAdd(editorElement);
+
+            contextMenuData = [
+                {
                     label: 'Undo',
                     action: function () {
                         document.execCommand('undo');
                     },
-                  },
-                  {
+                },
+                {
                     label: 'Redo',
                     action: function () {
                         document.execCommand('redo');
                     },
-                  },
-                  {
+                },
+                {
                     label: 'Copy',
                     action: function () {
                         document.execCommand('copy');
                     },
-                  },
-                  {
+                },
+                {
                     label: 'Paste',
                     action: function () {
                         navigator.clipboard.readText().then(text => {
@@ -279,66 +284,64 @@
                             console.error('Failed to read clipboard contents: ', err);
                         });
                     },
-                  },
-                  {
+                },
+                {
                     label: 'Cut',
                     action: function () {
                         document.execCommand('cut');
                     },
-                  }
-                ];
+                }
+            ];
 
-                var aceContextMenu = document.createElement('div');
-                aceContextMenu.id = 'AceContextMenu';
-                aceContextMenu.style.display = 'none';
+            const aceContextMenu = document.createElement('div');
+            aceContextMenu.id = 'AceContextMenu';
+            aceContextMenu.style.display = 'none';
 
-                function createMenuItem(itemData) {
-                  var menuItem = document.createElement('div');
-                  menuItem.id = 'AceContextMenuItem';
-                  menuItem.innerHTML = itemData.label;
-                  menuItem.style.cursor = 'pointer';
+            function createMenuItem(itemData) {
+                const menuItem = document.createElement('div');
+                menuItem.id = 'AceContextMenuItem';
+                menuItem.innerHTML = itemData.label;
+                menuItem.style.cursor = 'pointer';
 
-                  menuItem.addEventListener('click', function () {
+                menuItem.addEventListener('click', function () {
                     aceEditorInstance.focus();
                     itemData.action();
                     aceContextMenu.style.display = 'none';
-                  }.bind(this));
+                });
 
-                  aceContextMenu.appendChild(menuItem);
-                }
+                aceContextMenu.appendChild(menuItem);
+            }
 
-                function updateContextMenu() {
-                  while (aceContextMenu.firstChild) {
+            function updateContextMenu() {
+                while (aceContextMenu.firstChild) {
                     aceContextMenu.removeChild(aceContextMenu.firstChild);
-                  }
-
-                  contextMenuData.forEach(function (itemData) {
-                    createMenuItem(itemData);
-                  });
                 }
 
-                editorElement.addEventListener('contextmenu', function (event) {
-                  event.preventDefault();
-                  aceContextMenu.style.left = event.pageX + 'px';
-                  aceContextMenu.style.top = event.pageY + 'px';
-
-                  updateContextMenu();
-
-                  aceContextMenu.style.display = 'block';
+                contextMenuData.forEach(function (itemData) {
+                    createMenuItem(itemData);
                 });
+            }
 
-                document.addEventListener('click', function (event) {
-                  if (!aceContextMenu.contains(event.target)) {
+            editorElement.addEventListener('contextmenu', function (event) {
+                event.preventDefault();
+                aceContextMenu.style.left = event.pageX + 'px';
+                aceContextMenu.style.top = event.pageY + 'px';
+
+                updateContextMenu();
+
+                aceContextMenu.style.display = 'block';
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!aceContextMenu.contains(event.target)) {
                     aceContextMenu.style.display = 'none';
-                  }
-                });
+                }
+            });
 
-                document.body.appendChild(aceContextMenu);
+            document.body.appendChild(aceContextMenu);
 
-                const editor = ace.edit('editor');
-                this.setupAceEditor(editor);
-            };
-            document.head.appendChild(aceScript);
+            const editor = ace.edit('editor');
+            this.setupAceEditor(editor);
 
             this.setCSSViaURL({
                 URL: 'https://pooiod7.neocities.org/projects/scratch/extensions/external-files/ace/default.css',
