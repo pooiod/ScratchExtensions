@@ -1,0 +1,38 @@
+[
+    {
+        "id": "BlockLink",
+        "image": "/ext/[id]/cover.svg",
+        "title": "BlockLink",
+        "description": "A collaberation system for TurboWarp based Scratch mods",
+        "created": "---",
+        "subtext": "Work in progress",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "Work in progress",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "Open", "color": "#cbe0f2", "link": "/ext/[id]/#/tool" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
+        "id": "ProjectExtensionManager",
+        "image": "",
+        "title": "Extension Manager",
+        "description": "Manage the extensions in your projects",
+        "created": "---",
+        "subtext": "work in progress",
+        "icon2": "/extras/images/icons/wip.png",
+        "icon": "",
+        "updated": false,
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "Open", "color": "#cbe0f2", "link": "/tools/[id]" }
+        ],
+        "tags": ["unfinished"],
+        "type": ["web"],
+        "hidden": false
+    }
+]
