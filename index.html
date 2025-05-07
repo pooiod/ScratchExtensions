@@ -417,7 +417,7 @@
         
         window.addEventListener('error', function(event) {
             if (event.message == "Script error.") return;
-            showNotification(event, "#ffd6d6", 3000);
+            showNotification(event.message, "#ffd6d6", 3000);
         });
     </script>
 
