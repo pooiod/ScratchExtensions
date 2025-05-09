@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Extension in question:**
-Name the extension you are having issues with.
+Name the extension / tool you are having issues with.
 If the scratch extension is loaded via an alternative loader (ex: userscript or browser add-on), also state that here.
 
 **Describe the bug**
