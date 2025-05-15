@@ -1,7 +1,5 @@
 // Scratch3 basic extension template
 
-/** This is a basic template extension */
-
 (function(Scratch) {
     'use strict';
 
