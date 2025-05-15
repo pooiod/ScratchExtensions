@@ -6,7 +6,7 @@
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
         "created": "Apr 15, 2024",
         "subtext": "",
-        "icon2": "/extras/images/icons/update.svg",
+        "icon2": "",
         "icon": "",
         "updated": false,
         "iconText": "",
@@ -200,7 +200,7 @@
         "description": "Load and parse Scratch3 projects",
         "created": "Mar 30, 2025",
         "subtext": "",
-        "icon": "/extras/images/icons/new.svg",
+        "icon": "",
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
@@ -269,7 +269,7 @@
         "description": "Detect user scrolling on the page",
         "created": "Oct 05, 2023",
         "subtext": "",
-        "icon": "/extras/images/icons/release.svg",
+        "icon": "",
         "iconText": "",
         "unsandboxed": true,
         "buttons": [

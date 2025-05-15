@@ -23,13 +23,30 @@
         "description": "Manage the extensions in your projects",
         "created": "---",
         "subtext": "work in progress",
-        "icon2": "/extras/images/icons/wip.png",
-        "icon": "",
+        "icon": "/extras/images/icons/wip.png",
         "updated": false,
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
             { "text": "Open", "color": "#cbe0f2", "link": "/tools/[id]" }
+        ],
+        "tags": ["unfinished"],
+        "type": ["web"],
+        "hidden": false
+    },
+    {
+        "id": "TurboSvgSearch",
+        "image": "/tools/[id]/cover.svg",
+        "title": "Turbowarp SVG Search",
+        "description": "Injects SVG search results from svgviewer.dev directly into the Turbowarp costume library search.",
+        "created": "---",
+        "subtext": "Requires a userscript agent",
+        "icon": "",
+        "updated": false,
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "Open", "color": "#cbe0f2", "link": "https://greasyfork.org/en/scripts/536023-turbowarp-web-svg-search" }
         ],
         "tags": ["unfinished"],
         "type": ["web"],
