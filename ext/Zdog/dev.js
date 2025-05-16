@@ -36,45 +36,39 @@
                         }
                     },
                     {
+                        opcode: 'onBeforeRender',
+                        blockType: Scratch.BlockType.EVENT,
+                        text: 'On before render',
+                        arguments: {}
+                    },
+
+                    "---",
+
+                    {
                         opcode: 'newWorld',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'New world',
                         arguments: {}
                     },
                     {
-                        opcode: 'moveCamera',
+                        opcode: 'setWorldRotation',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Move camera to [POS] with rotation [ROT]',
+                        text: 'Rotate world to [ROT]',
                         arguments: {
-                            POS: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' },
                             ROT: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
-                        }
-                    },
-                    {
-                        opcode: 'pointCamera',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Point camera to [POS]',
-                        arguments: {
-                            POS: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
                         }
                     },
                     {
                         opcode: 'setCameraZoom',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set camera zoom to [ZOOM]',
+                        text: 'Set world zoom to [ZOOM]',
                         arguments: {
                             ZOOM: { type: Scratch.ArgumentType.NUMBER, defaultValue: '1' }
                         }
                     },
-                    {
-                        opcode: 'setCameraClip',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set camera clip to [MIN] [MAX]',
-                        arguments: {
-                            MIN: { type: Scratch.ArgumentType.NUMBER, defaultValue: '-1' },
-                            MAX: { type: Scratch.ArgumentType.NUMBER, defaultValue: '500' }
-                        }
-                    },
+
+                    "---",
+
                     {
                         opcode: 'removeShape',
                         blockType: Scratch.BlockType.COMMAND,
@@ -146,14 +140,6 @@
                         }
                     },
                     {
-                        opcode: 'createGroup',
-                        blockType: Scratch.BlockType.CONDITIONAL,
-                        text: 'Create group [NAME]',
-                        arguments: {
-                            NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'group1' }
-                        }
-                    },
-                    {
                         opcode: 'getShapeProp',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Get [PROP] from [NAME]',
@@ -168,12 +154,27 @@
                         text: 'Get shapes',
                         arguments: {}
                     },
+
+                    "---",
+
                     {
-                        opcode: 'onBeforeRender',
-                        blockType: Scratch.BlockType.EVENT,
-                        text: 'On before render',
-                        arguments: {}
+                        opcode: 'createGroup',
+                        blockType: Scratch.BlockType.CONDITIONAL,
+                        text: 'Create group [NAME]',
+                        arguments: {
+                            NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'group1' }
+                        }
                     },
+                    {
+                        opcode: 'createAnchor',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Create anchor [NAME] at position [POS]',
+                        arguments: {
+                            NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'anchor1' },
+                            POS: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
+                        }
+                    },
+
                     {
                         opcode: 'createRectangle',
                         blockType: Scratch.BlockType.COMMAND,
@@ -255,6 +256,9 @@
                             PROPS: { type: Scratch.ArgumentType.STRING, defaultValue: 'key: "val", key2: 4, key3: true' }
                         }
                     },
+
+                    "---",
+
                     {
                         opcode: 'pathMoveTo',
                         blockType: Scratch.BlockType.COMMAND,
@@ -296,6 +300,9 @@
                         text: 'Close path',
                         arguments: {}
                     },
+
+                    "---",
+
                     {
                         opcode: 'expandProps',
                         blockType: Scratch.BlockType.REPORTER,
