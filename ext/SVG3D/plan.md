@@ -21,7 +21,6 @@ The main things I need to do
 - [ ] `[COMMAND] Point camera to [pos]`  
 - [ ] `[COMMAND] Set camera zoom to [zoom]`  
 - [ ] `[COMMAND] Set camera clip to [min] [max]`  
-  - Default clip: -500 to 500
 
 ---
 
