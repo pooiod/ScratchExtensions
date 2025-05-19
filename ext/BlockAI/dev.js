@@ -1,4 +1,4 @@
-// TheShovel made a block AI (github.com/TheShovel/block-ai) before I could, so the model used will be from that extension
+// TheShovel made a block AI (github.com/TheShovel/block-ai) before I could, so the model / key used is from that extension
 
 (async function(Scratch) {
     "use strict";
@@ -176,7 +176,6 @@
     }
 
     function strformat(input) {
-        console.log(input)
         let html = input
             .replace(/^### (.+)$/gm, '<h3>$1</h3>')
             .replace(/^## (.+)$/gm, '<h2>$1</h2>')
@@ -188,14 +187,13 @@
 
         html = html.replace(/```scratch([\s\S]*?)```/g, (match, code) => {
             code = code.trim().replace(/<br>/g, '\n');
-            console.log(code)
-            let doc = scratchblocks.module.parse(code, { lang: "en", style: "scratch3", scale: 1 });
-            let docView = scratchblocks.module.newView(doc, { style: "scratch3", scale: 1 });
+            let doc = scratchblocks.module.parse(code, { lang: "en", style: "scratch3", scale: 0.7 });
+            let docView = scratchblocks.module.newView(doc, { style: "scratch3", scale: 0.7 });
             docView.render();
-            return "<br>" + docView.exportSVGString();
+            var bg = getComputedStyle(document.documentElement).getPropertyValue("--ui-primary").trim() || "rgb(255, 255, 255)";
+            return `<br><div style="overflow: auto; max-width: 300px; background:${bg}; border:${darkenHexColor(standardizeColor(bg), 30)} solid 2px; border-radius: 5px; padding: 5px; margin-top: 4px; margin-bottom: 4px;">` + docView.exportSVGString() + "</div>";
         });
 
-        console.log(html)
         return html;
     }
 
@@ -305,7 +303,7 @@
 
 	function showMessage(user, name, color, msg) {
 		const message = document.createElement("div");
-		message.innerHTML = `<b>${name}: </b>` + strformat(msg);
+		message.innerHTML = name ? `<b>${name}: </b>` + strformat(msg) : strformat(msg);
 		message.classList.add("message");
 		message.style.margin = "5px 0";
 		message.style.padding = "8px";
@@ -453,7 +451,7 @@
 
 	const chatHeader = document.createElement("div");
 	chatHeader.id = "chat-header";
-	chatHeader.textContent = "Chat";
+	chatHeader.textContent = "AI Chat";
 	chatHeader.style.color = "white";
 	chatHeader.style.padding = "10px";
 	chatHeader.style.textAlign = "center";
@@ -517,7 +515,7 @@
 	document.body.appendChild(chatContainer);
 
 	const chatToggle = document.createElement("button");
-	chatToggle.id = "BlockLive-chat-toggle";
+	chatToggle.id = "BlockAI-chat-toggle";
 	chatToggle.style.position = "fixed";
 	chatToggle.style.background = "transparent";
 	chatToggle.style.color = "white";
@@ -646,15 +644,53 @@
         "Create clone": "create clone of (myself v)"
     });
 
-    gemini.init(`You are a helpful and friendly AI coding assistant. Your name is "Spark". You muse ALWAYS respond in the markdown format. ${syntax} ${references}`);
+    gemini.init(`You are a helpful and friendly AI coding assistant. Your name is "Spark" and you were created by pooiod7 (github.com/pooiod).
+You muse ALWAYS place your blocks in the markdown code format, Everything else must be html formatting.
+Always mark links as clickable with html <a> tags, and open them in a new tab, not the current one.
+
+${syntax} ${references}
+
+studio.penguinmod.com, turbowarp.org, robo-code.pages.dev, snail-ide.js.org, and librekitten.org are all scratch mods that you are compatable with.
+You are currently on ${window.location.host}.
+
+Turbowarp is a mod of scratch that makes it compile into JavaScript before running, allowing for faster project running.
+It also has addon support, and an extension library.
+
+Penguinmod is a mod of Turbowarp that adds more default blocks, while adding more general features aswel.
+Penguinmod also has community features for sharing projects.
+It also has its own extension library.
+
+Snail-IDE is a mod of Penguinmod that makes it purple and have snail theme.
+It also has another extension library of its own.
+
+Robo-Code (made by pooiod7) is a mod of Turbowarp that kinda looks like a mix of Scratch2 and Scratch3 with a maroon color.
+Other than that, it does one thing: add an extension that can be used to interact with robots.
+It also comes with another Scratch extension made by pooiod7 called "BlockLink" that allows for project collaberation online.
+
+Here are some helpful resources https://docs.turbowarp.org/development/getting-started, https://github.com/PenguinMod/PenguinMod-Vm, https://extensions.turbowarp.org/, https://extensions.penguinmod.com/. Give simple responses. Dont overcomplicate stuff, and dont fluff up your responses too much. Try to explain what it does AFTER you display the blocks.
+
+If people ask for extensions, link them to one of these websites https://p7scratchextensions.pages.dev/, https://extensions.turbowarp.org/, https://extensions.penguinmod.com/. Check the websites and see if it contains an extension the user wants, and tell them what extension it is. Fetch the lists of those websites.
+p7scratchextensions.pages.dev is Pooiod7's extension gallary
+If they ask you about how to use an extension, try to help, but mention that you dont have access to the code of the extensions in the extenion libraries, and that your responses might not be correct. Dont say it directly though. Always do that.
+
+Dont create new questions for yourself, or answer things in the future.
+Try to be polite! Never explain stuff in text, always explain stuff using comments, and nothing else.
+Dont overuse comments, only use them to explain what is needed, dont tell me what every single block does.
+
+If someone asks you to make a full project dont say you cant, give them snippest that could help them instead, just dont leave an empty response with nothing to show.
+If someone asks you to make a script that draws an image, tell them you cant visualize images to draw them with code.
+Refuse to do make JavaScript or css. Don't ever use <script> JavaScript tags or <style> or <link> tags.
+
+You dont have access to the users workspace, you cant see what blocks they placed down. Please specify that when needed, and that you will have access in a future update.
+If the user says nothing, give them a useful tip or fun fact.`);
 
 	sendButton.onclick = async () => {
 		const userMessage = chatInput.value.trim();
 		if (userMessage) {
-            showMessage(1,"You", "lightgrey", userMessage);
+            showMessage(1,"", "lightgrey", userMessage);
 			chatInput.value = "";
             var response = await gemini.chat(userMessage);
-            showMessage(0,"Spark", "lightblue", response);
+            showMessage(0,"", "lightblue", response);
 		}
 	};
 
