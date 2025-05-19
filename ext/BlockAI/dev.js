@@ -1,4 +1,4 @@
-// Placeholder
+// TheShovel made a block AI (github.com/TheShovel/block-ai) before I could, so the model used will be from that extension
 
 (async function(Scratch) {
     "use strict";
@@ -10,6 +10,11 @@
     if (!typeof scaffolding === "undefined") {
         return; // Backup for if the extension exports with the project
     }
+
+    document.head.appendChild(Object.assign(document.createElement('script'), {
+        src: 'https://pooiod7.neocities.org/markdown/scratchblocks.js',
+        onload: () => scratchblocks.init()
+    }));
 
     function standardizeColor(color) {
         if (color.startsWith('#')) {
@@ -170,37 +175,28 @@
         });
     }
 
-    function strformat(STRING) {
-        console.log(STRING)
-		var str = String(STRING);
-		// strip harmful tags but allow basic user formated text
-		var allowedTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'b', 'br', 'i', 'u', 's', 'mark', 'sub', 'sup', 'em', 'strong', 'ins', 'del', 'small', 'big', 'code', 'kbd', 'samp', 'var', 'cite', 'dfn', 'abbr', 'time', 'a', 'span', 'br'];
-		str = str.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (match, p1) {
-		  if (allowedTags.indexOf(p1.toLowerCase()) !== -1) {
-			return match;
-		  } else {
-			return '';
-		  }
-		});
-		// newline fixes
-		str = str.replace(/(?<!\\)\\n/g, " <br>");
-		str = str.replace(/\n/g, " <br>");
-		// @user links
-		str = str.replace(/https:\/\/scratch\.mit\.edu\/users\/([\w-]+)/g, '@$1');
-		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
-		// links
-		str = str.replace(/(https:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
-        str = str.replace(/(http:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
-		// special links
-		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
-		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
-        // images
-        str = str.replace(/img:(\S+)/g, '<img src="//$1" style="max-width: 100%;" />');
-        // videos
-        str = str.replace(/vid:(\S+)/g, '<video src="//$1" controls style="max-width: 100%; margin-top: 5px;"></video>');
-        console.log(str)
-		return str;
-	};
+    function strformat(input) {
+        console.log(input)
+        let html = input
+            .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+            .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+            .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n-{3,}\n/g, '<hr>')
+            .replace(/\n/g, '<br>');
+
+        html = html.replace(/```scratch([\s\S]*?)```/g, (match, code) => {
+            code = code.trim().replace(/<br>/g, '\n');
+            console.log(code)
+            const sb = scratchblocks.module.render(code.trim(), { inline: false });
+            console.log(sb)
+            return sb.outerHTML || sb.toString();
+        });
+
+        console.log(html)
+        return html;
+    }
 
     function showToast(text, html, time = 2000) {
         var targetElement = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_editor-wrapper_2DYcj.box_box_2jjDp > div.gui_tabs_AgmuP > ul");
@@ -538,14 +534,6 @@
 	chatToggle.onclick = toggleChat;
 	document.body.appendChild(chatToggle);
 
-	sendButton.onclick = () => {
-		const userMessage = chatInput.value.trim();
-		if (userMessage) {
-            showMessage(1,"You", "lightgrey", userMessage);
-			chatInput.value = "";
-		}
-	};
-
 	setColors();
     var intervalColors = setInterval(setColors, 5000);
 	var intervalPos = setInterval(setPos, 100);
@@ -560,7 +548,7 @@
                 }
 
                 var element = [...document.querySelectorAll('g.blocklyBlockCanvas text.blocklyFlyoutLabelText')].find(el => el.textContent === 'BlockAI');
-                if (element && hasmenu) {
+                if (element) {
                     element.style.display = "none";
                 }
             }, 1000);
@@ -574,5 +562,100 @@
             };
         }
     }
+
+    var gemini = (() => {
+        const API_KEY = 'AIzaSyD2B46yojYB2AQzktJNR7jzIHRrqAISG9A'; // https://extensions.penguinmod.com/extensions/TheShovel/blockAI.js
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+        let beforePrompt = 'You are a helpful and friendly assistant.';
+        const gemini = {};
+
+        gemini.history = [];
+
+        gemini.chat = async function (msg) {
+            const messages = [{ role: 'user', parts: [{ text: beforePrompt }] }, ...gemini.history, { role: 'user', parts: [{ text: msg }] }];
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: messages })
+            });
+            const data = await res.json();
+            const response = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            gemini.history.push({ role: 'user', parts: [{ text: msg }] });
+            gemini.history.push({ role: 'model', parts: [{ text: response }] });
+            return response;
+        };
+
+        gemini.init = function (customPrompt) {
+            beforePrompt = customPrompt || 'You are a helpful and friendly assistant.';
+            gemini.history = [];
+        };
+
+        gemini.reset = function () {
+            gemini.history = [];
+        };
+
+        return gemini;
+    })();
+
+    const syntax = "When you asnwer with blocks, format them to be compatible with https://github.com/scratchblocks/scratchblocks. You can reference the syntax more from here https://en.scratch-wiki.info/wiki/Block_Plugin/Syntax. Make sure its valid code by checking the blocks at https://en.scratch-wiki.info/wiki/Blocks. Blocks are not inside square brackets. Number values are in round brackets and strings are in square brackets. Booleans are only in < >. Round brackets can also contain input names. Wrap all the blocks in ```scratch CODEHERE```. You MUST include 3 of the ```. Math operations are all separate reporter blocks. Dont do stuff like(1-2+2), do ((1-1)+2) instead. For example you cant have (10+20-20) in the same block, its have to be ((10+20)-20).If statements should never be empty, aways add a placeholder block inside both the if and the else. Comments cannot be inside the code, they can only be next to a block, not under or on top of it.Do not add comments inside if statements or any C type block! That is not valid syntax! A C type block is a block that wraps around others. For example if statements, forever looks, repeat until and so on. Also, C blocks dont need any square brackets! Dont do if[...]else[...]!!! That is wrong sytax!!! Do if ... else... instead. Place holder blocks should just be ... . Dont do anything else for placeholder blocks. All blocks that do comparison are treated like booleans, and they should therefore be in < >. For example, greated than, equal, smaller than, and, or and so on. Continuations of a C block can never be on the same line. You should not do if < > newline then you should instead do if < > then newline. For special hat blocks like 'when green flag clicked', you should not include any inputs, as the green flag is not an input. Inputs inside blocks dont need to be in any kind of bracket like < >, () or [] if they are already a normal block, that has a bracket. Dont forget that empty if statements still need a < > as a place holder for the sytax to be correct. Try to think in javascript, and then translate that to scratchblocks. Custom blocks cant take a dropdown as an input, they can only have booleans, text and numbers, so define sort list [thing v] is not possible, but [thing],(thing),<thing> are. Effects blocks have the effect name in a dropdown input. For looks effects blocks, its always the effect name and the word 'effect' after. When you are using the 'contains' boolean block, it only has a dropdown if its refering to a list, otherwise, it is a string input. If you pass a list through an input, you dont get an array or a useful format, in custom blocks that require a list for example, you should make the input be the name of the list, and then get its values in the custom block. List blocks can only select the list from a dropdown, so its not lenght of [list] its length of [list v]. Dropdowns can only be strings, not numbers, so (thing v) is not correct, but [thing v] is. Mathematical operations with use the operations and are always like this ([ v]of(number)), for example ([cos v]of(25)), it does not start with mathop though! Its only the function name in a dropdown! Operator blocks dont have to be inside another operator all the time, for example 'or' is <<>or<>>, not <<<>or<>>>, doing that just puts it in an empty boolean block that does nothing.Blocks like (10+10) or (10/10) dont exist, only ((10)+(10)) and ((10)/(10)). To run code inside a clone, you have to use the 'when i start as a clone' hat block. The 'touching' boolean block is structured like <touching[thing v]?>. When you refer to the position of the sprite, the variable name is x position, not just x. Hat blocks never end with 'end', NEVER!. The sprite size is not a variable block. If an item is inside a [ v] that means it is inside a drop down, for example if we have [wall v] the thing selected in the dropdown is wall.";
+
+    const references = "Here are reference pieces of code:" + JSON.stringify({
+        "Simple if then else statement": "if <  > then\n\nelse\n\nend\n",
+        "Example of using booleans":
+        "if <<mouse down?> and <(costume [number v]) = [1]>> then\n    stamp\nend",
+        "Move 10 steps": "move (10) steps\n",
+        "Say hi": "say [Hi]",
+        "Color inputs": "set pen color to [#1540bf]",
+        "Dropdown lists": "stop [all v]\n",
+        "Round dropdown lists": "broadcast (start v)\n",
+        "When green flag clicked": "when green flag clicked",
+        "When this sprite clicked": "when this sprite clicked\n",
+        "Turn right": "turn right () degrees",
+        "C blocks":
+        'C blocks must be closed by typing "end" after the last stack block inside it. However, C blocks at the end of a script will close automatically. For example:\n\nrepeat (10)\n    move (5) steps\n    stamp\nend\nrepeat (10)\n    move (10) steps\n    stamp',
+        "Block comments":
+        "Comments are created with two slashes: //comment after a block.\n\nmove (10) steps //is that too far?",
+        "Custom blocks": "define jump\nrepeat (10)\n    change y by (4)\nend",
+        "Custom block arguments":
+        "Number, boolean, and string arguments can be added:\n\ndefine jump (height) <gravity on?> [message]",
+        "Custom block inputs":
+        "If one tries to use an input reporter without making a block definition first, it will appear as a variable.\n\nsay (height) But if it is put below a block definition, it will render as an input reporter:\n\ndefine jump (height)\nsay (input)",
+        "List reporters":
+        "If one tries to write a list reporter, it will look like a variable reporter, because the plugin has no way of telling them apart.\n\nsay (list of Scratch team members) However, if one has used the list in a list block inside the same <scratchblocks> tag, then it will render correctly:\n\nadd [mres] to [list of Scratch team members v]\nadd [paddle2see] to [list of Scratch team members v]\nadd [harakou] to [list of Scratch team members v]\nsay (list of Scratch team members) If a list block is not wanted or needed inside the same <scratchblocks> tag, :: list can be used:\n\nsay (list of Scratch team members:: list)",
+        "Effect blocks":
+        "change [effectname v] effect by (25)\nset [geffectnamehost v] effect to (25)",
+        "Layer blocks": "go to [front v] layer\ngo [forward v] (5) layers",
+        "Looks reporters":
+        "(costume [number v])\n(costume [name v])\n(backdrop [number v])\n(backdrop [name v])",
+        "Looks effect blocks":
+        "change [color v] effect by ()\nchange [fisheye v] effect by ()\nchange [whirl v] effect by ()\nchange [pixelate v] effect by ()\nchange [mosaic v] effect by ()\nchange [brightness v] effect by ()\nchange [ghost v] effect by ()\nchange [saturation v] effect by ()\nchange [red v] effect by ()\nchange [green v] effect by ()\nchange [blue v] effect by ()\nchange [opaque v] effect by ()\nset [color v] effect to ()\nset [fisheye v] effect to ()\nset [whirl v] effect to ()\nset [pixelate v] effect to ()\nset [mosaic v] effect to ()\nset [brightness v] effect to ()\nset [ghost v] effect to ()\nset [saturation v] effect to ()\nset [red v] effect to ()\nset [green v] effect to ()\nset [blue v] effect to ()\nset [opaque v] effect to ()",
+        "Reporter 'when' blocks": "when [loudness v] > ()\nwhen [timer v] > ()",
+        "Control blocks":
+        "if <> then\n...\nend\n\nif <> then\n...\nelse\n...\nend\n\nwait until <>\n\nrepeat until <>\n...\nend\n\nrepeat (0)\n...\nend",
+        "Mathematical operation blocks":
+        "([abs v]of(number))\n([floor v]of(number))\n([ceiling v]of(number))\n([sqrt v]of(number))\n([sin v]of(number))\n([cos v]of(number))\n([tan v]of(number))\n([asin v]of(number))\n([acos v]of(number))\n([atan v]of(number))\n([log v]of(number))",
+        "Comparison blocks":
+        "< (0) > (0) >\n< (0) < (0) >\n< (0) = (0) >\n< not < > >\n< < > and < > >\n< < > or < > >",
+        "Other operator blocks":
+        "<[]contains[]?>\n(()mod())\n(round())\n(pick random()to())\n(length of[])",
+        "Hat blocks":
+        "when green flag clicked\nwhen [space v] key pressed\nwhen this sprite clicked\nwhen backdrop switches to [backdrop1 v]\nwhen [loudness v] > (10)\nwhen i receive [message1 v]\nwhen i start as a clone",
+        "Example hat block use":
+        "when [right arrow v] key pressed\nif <touching [wall v]?> then\n\nelse\nchange x by (5)\nend",
+        "Create clone": "create clone of (myself v)"
+    });
+
+    gemini.init(`You are a helpful and friendly AI coding assistant. Your name is "Spark". You muse ALWAYS respond in the markdown format. ${syntax} ${references}`);
+
+	sendButton.onclick = async () => {
+		const userMessage = chatInput.value.trim();
+		if (userMessage) {
+            showMessage(1,"You", "lightgrey", userMessage);
+			chatInput.value = "";
+            var response = await gemini.chat(userMessage);
+            showMessage(0,"Spark", "lightblue", response);
+		}
+	};
+
     Scratch.extensions.register(new P7BlockAI());
 })(Scratch);
