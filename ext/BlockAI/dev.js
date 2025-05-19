@@ -189,9 +189,10 @@
         html = html.replace(/```scratch([\s\S]*?)```/g, (match, code) => {
             code = code.trim().replace(/<br>/g, '\n');
             console.log(code)
-            const sb = scratchblocks.module.render(code.trim(), { inline: false });
-            console.log(sb)
-            return sb.outerHTML || sb.toString();
+            let doc = scratchblocks.module.parse(code, { lang: "en", style: "scratch3", scale: 1 });
+            let docView = scratchblocks.module.newView(doc, { style: "scratch3", scale: 1 });
+            docView.render();
+            return "<br>" + docView.exportSVGString();
         });
 
         console.log(html)
