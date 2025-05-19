@@ -18,7 +18,7 @@
     },
     {
         "id": "ProjectExtensionManager",
-        "image": "",
+        "image": "/tools/[id]/cover.svg",
         "title": "Extension Manager",
         "description": "Manage the extensions in your projects",
         "created": "---",
