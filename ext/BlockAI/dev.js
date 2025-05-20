@@ -1,3 +1,5 @@
+// Pooiod7's Block AI (work in progress)
+
 // TheShovel made a block AI (github.com/TheShovel/block-ai) before I could, so the model / key used is from that extension
 
 (async function(Scratch) {
