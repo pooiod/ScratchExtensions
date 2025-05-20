@@ -247,6 +247,23 @@
         "hidden": false
     },
     {
+        "id": "BasicTTS",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Text to Speech",
+        "description": "Make your project read text out loud.",
+        "created": "Dec 18, 2023",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
         "id": "Dictation",
         "image": "/ext/[id]/cover.svg",
         "title": "Dictation",
@@ -321,23 +338,6 @@
         "title": "Quick Skins",
         "description": "A simple extension to render images from data uris super quickly",
         "created": "Feb 4 2025",
-        "subtext": "",
-        "icon": "",
-        "iconText": "",
-        "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
-        "hidden": false
-    },
-    {
-        "id": "BasicTTS",
-        "image": "/ext/[id]/cover.svg",
-        "title": "Text to Speech",
-        "description": "Make your project read text out loud.",
-        "created": "Dec 18, 2023",
         "subtext": "",
         "icon": "",
         "iconText": "",
