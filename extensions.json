@@ -229,24 +229,6 @@
         "hidden": false
     },
     {
-        "id": "RaccFacts",
-        "image": "/ext/[id]/cover.svg",
-        "title": "Racoon Facts",
-        "description": "Get random information on racoons.",
-        "created": "Dec 8, 2024",
-        "subtext": "",
-        "icon": "/extras/images/icons/UnoficialAPI.svg",
-        "iconText": "This extension uses a third party api that may go down sometimes",
-        "new": true,
-        "unsandboxed": false,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
-        ],
-        "tags": ["finished", "joke"],
-        "type": ["sandboxed"],
-        "hidden": false
-    },
-    {
         "id": "BasicTTS",
         "image": "/ext/[id]/cover.svg",
         "title": "Text to Speech",
@@ -278,6 +260,24 @@
         ],
         "tags": ["finished"],
         "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
+        "id": "RaccFacts",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Racoon Facts",
+        "description": "Get random information on racoons.",
+        "created": "Dec 8, 2024",
+        "subtext": "",
+        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "iconText": "This extension uses a third party api that may go down sometimes",
+        "new": true,
+        "unsandboxed": false,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished", "joke"],
+        "type": ["sandboxed"],
         "hidden": false
     },
     {
