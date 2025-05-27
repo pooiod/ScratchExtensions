@@ -364,7 +364,7 @@
 
       showWarning("AAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHH");
 
-      if (window.location.pathname !== "/" && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
+      if ((window.location.pathname !== "/" && window.location.pathname !== "/silly") && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
         document.body.innerHTML = '';
         document.title += " - page not found";
         const container = document.createElement('div');
