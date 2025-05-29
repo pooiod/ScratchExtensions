@@ -29,7 +29,8 @@
         background-size: 400% 400%;
         animation: gradientAnimation 15s ease infinite;
         color: #000;
-        height: 100vh;
+        min-height: 100vh;
+        height: auto;
       }
       @keyframes gradientAnimation {
         0% { background-position: 0% 50%; }
@@ -534,10 +535,10 @@ Go <a href="/" style="color:#555;">home</a>`;
             <img src="${imageURL}" alt="${card.title}">
             <div class="card-content">
               ${sandboxStatusIconHTML}
-              <div class="card-title">${card.title}</div>
-              <div class="card-description">${card.description}</div>
-              <div class="card-subtext">${card.subtext || ''}</div>
-              <div class="card-buttons">${buttonsHTML}</div>
+              <p class="card-title">${card.title}</p>
+              <p class="card-description">${card.description}</p>
+              <p class="card-subtext">${card.subtext || ''}</p>
+              <p class="card-buttons">${buttonsHTML}</p>
             </div>
           `;
           cardDiv.style.display = (card.hidden && !showhidden) ? "none" : "";
