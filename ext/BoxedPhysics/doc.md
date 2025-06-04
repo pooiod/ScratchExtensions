@@ -74,12 +74,18 @@ Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
 #### Polygons
-Polygons are the most complex object type, having the ability to match almost any shape you want.
+Polygons are the most complex object type, having the ability to match almost any shape you want. <br>
+Polygons are a way to get any type of shape widh BoxedPysics.
 
-1. **Costume-based:** Directly convert the current costume into a polygon (no holes).
-2. **Point-based:** Define polygons with a list of coordinates.
+> Note: Polygons will be treated as convex, so objects can not have holes.
 
-![](/ext/BoxedPhysics/PhysicsPointDifference.svg)
+**Costume-based:**<br>
+For this method, you simply run a single block and a polygon will be generated based on the current costume. <br>
+Please note that this method will not allow for concave objects.
+
+**Point-based:**<br>
+This method allows you to input some x and y values and convert them into a polygon of your liking by taking an array of "x y" values seperated by 3 spaces.<br>
+Please note that this method will not allow for concave objects eather. The only way to do this is to weld objects togeather.
 
 ```scratch3
 Dеfine polygon as this costume :: #2cb0c0
@@ -89,7 +95,8 @@ Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 //Triangle
 Make object [Object3] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
-Point-based objects simply take an array of "x y" values seperated by 3 spaces. You can visualise any point-based polygon here:
+I have created a simple tool that you can use to visualise any point-based polygon. <br>
+Note that the grey area is roughly the area that will be concidered as the object hitbox by BoxedPhysics, not the outlines.
 
 <demo src="/ext/BoxedPhysics/examples/BoxedPhysics point render system.pmp" editor="false" />
 

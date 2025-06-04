@@ -166,6 +166,12 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.COMMAND,
 						filter: [Scratch.TargetType.SPRITE],
 						text: 'Define polygon as this costume',
+						arguments: {
+							TYPE: {
+								type: Scratch.ArgumentType.STRING,
+								menu: 'costumeType'
+							}
+						}
 					},
 					{
 						opcode: 'placeBody',
@@ -872,6 +878,10 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'tension'],
 					xyp: ['x', 'y', 'point'],
 					xy: ['x', 'y'],
+					costumeType: [
+						{ text: "Convex Hull", value: "hull" },
+						{ text: "Edge points", value: "img" }
+					],
 				},
 			};
 		}
@@ -898,7 +908,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			} else {
 				return '["version", "lib", "maker", "base", "docs", "lastupdated", "fromPenguinMod", "origin"]';
 			}
-		}
+		}; ignore(){}
 
 		init(args) {
 			b2Math = Box2D.Common.Math.b2Math;
@@ -923,9 +933,9 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			b2Dzoom = args.SCALE;
 
 			fixDef = new b2FixtureDef;
-			fixDef.density = 1.0;		    // 1.0
-			fixDef.friction = 0.5;		 // 0.5
-			fixDef.restitution = 0.2;	// 0.2
+			fixDef.density = 1.0;           // 1.0
+			fixDef.friction = 0.5;         // 0.5
+			fixDef.restitution = 0.2;     // 0.2
 
 			bodyDef = new b2BodyDef;
 
@@ -1062,9 +1072,9 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			var rest = args.BOUNCE;
 
 			bodyDef.type = stat === 'static' ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
-			fixDef.density = dens;		    // 1.0
-			fixDef.friction = fric;		   // 0.5
-			fixDef.restitution = rest;	// 0.2
+			fixDef.density = dens;          // 1.0
+			fixDef.friction = fric;        // 0.5
+			fixDef.restitution = rest;    // 0.2
 		}
 
 		defineCircle(args) {
@@ -1083,9 +1093,32 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				if (target.isStage) {
 					return;
 				}
-				
+
 				const r = this.runtime.renderer;
 				const drawable = r._allDrawables[target.drawableID];
+
+				// if (TYPE == "img") {
+				// 	function uint8ArrayToBase64(uint8Array) {
+				// 		let binary = '';
+				// 		const len = uint8Array.byteLength;
+				// 		for (let i = 0; i < len; i++) {
+				// 			binary += String.fromCharCode(uint8Array[i]);
+				// 		}
+				// 		return window.btoa(binary);
+				// 	}
+
+				// 	var costume = sprite.costumes_[util.target.currentCostume];
+				// 	const costumeData = costume.asset.data;
+				// 	const mimeType = costume.asset.assetType.contentType;
+
+				// 	if (costumeData) {
+				// 		const base64Data = uint8ArrayToBase64(costumeData);
+				// 		this.definePoly(`data:${mimeType};base64,${base64Data}`);
+				// 		return;
+				// 	} else {
+				// 		console.warn("Unable to ubtain costume data, using hull method")
+				// 	}
+				// }
 
 				// Tell the Drawable about its updated convex hullPoints, if necessary.
 				if (drawable.needsConvexHullPoints()) {
@@ -1131,9 +1164,55 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
-		svgtopoints(svg) {
-			console.error("no svg support yet");
-			return;
+		async svgtopoints(source) {
+			return new Promise(resolve => {
+				let url, isBlob = false;
+				const img = new Image();
+				img.onload = function() {
+					const canvas = document.createElement('canvas');
+					const ctx = canvas.getContext('2d');
+					canvas.width = img.width;
+					canvas.height = img.height;
+					ctx.drawImage(img, 0, 0);
+
+					const { width, height } = canvas;
+					const data = ctx.getImageData(0, 0, width, height).data;
+					const edges = [];
+
+					for (let y = 0; y < height; y++) {
+						for (let x = 0; x < width; x++) {
+							const i = (y * width + x) * 4;
+							const a = data[i + 3];
+							if (a > 0) {
+								if (
+									x === 0 ||
+									y === 0 ||
+									x === width - 1 ||
+									y === height - 1 ||
+									data[((y - 1) * width + x) * 4 + 3] === 0 ||
+									data[((y + 1) * width + x) * 4 + 3] === 0 ||
+									data[(y * width + (x - 1)) * 4 + 3] === 0 ||
+									data[(y * width + (x + 1)) * 4 + 3] === 0
+								) {
+									edges.push(x + ' ' + y);
+								}
+							}
+						}
+					}
+					if (isBlob) URL.revokeObjectURL(url);
+					resolve(edges.join('    '));
+				};
+
+				const trimmed = source.trim();
+				if (trimmed.startsWith('<svg')) {
+					const blob = new Blob([source], { type: 'image/svg+xml' });
+					url = URL.createObjectURL(blob);
+					isBlob = true;
+					img.src = url;
+				} else {
+					img.src = source;
+				}
+			});
 		}
 
 		ispoly(args) {
@@ -1161,9 +1240,12 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
-		definePoly(args) {
+		async definePoly(args) {
 			fixDef.shape = new b2PolygonShape;
 			var points = args.POINTS;
+			if (points.includes("data:") || points.includes("svg")) {
+				points = await this.svgtopoints(points);
+			}
 
 			try {
 				var pts = points.split(' ');
@@ -1851,9 +1933,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 			b2Dworld.Step(1 / secondsimspeed, veliterations, positerations);
 			b2Dworld.ClearForces();
-
-			console.clear()
-			console.log(this.lastimpacts, this.impacts);
 
 			setTimeout(()=>{
 				this.lastimpacts = this.impacts;
