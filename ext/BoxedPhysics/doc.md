@@ -77,8 +77,6 @@ Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 Polygons are the most complex object type, having the ability to match almost any shape you want. <br>
 Polygons are a way to get any type of shape widh BoxedPysics.
 
-> Note: Polygons will be treated as convex, so objects can not have holes.
-
 **Costume-based:**<br>
 For this method, you simply run a single block and a polygon will be generated based on the current costume. <br>
 Please note that this method will not allow for concave objects.
@@ -96,7 +94,7 @@ Make object [Object3] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
 I have created a simple tool that you can use to visualise any point-based polygon. <br>
-Note that the grey area is roughly the area that will be concidered as the object hitbox by BoxedPhysics, not the outlines.
+Note that the dark blue outline is roughly the area that will be concidered as the object hitbox by BoxedPhysics.
 
 <demo src="/ext/BoxedPhysics/examples/BoxedPhysics point render system.pmp" editor="false" />
 
