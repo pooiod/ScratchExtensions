@@ -13,8 +13,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "03/26/2025";
-	var publishedUpdateIndex = 22;
+	var b2Dupdated = "06/03/2025";
+	var publishedUpdateIndex = 24;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -514,7 +514,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					{
 						opcode: 'createJointOfType',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Create Joint [JOINTID] of type [JOINTTYPE] between [BODY1] at [X1] [Y1] and [BODY2] at [X2] [Y2]',
+						text: 'Create joint [JOINTID] of type [JOINTTYPE] between [BODY1] at [X1] [Y1] and [BODY2] at [X2] [Y2]',
 						arguments: {
 							JOINTID: {
 								type: Scratch.ArgumentType.STRING,
@@ -546,6 +546,33 @@ but has since deviated to be its own thing. (made with box2D js es6)
 								defaultValue: 0,
 							},
 							Y2: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 0,
+							},
+						},
+					},
+					{
+						opcode: 'CreateMouseJoint',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Create pin [JOINTID] with force [FORCE] for [BODY1] at [X1] [Y1]',
+						arguments: {
+							JOINTID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Joint',
+							},
+							FORCE: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 300,
+							},
+							BODY1: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object1',
+							},
+							X1: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 0,
+							},
+							Y1: {
 								type: Scratch.ArgumentType.NUMBER,
 								defaultValue: 0,
 							},
@@ -589,11 +616,11 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
-					{ // broke for some reason
+					{
 						opcode: 'setJointTarget',
 						blockType: Scratch.BlockType.COMMAND,
 						hideFromPalette: !wipblocks,
-						text: 'Set mouse joint target [JOINTID] to x: [X]  y: [Y]',
+						text: 'Move pin [JOINTID] to x: [X]  y: [Y]',
 						arguments: {
 							JOINTID: {
 								type: Scratch.ArgumentType.STRING,
@@ -1039,13 +1066,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				Angle -= 360;
 			}
 			return Angle;
-		}
-
-		setJointTarget(args) {
-			var joint = joints[args.JOINTID];
-			if (joint) {
-				joint.SetTarget(new b2Vec2(args.X / b2Dzoom, args.Y / b2Dzoom));
-			}
 		}
 
 		clearvel(args) {
@@ -1714,6 +1734,45 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					this.destroyJoint({ JOINTID : jointName });
 				}
 			}
+		}
+
+		setJointTarget(args) {
+			var joint = joints[args.JOINTID];
+			if (joint) {
+				joint.SetTarget(new b2Vec2(args.X / b2Dzoom, args.Y / b2Dzoom));
+			}
+		}
+
+		CreateMouseJoint(args) {
+			var jName = args.JOINTID;
+			var force = args.FORCE;
+			var bodyID = args.BODY1;
+			var x = args.X1;
+			var y = args.Y1;
+
+			if (jName.length > 0) this.destroyJoint({ JOINTID : jName});
+
+			if (bodyID == '') bodyID = null;
+			if (!bodyID) return '';
+
+			var body = bodyID ? bodies[bodyID] : b2Dworld.GetGroundBody();
+
+			if (!body) return '';
+
+			var md = new b2MouseJointDef();
+			md.bodyB = body;
+			var wc = body.GetWorldCenter()
+			md.target.Set(wc.x - (x / b2Dzoom), wc.y - (y / b2Dzoom))
+			md.bodyA = b2Dworld.GetGroundBody();
+
+			md.collideConnected = true;
+			md.maxForce = force * body.GetMass();
+
+			var joint = b2Dworld.CreateJoint(md);
+			body.SetAwake(true);
+
+			if (jName.length == 0) jName = '_' + (++ujid_seq);
+			joints[jName] = joint;
 		}
 
 		createJointOfType(args) {
