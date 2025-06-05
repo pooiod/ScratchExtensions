@@ -897,7 +897,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					BodyTypePK: ['dynamic', 'static'],
 					BodyTypePK2: ['dynamic', 'static', 'any'],
 					bodyAttr: ['damping', 'rotational damping'],
-					bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction'],
+					bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction', 'pressure'],
 					ForceType: ['Impulse', 'World Impulse'],
 					AngForceType: ['Impulse'],
 					JointType: ['Rotating', 'Spring', 'Weld', 'Slider'/*, 'Mouse'*/],
@@ -1459,22 +1459,80 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 				case 'friction': return this.getFriction({ NAME: args.NAME });
 
-				case 'tension':
-					var force = 0;
-					var contact = body.GetContactList();
-					while (contact) {
-						var impulse = contact.impulse;
-						var normalImpulse = impulse.normalImpulses[0];
-						var tangentImpulse = impulse.tangentImpulses[0];
-						var impulseMagnitude = Math.sqrt(normalImpulse * normalImpulse + tangentImpulse * tangentImpulse);
-						force += impulseMagnitude;
-						contact = contact.next;
-					}
-				return force;
+				case 'pressure':
+					const world = body.GetWorld();
+					const gravity = world.GetGravity();
+					const gx = gravity.x;
+					const gy = gravity.y;
+					const gMag = Math.hypot(gx, gy);
+					const mass = body.GetMass();
+					const weight = mass * gMag;
+					const v = body.GetLinearVelocity();
 
-				//case 'touching': return JSON.stringify(this.getTouching({NAME: args.NAME})); // use getTouching instead
+					let area = 0;
+					for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+						const shape = f.GetShape();
+						if (shape instanceof b2CircleShape) {
+							const r = shape.GetRadius();
+							const a = Math.PI * r * r;
+							area += a;
+						} else if (shape instanceof b2PolygonShape) {
+							const count = shape.GetVertexCount();
+							const verts = shape.GetVertices();
+							let a = 0;
+
+							for (let i = 0; i < count; i++) {
+								const v0 = verts[i];
+								const v1 = verts[(i + 1) % count];
+								a += v0.x * v1.y - v1.x * v0.y;
+							}
+
+							const polyArea = Math.abs(a) * 0.5;
+							area += polyArea;
+							console.log("Polygon vertices:", count, "area:", polyArea);
+						}
+					}
+
+					let contactForce = 0;
+					for (let ce = body.GetContactList(); ce; ce = ce.next) {
+						const contact = ce.contact;
+						if (!contact.IsTouching()) continue;
+
+						const manifold = contact.GetManifold();
+						const pc = manifold.m_pointCount;
+
+						for (let i = 0; i < pc; i++) {
+							contactForce += manifold.m_points[i].m_normalImpulse;
+						}
+					}
+
+					let velAdjust = 0;
+					if (gx !== 0) {
+						const valX = v.x / (100 / Math.abs(gx));
+						if (v.x * gx > 0) velAdjust -= Math.abs(valX);
+						else velAdjust += Math.abs(valX);
+					} else {
+						const valX = Math.abs(v.x) / 100;
+						velAdjust += valX;
+					}
+
+					if (gy !== 0) {
+						const valY = v.y / (100 / Math.abs(gy));
+						if (v.y * gy > 0) velAdjust -= Math.abs(valY);
+						else velAdjust += Math.abs(valY);
+					} else {
+						const valY = Math.abs(v.y) / 100;
+						velAdjust += valY;
+					}
+
+					if (area === 0) {
+						return 0;
+					}
+
+					const effectiveForce = weight + contactForce + velAdjust;
+					const pressure = effectiveForce / area;
+				return pressure;
 			}
-			return '';
 		}
 
 		moveto(args) {
