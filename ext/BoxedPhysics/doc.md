@@ -219,7 +219,7 @@ end
 
 ## Making Joints
 Joints connect objects and enable complex interactions like wheels, sliders and more. <br>
-You can create many types of joints, including:
+Here is a description of all joints in BoxedPhysics:
 
 **Rotating:** 
 This joint lets you to join 2 objects togeather while keeping rotations
@@ -235,7 +235,8 @@ This joint forces an object to only move along the specified axis to the other o
 
 **Pin:** 
 This joint takes an object and tries to move it to a position with a specified force. 
-It is the only jont type that takes one object, and is not in the create joint block. 
+This joint is the only joint to have the input position stay relative to the world instead of the object.<br>
+Creating pin joints uses its own block, instead of the create joint block
 
 ```scratch3
 Dеfine Spring, Length: [100] Damping: [0.7] Freq: [5] :: #2cb0c0
