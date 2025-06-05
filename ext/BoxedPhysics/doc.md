@@ -221,19 +221,19 @@ end
 Joints connect objects and enable complex interactions like wheels, sliders and more. <br>
 You can create many types of joints, including:
 
-**Rotating**
+**Rotating**: 
 This joint lets you to join 2 objects togeather while keeping rotations
 
-**Weld**
+**Weld**: 
 This joint locks 2 objects togeather, making them act like one object
 
-**Spring**
+**Spring**: 
 This joint keeps 2 objects at a semi-fixed distance from eachother
 
-**Slider**
+**Slider**: 
 This joint forces an object to only move along the specified axis to the other object
 
-**Pin**
+**Pin**: 
 This joint takes an object and tries to move it to a position with a specified force. 
 It is the only jont type that takes one object, and is not in the create joint block. 
 
