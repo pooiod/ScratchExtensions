@@ -13,8 +13,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "06/03/2025";
-	var publishedUpdateIndex = 24;
+	var b2Dupdated = "06/09/2025";
+	var publishedUpdateIndex = 25;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -59,7 +59,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			this.isFromPenguinMod = false;
 			this.onPenguinMod = Scratch.extensions.isPenguinMod;
 
-			this.origin = "https://p7scratchextensions.pages.dev/#BoxedPhysics";
+			this.origin = "https://p7scratchextensions.pages.dev/#/BoxedPhysics";
 			this.docs = 'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
 
 			this.scraping = [];
@@ -896,7 +896,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					BodyTypePK: ['dynamic', 'static'],
 					BodyTypePK2: ['dynamic', 'static', 'any'],
 					bodyAttr: ['damping', 'rotational damping'],
-					bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction'],
+					bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction', 'pressure'],
 					ForceType: ['Impulse', 'World Impulse'],
 					AngForceType: ['Impulse'],
 					JointType: ['Rotating', 'Spring', 'Weld', 'Slider'/*, 'Mouse'*/],
@@ -1437,6 +1437,81 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
+		getPressure(body) {
+			const world = body.GetWorld();
+			const gravity = world.GetGravity();
+			const gx = gravity.x;
+			const gy = gravity.y;
+			const gMag = Math.hypot(gx, gy);
+			const mass = body.GetMass();
+			const weight = mass * gMag;
+			const v = body.GetLinearVelocity();
+
+			let area = 0;
+			for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+				const shape = f.GetShape();
+				if (shape instanceof b2CircleShape) {
+					const r = shape.GetRadius();
+					const a = Math.PI * r * r;
+					area += a;
+				} else if (shape instanceof b2PolygonShape) {
+					const count = shape.GetVertexCount();
+					const verts = shape.GetVertices();
+					let a = 0;
+
+					for (let i = 0; i < count; i++) {
+						const v0 = verts[i];
+						const v1 = verts[(i + 1) % count];
+						a += v0.x * v1.y - v1.x * v0.y;
+					}
+
+					const polyArea = Math.abs(a) * 0.5;
+					area += polyArea;
+				}
+			}
+
+			let contactForce = 0;
+			for (let ce = body.GetContactList(); ce; ce = ce.next) {
+				const contact = ce.contact;
+				if (!contact.IsTouching()) continue;
+
+				const manifold = contact.GetManifold();
+				const pc = manifold.m_pointCount;
+
+				for (let i = 0; i < pc; i++) {
+					contactForce += manifold.m_points[i].m_normalImpulse;
+				}
+			}
+
+			let velAdjust = 0;
+			if (gx !== 0) {
+				const valX = v.x / (100 / Math.abs(gx));
+				if (v.x * gx > 0) velAdjust -= Math.abs(valX);
+				else velAdjust += Math.abs(valX);
+			} else {
+				const valX = Math.abs(v.x) / 100;
+				velAdjust += valX;
+			}
+
+			if (gy !== 0) {
+				const valY = v.y / (100 / Math.abs(gy));
+				if (v.y * gy > 0) velAdjust -= Math.abs(valY);
+				else velAdjust += Math.abs(valY);
+			} else {
+				const valY = Math.abs(v.y) / 100;
+				velAdjust += valY;
+			}
+
+			if (area === 0) {
+				return 0;
+			}
+
+			const effectiveForce = weight + contactForce + velAdjust;
+			const pressure = effectiveForce / area;
+
+			return pressure;
+		}
+
 		getBodyAttr(args) {
 			var body = bodies[args.NAME];
 			if (!body) return '';
@@ -1457,23 +1532,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
 
 				case 'friction': return this.getFriction({ NAME: args.NAME });
-
-				case 'tension':
-					var force = 0;
-					var contact = body.GetContactList();
-					while (contact) {
-						var impulse = contact.impulse;
-						var normalImpulse = impulse.normalImpulses[0];
-						var tangentImpulse = impulse.tangentImpulses[0];
-						var impulseMagnitude = Math.sqrt(normalImpulse * normalImpulse + tangentImpulse * tangentImpulse);
-						force += impulseMagnitude;
-						contact = contact.next;
-					}
-				return force;
-
-				//case 'touching': return JSON.stringify(this.getTouching({NAME: args.NAME})); // use getTouching instead
+				case 'pressure': return this.getPressure(body);
 			}
-			return '';
 		}
 
 		moveto(args) {

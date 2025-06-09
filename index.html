@@ -454,7 +454,7 @@
         }
 
         // Error pages are removed on other domains for compatability with things like archive.org
-        if ((window.location.pathname !== "/" && window.location.pathname !== "/serious") && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
+        if ((window.location.pathname !== "/" && window.location.pathname !== "/serious" && window.location.pathname !== "/test") && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
             document.body.innerHTML = '';
             document.title += " - page not found";
 
@@ -679,8 +679,9 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
             }
 
             function scrollToHash() {
-                const hash = window.location.hash.substring(1);
+                var hash = window.location.hash.substring(1);
                 if (hash) {
+                    if (hash.includes("/")) hash = hash.substring(1);
                     const targetCard = document.getElementById(hash);
                     if (targetCard) {
                         targetCard.style.display = "";
