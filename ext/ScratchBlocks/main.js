@@ -130,7 +130,8 @@
             docView.render();
 
             svgToPng(docView.exportSVGString(), (imgData) => {
-                importPNG({"TEXT": imgData, "NAME": "stack1"}, util);
+                // importPNG({"TEXT": imgData, "NAME": "stack1"}, util);
+                importPNG({"TEXT": imgData, "NAME": args.blocks}, util);
             });
         }
     }
