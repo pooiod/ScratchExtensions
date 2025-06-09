@@ -6,7 +6,7 @@
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
         "created": "Apr 15, 2024",
         "subtext": "",
-        "icon": "/extras/images/icons/release.svg",
+        "icon": "/extras/images/icons/update.svg",
         "updated": true,
         "iconText": "Added pins and pressure",
         "unsandboxed": true,
