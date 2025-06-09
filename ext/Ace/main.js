@@ -1,4 +1,4 @@
-// Ace editor (0.5.0)
+// Ace editor (Updated Jun 9, 2025)
 
 (function (Scratch) {
     'use strict';
@@ -23,6 +23,7 @@
             position: absolute;
             z-index: 9999;
             padding: 5px;
+            overflow: auto;
         }
         #AceContextMenuItem {
             padding: 3px;
@@ -67,7 +68,6 @@
             return {
                 id: 'p7AceEditor',
                 name: 'Ace',
-                // menuIconURI: 'https://pooiod7.neocities.org/projects/scratch/extensions/external-files/ace-favicon.png',
                 color1: '#2486d4',
                 color2: '#0e62a5',
                 blocks: [
@@ -204,6 +204,24 @@
                             LANGUAGE: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: 'javascript',
+                            },
+                        },
+                    },
+
+                    {
+                        opcode: 'exportHistory',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Export history',
+                        disableMonitor: true,
+                    },
+                    {
+                        opcode: 'importHistory',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Import history [JSON]',
+                        arguments: {
+                            JSON: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '{}',
                             },
                         },
                     },
@@ -445,6 +463,24 @@
                 const cursorPosition = aceEditorInstance.getCursorPosition();
                 return `${cursorPosition.row}, ${cursorPosition.column}`;
             }
+        }
+
+        exportHistory() {
+            if (!aceEditorInstance) return "{}";
+ 
+            const undoManager = aceEditorInstance.session.getUndoManager();
+            return JSON.stringify({
+                undo: undoManager.$undoStack,
+                redo: undoManager.$redoStack
+            });
+        }
+
+        importHistory(args) {
+            const data = JSON.parse(args.JSON || "{}");
+            const undoManager = aceEditorInstance.session.getUndoManager();
+            undoManager.$doc = aceEditorInstance.session;
+            undoManager.$undoStack = data.undo || [];
+            undoManager.$redoStack = data.redo || [];
         }
 
         setEditorOptions(args) {
