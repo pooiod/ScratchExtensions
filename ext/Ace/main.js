@@ -1,4 +1,4 @@
-// Ace editor (0.4.0)
+// Ace editor (0.5.0)
 
 (function (Scratch) {
     'use strict';
@@ -116,7 +116,7 @@
                     {
                         opcode: 'setEditorCursorPosition',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set cursor position to x: [COLUMN] y: [ROW]',
+                        text: '[CLEAR] cursor and set position to x: [COLUMN] y: [ROW]',
                         arguments: {
                             ROW: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -125,6 +125,10 @@
                             COLUMN: {
                                 type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: 0,
+                            },
+                            CLEAR: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'cursorMenu',
                             },
                         },
                     },
@@ -207,7 +211,7 @@
                     {
                         opcode: 'addContextItem',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Add contect item [NAME] with function [FUNCTION]',
+                        text: 'Add context item [NAME] with function [FUNCTION]',
                         arguments: {
                             NAME: {
                                 type: Scratch.ArgumentType.STRING,
@@ -216,6 +220,17 @@
                             FUNCTION: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: `function1`,
+                            },
+                        },
+                    },
+                    {
+                        opcode: 'removeContextItem',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Remove context item [NAME]',
+                        arguments: {
+                            NAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'function 1',
                             },
                         },
                     },
@@ -232,7 +247,18 @@
                             },
                         }
                     },
+
+                    {
+                        blockType: Scratch.BlockType.HAT,
+                        opcode: 'whenTyped',
+                        text: 'When editor content is changed',
+                        shouldRestartExistingThreads: true,
+                        isEdgeActivated: false,
+                    },
                 ],
+                menus: {
+                    cursorMenu: ["Pick up", "Drag"],
+                }
             };
         }
 
@@ -343,8 +369,12 @@
             const editor = ace.edit('editor');
             this.setupAceEditor(editor);
 
+            aceEditorInstance.getSession().on('change', function(delta) {
+                Scratch.vm.runtime.startHats('p7AceEditor_whenTyped');
+            });
+
             this.setCSSViaURL({
-                URL: 'https://pooiod7.neocities.org/projects/scratch/extensions/external-files/ace/default.css',
+                URL: 'https://p7scratchextensions.pages.dev/ext/Ace/themes/default.css',
             });
         }
 
@@ -380,6 +410,10 @@
             document.head.appendChild(externalCSSLink);
         }
 
+        whenTyped() {
+            return true;
+        }
+
         getEditorContent() {
             return aceEditorInstance ? aceEditorInstance.getValue() : '';
         }
@@ -396,7 +430,13 @@
 
         setEditorCursorPosition(args) {
             if (aceEditorInstance) {
-                aceEditorInstance.selection.moveCursorTo(args.ROW, args.COLUMN);
+                console.log(args.CLEAR, args.CLEAR.toLowerCase().includes("ra"))
+                if (!args.CLEAR.toLowerCase().includes("ra")) {
+                    aceEditorInstance.selection.moveCursorTo(args.ROW, args.COLUMN);
+                    aceEditorInstance.clearSelection();
+                } else {
+                    aceEditorInstance.selection.selectTo(args.ROW, args.COLUMN);
+                }
             }
         }
 
@@ -443,35 +483,38 @@
             }
         }
 
+        removeContextItem(args) {
+            if (!aceEditorInstance) return;
+            if (args && args.NAME) {
+                contextMenuData = contextMenuData.filter(item => item.label !== args.NAME);
+            }
+        }
+
         doContextItem({ FUNC }) {
             return this.lastran == FUNC;
         }
 
-        loadFileIntoEditor(args) {
-            if (aceEditorInstance) {
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                const fileUrl = args.URL;
+        async loadFileIntoEditor(args) {
+            if (!aceEditorInstance) return;
+            const proxyUrl = 'https://api.allorigins.win/raw?url=';
+            const fileUrl = args.URL;
 
-                return fetch(fileUrl)
-                    .then((response) => response.text())
-                    .then((data) => {
-                        aceEditorInstance.setValue(data);
-                        return true;
-                    })
-                    .catch((error) => { // can't get file, try with proxy
-                        fetch(proxyUrl + encodeURIComponent(fileUrl))
-                            .then((response) => response.text())
-                            .then((data) => {
-                                aceEditorInstance.setValue(data);
-                                return true;
-                            })
-                            .catch((error) => { // can't use proxy
-                                aceEditorInstance.setValue(`Error loading file! 
-`, error);
-                                console.error('Error loading file! ', error);
-                                return false;
-                            });
-                    });
+            try {
+                const response = await fetch(fileUrl);
+                const data = await response.text();
+                aceEditorInstance.setValue(data);
+                return true;
+            } catch {
+                try {
+                    const response = await fetch(proxyUrl + encodeURIComponent(fileUrl));
+                    const data = await response.text();
+                    aceEditorInstance.setValue(data);
+                    return true;
+                } catch (error) {
+                    aceEditorInstance.setValue(`Error loading file!`);
+                    console.error('Error loading file!', error);
+                    return false;
+                }
             }
         }
 
