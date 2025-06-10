@@ -1,129 +1,382 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pooiod7's Scratch extension maker</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
-<script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.14/src-min/ace.js"></script>
-<script src="https://pooiod7.neocities.org/markdown/scratchblocks.js"></script>
-<style>
-body{margin:0;font-family:'Inter',sans-serif;background:#fdfdfd;color:#222}
-.top-bar{display:flex;align-items:center;padding:10px 20px;background:#fff;border-bottom:1px solid #ccc;box-shadow:0 2px 5px rgba(0,0,0,0.05)}
-.icon{font-size:20px;margin-right:auto}
-.top-bar button{margin-left:10px;padding:8px 14px;background:#f0f0f0;border:1px solid #ccc;border-radius:6px;cursor:pointer;transition:background .2s}
-.top-bar button:hover{background:#e0e0e0}
-.main{display:flex;height:calc(100vh - 52px)}
-.sidebar{width:240px;border-right:1px solid #ccc;background:#fafafa;padding:10px;box-sizing:border-box;overflow-y:auto}
-.sidebar button{display:block;width:100%;margin-bottom:10px;background:none;border:none;cursor:pointer;padding:0}
-.sidebar .scratch3{font-size:14px}
-.editor{flex:1;height:100%}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="https://p7scratchextensions.pages.dev">
+
+    <title>Pooiod7's Scratch extension builder</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <style>
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            transition: opacity 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+        }
+        .loader {
+            display: block;
+            --height-of-loader: 4px;
+            --loader-color: #37ac00;
+            width: 130px;
+            height: var(--height-of-loader);
+            border-radius: 30px;
+            background-color: rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        .loader::before {
+            content: "";
+            position: absolute;
+            background: var(--loader-color);
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            border-radius: 30px;
+            animation: moving 1s ease-in-out infinite;
+        }
+        @keyframes moving {
+            50% {
+                width: 100%;
+            }
+            100% {
+                width: 0;
+                right: 0;
+                left: unset;
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            /* background-color: #eaf7e7; */
+        }
+
+        .SideBar {
+            width: 200px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            /* align-items: center;
+            justify-content: center; */
+        }
+
+        .Container {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .TopBar {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 30px;
+            background-color: #f0f0f0;
+        }
+
+        .Content {
+            margin: 0px;
+            padding: 0px;
+            width: calc(100% - 1px);
+            height: calc(100% - 32px);
+            border-top: 1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+        }
+
+        #EditorCode {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            border: none;
+        }
+
+        #Tabs {
+            width: 100%;
+            max-height: 100%;
+            overflow: auto;
+        }
+
+        button {
+            border: none;
+            background: #e6e6e6;
+            margin: 0px;
+        }
+
+        button:hover {
+            background: #dfdfdf;
+        }
+
+        #Tabs button {
+            height: 30px;
+            width: 100%;
+            margin-bottom: 5px;
+            padding-top: 5px;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #Tabs button button {
+            height: 15px;
+            width: 15px;
+            font-size: 10px;
+            background: rgba(255, 0, 0, 0.082);
+            padding-top: 2px;
+            border-radius: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #Tabs button button:hover {
+            background: rgba(255, 138, 138, 0.403);
+        }
+
+        .TopBar button {
+            height: 100%;
+            width: auto;
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-left: 5px;
+            float: right;
+        }
+
+        #AppTitle {
+            height: 30px;
+            width: 100%;
+            /* margin-bottom: 5px; */
+
+            padding-left: 5px;
+
+            display: flex;
+            flex-direction: column;
+            /* align-items: center; */
+            justify-content: center;
+        }
+
+        .ace_line:first-child {
+            padding-top: 3px !important;
+        }
+    </style>
 </head>
 <body>
-<div class="top-bar">
-  <div class="icon">🔧 Pooiod7's Scratch extension maker</div>
-  <button onclick="alert('hello')">Save</button>
-  <button onclick="alert('hello')">Load</button>
-  <button onclick="alert('hello')">Export</button>
-  <button onclick="alert('hello')">Test</button>
-  <button onclick="alert('hello')">Config</button>
-</div>
-<div class="main">
-  <div class="sidebar" id="sidebar"></div>
-  <div id="editor" class="editor"></div>
-</div>
-<script>
-var editor=ace.edit("editor")
-editor.setTheme("ace/theme/chrome")
-editor.session.setMode("ace/mode/javascript")
+    <div class="loader-wrapper" id ="loader">
+        <div class="loader"></div>
+    </div>
 
-var extension={
-  "id":"extension1",
-  "name":"extension 1",
-  "color":"#0fbd8c",
-  "libs":[
-    {
-      "url":"https://code.jquery.com/jquery-3.7.1.min.js",
-      "embed":false
-    }
-  ],
-  "unsandboxed":{
-    "status":true,
-    "message":"This extension must run unsandboxed"
-  },
-  "blocks":[
-    {
-      "id":"block1",
-      "text":"Block 1 with an input [INPUT1]",
-      "type":"COMMAND",
-      "args":{
-        "INPUT1":{
-          "type":"STRING",
-          "defaultValue":"\"Hello\"",
-          "menu":"formats"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.0/js/lib/beautify.js"></script>
+
+    <div class="SideBar">
+        <div id="AppTitle">
+            Pooiod7's ext builder
+        </div>
+
+        <div id="Tabs"></div>
+    </div>
+
+    <div class="Container">
+        <div class="TopBar">
+            <button id="LoadExtension">Load extension</button>
+            <button id="SaveExtension">Save extension</button>
+        </div>
+
+        <div class="Content">
+            <div id="EditorCode"></div>
+        </div>
+    </div>
+
+    <script>
+        var basic = {
+            id: 'extexample',
+            libs: [],
+            unsandboxed: {
+                status: true,
+                message: "This extension must run unsansboxed"
+            },
+            props: {
+                name: '"Example Extension"',
+                color1: '"#0fbd8c"',
+                color2: '"#0b8e69"',
+                color3: '"#4cbd68"'
+            },
+            blocks: [
+                {
+                    opcode: 'block1',
+                    blockType: 'COMMAND',
+                    text: '"a block [VAL]"',
+                    arguments: {
+                        VAL: {
+                            type: 'STRING',
+                            defaultValue: '"REEEEEEEEEE"',
+                        },
+                    },
+                    code: 'async function block1(args, util) {\n    console.log(args);\n}'
+                }
+            ]
+        };
+
+        var ext = structuredClone(basic);
+        var currentFunc = null;
+
+        // ------------------------ Ace editor setup ------------------------ //
+
+        var editor = ace.edit("EditorCode");
+        editor.setTheme("ace/theme/chrome");
+        editor.session.setMode("ace/mode/javascript");
+        
+        var settings = {
+            fontSize: "14px",
+            showPrintMargin: false
+        };
+
+        editor.setOptions(settings);
+
+        editor.container.style.lineHeight = 1.5;
+        editor.renderer.updateFontSize();
+
+        // ------------------------ Extension interaction functions ------------------------ //
+
+        function setExtensionFunc(func, content) {
+            var block = ext.blocks.find(block => block.opcode === func);
+            if (block) block.code = content;
         }
-      },
-      "function":"(args, util) {\n  console.log(args);\n}"
-    }
-  ],
-  "menus":{
-    "formats":[
-      {"text":"Video","value":"mp4"},
-      {"text":"Audio","value":"mp3"}
-    ],
-    "linkTypeConvert":["url","uri"]
-  },
-  "constructor":""
-}
 
-console.log("Extension loaded:", extension)
-
-function renderBlock(block){
-  let text = block.text
-  let color = extension.color
-  if(block.args){
-    for(const [argName, argInfo] of Object.entries(block.args)){
-      let value = ""
-      if(argInfo.type==="STRING"||argInfo.type==="TEXT"){
-        if(argInfo.defaultValue){
-          value=argInfo.defaultValue
-        }else if(argInfo.menu){
-          let menu=extension.menus[argInfo.menu]
-          if(Array.isArray(menu)){
-            if(typeof menu[0]==="object")value=menu[0].text
-            else value=menu[0]
-          }
+        function getExtensionFunc(func, edit) {
+            var func = ext.blocks.find(block => block.opcode === func);
+            return func ? func.code : "// Block code does not exist";
         }
-        text=text.replace(`[${argName}]`,`[${value}]`)
-      }else if(argInfo.type==="NUMBER"){
-        value=argInfo.defaultValue||""
-        text=text.replace(`[${argName}]`,`(${value})`)
-      }else if(argInfo.type==="BLOCK"){
-        text=text.replace(`[${argName}]`,"{\n}")
-      }
-    }
-  }
-  if(!text.endsWith(`::${color}`))text+=` ::${color}`
-  return text
-}
 
-let sidebar=document.getElementById("sidebar")
-extension.blocks.forEach(block=>{
-  let blockText=renderBlock(block)
-  console.log("Rendering block:",blockText)
-  let btn=document.createElement("button")
-  let div=document.createElement("div")
-  div.className="scratch3"
-  div.textContent=blockText
-  btn.onclick=()=>alert("hello")
-  btn.appendChild(div)
-  sidebar.appendChild(btn)
-})
+        function getExtensionFuncs() {
+            return ext.blocks.map(block => block.opcode);
+        }
 
-scratchblocks.init()
-scratchblocks.module.renderMatching(".scratch2",{style:"scratch2"})
-scratchblocks.module.renderMatching(".scratch3",{style:"scratch3"})
-</script>
+        function removeExtensionFunc(func) {
+            var index = ext.blocks.findIndex(block => block.opcode === func);
+            if (index !== -1) ext.blocks.splice(index, 1);
+        }
+
+        // ------------------------ Editor functions ------------------------ //
+
+        function updateButtons() {
+            document.getElementById('Tabs').innerHTML = '';
+
+            getExtensionFuncs().forEach(func => {
+                var button = document.createElement('button');
+                button.classList.add("FuncEditButton");
+                button.textContent = func;
+                document.getElementById('Tabs').appendChild(button);
+
+                var button2 = document.createElement('button');
+                button2.classList.add("FuncDeleteButton");
+                button2.textContent = "X";
+                button.appendChild(button2);
+
+                button.onclick = () => {
+                    if (currentFunc) {
+                        setExtensionFunc(currentFunc, editor.getValue())
+                    }
+
+                    currentFunc = func;
+
+                    editor.setValue(getExtensionFunc(func, true));
+                    editor.session.getUndoManager().reset();
+                    editor.selection.moveCursorTo(0, 0);
+                };
+
+                button2.onclick = () => {
+                    setTimeout(()=>{
+                        removeExtensionFunc(func, editor.getValue())
+                        currentFunc = null;
+                        editor.setValue("");
+                        editor.session.getUndoManager().reset();
+                        updateButtons();
+                    }, 1);
+                };
+            });
+
+            var button = document.createElement('button');
+                button.classList.add("FuncEditButton");
+                button.textContent = "Add a block";
+                document.getElementById('Tabs').appendChild(button);
+
+                button.onclick = () => {
+                    var name = window.prompt("Function opcode");
+                    if (!name) return;
+                    var newfunc = structuredClone(basic.blocks[0]);
+                    newfunc.opcode = name;
+                    newfunc.code = newfunc.code.replace("block1", name);
+                    ext.blocks.push(newfunc);
+                    updateButtons();
+                };
+        }
+
+        // ------------------------ Button setup ------------------------ //
+
+        document.getElementById('LoadExtension').onclick = () => {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (event) => {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+
+                reader.onload = () => {
+                    if (!file.name.endsWith('.json') || !reader.result.includes("libs") || !reader.result.includes("unsandboxed") || !reader.result.includes("props") || !reader.result.includes("blocks")) {
+                        alert("Provided file is not a scratch extension source");
+                    } else {
+                        currentFunc = null;
+                        ext = JSON.parse(reader.result);
+                        updateButtons();
+                        editor.setValue();
+                        // document.getElementById('AppTitle').innerText = ext.id;
+                    }
+                };
+
+                reader.readAsText(file);
+            };
+
+            input.click();
+        };
+
+        document.getElementById('SaveExtension').onclick = () => {
+            const blob = new Blob([JSON.stringify(ext)], { type: 'txt/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = ext.id + "-source.json";
+            link.click();
+        };
+
+        updateButtons();
+
+        // ------------------------ Hide loader ------------------------ //
+
+        setTimeout(function() {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('loader').remove();
+            }, 500);
+        }, 500);
+    </script>
 </body>
 </html>
