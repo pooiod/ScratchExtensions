@@ -25,6 +25,19 @@
                 }
             },
             "function": "(args, util) {\n  console.log(args);\n}"
+        },
+        {
+            "id": "block2",
+            "text": "Block 2 with an input [INPUT1]",
+            "type": "COMMAND",
+            "args": {
+                "INPUT1": {
+                    "type": "STRING",
+                    "defaultValue": "\"Hello\"",
+                    "menu": "formats"
+                }
+            },
+            "function": "(args, util) {\n  console.log(args);\n}"
         }
     ],
     "menus": {
