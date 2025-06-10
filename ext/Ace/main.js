@@ -1,4 +1,4 @@
-// Ace editor (Updated Jun 9, 2025)
+// Ace editor (Updated Jun 10, 2025)
 
 (function (Scratch) {
     'use strict';
@@ -71,6 +71,12 @@
                 color1: '#2486d4',
                 color2: '#0e62a5',
                 blocks: [
+                    {
+                        opcode: 'active',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'Editor active',
+                    },
+
                     {
                         opcode: 'addAceEditor',
                         blockType: Scratch.BlockType.COMMAND,
@@ -278,6 +284,10 @@
                     cursorMenu: ["Pick up", "Drag"],
                 }
             };
+        }
+
+        active() {
+            return editorElement && editorElement.parentElement == Scratch.vm.runtime.renderer.canvas.parentElement ? true : false;
         }
 
         async addAceEditor() {
