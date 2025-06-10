@@ -58,7 +58,7 @@
 			};
 		}
 
-		func(args) {
+		func(args, util) {
 			console.log(args);
 		}
 	}

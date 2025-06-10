@@ -1,0 +1,38 @@
+{
+    "id": "extension1",
+    "name": "extension 1",
+    "color": "#0fbd8c",
+    "libs": [
+        {
+            "url": "https://code.jquery.com/jquery-3.7.1.min.js",
+            "embed": false
+        }
+    ],
+    "unsandboxed": {
+        "status": true,
+        "message": "This extension must run unsandboxed"
+    },
+    "blocks": [
+        {
+            "id": "block1",
+            "text": "Block 1 with an input [INPUT1]",
+            "type": "COMMAND",
+            "args": {
+                "INPUT1": {
+                    "type": "STRING",
+                    "defaultValue": "\"Hello\"",
+                    "menu": "formats"
+                }
+            },
+            "function": "(args, util) {\n  console.log(args);\n}"
+        }
+    ],
+    "menus": {
+        "formats": [
+            { "text": "Video", "value": "mp4" },
+            { "text": "Audio", "value": "mp3" }
+        ],
+        "linkTypeConvert": ["url", "uri"]
+    },
+    "constructor": ""
+}
