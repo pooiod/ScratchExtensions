@@ -9,7 +9,7 @@
 
   class p7windowhash {
     constructor() {
-      this.canHash = !window.location.origin.includes("penguinmod.com");
+      this.canHash = window.location.origin.includes("turbowarp.org");
       if (this.canHash) {
         window.addEventListener("hashchange", () => {
           Scratch.vm.runtime.startHats("p7windowhash_onhashchange");

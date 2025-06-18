@@ -1489,7 +1489,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 							const polyArea = Math.abs(a) * 0.5;
 							area += polyArea;
-							console.log("Polygon vertices:", count, "area:", polyArea);
 						}
 					}
 

@@ -390,8 +390,8 @@
         "description": "Interact with URL hash. <br>(the part of the URL after a hashtag)",
         "created": "Aug 27, 2024",
         "subtext": "",
-        "icon": "",
-        "iconText": "",
+        "icon": "/extras/images/icons/warn.png",
+        "iconText": "will set a url query instead of the hash in most editors, this does not happen when compiled",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
