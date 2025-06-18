@@ -59,7 +59,7 @@ Dеfine Box, Width: [100] Height: [100] :: #2cb0c0
 set [index v] to (0)
 repeat (4)
     change [index v] by (1)
-    Make object (join [Object] (index)) at X: (pick random (-100) to (100)) y: (pick random (-100) to (100)) Dir: [0] :: #2cb0c0
+    Make object (join [Object] (index)) at X: (pick random (-100) to (100)) y: (pick random (-100) to (100)) Dir: [90] :: #2cb0c0
 end
 ```
 
@@ -151,15 +151,15 @@ when I receive [Nuke everything! v] :: cat
 Destroy every object :: #2cb0c0 //This will also remove all joints
 ```
 
-### Moving Objects
+#### Moving Objects
 
-#### Direct Movement
+##### Direct Movement
 ```scratch3
 Move object [Object1] to X: [50] Y: [50] :: #2cb0c0
 Set rotation of object [Object1] to [45] :: #2cb0c0
 ```
 
-#### Velocity and Impulse
+##### Velocity and Impulse
 Rotational impulses are simple, just a number for power, but positional impulses are a little more complex. <br>
 Positional impulses can be one of two types: `World Impulse` or `Impulse`.
 They both take a direction, and power, but they behave differently.
@@ -170,6 +170,8 @@ while the `World Impulse` option is meant for movement over time (like pushing a
 Set Velocity of object [Object1] to X: [10] Y: [0] Dir: [0] :: #2cb0c0
 Apply Angular Impulse to object [Wheel1] power: [20] :: #2cb0c0
 ```
+
+---
 
 ## Handling Impacts
 Boxed Physics comes with a few blocks that can be used to handle impacts.
