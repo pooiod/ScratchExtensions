@@ -359,7 +359,7 @@
 
         <a style="float: left;" link="compile?ext=[file]" target="_blank" id="yeet" hidden>Open in PenguinMod</a>
         
-        <a style="float: right;" target="_blank" link="/#[id]" onclick="event.preventDefault(); share(this.href);" id="share">Share extension</a>
+        <a style="float: right;" target="_blank" link="/#/[id]" onclick="event.preventDefault(); share(this.href);" id="share">Share extension</a>
         <a style="float: right;" link="#/[id]/dev.js" id="buildswap" hidden>View dev build</a>
     </div>
     <div id="editor"></div>
@@ -569,7 +569,7 @@
                     const response = await fetch(filePath);
                     if (!response.ok) throw new Error('File not found');
                     var code = await response.text();
-                    if (code.includes("Sorry, the page you are looking for could not be loaded due to an internal server error.")) {
+                    if (code.includes("62478319")) {
                         code = "// This file does not exist";
                         document.getElementById("yeet").style.display = "none";
                         document.getElementById("direct").style.display = "none";

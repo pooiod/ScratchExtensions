@@ -17,7 +17,7 @@
         "hidden": false
     },
     {
-        "id": "ProjectExtensionManager",
+        "id": "Manager",
         "image": "/tools/[id]/cover.svg",
         "title": "Extension Manager",
         "description": "Manage the extensions in your projects",
