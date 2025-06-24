@@ -37,9 +37,7 @@
         "electramod.vercel.app"
     ];
 
-    var usebackup = [
-        "studio.penguinmod.com"
-    ];
+    var usebackup = [];
 
     function isCompatible(str1, str2) {
         return str1 == str2 || compatability.some(arr => arr.includes(str1) && arr.includes(str2));
@@ -764,7 +762,7 @@
 
     function onFailure(err) {
         if (document.getElementById("BlockLinkButtonStatusIcon")) document.getElementById("BlockLinkButtonStatusIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/error.svg';
-        showalert("Connection lost", 10000, true);
+        showalert("Connection error", 10000, true);
         console.error("Failed to connect to MQTT broker: ", err);
     }
 
@@ -1815,7 +1813,7 @@
 
         displayMenu = (menuJson, xCoordinate = window.innerWidth / 2, yCoordinate = window.innerHeight / 2, button) => {
             const menuContainerElement = document.createElement('div');
-            menuContainerElement.style.top = `${yCoordinate}px`;
+            menuContainerElement.style.top = `${window.location.host=="studio.penguinmod.com"?yCoordinate+5:yCoordinate}px`;
             menuContainerElement.style.left = `${xCoordinate}px`;
             menuContainerElement.style.display = 'block';
             menuContainerElement.style.direction = 'ltr';
@@ -1825,6 +1823,10 @@
             const menuListElement = document.createElement('ul');
             menuListElement.className = 'menu_menu_3k7QT menu_right_3PQ4S';
             let itemCount = 0;
+            requestAnimationFrame(()=>{
+                menuListElement.style.opacity = 1;
+                menuListElement.style.transform = "scale(1)";
+            });
 
             menuJson.blocks.forEach((menuBlock, blockIndex) => {
                 if (menuBlock.hideFromPalette) return;
@@ -1910,34 +1912,34 @@
     }
     Scratch.extensions.register(new P7BlockLink());
 
-    // setTimeout(function() {
-    //     if (window.location.search.includes("project_url=https://litter.catbox.moe") && document.querySelector(".crash-message_reloadButton_FoS7x")) {
-    //         document.querySelector(".crash-message_reloadButton_FoS7x").remove();
-    //         document.querySelector("#app > div > div > div > div > p:nth-child(3)").textContent = "This session is no-longer accepting joins.";
-    //         document.querySelector("#app > div > div > div > div > p.crash-message_error-message_1pX4X").remove();
-    //         document.querySelector("#app > div > div > div > div > img").remove();
-    //         document.querySelector("#app > div > div > div > div > p.crash-message_header_1tEXc > span").textContent = "Session error";
+    setTimeout(function() {
+        if (window.location.search.includes("project_url=https://litter.catbox.moe") && document.querySelector(".crash-message_reloadButton_FoS7x")) {
+            document.querySelector(".crash-message_reloadButton_FoS7x").remove();
+            document.querySelector("#app > div > div > div > div > p:nth-child(3)").textContent = "This session is no-longer accepting joins.";
+            document.querySelector("#app > div > div > div > div > p.crash-message_error-message_1pX4X").remove();
+            document.querySelector("#app > div > div > div > div > img").remove();
+            document.querySelector("#app > div > div > div > div > p.crash-message_header_1tEXc > span").textContent = "Session error";
 
-    //         try {
-    //             var url = new URL(window.location);
-    //             url.searchParams.delete('project_url');
-    //             url = url.searchParams.toString() ? url.toString() : url.origin + url.pathname;
-    //             window.history.pushState({}, document.title, url);
+            try {
+                var url = new URL(window.location);
+                url.searchParams.delete('project_url');
+                url = url.searchParams.toString() ? url.toString() : url.origin + url.pathname;
+                window.history.pushState({}, document.title, url);
 
-    //             chatToggle.remove();
-    //             chatContainer.style.display = "none";
+                chatToggle.remove();
+                chatContainer.style.display = "none";
 
-    //             window.clearInterval(intervalPos);
-    //             window.clearInterval(intervalColors)
+                window.clearInterval(intervalPos);
+                window.clearInterval(intervalColors)
 
-    //             isCancled = true;
-    //             serverid = false;
-    //             client.disconnect();
+                isCancled = true;
+                serverid = false;
+                client.disconnect();
 
-    //             try {
-    //                 Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
-    //             } catch(e) {}
-    //         } catch(e) {}
-    //     }
-    // }, 500);
+                try {
+                    Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+                } catch(e) {}
+            } catch(e) {}
+        }
+    }, 500);
 })(Scratch);
