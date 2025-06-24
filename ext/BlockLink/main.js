@@ -4,7 +4,7 @@
 // Current servers used:
 // wss://broker.emqx.io:8084/mqtt (for client communications)
 // litterbox.catbox.moe (tmp storage of sprite files)
-// yeetyourfiles.lol (backup storage)
+// yeetyourfiles.lol (backup storage and larger file storage)
 
 (async function(Scratch) {
     "use strict";
@@ -19,6 +19,7 @@
 
     var isCancled = false;
     var incompatable = false;
+    var isconnecting = true;
     var editing = {};
 
     var compatability = [
@@ -755,6 +756,7 @@
             main();
             sendmsg("joined", clientId)
             showalert("Connected to broker", 2000, false);
+            isconnecting = false;
         } else {
             showalert("Regained connection", 2000, false);
         }
@@ -934,6 +936,7 @@
         var ignoreSwap = false;
         Scratch.vm.on('targetsUpdate', (event) => {
             if (isCancled) return;
+            if (isconnecting) return;
 
             var deleteButton = document.querySelector("div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp .delete-button_delete-button_2Nzko.sprite-selector-item_delete-button_1rkFW");
             if(deleteButton) deleteButton.style.display = "none";
@@ -1649,6 +1652,8 @@
         }
 
         getblocks() {
+            var isstage = isconnecting;
+            if (!isstage) isstage = Scratch.vm.runtime.getEditingTarget().isStage;
             return {
                 blocks: [
                     {
@@ -1685,24 +1690,24 @@
                         text: serverid?"Join another colab":"Join a colab"
                     },
 
-                    (!serverid || !canmanual || Scratch.vm.runtime.getEditingTarget().isStage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
+                    (!serverid || !canmanual || isstage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"))?{ func: "none",blockType: Scratch.BlockType.BUTTON, hideFromPalette: true, text: "" }:(Scratch.extensions.noblocks?{ blockType: "bar" }:"---"),
 
                     {
                         func: "commitSprite",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: !serverid || Scratch.vm.runtime.getEditingTarget().isStage || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
+                        hideFromPalette: !serverid || isstage || !canmanual || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
                         text: "Save and commit"
                     },
                     {
                         func: "renameSprite",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: !serverid || !canmanual || Scratch.vm.runtime.getEditingTarget().isStage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
+                        hideFromPalette: !serverid || !canmanual || isstage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
                         text: "Rename and commit"
                     },
                     {
                         func: "deleteSprite",
                         blockType: Scratch.BlockType.BUTTON,
-                        hideFromPalette: !serverid || !canmanual || Scratch.vm.runtime.getEditingTarget().isStage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
+                        hideFromPalette: !serverid || !canmanual || isstage || document.querySelector("#app > div > div.interface_menu_3K-Q2 > div > div.menu-bar_main-menu_3wjWH"),
                         text: "Delete and commit"
                     },
                 ],
@@ -1905,34 +1910,34 @@
     }
     Scratch.extensions.register(new P7BlockLink());
 
-    setTimeout(function() {
-        if (window.location.search.includes("project_url=https://litter.catbox.moe") && document.querySelector(".crash-message_reloadButton_FoS7x")) {
-            document.querySelector(".crash-message_reloadButton_FoS7x").remove();
-            document.querySelector("#app > div > div > div > div > p:nth-child(3)").textContent = "This session is no-longer accepting joins.";
-            document.querySelector("#app > div > div > div > div > p.crash-message_error-message_1pX4X").remove();
-            document.querySelector("#app > div > div > div > div > img").remove();
-            document.querySelector("#app > div > div > div > div > p.crash-message_header_1tEXc > span").textContent = "Session error";
+    // setTimeout(function() {
+    //     if (window.location.search.includes("project_url=https://litter.catbox.moe") && document.querySelector(".crash-message_reloadButton_FoS7x")) {
+    //         document.querySelector(".crash-message_reloadButton_FoS7x").remove();
+    //         document.querySelector("#app > div > div > div > div > p:nth-child(3)").textContent = "This session is no-longer accepting joins.";
+    //         document.querySelector("#app > div > div > div > div > p.crash-message_error-message_1pX4X").remove();
+    //         document.querySelector("#app > div > div > div > div > img").remove();
+    //         document.querySelector("#app > div > div > div > div > p.crash-message_header_1tEXc > span").textContent = "Session error";
 
-            try {
-                var url = new URL(window.location);
-                url.searchParams.delete('project_url');
-                url = url.searchParams.toString() ? url.toString() : url.origin + url.pathname;
-                window.history.pushState({}, document.title, url);
+    //         try {
+    //             var url = new URL(window.location);
+    //             url.searchParams.delete('project_url');
+    //             url = url.searchParams.toString() ? url.toString() : url.origin + url.pathname;
+    //             window.history.pushState({}, document.title, url);
 
-                chatToggle.remove();
-                chatContainer.style.display = "none";
+    //             chatToggle.remove();
+    //             chatContainer.style.display = "none";
 
-                window.clearInterval(intervalPos);
-                window.clearInterval(intervalColors)
+    //             window.clearInterval(intervalPos);
+    //             window.clearInterval(intervalColors)
 
-                isCancled = true;
-                serverid = false;
-                client.disconnect();
+    //             isCancled = true;
+    //             serverid = false;
+    //             client.disconnect();
 
-                try {
-                    Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
-                } catch(e) {}
-            } catch(e) {}
-        }
-    }, 500);
+    //             try {
+    //                 Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+    //             } catch(e) {}
+    //         } catch(e) {}
+    //     }
+    // }, 500);
 })(Scratch);
