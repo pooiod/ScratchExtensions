@@ -36,6 +36,10 @@
         "electramod.vercel.app"
     ];
 
+    var usebackup = [
+        "studio.penguinmod.com"
+    ];
+
     function isCompatible(str1, str2) {
         return str1 == str2 || compatability.some(arr => arr.includes(str1) && arr.includes(str2));
     }
@@ -1625,12 +1629,12 @@
 
             setInterval(()=>{
                 var element = [...document.querySelectorAll('.scratchCategoryMenu > *')].find(el => el.innerText === 'BlockLink');
-                if (element && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
+                if (element && !usebackup.includes(window.location.host) && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
                     element.style.display = "none";
                 }
 
                 var element = [...document.querySelectorAll('g.blocklyBlockCanvas text.blocklyFlyoutLabelText')].find(el => el.textContent === 'BlockLink');
-                if (element && hasmenu) {
+                if (element && hasmenu && !usebackup.includes(window.location.host)) {
                     element.style.display = "none";
                 }
             }, 1000);
@@ -1640,7 +1644,7 @@
             return {
                 id: 'P7BlockLink',
                 name: 'BlockLink',
-                blocks: hasmenu?[]:this.getblocks().blocks,
+                blocks: hasmenu&&!usebackup.includes(window.location.host)?[]:this.getblocks().blocks,
             };
         }
 
