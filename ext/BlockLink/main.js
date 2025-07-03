@@ -1806,7 +1806,7 @@
 
                 try {
                     forcedisplaythingy = true;
-                    Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+                    Scratch.vm.extensionManager.removeExtension("P7BlockLink");
                 } catch(e) {
                     console.warn(e);
                 }
@@ -1819,7 +1819,7 @@
 
         displayMenu = (menuJson, xCoordinate = window.innerWidth / 2, yCoordinate = window.innerHeight / 2, button) => {
             const menuContainerElement = document.createElement('div');
-            menuContainerElement.style.top = `${window.location.host=="studio.penguinmod.com"?yCoordinate+5:yCoordinate}px`;
+            menuContainerElement.style.top = `${window.location.host=="librekitten.org"?yCoordinate+6:yCoordinate}px`;
             menuContainerElement.style.left = `${xCoordinate}px`;
             menuContainerElement.style.display = 'block';
             menuContainerElement.style.direction = 'ltr';
@@ -1943,7 +1943,7 @@
                 client.disconnect();
 
                 try {
-                    Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
+                    Scratch.vm.extensionManager.removeExtension("P7BlockLink");
                 } catch(e) {}
             } catch(e) {}
         }
