@@ -20,6 +20,7 @@
     var isCancled = false;
     var incompatable = false;
     var isconnecting = true;
+    var forcedisplaythingy = false
     var editing = {};
 
     var compatability = [
@@ -1629,6 +1630,8 @@
             this.updateWorkspace();
 
             setInterval(()=>{
+                if (forcedisplaythingy) return;
+
                 var element = [...document.querySelectorAll('.scratchCategoryMenu > *')].find(el => el.innerText === 'BlockLink');
                 if (element && !usebackup.includes(window.location.host) && (element.classList.contains("scratchCategoryMenuItem") || element.classList.contains("scratchCategoryMenuRow"))) {
                     element.style.display = "none";
@@ -1802,8 +1805,11 @@
                 }
 
                 try {
+                    forcedisplaythingy = true;
                     Scratch.vm.extensionManager.removeExtension("P7scratchcommits");
-                } catch(e) {}
+                } catch(e) {
+                    console.warn(e);
+                }
             } catch(e) {
                 console.error(e);
                 pgeparams.delete("project_url");
