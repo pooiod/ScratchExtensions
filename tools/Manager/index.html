@@ -750,6 +750,8 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 	<script src="https://pooiod7.neocities.org/markdown/scratchblocks.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/prettier@3.2.5/standalone.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/prettier@3.2.5/parser-babel.js"></script>
 
 	<script>
 		let projectData, fetchedBuffer, lastError, originalFileName;
@@ -1847,7 +1849,7 @@
 									blocksMap[blockId] = { inputs: {}, reporter: false };
 								}
 
-								// Most C blocks in Scratch seem to use "SUBSTACK" at the start for each input
+								// C blocks in Scratch use "SUBSTACK" at the start for each input
 								if (block.parent !== null && block.parent !== undefined && target.blocks[block.parent]) {
 									var thingy = BlockKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 									thingy = JSON.stringify(target.blocks[block.parent].inputs).replace(new RegExp(`"${thingy}":`, 'g'), '');
@@ -1894,22 +1896,28 @@
 						arguments: args
 					});
 				});
+				let extfixed = extId.replace(/[^\w\-]/g, '');
 				let generated = `// Generated extension template
+
 (function(Scratch) {
 	'use strict';
-	class ${extId} {
+
+	class ${extfixed} {
 		getInfo() {
 			return {
 				id: '${extId}',
 				name: '${extId} Generated',
 				color1: '#ed4242',
-				blocks: ${JSON.stringify(blocksArr, null, 16)}
+				blocks: ${JSON.stringify(blocksArr, null, 2).split('\n').map((l,i) => i ? '				' + l : l).join('\n')},
 			};
 		}
-		${blocksArr.map(b => `${b.opcode}(args) {}`).join('\n        ')}
+
+		${blocksArr.map(b => `${b.opcode}(args) {}`).join('\n		')}
 	}
-	Scratch.extensions.register(new ${extId}());
-})(Scratch);`;
+
+	Scratch.extensions.register(new ${extfixed}());
+})(Scratch);
+`;
 				return generated;
 			} catch (err) {
 				alert(err);
@@ -1956,6 +1964,35 @@
 		    }
 		}
 
+		function fixExtensions() {
+			if (projectData.extensions && projectData.extensions.length > 0) {
+				projectData.extensions.forEach((extId, index) => {
+					if (!projectData.extensionURLs[extId]) {
+						let newExtId = extId.replace(/[.\-]/g, '');
+						if (newExtId !== extId) {
+							projectData.extensions[index] = newExtId;
+							projectData.extensionURLs[newExtId] = projectData.extensionURLs[extId] || "";
+							delete projectData.extensionURLs[extId];
+						}
+					}
+				});
+
+				projectData.targets.forEach(target => {
+					if (target.blocks) {
+						Object.entries(target.blocks).forEach(([BlockKey, block]) => {
+							if (typeof block.opcode === "string") {
+								let extId = block.opcode.split('_')[0];
+								if (!projectData.extensionURLs[extId] && extId.includes('.') || extId.includes('-')) {
+									let newExtId = extId.replace(/[.\-]/g, '');
+									block.opcode = block.opcode.replace(extId, newExtId);
+								}
+							}
+						});
+					}
+				});
+			}
+		}
+
 		function process(file) {
 		    const reader = new FileReader();
 			picker.style.opacity = 0;
@@ -1986,6 +2023,15 @@
 						if (!projectData || !projectData.meta) throw new Error("Unknown project format");
 
 						if (!projectData.extensionURLs) projectData.extensionURLs = {};
+
+						var shouldfix = false;
+						projectData.extensions.forEach(extId => {
+							if ((extId.includes('.') || extId.includes('-')) && !projectData.extensionURLs[extId]) shouldfix = true;
+						});
+
+						if (shouldfix && confirm("An extension was detected with an invalid id, would you like to fix it?")) {
+							fixExtensions();
+						}
 
 		                return getThumbnail({
 		                    WIDTH: 480,
@@ -2060,6 +2106,7 @@
 		            genDummy.disabled = false;
 		            genDummy.addEventListener('click', () => {
 		                generateDummyForExtension(extButton, inputUrl, extId, genDummy);
+						updateExtensionSettings(extButton, inputUrl, findArchive, removeArchive, validateSource, renderExtension, extId);
 		            });
 		            const findArchive = document.createElement('button');
 		            let hasUrl = (projectData.extensionURLs[extId] && !projectData.extensionURLs[extId].startsWith("data:"));
