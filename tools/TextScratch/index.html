@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>demo3</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/material-darker.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/addon/mode/simple.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/javascript/javascript.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937;
+            color: #f3f4f6;
+            margin: 0;
+            padding: 1rem;
+        }
+        .CodeMirror {
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            height: auto;
+            font-size: 16px;
+        }
+
+        #generated-styles { }
+    </style>
+</head>
+<body>
+    <textarea id="code-editor"></textarea>
+
+    <style id="generated-styles"></style>color
+
+    <script>
+        console.log('DEBUG: Script starting.');
+
+        const extensions = [
+            {
+                id: "P7QuickSkins",
+                name: "Quick Skins",
+                color1: "#9966ff",
+                blocks: [
+                    {
+                        opcode: "setSkin",
+                        blockType: 'COMMAND',
+                        text: "Set sprite skin to [DATAURI]",
+                        arguments: {
+                            DATAURI: {
+                                type: 'STRING',
+                                defaultValue: "data:image/bmp;base64,...",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "removeSkin",
+                        blockType: 'COMMAND',
+                        text: "Remove sprite skin",
+                    }
+                ]
+            },
+            {
+                id: 'conditionalExample',
+                name: 'Conditional Example',
+                color1: '#fcba03',
+                blocks: [
+                    {
+                        opcode: 'ifGreater',
+                        blockType: "CONDITIONAL",
+                        text: 'if [A] > [B] then [SUBSTACK] else [SUBSTACK2]',
+                        arguments: {
+                            A: { type: 'NUMBER', defaultValue: 0 },
+                            B: { type: 'NUMBER', defaultValue: 0 },
+                            SUBSTACK: { type: 'STACK' },
+                            SUBSTACK2: { type: 'STACK' }
+                        }
+                    }
+                ]
+            },
+            {
+                id: "AnotherExtension",
+                name: "Motion Plus",
+                color1: "#4c97ff",
+                blocks: [
+                     {
+                        opcode: "glideTo",
+                        blockType: 'COMMAND',
+                        text: "Glide [SECS] secs to x: [X] y: [Y]",
+                        arguments: {
+                            SECS: { type: 'NUMBER', defaultValue: 1 },
+                            X: { type: 'NUMBER', defaultValue: 0 },
+                            Y: { type: 'NUMBER', defaultValue: 0 },
+                        }
+                    }
+                ]
+            }
+        ];
+        console.log('DEBUG: Input extensions data:', extensions);
+
+        function generateThemeCSS(extensionsData) {
+            console.log('DEBUG: Generating CSS...');
+            let css = '';
+            const themeName = 'cm-s-custom-theme';
+
+            extensionsData.forEach(ext => {
+                const extensionId = ext.id.toLowerCase();
+                ext.blocks.forEach(block => {
+                    const opcode = block.opcode.toLowerCase();
+                    const className = `cm-${extensionId}-${opcode}`;
+                    css += `.${themeName} .${className} { color: ${ext.color1} !important; font-weight: bold; }\n`;
+                });
+            });
+            console.log('DEBUG: Generated CSS:\n' + css);
+            return css;
+        }
+
+        function generateModeDefinition(extensionsData) {
+            console.log('DEBUG: Generating new, robust mode definition...');
+            const startRules = [];
+
+            extensionsData.forEach(ext => {
+                const extensionId = ext.id.toLowerCase();
+                ext.blocks.forEach(block => {
+                    const opcode = block.opcode.toLowerCase();
+                    const mainToken = `${extensionId}-${opcode}`;
+
+                    const textParts = block.text.split(/\[\w+\]/);
+                    const argPlaceholders = block.text.match(/\[\w+\]/g) || [];
+
+                    if (argPlaceholders.length === 0) {
+                        const rule = {
+                            regex: new RegExp(`^\\s*${block.text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}(?=\\s|$)`, 'i'),
+                            token: mainToken,
+                            sol: true
+                        };
+                        startRules.push(rule);
+                        console.log(`DEBUG: Created simple rule for ${block.opcode}: ${rule.regex}`);
+                    } 
+                    else {
+                        let regexString = '^\\s*';
+                        const tokenArray = [];
+
+                        textParts.forEach((part, i) => {
+                            if (part) {
+                                regexString += `(${part.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`;
+                                tokenArray.push(mainToken);
+                            }
+
+                            if (i < argPlaceholders.length) {
+                                const argName = argPlaceholders[i].slice(1, -1);
+                                const argType = block.arguments[argName]?.type || 'STRING';
+                                
+                                if (argType === 'NUMBER') {
+                                    regexString += '(-?\\d*\\.?\\d+)';
+                                    tokenArray.push('number');
+                                } else {
+                                    regexString += '("[^"]*")';
+                                    tokenArray.push('string');
+                                }
+                            }
+                        });
+
+                        const rule = {
+                            regex: new RegExp(regexString, 'i'),
+                            token: tokenArray,
+                            sol: true
+                        };
+                        startRules.push(rule);
+                        console.log(`DEBUG: Created complex rule for ${block.opcode}: ${rule.regex} with tokens: ${JSON.stringify(rule.token)}`);
+                    }
+                });
+            });
+
+            const modeDefinition = {
+                start: startRules,
+                meta: {
+                    lineComment: "//"
+                }
+            };
+
+            console.log('DEBUG: Final mode definition object:', modeDefinition);
+            return modeDefinition;
+        }
+
+
+        const dynamicCSS = generateThemeCSS(extensions);
+        const styleElement = document.getElementById('generated-styles');
+        styleElement.innerHTML = dynamicCSS;
+
+        const customModeDefinition = generateModeDefinition(extensions);
+        CodeMirror.defineSimpleMode("custom-scratch", customModeDefinition);
+
+        const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+            lineNumbers: true,
+            mode: "custom-scratch",
+            theme: "custom-theme material-darker",
+            lineWrapping: true,
+        });
+
+        editor.setValue(
+`// --- Quick Skins Extension ---
+Set sprite skin to "data:image/png;base64,iVBORw0KGgo..."
+Remove sprite skin
+
+// --- Motion Plus Extension ---
+if [A] > [B] then {
+Glide 1 secs to x: 100 y: -50
+} else {
+Glide 2.5 secs to x: -25 y: 0
+}`
+        );
+
+        console.log('DEBUG: CodeMirror initialized successfully.');
+
+    </script>
+
+</body>
+</html>

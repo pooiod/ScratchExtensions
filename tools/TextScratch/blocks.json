@@ -1,0 +1,1392 @@
+[
+  {
+    "id": "motion",
+    "name": "Motion",
+    "color1": "#4C97FF",
+    "color2": "#4A90E2",
+    "blocks": [
+      {
+        "opcode": "motion_movesteps",
+        "blockType": "COMMAND",
+        "text": "move [STEPS] steps",
+        "arguments": {
+          "STEPS": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "motion_turnright",
+        "blockType": "COMMAND",
+        "text": "turn [DEGREES] degrees",
+        "arguments": {
+          "DEGREES": {
+            "type": "NUMBER",
+            "defaultValue": 15
+          }
+        }
+      },
+      {
+        "opcode": "motion_turnleft",
+        "blockType": "COMMAND",
+        "text": "turn [DEGREES] degrees",
+        "arguments": {
+          "DEGREES": {
+            "type": "NUMBER",
+            "defaultValue": 15
+          }
+        }
+      },
+      {
+        "opcode": "motion_goto",
+        "blockType": "COMMAND",
+        "text": "go to [TO]",
+        "arguments": {
+          "TO": {
+            "type": "BROADCAST_MENU",
+            "defaultValue": "_random_"
+          }
+        }
+      },
+      {
+        "opcode": "motion_gotoxy",
+        "blockType": "COMMAND",
+        "text": "go to x: [X] y: [Y]",
+        "arguments": {
+          "X": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          },
+          "Y": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          }
+        }
+      },
+      {
+        "opcode": "motion_glidesecstoxy",
+        "blockType": "COMMAND",
+        "text": "glide [SECS] secs to x: [X] y: [Y]",
+        "arguments": {
+          "SECS": {
+            "type": "NUMBER",
+            "defaultValue": 1
+          },
+          "X": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          },
+          "Y": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          }
+        }
+      },
+      {
+        "opcode": "motion_glideto",
+        "blockType": "COMMAND",
+        "text": "glide [SECS] secs to [TO]",
+        "arguments": {
+          "SECS": {
+            "type": "NUMBER",
+            "defaultValue": 1
+          },
+          "TO": {
+            "type": "BROADCAST_MENU",
+            "defaultValue": "_random_"
+          }
+        }
+      },
+      {
+        "opcode": "motion_pointindirection",
+        "blockType": "COMMAND",
+        "text": "point in direction [DIRECTION]",
+        "arguments": {
+          "DIRECTION": {
+            "type": "ANGLE",
+            "defaultValue": 90
+          }
+        }
+      },
+      {
+        "opcode": "motion_pointtowards",
+        "blockType": "COMMAND",
+        "text": "point towards [TOWARDS]",
+        "arguments": {
+          "TOWARDS": {
+            "type": "BROADCAST_MENU",
+            "defaultValue": "_random_"
+          }
+        }
+      },
+      {
+        "opcode": "motion_changexby",
+        "blockType": "COMMAND",
+        "text": "change x by [DX]",
+        "arguments": {
+          "DX": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "motion_setx",
+        "blockType": "COMMAND",
+        "text": "set x to [X]",
+        "arguments": {
+          "X": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          }
+        }
+      },
+      {
+        "opcode": "motion_changeyby",
+        "blockType": "COMMAND",
+        "text": "change y by [DY]",
+        "arguments": {
+          "DY": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "motion_sety",
+        "blockType": "COMMAND",
+        "text": "set y to [Y]",
+        "arguments": {
+          "Y": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          }
+        }
+      },
+      {
+        "opcode": "motion_ifonedgebounce",
+        "blockType": "COMMAND",
+        "text": "if on edge, bounce"
+      },
+      {
+        "opcode": "motion_setrotationstyle",
+        "blockType": "COMMAND",
+        "text": "set rotation style [STYLE]",
+        "arguments": {
+          "STYLE": {
+            "type": "ROTATION_STYLE",
+            "defaultValue": "all around"
+          }
+        }
+      },
+      {
+        "opcode": "motion_xposition",
+        "blockType": "REPORTER",
+        "text": "x position"
+      },
+      {
+        "opcode": "motion_yposition",
+        "blockType": "REPORTER",
+        "text": "y position"
+      },
+      {
+        "opcode": "motion_direction",
+        "blockType": "REPORTER",
+        "text": "direction"
+      }
+    ]
+  },
+  {
+    "id": "looks",
+    "name": "Looks",
+    "color1": "#9966FF",
+    "color2": "#8A5CE2",
+    "blocks": [
+      {
+        "opcode": "looks_sayforsecs",
+        "blockType": "COMMAND",
+        "text": "say [MESSAGE] for [SECS] seconds",
+        "arguments": {
+          "MESSAGE": {
+            "type": "STRING",
+            "defaultValue": "Hello!"
+          },
+          "SECS": {
+            "type": "NUMBER",
+            "defaultValue": 2
+          }
+        }
+      },
+      {
+        "opcode": "looks_say",
+        "blockType": "COMMAND",
+        "text": "say [MESSAGE]",
+        "arguments": {
+          "MESSAGE": {
+            "type": "STRING",
+            "defaultValue": "Hello!"
+          }
+        }
+      },
+      {
+        "opcode": "looks_thinkforsecs",
+        "blockType": "COMMAND",
+        "text": "think [MESSAGE] for [SECS] seconds",
+        "arguments": {
+          "MESSAGE": {
+            "type": "STRING",
+            "defaultValue": "Hmm..."
+          },
+          "SECS": {
+            "type": "NUMBER",
+            "defaultValue": 2
+          }
+        }
+      },
+      {
+        "opcode": "looks_think",
+        "blockType": "COMMAND",
+        "text": "think [MESSAGE]",
+        "arguments": {
+          "MESSAGE": {
+            "type": "STRING",
+            "defaultValue": "Hmm..."
+          }
+        }
+      },
+      {
+        "opcode": "looks_switchcostumeto",
+        "blockType": "COMMAND",
+        "text": "switch costume to [COSTUME]",
+        "arguments": {
+          "COSTUME": {
+            "type": "COSTUME",
+            "defaultValue": "costume1"
+          }
+        }
+      },
+      {
+        "opcode": "looks_nextcostume",
+        "blockType": "COMMAND",
+        "text": "next costume"
+      },
+      {
+        "opcode": "looks_switchbackdropto",
+        "blockType": "COMMAND",
+        "text": "switch backdrop to [BACKDROP]",
+        "arguments": {
+          "BACKDROP": {
+            "type": "BACKDROP",
+            "defaultValue": "backdrop1"
+          }
+        }
+      },
+      {
+        "opcode": "looks_nextbackdrop",
+        "blockType": "COMMAND",
+        "text": "next backdrop"
+      },
+      {
+        "opcode": "looks_changeeffectby",
+        "blockType": "COMMAND",
+        "text": "change [EFFECT] effect by [VALUE]",
+        "arguments": {
+          "EFFECT": {
+            "type": "EFFECT_MENU",
+            "defaultValue": "color"
+          },
+          "VALUE": {
+            "type": "NUMBER",
+            "defaultValue": 25
+          }
+        }
+      },
+      {
+        "opcode": "looks_seteffectto",
+        "blockType": "COMMAND",
+        "text": "set [EFFECT] effect to [VALUE]",
+        "arguments": {
+          "EFFECT": {
+            "type": "EFFECT_MENU",
+            "defaultValue": "color"
+          },
+          "VALUE": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          }
+        }
+      },
+      {
+        "opcode": "looks_cleargraphiceffects",
+        "blockType": "COMMAND",
+        "text": "clear graphic effects"
+      },
+      {
+        "opcode": "looks_changesizeby",
+        "blockType": "COMMAND",
+        "text": "change size by [CHANGE]",
+        "arguments": {
+          "CHANGE": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "looks_setsizeto",
+        "blockType": "COMMAND",
+        "text": "set size to [SIZE] %",
+        "arguments": {
+          "SIZE": {
+            "type": "NUMBER",
+            "defaultValue": 100
+          }
+        }
+      },
+      {
+        "opcode": "looks_show",
+        "blockType": "COMMAND",
+        "text": "show"
+      },
+      {
+        "opcode": "looks_hide",
+        "blockType": "COMMAND",
+        "text": "hide"
+      },
+      {
+        "opcode": "looks_gotofrontback",
+        "blockType": "COMMAND",
+        "text": "go to [FRONT_BACK] layer",
+        "arguments": {
+          "FRONT_BACK": {
+            "type": "FRONT_BACK",
+            "defaultValue": "front"
+          }
+        }
+      },
+      {
+        "opcode": "looks_goforwardbackwardlayers",
+        "blockType": "COMMAND",
+        "text": "go [FORWARD_BACKWARD] [NUM] layers",
+        "arguments": {
+          "FORWARD_BACKWARD": {
+            "type": "FORWARD_BACKWARD",
+            "defaultValue": "forward"
+          },
+          "NUM": {
+            "type": "NUMBER",
+            "defaultValue": 1
+          }
+        }
+      },
+      {
+        "opcode": "looks_costumenumbername",
+        "blockType": "REPORTER",
+        "text": "costume [NUMBER_NAME]",
+        "arguments": {
+          "NUMBER_NAME": {
+            "type": "NUMBER_NAME",
+            "defaultValue": "number"
+          }
+        }
+      },
+      {
+        "opcode": "looks_backdropnumbername",
+        "blockType": "REPORTER",
+        "text": "backdrop [NUMBER_NAME]",
+        "arguments": {
+          "NUMBER_NAME": {
+            "type": "NUMBER_NAME",
+            "defaultValue": "number"
+          }
+        }
+      },
+      {
+        "opcode": "looks_size",
+        "blockType": "REPORTER",
+        "text": "size"
+      }
+    ]
+  },
+  {
+    "id": "sound",
+    "name": "Sound",
+    "color1": "#D65CD6",
+    "color2": "#C452C4",
+    "blocks": [
+      {
+        "opcode": "sound_playsounduntildone",
+        "blockType": "COMMAND",
+        "text": "start sound [SOUND_MENU]",
+        "arguments": {
+          "SOUND_MENU": {
+            "type": "SOUND_MENU",
+            "defaultValue": "pop"
+          }
+        }
+      },
+      {
+        "opcode": "sound_startsound",
+        "blockType": "COMMAND",
+        "text": "play sound [SOUND_MENU] until done",
+        "arguments": {
+          "SOUND_MENU": {
+            "type": "SOUND_MENU",
+            "defaultValue": "pop"
+          }
+        }
+      },
+      {
+        "opcode": "sound_stopallsounds",
+        "blockType": "COMMAND",
+        "text": "stop all sounds"
+      },
+      {
+        "opcode": "sound_changeeffectby",
+        "blockType": "COMMAND",
+        "text": "change [EFFECT] effect by [VALUE]",
+        "arguments": {
+          "EFFECT": {
+            "type": "SOUND_EFFECT_MENU",
+            "defaultValue": "pitch"
+          },
+          "VALUE": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "sound_seteffectto",
+        "blockType": "COMMAND",
+        "text": "set [EFFECT] effect to [VALUE]",
+        "arguments": {
+          "EFFECT": {
+            "type": "SOUND_EFFECT_MENU",
+            "defaultValue": "pitch"
+          },
+          "VALUE": {
+            "type": "NUMBER",
+            "defaultValue": 0
+          }
+        }
+      },
+      {
+        "opcode": "sound_clearsoundeffects",
+        "blockType": "COMMAND",
+        "text": "clear sound effects"
+      },
+      {
+        "opcode": "sound_changevolumeby",
+        "blockType": "COMMAND",
+        "text": "change volume by [VOLUME]",
+        "arguments": {
+          "VOLUME": {
+            "type": "NUMBER",
+            "defaultValue": -10
+          }
+        }
+      },
+      {
+        "opcode": "sound_setvolumeto",
+        "blockType": "COMMAND",
+        "text": "set volume to [VOLUME] %",
+        "arguments": {
+          "VOLUME": {
+            "type": "NUMBER",
+            "defaultValue": 100
+          }
+        }
+      },
+      {
+        "opcode": "sound_volume",
+        "blockType": "REPORTER",
+        "text": "volume"
+      }
+    ]
+  },
+  {
+    "id": "events",
+    "name": "Events",
+    "color1": "#FFBF00",
+    "color2": "#E2AA00",
+    "blocks": [
+      {
+        "opcode": "event_whenflagclicked",
+        "blockType": "HAT",
+        "text": "when [ICON] clicked"
+      },
+      {
+        "opcode": "event_whenkeypressed",
+        "blockType": "HAT",
+        "text": "when [KEY_OPTION] key pressed",
+        "arguments": {
+          "KEY_OPTION": {
+            "type": "KEY_MENU",
+            "defaultValue": "space"
+          }
+        }
+      },
+      {
+        "opcode": "event_whenthisspriteclicked",
+        "blockType": "HAT",
+        "text": "when this sprite clicked"
+      },
+      {
+        "opcode": "event_whenbackdropchanges",
+        "blockType": "HAT",
+        "text": "when backdrop switches to [BACKDROP]",
+        "arguments": {
+          "BACKDROP": {
+            "type": "BACKDROP",
+            "defaultValue": "backdrop1"
+          }
+        }
+      },
+      {
+        "opcode": "event_whengreaterthan",
+        "blockType": "HAT",
+        "text": "when [WHENGREATERTHAN_MENU] > [VALUE]",
+        "arguments": {
+          "WHENGREATERTHAN_MENU": {
+            "type": "WHENGREATERTHAN_MENU",
+            "defaultValue": "timer"
+          },
+          "VALUE": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "event_whenbroadcastreceived",
+        "blockType": "HAT",
+        "text": "when I receive [BROADCAST_OPTION]",
+        "arguments": {
+          "BROADCAST_OPTION": {
+            "type": "BROADCAST_MESSAGE",
+            "defaultValue": "message1"
+          }
+        }
+      },
+      {
+        "opcode": "event_broadcast",
+        "blockType": "COMMAND",
+        "text": "broadcast [BROADCAST_INPUT]",
+        "arguments": {
+          "BROADCAST_INPUT": {
+            "type": "BROADCAST_MESSAGE",
+            "defaultValue": "message1"
+          }
+        }
+      },
+      {
+        "opcode": "event_broadcastandwait",
+        "blockType": "COMMAND",
+        "text": "broadcast [BROADCAST_INPUT] and wait",
+        "arguments": {
+          "BROADCAST_INPUT": {
+            "type": "BROADCAST_MESSAGE",
+            "defaultValue": "message1"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "control",
+    "name": "Control",
+    "color1": "#FFAB19",
+    "color2": "#E29917",
+    "blocks": [
+      {
+        "opcode": "control_wait",
+        "blockType": "COMMAND",
+        "text": "wait [DURATION] seconds",
+        "arguments": {
+          "DURATION": {
+            "type": "NUMBER",
+            "defaultValue": 1
+          }
+        }
+      },
+      {
+        "opcode": "control_repeat",
+        "blockType": "STACK",
+        "text": "repeat [TIMES]",
+        "arguments": {
+          "TIMES": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "control_forever",
+        "blockType": "STACK",
+        "text": "forever"
+      },
+      {
+        "opcode": "control_if",
+        "blockType": "STACK",
+        "text": "if [CONDITION] then",
+        "arguments": {
+          "CONDITION": {
+            "type": "BOOLEAN"
+          }
+        }
+      },
+      {
+        "opcode": "control_if_else",
+        "blockType": "STACK",
+        "text": "if [CONDITION] then else",
+        "arguments": {
+          "CONDITION": {
+            "type": "BOOLEAN"
+          }
+        }
+      },
+      {
+        "opcode": "control_wait_until",
+        "blockType": "COMMAND",
+        "text": "wait until [CONDITION]",
+        "arguments": {
+          "CONDITION": {
+            "type": "BOOLEAN"
+          }
+        }
+      },
+      {
+        "opcode": "control_repeat_until",
+        "blockType": "STACK",
+        "text": "repeat until [CONDITION]",
+        "arguments": {
+          "CONDITION": {
+            "type": "BOOLEAN"
+          }
+        }
+      },
+      {
+        "opcode": "control_stop",
+        "blockType": "COMMAND",
+        "text": "stop [STOP_OPTION]",
+        "arguments": {
+          "STOP_OPTION": {
+            "type": "STOP_MENU",
+            "defaultValue": "all"
+          }
+        }
+      },
+      {
+        "opcode": "control_start_as_clone",
+        "blockType": "HAT",
+        "text": "when I start as a clone"
+      },
+      {
+        "opcode": "control_create_clone_of",
+        "blockType": "COMMAND",
+        "text": "create clone of [CLONE_OPTION]",
+        "arguments": {
+          "CLONE_OPTION": {
+            "type": "BROADCAST_MENU",
+            "defaultValue": "_myself_"
+          }
+        }
+      },
+      {
+        "opcode": "control_delete_this_clone",
+        "blockType": "COMMAND",
+        "text": "delete this clone"
+      }
+    ]
+  },
+  {
+    "id": "sensing",
+    "name": "Sensing",
+    "color1": "#4CBFE6",
+    "color2": "#47B0D1",
+    "blocks": [
+      {
+        "opcode": "sensing_touchingobject",
+        "blockType": "BOOLEAN",
+        "text": "touching [TOUCHINGOBJECTMENU]?",
+        "arguments": {
+          "TOUCHINGOBJECTMENU": {
+            "type": "TOUCHING_MENU",
+            "defaultValue": "_mouse_"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_touchingcolor",
+        "blockType": "BOOLEAN",
+        "text": "touching color [COLOR]?",
+        "arguments": {
+          "COLOR": {
+            "type": "COLOR",
+            "defaultValue": "#4CBFE6"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_coloristouchingcolor",
+        "blockType": "BOOLEAN",
+        "text": "color [COLOR1] is touching [COLOR2]?",
+        "arguments": {
+          "COLOR1": {
+            "type": "COLOR",
+            "defaultValue": "#4CBFE6"
+          },
+          "COLOR2": {
+            "type": "COLOR",
+            "defaultValue": "#D65CD6"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_distanceto",
+        "blockType": "REPORTER",
+        "text": "distance to [DISTANCETOMENU]",
+        "arguments": {
+          "DISTANCETOMENU": {
+            "type": "BROADCAST_MENU",
+            "defaultValue": "_mouse_"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_askandwait",
+        "blockType": "COMMAND",
+        "text": "ask [QUESTION] and wait",
+        "arguments": {
+          "QUESTION": {
+            "type": "STRING",
+            "defaultValue": "What's your name?"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_answer",
+        "blockType": "REPORTER",
+        "text": "answer"
+      },
+      {
+        "opcode": "sensing_keypressed",
+        "blockType": "BOOLEAN",
+        "text": "key [KEY_OPTION] pressed?",
+        "arguments": {
+          "KEY_OPTION": {
+            "type": "KEY_MENU",
+            "defaultValue": "space"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_mousedown",
+        "blockType": "BOOLEAN",
+        "text": "mouse down?"
+      },
+      {
+        "opcode": "sensing_mousex",
+        "blockType": "REPORTER",
+        "text": "mouse x"
+      },
+      {
+        "opcode": "sensing_mousey",
+        "blockType": "REPORTER",
+        "text": "mouse y"
+      },
+      {
+        "opcode": "sensing_setdragmode",
+        "blockType": "COMMAND",
+        "text": "set drag mode [DRAG_MODE]",
+        "arguments": {
+          "DRAG_MODE": {
+            "type": "DRAG_MODE",
+            "defaultValue": "draggable"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_loudness",
+        "blockType": "REPORTER",
+        "text": "loudness"
+      },
+      {
+        "opcode": "sensing_timer",
+        "blockType": "REPORTER",
+        "text": "timer"
+      },
+      {
+        "opcode": "sensing_resettimer",
+        "blockType": "COMMAND",
+        "text": "reset timer"
+      },
+      {
+        "opcode": "sensing_of",
+        "blockType": "REPORTER",
+        "text": "[PROPERTY] of [OBJECT]",
+        "arguments": {
+          "PROPERTY": {
+            "type": "PROPERTY_MENU",
+            "defaultValue": "x position"
+          },
+          "OBJECT": {
+            "type": "BROADCAST_MENU",
+            "defaultValue": "Stage"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_current",
+        "blockType": "REPORTER",
+        "text": "current [DATE_TIME_MENU]",
+        "arguments": {
+          "DATE_TIME_MENU": {
+            "type": "DATE_TIME_MENU",
+            "defaultValue": "year"
+          }
+        }
+      },
+      {
+        "opcode": "sensing_dayssince2000",
+        "blockType": "REPORTER",
+        "text": "days since 2000"
+      },
+      {
+        "opcode": "sensing_username",
+        "blockType": "REPORTER",
+        "text": "username"
+      }
+    ]
+  },
+  {
+    "id": "operators",
+    "name": "Operators",
+    "color1": "#40BF4A",
+    "color2": "#3AA842",
+    "blocks": [
+      {
+        "opcode": "operator_add",
+        "blockType": "REPORTER",
+        "text": "[NUM1] + [NUM2]",
+        "arguments": {
+          "NUM1": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          },
+          "NUM2": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          }
+        }
+      },
+      {
+        "opcode": "operator_subtract",
+        "blockType": "REPORTER",
+        "text": "[NUM1] - [NUM2]",
+        "arguments": {
+          "NUM1": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          },
+          "NUM2": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          }
+        }
+      },
+      {
+        "opcode": "operator_multiply",
+        "blockType": "REPORTER",
+        "text": "[NUM1] * [NUM2]",
+        "arguments": {
+          "NUM1": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          },
+          "NUM2": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          }
+        }
+      },
+      {
+        "opcode": "operator_divide",
+        "blockType": "REPORTER",
+        "text": "[NUM1] / [NUM2]",
+        "arguments": {
+          "NUM1": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          },
+          "NUM2": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          }
+        }
+      },
+      {
+        "opcode": "operator_random",
+        "blockType": "REPORTER",
+        "text": "pick random [FROM] to [TO]",
+        "arguments": {
+          "FROM": {
+            "type": "NUMBER",
+            "defaultValue": 1
+          },
+          "TO": {
+            "type": "NUMBER",
+            "defaultValue": 10
+          }
+        }
+      },
+      {
+        "opcode": "operator_gt",
+        "blockType": "BOOLEAN",
+        "text": "[OPERAND1] > [OPERAND2]",
+        "arguments": {
+          "OPERAND1": {
+            "type": "STRING",
+            "defaultValue": ""
+          },
+          "OPERAND2": {
+            "type": "STRING",
+            "defaultValue": "50"
+          }
+        }
+      },
+      {
+        "opcode": "operator_lt",
+        "blockType": "BOOLEAN",
+        "text": "[OPERAND1] < [OPERAND2]",
+        "arguments": {
+          "OPERAND1": {
+            "type": "STRING",
+            "defaultValue": ""
+          },
+          "OPERAND2": {
+            "type": "STRING",
+            "defaultValue": "50"
+          }
+        }
+      },
+      {
+        "opcode": "operator_equals",
+        "blockType": "BOOLEAN",
+        "text": "[OPERAND1] = [OPERAND2]",
+        "arguments": {
+          "OPERAND1": {
+            "type": "STRING",
+            "defaultValue": ""
+          },
+          "OPERAND2": {
+            "type": "STRING",
+            "defaultValue": "50"
+          }
+        }
+      },
+      {
+        "opcode": "operator_and",
+        "blockType": "BOOLEAN",
+        "text": "[OPERAND1] and [OPERAND2]",
+        "arguments": {
+          "OPERAND1": {
+            "type": "BOOLEAN"
+          },
+          "OPERAND2": {
+            "type": "BOOLEAN"
+          }
+        }
+      },
+      {
+        "opcode": "operator_or",
+        "blockType": "BOOLEAN",
+        "text": "[OPERAND1] or [OPERAND2]",
+        "arguments": {
+          "OPERAND1": {
+            "type": "BOOLEAN"
+          },
+          "OPERAND2": {
+            "type": "BOOLEAN"
+          }
+        }
+      },
+      {
+        "opcode": "operator_not",
+        "blockType": "BOOLEAN",
+        "text": "not [OPERAND]",
+        "arguments": {
+          "OPERAND": {
+            "type": "BOOLEAN"
+          }
+        }
+      },
+      {
+        "opcode": "operator_join",
+        "blockType": "REPORTER",
+        "text": "join [STRING1] [STRING2]",
+        "arguments": {
+          "STRING1": {
+            "type": "STRING",
+            "defaultValue": "apple"
+          },
+          "STRING2": {
+            "type": "STRING",
+            "defaultValue": "banana"
+          }
+        }
+      },
+      {
+        "opcode": "operator_letter_of",
+        "blockType": "REPORTER",
+        "text": "letter [INDEX] of [STRING]",
+        "arguments": {
+          "INDEX": {
+            "type": "NUMBER",
+            "defaultValue": 1
+          },
+          "STRING": {
+            "type": "STRING",
+            "defaultValue": "apple"
+          }
+        }
+      },
+      {
+        "opcode": "operator_length",
+        "blockType": "REPORTER",
+        "text": "length of [STRING]",
+        "arguments": {
+          "STRING": {
+            "type": "STRING",
+            "defaultValue": "apple"
+          }
+        }
+      },
+      {
+        "opcode": "operator_contains",
+        "blockType": "BOOLEAN",
+        "text": "[STRING1] contains [STRING2]?",
+        "arguments": {
+          "STRING1": {
+            "type": "STRING",
+            "defaultValue": "apple"
+          },
+          "STRING2": {
+            "type": "STRING",
+            "defaultValue": "a"
+          }
+        }
+      },
+      {
+        "opcode": "operator_mod",
+        "blockType": "REPORTER",
+        "text": "[NUM1] mod [NUM2]",
+        "arguments": {
+          "NUM1": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          },
+          "NUM2": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          }
+        }
+      },
+      {
+        "opcode": "operator_round",
+        "blockType": "REPORTER",
+        "text": "round [NUM]",
+        "arguments": {
+          "NUM": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          }
+        }
+      },
+      {
+        "opcode": "operator_mathop",
+        "blockType": "REPORTER",
+        "text": "[OPERATOR] of [NUM]",
+        "arguments": {
+          "OPERATOR": {
+            "type": "MATH_OP",
+            "defaultValue": "abs"
+          },
+          "NUM": {
+            "type": "NUMBER",
+            "defaultValue": ""
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "variables",
+    "name": "Variables",
+    "color1": "#FF8C1A",
+    "color2": "#E27D17",
+    "blocks": [
+      {
+        "opcode": "data_variable",
+        "blockType": "REPORTER",
+        "text": "[VARIABLE]",
+        "arguments": {
+          "VARIABLE": {
+            "type": "VARIABLE",
+            "defaultValue": "my variable"
+          }
+        }
+      },
+      {
+        "opcode": "data_setvariableto",
+        "blockType": "COMMAND",
+        "text": "set [VARIABLE] to [VALUE]",
+        "arguments": {
+          "VARIABLE": {
+            "type": "VARIABLE",
+            "defaultValue": "my variable"
+          },
+          "VALUE": {
+            "type": "STRING",
+            "defaultValue": 0
+          }
+        }
+      },
+      {
+        "opcode": "data_changevariableby",
+        "blockType": "COMMAND",
+        "text": "change [VARIABLE] by [VALUE]",
+        "arguments": {
+          "VARIABLE": {
+            "type": "VARIABLE",
+            "defaultValue": "my variable"
+          },
+          "VALUE": {
+            "type": "NUMBER",
+            "defaultValue": 1
+          }
+        }
+      },
+      {
+        "opcode": "data_showvariable",
+        "blockType": "COMMAND",
+        "text": "show variable [VARIABLE]",
+        "arguments": {
+          "VARIABLE": {
+            "type": "VARIABLE",
+            "defaultValue": "my variable"
+          }
+        }
+      },
+      {
+        "opcode": "data_hidevariable",
+        "blockType": "COMMAND",
+        "text": "hide variable [VARIABLE]",
+        "arguments": {
+          "VARIABLE": {
+            "type": "VARIABLE",
+            "defaultValue": "my variable"
+          }
+        }
+      },
+      {
+        "opcode": "data_listcontents",
+        "blockType": "REPORTER",
+        "text": "[LIST]",
+        "arguments": {
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_addtolist",
+        "blockType": "COMMAND",
+        "text": "add [ITEM] to [LIST]",
+        "arguments": {
+          "ITEM": {
+            "type": "STRING",
+            "defaultValue": "thing"
+          },
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_deleteoflist",
+        "blockType": "COMMAND",
+        "text": "delete [INDEX] of [LIST]",
+        "arguments": {
+          "INDEX": {
+            "type": "NUMBER_OR_ALL_LAST_RANDOM",
+            "defaultValue": 1
+          },
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_deletealloflist",
+        "blockType": "COMMAND",
+        "text": "delete all of [LIST]",
+        "arguments": {
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_insertatlist",
+        "blockType": "COMMAND",
+        "text": "insert [ITEM] at [INDEX] of [LIST]",
+        "arguments": {
+          "ITEM": {
+            "type": "STRING",
+            "defaultValue": "thing"
+          },
+          "INDEX": {
+            "type": "NUMBER_OR_LAST",
+            "defaultValue": 1
+          },
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_replaceitemoflist",
+        "blockType": "COMMAND",
+        "text": "replace item [INDEX] of [LIST] with [ITEM]",
+        "arguments": {
+          "INDEX": {
+            "type": "NUMBER_OR_LAST",
+            "defaultValue": 1
+          },
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          },
+          "ITEM": {
+            "type": "STRING",
+            "defaultValue": "thing"
+          }
+        }
+      },
+      {
+        "opcode": "data_itemoflist",
+        "blockType": "REPORTER",
+        "text": "item [INDEX] of [LIST]",
+        "arguments": {
+          "INDEX": {
+            "type": "NUMBER_OR_LAST",
+            "defaultValue": 1
+          },
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_itemnumoflist",
+        "blockType": "REPORTER",
+        "text": "item # of [ITEM] in [LIST]",
+        "arguments": {
+          "ITEM": {
+            "type": "STRING",
+            "defaultValue": "thing"
+          },
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_lengthoflist",
+        "blockType": "REPORTER",
+        "text": "length of [LIST]",
+        "arguments": {
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_listcontainsitem",
+        "blockType": "BOOLEAN",
+        "text": "[LIST] contains [ITEM]?",
+        "arguments": {
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          },
+          "ITEM": {
+            "type": "STRING",
+            "defaultValue": "thing"
+          }
+        }
+      },
+      {
+        "opcode": "data_showlist",
+        "blockType": "COMMAND",
+        "text": "show list [LIST]",
+        "arguments": {
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      },
+      {
+        "opcode": "data_hidelist",
+        "blockType": "COMMAND",
+        "text": "hide list [LIST]",
+        "arguments": {
+          "LIST": {
+            "type": "LIST",
+            "defaultValue": "my list"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "myBlocks",
+    "name": "My Blocks",
+    "color1": "#FF6680",
+    "color2": "#E25C73",
+    "blocks": [
+      {
+        "opcode": "procedures_definition",
+        "blockType": "HAT",
+        "text": "define [PROCCODE]",
+        "arguments": {
+          "PROCCODE": {
+            "type": "PROCEDURE_PROTOTYPE"
+          }
+        }
+      },
+      {
+        "opcode": "procedures_call",
+        "blockType": "COMMAND",
+        "text": "[PROCCODE]",
+        "arguments": {
+          "PROCCODE": {
+            "type": "PROCEDURE_CALL"
+          }
+        }
+      }
+    ]
+  }
+]
