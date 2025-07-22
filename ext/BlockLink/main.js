@@ -106,18 +106,25 @@
     var accent = "#e01f1f";
     var theme = "light";
     var backColor = "rgba(0, 0, 0, 0.7)";
-    
+    var background = "rgb(255, 255, 255)"
+
     function getTheme() {
         try {
             accent = "rgb(24, 202, 39)";
             theme = "light";
             backColor = "rgba(0, 0, 0, 0.7)";
             var themeSetting = localStorage.getItem('tw:theme');
-            var parsed = JSON.parse(themeSetting);
+            var parsed = themeSetting;
+            try {
+                parsed = JSON.parse(parsed);
+            } catch(e) {
+                parsed = { gui: parsed, accent: false }
+            }
+
+            background = getComputedStyle(document.documentElement).getPropertyValue("--ui-primary").trim() || "rgb(255, 255, 255)";
 
             function isPrimaryColorDark() {
-                const color = getComputedStyle(document.documentElement).getPropertyValue("--ui-primary").trim() || "rgb(255, 255, 255)";
-                const rgb = color.match(/\d+/g);
+                const rgb = background.match(/\d+/g);
                 const r = parseInt(rgb[0]);
                 const g = parseInt(rgb[1]);
                 const b = parseInt(rgb[2]);
@@ -229,7 +236,7 @@
 		str = str.replace(/(?<!\/)@([\w-]+)/g, '<a href="https://scratch.mit.edu/users/$1" target="_blank">@$1</a>');
 		// links
 		str = str.replace(/(https:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
-        str = str.replace(/(http:\/\/)([^ \n]+)/g, '<a href="https://$2" target="_blank">$2</a>');
+        str = str.replace(/(http:\/\/)([^ \n]+)/g, '<a href="http://$2" target="_blank">$2</a>');
 		// special links
 		str = str.replace(/web\.pooiod7/g, '<a href="https://pooiod7.pages.dev" target="_blank">web.pooiod7</a>');
 		str = str.replace(/pooiod7\.dev/g, '<a href="https://pooiod7.pages.dev" target="_blank">pooiod7.dev</a>');
@@ -309,6 +316,42 @@
         setTimeout(function() {
             alertBox.remove();
         }, time + 500);
+    }
+
+    function showChatNotification(message, duration, callback) {
+        const chaticon = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 3C2 2.44772 2.44772 2 3 2H13C13.5523 2 14 2.44772 14 3V10C14 10.5523 13.5523 11 13 11H5L2 14V3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`;
+        const notif = document.createElement('div');
+        message = message.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<\/?[^>]+(>|$)/g, '');
+        notif.innerHTML = `<span style="margin-right:8px;display:flex;align-items:center;color:currentColor">${chaticon}</span><span style="max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${message}</span>`;
+        const color = darkenHexColor(accent, 20);
+        notif.style.cssText = [
+            'position:fixed',
+            'top:4px',
+            'right:-500px',
+            `background:#${theme=="light"?"fff":"000"}`,
+            `border:2px solid ${color}`,
+            `color:#${theme=="light"?"000":"fff"}`,
+            'padding:10px 10px',
+            'border-radius:4px',
+            'font-family:sans-serif',
+            'font-size:14px',
+            'display:flex',
+            'align-items:center',
+            'cursor:pointer',
+            'z-index:999999999999999999999999999',
+            'transition:right 0.4s ease'
+        ].join(';');
+        notif.onclick = () => {
+            if (typeof callback==='function') callback();
+            notif.style.right = '-500px';
+            setTimeout(()=>document.body.removeChild(notif),400);
+        };
+        document.body.appendChild(notif);
+        setTimeout(()=>notif.style.right='4px',10);
+        setTimeout(()=>{
+            notif.style.right='-500px';
+            setTimeout(()=>{ if (notif.parentNode) document.body.removeChild(notif) }, 400);
+        }, duration*1000);
     }
 
     function showalert(txt, timeout, inst) {
@@ -1211,7 +1254,8 @@
             showMessage(1,from,  getColorFromID(from), message);
         } else {
 			showMessage(0, from, getColorFromID(from), message);
-            showToast(`${from} has sent a message`, false);
+            if (chatContainer.style.display == "none") showChatNotification(`${from}: ${message}`, 5, toggleChat);
+            // showToast(`${from} has sent a message`, false);
 		}
     }
 
@@ -1509,7 +1553,7 @@
 	document.body.appendChild(chatContainer);
 
 	const chatToggle = document.createElement("button");
-	chatToggle.id = "BlockLive-chat-toggle";
+	chatToggle.id = "BlockLink-chat-toggle";
 	chatToggle.style.position = "fixed";
 	chatToggle.style.background = "transparent";
 	chatToggle.style.color = "white";
@@ -1551,7 +1595,11 @@
             pgeparams.set("project_url", id);
             window.location.href = pgeurl;
         } else {
-            showalert("Starting colab server", 5000);
+            showalert("Starting colab server", 9000);
+            setTimeout(()=>{
+                showalert("Unable to upload project", 5000);
+            }, 10000)
+
             pgeparams.set("project_url", await YeetFile(await Scratch.vm.saveProjectSb3(), true));
 
             // await new Promise(resolve => setTimeout(resolve, 500));
@@ -1722,7 +1770,7 @@
         inviteColab() {
             if (navigator.share) {
                 navigator.share({
-                    title: 'BlockLive Colab',
+                    title: 'BlockLink Colab',
                     url: window.location.href
                 })
                 .then(() => console.log('Successfully shared'))
@@ -1877,13 +1925,15 @@
                 } else if (!menuBlock.blockType) {
                     menuItemElement.style.height = "1px";
                     menuItemElement.style.marginBottom = "1px";
-                    menuItemElement.classList.add('menu_expanded_1-Ozh')
+                    menuItemElement.classList.add('menu_menu-section_2U-v6');
+                    // menuItemElement.classList.add('menu_expanded_1-Ozh');
                     itemCount--;
                     itemCount += "0.1";
                 } else {
                     menuItemElement.style.height = "1px";
                     menuItemElement.style.marginBottom = "1px";
-                    menuItemElement.classList.add('menu_expanded_1-Ozh')
+                    menuItemElement.classList.add('menu_menu-section_2U-v6');
+                    // menuItemElement.classList.add('menu_expanded_1-Ozh');
                     itemCount--;
                     itemCount += "0.1";
                 }
