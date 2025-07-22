@@ -678,10 +678,10 @@
     <a href="/tools"><button id="navbutton">Tools</button></a>
 
     <script>
-        let cardsData = ["/extensions.json"];
+        let cardsData = ["extensions.json"];
         let footerHTML = document.querySelector(".footer").innerHTML;
 
-        if(!window.location.origin.includes('p7scratchextensions.pages.dev')) {
+        if(!window.location.origin.includes('p7scratchextensions.pages.dev') && !window.location.origin.includes('pooiod.github.io')) {
             if (window.location.hostname.includes('archive.org') || window.location.hostname.endsWith('translate.goog')) {
                 // Don't show a warning for archive.org or google translate
             } else {
