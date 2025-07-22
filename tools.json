@@ -24,7 +24,6 @@
         "created": "---",
         "subtext": "work in progress",
         "icon": "/extras/images/icons/wip.png",
-        "updated": false,
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
@@ -42,13 +41,29 @@
         "created": "---",
         "subtext": "Requires a userscript agent",
         "icon": "",
-        "updated": false,
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
             { "text": "Open", "color": "#cbe0f2", "link": "https://greasyfork.org/en/scripts/536023-turbowarp-web-svg-search" }
         ],
         "tags": ["unfinished"],
+        "type": ["web"],
+        "hidden": false
+    },
+    {
+        "id": "MegaRepo",
+        "image": "https://scratchmegarepo.pages.dev/icon.svg",
+        "title": "The Scratch Mega Repo",
+        "description": "A large database of Scratch extensions from all over the internet",
+        "created": "---",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "Open", "color": "#cbe0f2", "link": "https://scratchmegarepo.pages.dev/" }
+        ],
+        "tags": [],
         "type": ["web"],
         "hidden": false
     }
