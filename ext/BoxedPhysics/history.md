@@ -12,6 +12,6 @@ The early development of BoxedPhysics took place on Replit along with many other
 While some early projects that used BoxedPhysics became unusable, this change allowed for improved hosting and long-term stability.
 
 # Links to note
-https://replit.com/@pooiod7/extensions?v=1#by-me/wip/2Dphys.js
-https://extensions.penguinmod.com/#:\~:text=Boxed%20Physics
-https://p7scratchextensions.pages.dev/#/BoxedPhysics
+- https://replit.com/@pooiod7/extensions?v=1#by-me/wip/2Dphys.js
+- https://extensions.penguinmod.com/#:\~:text=Boxed%20Physics
+- https://p7scratchextensions.pages.dev/#/BoxedPhysics
