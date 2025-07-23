@@ -1332,12 +1332,12 @@
 
 				ArgumentType: {
 					STRING: "string",
-					BOOLEAN: "boolean"
+					BOOLEAN: "Boolean"
 				},
 				BlockType: {
 					COMMAND: "command",
 					REPORTER: "reporter",
-					BOOLEAN: "boolean",
+					BOOLEAN: "Boolean",
 					CONDITIONAL: "conditional",
 					LOOP: "loop",
 					EVENT: "event",
@@ -1883,7 +1883,7 @@
 					});
 					let blockType = "";
 					if (blocksMap[blockId].reporter && !blocksMap[blockId].Cblock) {
-						blockType = "reporter";
+						blockType = "Boolean";
 					} else if (blocksMap[blockId].Cblock) {
 						blockType = "conditional";
 					} else {
