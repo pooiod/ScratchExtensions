@@ -135,7 +135,7 @@ Objects can also have one negative layer, to explicitly not collide with anythin
 
 ```scratch3
 when gf clicked :: cat
-Set object [Object1] to be on collision layer [1, 2, -3] :: #2cb0c0
+Set object [Object1] to be on collision layer [1 2 -3] :: #2cb0c0
 ```
 
 > Layers will not change if an object is touching another, 
