@@ -1777,7 +1777,8 @@
                 .catch((error) => console.error('Error sharing:', error));
             } else {
                 console.log('Web Share API not supported.');
-                alert(window.location.href);
+                navigator.clipboard.writeText(window.location.href)
+                alert("Copied to clipboard");
             }
         }
 
