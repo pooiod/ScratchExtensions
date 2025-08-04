@@ -258,7 +258,7 @@
                     console.log('Error sharing:', error);
                     if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                         navigator.clipboard.writeText(link);
-                        showNotification("Text copied to clipboard", "#ededed", 1000);
+                        showNotification("Code copied to clipboard", "#ededed", 1000);
                     } else {
                         window.open(link)
                     }

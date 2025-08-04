@@ -762,13 +762,27 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
                     return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
                 }
 
-                const buttonsHTML = card.buttons.map(button => `
+                var buttonsHTML = card.buttons.map(button => `
                     <a href="${button.link.replace(/\[id\]/g, card.id)}" 
                     class="card-button" 
                     style="background-color: ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(button.color, 80):lightenHexColor(button.color, 90)}; border: solid 1px ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(button.color, 50):button.color}">
                     ${button.text.replace(/ /g, '&nbsp;')}
                     </a>
                 `).join('');
+
+                if (card.buttons.some(b => b.link.includes('view/')) && navigator.clipboard) {
+                    var isdev = card.buttons.some(b => b.link.includes('dev.js'));
+                    var color = "#cbe0f2";
+
+                    buttonsHTML += `
+                        <a href="https://p7scratchextensions.pages.dev/ext/${card.id}/${isdev?"dev":"main"}.js" 
+                        class="card-button"
+                        onclick='event.preventDefault(); navigator.clipboard.writeText(this.href); showNotification("Link copied to clipboard", "#ededed", 1000);'
+                        style="background-color: ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(color, 80):lightenHexColor(color, 90)}; border: solid 1px ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(color, 50):color}">
+                        ${"Copy direct link".replace(/ /g, '&nbsp;')}
+                        </a>
+                    `;
+                }
 
                 const iconHTML = card.icon ? `
                     <div class="card-icon" title="${card.iconText}">
@@ -802,7 +816,7 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
             }
 
             async function fetchExtensions() {
-                try {
+                // try {
                     const response = await fetch(cardsData[0]);
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -818,12 +832,12 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
                     } else {
                         renderCards();
                     }
-                } catch (error) {
-                    document.getElementById("loader").remove();
-                    console.error('Failed to fetch extensions:', error);
-                    document.querySelector('p[hidden]').innerText = "Error loading extensions";
-                    document.querySelector('p[hidden]').removeAttribute('hidden');
-                }
+                // } catch (error) {
+                //     document.getElementById("loader").remove();
+                //     console.error('Failed to fetch extensions:', error);
+                //     document.querySelector('p[hidden]').innerText = "Error loading extensions";
+                //     document.querySelector('p[hidden]').removeAttribute('hidden');
+                // }
             }
 
             function renderCards() {

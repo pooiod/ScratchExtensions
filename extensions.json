@@ -11,7 +11,7 @@
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
+            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
             { "text": "Example projects", "color": "#cbe0f2", "link": "/ext/[id]/examples" }
         ],
         "tags": ["finished"],
@@ -30,7 +30,7 @@
         "unsandboxed": false,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
         "tags": ["finished"],
         "type": ["unsandboxed"],
@@ -65,7 +65,7 @@
         "unsandboxed": true,
         "buttons": [
             { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
         "tags": ["unfinished"],
         "type": ["unsandboxed", "penguinmod"],
@@ -325,7 +325,7 @@
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View Docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
         ],
         "tags": ["finished"],
         "type": ["unsandboxed"],
