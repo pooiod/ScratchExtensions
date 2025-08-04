@@ -1,7 +1,7 @@
 // BlockLink: A collaberation system for TurboWarp based Scratch mods.
 
 // You can add this into your Turbowarp-based Scratch mod by including this script
-// <script src="https://p7scratchextensions.pages.dev/ext/BlockLink/loader.js"></script>
+// <script src="https://p7scratchextensions.pages.dev/ext/BlockLink/inject.js"></script>
 // Keep in mind though, this is still a work in progress
 
 (function() {
