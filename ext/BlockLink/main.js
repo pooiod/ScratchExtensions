@@ -1777,6 +1777,7 @@
                 .catch((error) => console.error('Error sharing:', error));
             } else {
                 console.log('Web Share API not supported.');
+                alert(window.location.href);
             }
         }
 
