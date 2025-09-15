@@ -11,6 +11,10 @@
 
     var vm = Scratch.vm;
     const JSZip = Scratch.vm.exports.JSZip;
+    var loaded = false;
+    setTimeout(()=>{
+        loaded = true;
+    }, 500);
 
     function deleteSprite(SPRITE) {
         const target = Scratch.vm.runtime.getSpriteTargetByName(SPRITE);
@@ -155,7 +159,8 @@
         }
 
         getbuttons() {
-            var isstage = Scratch.vm.runtime.getEditingTarget().isStage;
+            var isstage = false;
+            if (loaded) isstage = Scratch.vm.runtime.getEditingTarget().isStage;
             return [
                 { func: "setKey", blockType: Scratch.BlockType.BUTTON, text: "Set api key" },
                 { func: "loadFromRepo", blockType: Scratch.BlockType.BUTTON, text: "Connect to a repo" },
@@ -185,7 +190,7 @@
         loadFromRepo() {
             var repo = prompt("Enter the GitHub repo (ex: pooiod/ScratchProject)");
             if (repo) {
-                location.href = `https://studio.penguinmod.com/editor.html?project_url=https://raw.githubusercontent.com/${repo}/refs/heads/main/index.project`;
+                location.href = `?project_url=https://raw.githubusercontent.com/${repo}/refs/heads/main/index.project`;
             }
         }
 
