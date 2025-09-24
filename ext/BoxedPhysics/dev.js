@@ -14,7 +14,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 	'use strict';
 
 	var b2Dupdated = "09/24/2025";
-	var publishedUpdateIndex = 25;
+	var publishedUpdateIndex = 26;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -64,7 +64,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 			this.scraping = [];
 			this.impacts = [];
-			
+
 			this.vm.runtime.on('PROJECT_LOADED', () => {
 				this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
 			});
@@ -81,7 +81,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				id: 'P7BoxPhys',
 				name: physdebugmode || wipblocks ? 'Boxed Physics (debug)' : 'Boxed Physics',
 				color1: physdebugmode || wipblocks ? "#4b4a60" : "#2cb0c0",
-				color2: physdebugmode || wipblocks ? "#383747" : "#4eb88a",
+				color2: physdebugmode || wipblocks ? "#383747" : "#4e91b8ff",
 				menuIconURI: menuIconURI,
 				docsURI: this.docs,
 				blocks: [
@@ -220,15 +220,19 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
-					{ // I know this opcode is spelled wrong
-						opcode: 'destroyBodys',
+					{ // hidden block becayse of mispelled opcode
+						opcode: 'destroyBodys', blockType: Scratch.BlockType.COMMAND,
+						hideFromPalette: true, text: 'Destroy every object',
+					},
+					{
+						opcode: 'destroyBodies',
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Destroy every object',
 					},
 					{
 						opcode: 'changeHull',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Update hull of object [NAME]',
+						text: 'Update hitbox of object [NAME]',
 						arguments: {
 							NAME: {
 								type: Scratch.ArgumentType.STRING,
@@ -1425,7 +1429,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			return Scratch.Cast.toString(bodynames);
 		}
 
-		destroyBodys() {
+		destroyBodys() { return this.destroyBodies(); }
+		destroyBodies() {
 			this.destroyJoints();
 			for (var bodyName in bodies) {
 				if (bodies.hasOwnProperty(bodyName)) {
