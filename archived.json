@@ -5,12 +5,13 @@
         "title": "SVG Text",
         "description": "Generate point-based svg text. <br>(new add costume button)",
         "created": "Dec 4, 2024",
-        "subtext": "Archived because I managed to get <a href=\"https://penguinpaint.statichost.app\">PenguinPaint</a> back online",
+        "subtext": "Archived due to a replacement existing on ScriptKitten",
         "icon": "/extras/images/icons/addon.png",
         "iconText": "This extension is based on the svg text feature on PenguinPaint",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/?/archived/#/[id]" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/?/archived/#/[id]" },
+            { "text": "View replacement", "color": "#cbe0f2", "link": "https://scriptkitten.pages.dev/addons/#/P7SVGtext" }
         ],
         "addon": true,
         "tags": ["finished"],

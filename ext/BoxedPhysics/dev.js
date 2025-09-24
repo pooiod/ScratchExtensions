@@ -13,7 +13,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "06/09/2025";
+	var b2Dupdated = "09/24/2025";
 	var publishedUpdateIndex = 25;
 
 	if (!Scratch.extensions.unsandboxed) {
@@ -59,9 +59,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			this.isFromPenguinMod = false;
 			this.onPenguinMod = Scratch.extensions.isPenguinMod;
 
-			this.origin = "https://p7scratchextensions.pages.dev/#BoxedPhysics";
-			this.docs = this.isFromPenguinMod && this.onPenguinMod ? 'https://extensions.penguinmod.com/docs/BoxedPhysics':
-			'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
+			this.origin = "https://p7scratchextensions.pages.dev/#/BoxedPhysics";
+			this.docs = 'https://p7scratchextensions.pages.dev/docs/#/BoxedPhysics';
 
 			this.scraping = [];
 			this.impacts = [];
@@ -225,6 +224,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						opcode: 'destroyBodys',
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Destroy every object',
+					},
+					{
+						opcode: 'changeHull',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Update hull of object [NAME]',
+						arguments: {
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: "Object",
+							},
+						},
 					},
 					{
 						opcode: 'setObjectLayer',
@@ -1291,6 +1301,15 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
+		changeHull({ NAME }) {
+			if (!bodies[NAME]) return;
+			const body = bodies[NAME];
+			body.DestroyFixture(body.GetFixtureList());
+			fixDef.filter.categoryBits = bodyCategoryBits;
+			fixDef.filter.maskBits = bodyMaskBits;
+			body.CreateFixture(fixDef);
+		}
+
 		placeBody(args) {
 			var id = args.NAME;
 
@@ -1533,83 +1552,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
 
 				case 'friction': return this.getFriction({ NAME: args.NAME });
-<<<<<<< HEAD
-
-				case 'pressure':
-					const world = body.GetWorld();
-					const gravity = world.GetGravity();
-					const gx = gravity.x;
-					const gy = gravity.y;
-					const gMag = Math.hypot(gx, gy);
-					const mass = body.GetMass();
-					const weight = mass * gMag;
-					const v = body.GetLinearVelocity();
-
-					let area = 0;
-					for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
-						const shape = f.GetShape();
-						if (shape instanceof b2CircleShape) {
-							const r = shape.GetRadius();
-							const a = Math.PI * r * r;
-							area += a;
-						} else if (shape instanceof b2PolygonShape) {
-							const count = shape.GetVertexCount();
-							const verts = shape.GetVertices();
-							let a = 0;
-
-							for (let i = 0; i < count; i++) {
-								const v0 = verts[i];
-								const v1 = verts[(i + 1) % count];
-								a += v0.x * v1.y - v1.x * v0.y;
-							}
-
-							const polyArea = Math.abs(a) * 0.5;
-							area += polyArea;
-						}
-					}
-
-					let contactForce = 0;
-					for (let ce = body.GetContactList(); ce; ce = ce.next) {
-						const contact = ce.contact;
-						if (!contact.IsTouching()) continue;
-
-						const manifold = contact.GetManifold();
-						const pc = manifold.m_pointCount;
-
-						for (let i = 0; i < pc; i++) {
-							contactForce += manifold.m_points[i].m_normalImpulse;
-						}
-					}
-
-					let velAdjust = 0;
-					if (gx !== 0) {
-						const valX = v.x / (100 / Math.abs(gx));
-						if (v.x * gx > 0) velAdjust -= Math.abs(valX);
-						else velAdjust += Math.abs(valX);
-					} else {
-						const valX = Math.abs(v.x) / 100;
-						velAdjust += valX;
-					}
-
-					if (gy !== 0) {
-						const valY = v.y / (100 / Math.abs(gy));
-						if (v.y * gy > 0) velAdjust -= Math.abs(valY);
-						else velAdjust += Math.abs(valY);
-					} else {
-						const valY = Math.abs(v.y) / 100;
-						velAdjust += valY;
-					}
-
-					if (area === 0) {
-						return 0;
-					}
-
-					const effectiveForce = weight + contactForce + velAdjust;
-					const pressure = effectiveForce / area;
-				return pressure;
-=======
 				case 'pressure': return this.getPressure(body);
->>>>>>> 04fb2add52a70c2d0e45d8738ebaac95b3b387ae
 			}
 		}
 
