@@ -633,7 +633,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					{
 						opcode: 'setJointTarget',
 						blockType: Scratch.BlockType.COMMAND,
-						hideFromPalette: !wipblocks,
 						text: 'Move pin [JOINTID] to x: [X]  y: [Y]',
 						arguments: {
 							JOINTID: {
