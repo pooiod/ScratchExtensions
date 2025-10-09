@@ -158,6 +158,23 @@
         "hidden": false
     },
     {
+        "id": "Sam",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Sam Speech",
+        "description": "Generate speech from text using <a href=\"https://imrane03.github.io/better-sam\">sam</a>",
+        "created": "Oct 9, 2025",
+        "subtext": "",
+        "icon": "/extras/images/icons/new.svg",
+        "iconText": "New",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
         "id": "BlockAI",
         "image": "/ext/[id]/cover.svg",
         "title": "Block АІ",
