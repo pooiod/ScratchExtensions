@@ -149,17 +149,24 @@
             };
         }
 
+        fixTTS(text) {
+            text = text.replace(/pooiod/g, 'poiod');
+            text = text.replace(/\bama(?![a-rt-z])\b/g, 'awma');
+            text = text.replace(/JavaScript/g, 'jawva script');
+            return text;
+        }
+
         speakText(args) {
             const text = String(args.TEXT);
-            new SamJs(opts).speak(text);
+            new SamJs(opts).speak(this.fixTTS(text));
         }
 
         getSpeechDataURI(args) {
             const text = String(args.TEXT);
             const sam = new SamJs(opts);
-            
+
             try {
-                const float32Array = sam.buf32(text);
+                const float32Array = sam.buf32(this.fixTTS(text));
                 return float32ToWavDataURI(float32Array);
             } catch (e) {
                 console.error("Something bad happened ᕲ:", e);
