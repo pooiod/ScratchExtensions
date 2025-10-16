@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTML testing page</title>
+  <script>
+    async function renderClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.open();
+        document.write(text);
+        document.close();
+      } catch (error) {
+        const textarea = document.createElement('textarea');
+        textarea.placeholder = 'Paste your HTML here';
+        textarea.style.width = '100%';
+        textarea.style.height = '100vh';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.addEventListener('input', () => {
+          document.open();
+          document.write(textarea.value);
+          document.close();
+        });
+      }
+    }
+    window.onload = renderClipboard;
+  </script>
+</head>
+<body></body>
+</html>
