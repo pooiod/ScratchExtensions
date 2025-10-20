@@ -9,7 +9,7 @@
 // WIP: false
 // Created: Apr 15, 2024
 // Docs: /docs/#/BoxedPhysics
-// Note: This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, but has since deviated to be its own thing. You can find a direct port here: https://p7scratchextensions.pages.dev/view/#/BoxedPhysics/griffpatch.js
+// Notes: This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, but has since deviated to be its own thing. You can find a direct port here: https://p7scratchextensions.pages.dev/view/#/BoxedPhysics/griffpatch.js
 
 // Report issues with this extension at https://p7scratchextensions.pages.dev/reportissue
 /* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
