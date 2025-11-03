@@ -1,4 +1,12 @@
-// Elemental Images (v2.3.1) by pooiod7
+// Name: Elemental Images
+// ID: elementalimages
+// Version: 2.3.1
+// Description: Manage images as elements in scratch
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Oct 2, 2023
 
 (function (Scratch) {
 	'use strict';

@@ -1,4 +1,12 @@
-// A simple window hash extension by pooiod7
+// Name: Window Hasher
+// ID: p7windowhash
+// Description: Modify data after the # in the page url.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Aug 27, 2024
+// Notes: Uses a url query when in the editor
 
 (function(Scratch) {
   'use strict';

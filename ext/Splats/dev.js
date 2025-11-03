@@ -1,4 +1,12 @@
-// Luma Splats - an extension for rendering luma scenes with Scene3D. (made by pooiod7)
+// Name: Luma Splats
+// ID: P7LumaSplats
+// Description: Render complex 3D scenes using luma labs.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev standalone
+// Unsandboxed: true
+// WIP: true
+// Created: Feb 4, 2025
+// Notes: Work in progress
 
 (function(Scratch) {
 	'use strict';

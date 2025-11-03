@@ -1,4 +1,13 @@
-// Scratchblocks v1.8.2 (by pooiod7) - Make Scratch blocks in scratch
+// Name: ScratchBlocks
+// ID: scratchblocks
+// Version: 1.8.3
+// Description: Make Scratch blocks in scratch
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Apr 5, 2024
+// Docs: /docs/#/ScratchBlocks
 
 (function(Scratch) {
     'use strict';

@@ -210,9 +210,12 @@
 
                 setTimeout(function(){
                     if (window.top != window.self && !extensionDataUri.length > 100) {
-                        location.href = `https://extensiontester.pooiod7.workers.dev/?extension=${extensionDataUri}`;
+                        location.href = `https://extensiontester.pooiod7.workers.dev/editor.html?extension=${extensionDataUri}`;
                     } else {
                         uploadFile(updatedZipBlob);
+                        setTimeout(()=>{
+                            location.href = `https://extensiontester.pooiod7.workers.dev/editor.html?extension=${extensionDataUri}`;
+                        }, 30000);
                     }
                 }, 1000);
             } catch (error) {
@@ -235,7 +238,7 @@
             // statusText("Starting project servers");
             var didknow = setInterval(function(){
                 statusText("Did you know: " + didyouknow[Math.floor(Math.random() * didyouknow.length)]);
-            }, 3000);
+            }, 7000);
 
             if (!file) {
                 clearInterval(didknow);
@@ -257,7 +260,8 @@
             });
 
             if (!response.ok) {
-                throw new Error('File upload failed');
+                location.href = `https://extensiontester.pooiod7.workers.dev/?extension=${extensionDataUri}`;
+                return;
             }
 
             const url = await response.text();

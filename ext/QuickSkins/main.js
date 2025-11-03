@@ -1,5 +1,12 @@
-// A simple extension to render images from data uris super quickly
-// Feel free to add these functions to your extensions
+// Name: QuickSkins
+// ID: P7QuickSkins
+// Description: A simple extension to render images from data uris super quickly
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Feb 4, 2025
+// Notes: Feel free to take these code for your own extensions
 
 (function (Scratch) {
 	if (!Scratch.extensions.unsandboxed) {

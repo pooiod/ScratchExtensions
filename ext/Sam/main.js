@@ -1,5 +1,11 @@
-// Sam Speech, generate speech from text using better sam (imrane03.github.io/better-sam)
-// An extension by pooiod7 (github.com/pooiod)
+// Name: Sam Speech
+// ID: P7SamSpeech
+// Description: Generate speech from text using better sam (imrane03.github.io/better-sam)
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Oct 9, 2025
 
 (function (Scratch) {
     'use strict';

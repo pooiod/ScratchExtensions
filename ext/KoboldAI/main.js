@@ -2,7 +2,12 @@
 // ID: P7KoboldAI
 // Description: Generate text and images for free with the power of The Horde
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
-// License: zlib
+// Builds: main
+// Unsandboxed: false
+// WIP: false
+// Created: Jan 4, 2025
+// Docs: /docs/#/KoboldAI
+// Notes: Uses <a href='//stablehorde.net'>The Horde</a> for generation
 
 (function(Scratch) {
     'use strict';

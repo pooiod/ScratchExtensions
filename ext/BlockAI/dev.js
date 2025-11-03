@@ -1,6 +1,14 @@
 // Pooiod7's Block AI (work in progress)
 
-// TheShovel made a block AI (github.com/TheShovel/block-ai) before I could, so the model / key used is from that extension
+// Name: Block AI
+// ID: P7BlockAI
+// Description: Create projects using the power of AI
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev
+// Unsandboxed: true
+// WIP: true
+// Created: Apr 13, 2025
+// Notes: I know that github.com/TheShovel/block-ai exists, you probubly use that instead
 
 (async function(Scratch) {
     "use strict";

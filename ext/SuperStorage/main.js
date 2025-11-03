@@ -1,4 +1,14 @@
-// SuperStorage (v2) by pooiod7
+// Name: Super Storage
+// ID: P7SuperStorage
+// Version: 2
+// Description: Store and retrieve data locally on device, or remotely on a server.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Nov 13, 2024
+// Docs: /docs/#/SuperStorage
+// Notes: Server storage currrently does not work
 
 (function(Scratch) {
 	'use strict';

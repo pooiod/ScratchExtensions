@@ -1,4 +1,13 @@
-// Dictation v1.3 by pooiod7
+// Name: Dictation
+// ID: pooiod7Dictation
+// Version: 1.3
+// Description: 
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: May 17, 2024
+// Notes: Not supported in all browsers
 
 (function(Scratch) {
     'use strict';

@@ -1,4 +1,11 @@
-// Simple GPT3 by pooiod7
+// Name: Simple GPT
+// ID: P7SimpleGPT3
+// Description: A simple extension to interact with GPT3
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: false
+// WIP: false
+// Created: Jul 18, 2024
 
 (function(Scratch) {
 	'use strict';

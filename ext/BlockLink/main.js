@@ -1,5 +1,12 @@
-// A collaberation system for TurboWarp based Scratch mods.
-// This extension is a work in progress, please report any bugs
+// Name: BlockLink
+// ID: P7BLockLink
+// Description: A collaberation system for TurboWarp based Scratch mods.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: true
+// Created: Apr 13, 2025
+// Notes: This extension is a work in progress, please report any bugs
 
 // Current servers used:
 // wss://broker.emqx.io:8084/mqtt (for client communications)

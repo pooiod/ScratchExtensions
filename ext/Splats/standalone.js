@@ -1,5 +1,12 @@
-// 3D Splats - an extension for rendering gaussian splats. (made by pooiod7)
-// Demo project: https://yeetyourfiles.lol/file/41fc9c2e/Splat%20test%201.pmp
+// Name: Luma Splats
+// ID: P7LumaSplats
+// Description: Render complex 3D scenes using luma labs.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev standalone
+// Unsandboxed: true
+// WIP: true
+// Created: Feb 4, 2025
+// Notes: Demo project: https://yyf.mubilop.com/file/41fc9c2e/Splat%20test%201.pmp
 
 (function(Scratch) {
 	'use strict';

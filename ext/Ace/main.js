@@ -1,4 +1,12 @@
-// Ace editor (Updated Jun 10, 2025)
+// Name: Ade editor
+// ID: p7AceEditor
+// Description: Create and manipulate an instance of the Ace code editor.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main dev
+// Unsandboxed: true
+// WIP: true
+// Created: June 18, 2023
+// Updated: June 10, 2025
 
 (function (Scratch) {
     'use strict';

@@ -1,4 +1,11 @@
-// Fetch - made by pooiod7
+// Name: Fetch
+// ID: fetch
+// Description: 
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: 
+// WIP: false
+// Created: May 22, 2023
 
 class Fetch {
     getInfo () {

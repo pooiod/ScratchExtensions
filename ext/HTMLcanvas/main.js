@@ -1,4 +1,13 @@
-// HTML Canvas (Mar/11/2025 dev build) by pooiod7
+// Name: HTML Canvas
+// ID: HTMLcanvas
+// Updated: Mar 11, 2025
+// Description: Use HTML and CSS to make projects with complex visual interfaces.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev
+// Unsandboxed: true
+// WIP: true
+// Created: May 29, 2024
+// Docs: docs/#/HTMLcanvas
 
 (function (Scratch) {
   'use strict';

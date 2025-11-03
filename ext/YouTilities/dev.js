@@ -1,4 +1,13 @@
-// Youtube Utilities extension (updated mar/12/2025) by pooiod7
+// Name: Youtube Utilities
+// ID: P7YTutils
+// Updated: mar/12/2025
+// Description: Get data from youtube.com
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev
+// Unsandboxed: false
+// WIP: true
+// Created: Apr 22, 2024
+// Notes: Downloads api is down, everything else works
 
 (function (Scratch) {
 	'use strict';

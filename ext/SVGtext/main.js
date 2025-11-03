@@ -1,3 +1,13 @@
+// Name: SVG Text
+// ID: p7SVGtext
+// Description: Generate point-based svg text
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Dec 4, 2024
+// Notes: Archived
+
 (function(Scratch) {
     'use strict';
 

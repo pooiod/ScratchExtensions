@@ -1,4 +1,12 @@
-// Simple file storage made with tools from Snap!
+// Name: Server Data
+// ID: serverData
+// Description: Simple file storage using tools from Snap!
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: false
+// WIP: false
+// Created: May 18, 2024
+// Notes: This extension is depricated
 
 class ServerExtension {
     constructor(runtime) {

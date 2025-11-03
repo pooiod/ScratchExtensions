@@ -1,5 +1,12 @@
-// TTS extension from ScratchX modified by pooiod7 to work with Scratch3 [Dec/18/2023]
-// original for ScratchX made by Sayamindu Dasgupta on April 2014
+// Name: Test to speech
+// ID: testToSpeech
+// Description: Make your project reat dext out loud
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Dec 18, 2023
+// Notes: Based on a ScratchX extension created by Sayamindu Dasgupta on April 2014
 
 (function (Scratch) {
     'use strict';
@@ -9,7 +16,7 @@
     }
     
     if (window.SpeechSynthesisUtterance === undefined) {
-      throw new Error('Your browser does not support text to speech');
+      alert('Your browser does not support text to speech');
     }
     
     class TextToSpeech {
