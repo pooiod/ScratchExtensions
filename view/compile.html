@@ -264,7 +264,7 @@
                 return;
             }
 
-            const url = await response.text();
+            var url = await response.text();
             url = url.trim();
 
             const url2 = `https://studio.penguinmod.com/editor.html?project_url=${encodeURIComponent(url)}`;

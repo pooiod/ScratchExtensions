@@ -121,8 +121,11 @@
                     {
                         opcode: 'currentSeeders',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Current seeders'
+                        text: 'Connected users'
                     },
+
+                    "---",
+
                     {
                         opcode: 'setDisplayName',
                         blockType: Scratch.BlockType.COMMAND,
@@ -145,6 +148,9 @@
                             }
                         }
                     },
+
+                    "---",
+
                     {
                         opcode: 'addFile',
                         blockType: Scratch.BlockType.COMMAND,
@@ -176,6 +182,25 @@
                             }
                         }
                     },
+
+                    "---",
+
+                    {
+                        opcode: 'getFile',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get file [FILENAME] as [FORMAT]',
+                        arguments: {
+                            FILENAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'hello.txt'
+                            },
+                            FORMAT: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'fileFormats',
+                                defaultValue: 'Raw'
+                            }
+                        }
+                    },
                     {
                         opcode: 'search',
                         blockType: Scratch.BlockType.REPORTER,
@@ -192,6 +217,20 @@
                             }
                         }
                     },
+                    {
+                        opcode: 'computeIntegrity',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Integrity ID of [CONTENT]',
+                        arguments: {
+                            CONTENT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'Hello, world'
+                            }
+                        }
+                    },
+
+                    "---",
+
                     {
                         opcode: 'startDownload',
                         blockType: Scratch.BlockType.COMMAND,
@@ -236,6 +275,9 @@
                             }
                         }
                     },
+
+                    "---",
+
                     {
                         opcode: 'exportDownload',
                         blockType: Scratch.BlockType.REPORTER,
@@ -258,6 +300,9 @@
                             }
                         }
                     },
+
+                    "---",
+
                     {
                         opcode: 'listDownloads',
                         blockType: Scratch.BlockType.REPORTER,
@@ -282,33 +327,6 @@
                             FILE: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: 'hello.txt'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'getFile',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get file [FILENAME] as [FORMAT]',
-                        arguments: {
-                            FILENAME: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'hello.txt'
-                            },
-                            FORMAT: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: 'fileFormats',
-                                defaultValue: 'Raw'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'computeIntegrity',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Integrity of [CONTENT]',
-                        arguments: {
-                            CONTENT: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'Hello, world'
                             }
                         }
                     }

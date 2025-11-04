@@ -108,9 +108,10 @@ Cancel download [hello.txt] :: #4C7C8E
 ```
 
 Downloads can also be exported to continue later.
-ThYouen resume an exported download by using the exported JSON with the same `Start downloading` block from before.
+You can resume an exported download by using the exported JSON with the `importDownload` block.
 ```scratch3
 Export download [hello.txt] :: reporter #4C7C8E
+Import download [{"file":"hello.txt","integrity":"001128","chunkSize":524288,"totalChunks":null,"received":{}}] :: #4C7C8E
 ```
 
 ### Getting a file
@@ -136,7 +137,7 @@ set [sum v] to [0]
 repeat (length of (CONTENT))
 change [sum v] by (ascii of (letter (repeat index) of (CONTENT)) :: #0076b6)
 end
-return (join [000000] ((sum) mod (1000000))) :: custom cap
+return (extend ((sum) mod (1000000)) to length [6] using [0] :: #0076b6) :: custom cap
 ```
 
 Generate one from any text using the `Integrity of content` block
