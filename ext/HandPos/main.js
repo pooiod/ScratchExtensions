@@ -1,4 +1,12 @@
-// Get hand positions in scratch (made by pooiod7)
+// Name: Hand Positions
+// ID: P7HandPos
+// Description: Hand tracking for Scratch
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Feb 11, 2025
+// Notes: Has a mem leak if the camera is enabled more than once
 
 (function(Scratch) {
     'use strict';

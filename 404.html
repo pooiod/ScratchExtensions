@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container h1 {
+            margin: 0;
+        }
+        .container p {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            color: #777;
+        }
+        .container a {
+            color: #555;
+        }
+        .container img {
+            height: 40vh;
+            width: auto;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #000;
+                color: #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><img src="/extras/images/ErrorPageAxolotl.svg"></h1>
+        <p>
+            This file could not be found<br>
+            Click <a href="/" target="_parent">here</a> to go to the home page.
+        </p>
+    </div>
+</body>
+</html>

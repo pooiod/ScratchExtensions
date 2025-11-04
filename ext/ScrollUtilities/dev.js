@@ -1,4 +1,11 @@
-// Scroll Utilities by pooiod7
+// Name: Scroll Utilities
+// ID: p7ScrollUtilities
+// Description: Detect user scrolling on the page
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main dev
+// Unsandboxed: true
+// WIP: true
+// Created: Oct 5, 2023
 
 (function (Scratch) {
 	'use strict';

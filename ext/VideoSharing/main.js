@@ -1,5 +1,15 @@
 // Video sharing (v2.5.2) by pooiod7
 
+// Name: Video Sharing
+// ID: p7videosharing
+// Version: 2.5.2
+// Description: Share your screen or your camera as a data uri.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Oct 2, 2023
+
 (function(Scratch) {
   'use strict';
 

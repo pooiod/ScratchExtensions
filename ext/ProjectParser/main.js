@@ -1,4 +1,11 @@
-// ProjectParser by pooiod7
+// Name: Project Parser
+// ID: P7ProjectParser
+// Description: Load and parse Scratch3 projects
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: false
+// Created: Mar 30, 2025
 
 (function (Scratch) {
     "use strict";

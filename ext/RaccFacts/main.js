@@ -1,4 +1,11 @@
-// Random racoon extension because why not. (made by pooiod7)
+// Name: Raccoon Facts
+// ID: RaccFacts
+// Description: Random racoon extension because why not
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: false
+// WIP: false
+// Created: Deg 8, 2024
 
 (function(Scratch) {
     'use strict';

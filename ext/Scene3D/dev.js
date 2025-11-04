@@ -1,4 +1,11 @@
-// work in progress 3D extension
+// Name: Scene 3D
+// ID: P7Scene3D
+// Description: 
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev
+// Unsandboxed: true
+// WIP: true
+// Created: Feb 9, 2025
 
 (function(Scratch) {
 	'use strict';

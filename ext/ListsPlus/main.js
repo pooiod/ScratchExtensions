@@ -1,4 +1,12 @@
-// ListsPlus by scratch.mit.edu/users/pooiod7
+// Name: ListsPlus
+// ID: listsPlus
+// Description: Create lists inside of lists
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: false
+// WIP: false
+// Created: Jun 15, 2023
+// Notes: Basically just arrays
 
 (function(Scratch) {
     'use strict';

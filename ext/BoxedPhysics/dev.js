@@ -1,9 +1,15 @@
-// Name: Boxed Physics
+// Name: Boxed Physics (dev build)
 // ID: P7BoxPhys
 // Description: An implementation the Box2D physics engine with support for joints, springs, sliders, and more.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
 // Original: Griffpatch
 // License: zlib
+// Builds: dev main
+// Unsandboxed: true
+// WIP: true
+// Created: Apr 15, 2024
+// Docs: /docs/#/BoxedPhysics
+// Notes: This extension was originally based on the Box2D Physics extension for ScratchX by Griffpatch. The original extension is still available at this link <a href="http://griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js">griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js</a>
 
 // Report issues with this extension at https://p7scratchextensions.pages.dev/reportissue
 /* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
@@ -13,7 +19,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "09/24/2025";
+	var b2Dupdated = "10/27/2025";
 	var publishedUpdateIndex = 26;
 
 	if (!Scratch.extensions.unsandboxed) {
@@ -22,7 +28,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 	var b2Vec2, b2AABB, b2BodyDef, b2Body, b2FixtureDef, b2Fixture, b2World, b2MassData, b2PolygonShape, b2CircleShape, b2DebugDraw, b2MouseJointDef;
 	var b2Dworld, fixDef; var mousePVec, selectedBody, prb2djaxisX, prb2djaxisY, prb2djl, prb2dju;
-	var b2Dzoom = 50; var b2Math;
+	var b2Dzoom = 50; var b2Math, ispinned;
 
 	var physdebugmode = true;
 	var wipblocks = physdebugmode;
@@ -907,13 +913,13 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				],
 				menus: {
 					sceneType: ['semi-closed stage', 'boxed stage', 'opened stage', 'nothing'],
-					BodyTypePK: ['dynamic', 'static'],
+					BodyTypePK: ['dynamic', 'static', 'fixed with rotation'],
 					BodyTypePK2: ['dynamic', 'static', 'any'],
 					bodyAttr: ['damping', 'rotational damping'],
 					bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction', 'pressure'],
 					ForceType: ['Impulse', 'World Impulse'],
 					AngForceType: ['Impulse'],
-					JointType: ['Rotating', 'Spring', 'Weld', 'Slider'/*, 'Mouse'*/],
+					JointType: ['Rotating', 'Spring', 'Weld', 'Slider'],
 					JointAttr: ['Motor On', 'Motor Speed', 'Max Torque', 'Limits On', 'Lower Limit', 'Upper Limit'],
 					JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'tension'],
 					xyp: ['x', 'y', 'point'],
@@ -1029,6 +1035,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 			fixDef.shape = new b2CircleShape; // Default shape is circle 100
 			fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+			ispinned = false;
 
 			this.impacts = [];
 			this.scraping = [];
@@ -1104,6 +1111,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			var fric = args.FRICTION;
 			var rest = args.BOUNCE;
 
+			ispinned = stat == 'fixed with rotation';
 			bodyDef.type = stat === 'static' ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
 			fixDef.density = dens;          // 1.0
 			fixDef.friction = fric;        // 0.5
@@ -1330,6 +1338,12 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			body.uid = id;
 			body.CreateFixture(fixDef);
 			bodies[id] = body;
+
+			if (ispinned) {
+				var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+				jointDef.Initialize(body, b2Dworld.GetGroundBody(), body.GetWorldCenter());
+				b2Dworld.CreateJoint(jointDef);
+			}
 		}
 
 		setObjectLayer({ NAME, LAYERS }) {
@@ -1662,7 +1676,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				}
 				contacts = contacts.next;
 			}
-			
+
 			return touchingObjects.join(', ');
 		}
 

@@ -1,6 +1,12 @@
-// Chat bot with ai (c.ai) v1.5
-
-// This extension is currently inactive, and should NOT be used
+// Name: Chat AI
+// ID: chatai
+// Description: 
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev
+// Unsandboxed: true
+// WIP: true
+// Created: Oct 20, 2023
+// Notes: This extension does not work anymore (v1.5)
 
 (async function(Scratch) {
     'use strict';

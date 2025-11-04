@@ -1,4 +1,11 @@
-// A simple page opening extension by pooiod7
+// Name: Page Opener
+// ID: p7PageOpener
+// Description: Open web links from scratch
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main legacy
+// Unsandboxed: true
+// WIP: false
+// Created: Dec 5, 2024
 
 (function (Scratch) {
     'use strict';

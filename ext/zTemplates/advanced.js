@@ -1,4 +1,15 @@
-// Scratch3 advanced extension template
+// Name: 
+// ID: 
+// Version: 
+// Updated: 
+// Description: 
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: 
+// Unsandboxed: 
+// WIP: 
+// Created: 
+// Docs: 
+// Notes: 
 
 (function(Scratch) {
 	'use strict';
