@@ -182,6 +182,11 @@
                             }
                         }
                     },
+                    {
+                        opcode: 'removeFiles',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Remove all files'
+                    },
 
                     "---",
 
@@ -1099,6 +1104,11 @@
         async removeFile(args) {
             await this._makeSureConnected();
             delete this.files[args.FILENAME];
+        }
+
+        async removeFiles() {
+            await this._makeSureConnected();
+            this.files = {};
         }
 
         async progress(args) {

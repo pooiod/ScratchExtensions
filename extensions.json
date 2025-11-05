@@ -100,9 +100,9 @@
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
+            { "text": "Example project", "color": "#cbe0f2", "link": "/ext/[id]/demo.html" }
         ],
-        "unised": { "text": "Example project", "color": "#cbe0f2", "link": "/ext/[id]/demo.html" },
         "tags": ["finished"],
         "type": ["unsandboxed"],
         "hidden": false
