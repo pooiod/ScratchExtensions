@@ -2,7 +2,7 @@
 FilePile lets you implament a file sharing system in your projects.
 You can almost compare it to a google drive folder where anyone can upload files.
 
-> Note: FilePile should not be used for the distribution of executable files. This includes applications, code, and anything that can potentially do harm. <br>
+> Note: FilePile should not be used for the distribution of executable files. This includes applications, unsandboxed code, and anything that can potentially do harm. <br>
 > This extension is made for tasks like level sharing and distribution of assets. Please use with respect.
 
 ---
@@ -62,15 +62,26 @@ different project types.
 Search for [hello] in [File Name v] :: reporter #4C7C8E
 ```
 
-Modes:
+The search function works by sending th search query to all active clients. 
+Every client will then do a search on their local files and send the result back.
+Because of this, there is a minimum time (5 seconds) that FilePile will wait for requests. 
+After every 50 files recived, it will add an extra 2 seconds, maxing out at 60 added seconds.
+
+The minimum time can be changed with this block:
+```scratch3
+Set search time to [5] seconds :: #4C7C8E
+```
+
+Searching for files can be done using 3 different modes
 * **File Name** – matches text in file names
 * **File Text** – searches the content of files for text
 * **File Content** – uses hex input for searching the content of non-text files
 
-You can use filters:
+You can also use search filters
 * `filetype:txt`
 * `integrity:230421`
 * `size>200` (works in bites and can accept > < and =)
+* `from:displayname` (search for files by user)
 * `-"excludeThis"` (can be combined with other filters like `-filetype:txt`)
 * `OR` (combine searches: `filetype:txt OR filetype:png`)
 * `*` (returns all files found)
@@ -134,8 +145,11 @@ This makes sure that even small changes in the content will produce a different 
 ```scratch3
 define Integrity of content (CONTENT)
 set [sum v] to [0]
+if <(length of (CONTENT)) = [0]> then
+    return [000000] :: #0076b6
+end
 repeat (length of (CONTENT))
-change [sum v] by (ascii of (letter (repeat index) of (CONTENT)) :: #0076b6)
+    set [sum v] to (((sum) + (ascii of (letter (repeat index) of (CONTENT)) :: #0076b6)) mod (1000000))
 end
 return (extend ((sum) mod (1000000)) to length [6] using [0] :: #0076b6) :: custom cap
 ```
