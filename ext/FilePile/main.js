@@ -100,6 +100,7 @@
             this.MAX_CHUNK_BYTES = 524288;
             this.DEFAULT_RETRIES = 6;
             this.DEFAULT_CONCURRENCY = 8;
+            this.MinSearchTime = 5;
         }
 
         getInfo() {
@@ -148,6 +149,17 @@
                             }
                         }
                     },
+                    {
+                        opcode: 'changeMinSearchTime',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set search time to [TIME]',
+                        arguments: {
+                            TIME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: this.MinSearchTime
+                            }
+                        }
+                    },
 
                     "---",
 
@@ -193,7 +205,7 @@
                     {
                         opcode: 'getFile',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get file [FILENAME] as [FORMAT]',
+                        text: 'Get content from file [FILENAME] as [FORMAT]',
                         arguments: {
                             FILENAME: {
                                 type: Scratch.ArgumentType.STRING,
@@ -408,7 +420,7 @@
             }
         }
 
-        _onMessage(m) {
+        async _onMessage(m) {
             try {
                 const data = JSON.parse(m.payloadString);
                 if (!data || !data.type) return;
@@ -416,7 +428,7 @@
                     this.seeders[data.name] = Date.now();
                 }
                 if (data.type === 'search' && data.from && data.searchId) {
-                    const results = this._localSearchEntries(data.query, data.mode || 'File Name');
+                    const results = await this._localSearchEntries(data.query, data.mode || 'File Name');
                     for (let i = 0; i < results.length; i++) {
                         const r = results[i];
                         const payload = {
@@ -429,6 +441,7 @@
                             score: r.score,
                             from: this.displayName
                         };
+                        if (i % 1000 === 0) await new Promise(r => setTimeout(r, 0));
                         const msg = new Paho.MQTT.Message(JSON.stringify(payload));
                         msg.destinationName = 'FilePile/' + this.room;
                         try { this.client.send(msg); } catch (e) { }
@@ -694,16 +707,19 @@
             return dp[m][n];
         }
 
-        _localSearchEntries(query, mode) {
+        async _localSearchEntries(query, mode) {
             const res = [];
             const orClauses = this._parseQueryToOrClauses(query || '');
-            for (const name in this.files) {
+            const fileNames = Object.keys(this.files);
+            for (let i = 0; i < fileNames.length; i++) {
+                const name = fileNames[i];
                 const e = this.files[name];
                 const entry = { file: name, integrity: e.integrity || this._integrity(e.content || ''), sizeBits: e.sizeBits || ((e.content || '').length * 8), content: e.content };
                 if (this._entryMatchesOrClauses(entry, orClauses, mode)) {
                     entry.score = this._scoreEntryAgainstQuery(entry, query, mode);
                     res.push(entry);
                 }
+                if (i % 1000 === 0) await new Promise(r => setTimeout(r, 0));
             }
             return res;
         }
@@ -731,7 +747,7 @@
             }));
             msg.destinationName = 'FilePile/' + this.room;
             try { if (this.client) this.client.send(msg); } catch (e) { }
-            const baseTime = 1000;
+            const baseTime = this.MinSearchTime * 1000;
             const start = Date.now();
             let timeout = baseTime;
             while (true) {
@@ -739,13 +755,13 @@
                 const count = (this.searchResponses[sid] || []).length;
                 const extraSec = Math.min(59, Math.floor(count / 50));
                 if (extraSec > 0) {
-                    timeout = baseTime + extraSec * 1000;
+                    timeout = baseTime + extraSec * 2000;
                 } else {
                     break;
                 }
                 if ((Date.now() - start) > 60000) break;
             }
-            const local = this._localSearchEntries(queryRaw, mode);
+            const local = await this._localSearchEntries(queryRaw, mode);
             const remote = this.searchResponses[sid] || [];
             const combined = [];
             const seen = {};
@@ -1077,10 +1093,15 @@
             return this.room;
         }
 
-        async setRoom(args) {
+        async changeMinSearchTime(args) {
             await this._makeSureConnected();
             this.room = args.KEY;
             try { if (this.client) this.client.subscribe('FilePile/' + this.room); } catch (e) { }
+        }
+
+        async changeMinSearchTime(args) {
+            await this._makeSureConnected();
+            this.MinSearchTime = args.TIME;
         }
 
         async addFile(args) {
