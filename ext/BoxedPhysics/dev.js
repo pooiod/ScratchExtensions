@@ -10,6 +10,7 @@
 // Created: Apr 15, 2024
 // Docs: /docs/#/BoxedPhysics
 // Notes: This extension was originally based on the Box2D Physics extension for ScratchX by Griffpatch. The original extension is still available at this link <a href="http://griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js">griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js</a>
+// This extension has been tested on Turbowarp, PenguinMod, ShailIDE, and LibreKitten.
 
 // Report issues with this extension at https://p7scratchextensions.pages.dev/reportissue
 /* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
@@ -633,6 +634,29 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							VALUE: {
 								type: Scratch.ArgumentType.NUMBER,
 								defaultValue: 0,
+							},
+						},
+					},
+					{
+						opcode: 'changeSpring',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Redefine Spring [JOINTID], Length: [LENGTH] Damping: [DAMPING] Freq: [FREQ]',
+						arguments: {
+							JOINTID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Joint ID',
+							},
+							LENGTH: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 100,
+							},
+							DAMPING: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 0.7,
+							},
+							FREQ: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 5,
 							},
 						},
 					},
@@ -1801,6 +1825,23 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			defSpring.len = len < 0.1 ? 0.1 : len / b2Dzoom;
 			defSpring.damp = damp < 0 ? 0.7 : damp;
 			defSpring.freq = freq > 0 ? freq : 5;
+		}
+
+		changeSpring(args) {
+			var joint = joints[args.JOINTID];
+			var len = args.LENGTH;
+			var damp = args.DAMPING;
+			var freq = args.FREQ;
+
+			defSpring.len = len < 0.1 ? 0.1 : len / b2Dzoom;
+			defSpring.damp = damp < 0 ? 0.7 : damp;
+			defSpring.freq = freq > 0 ? freq : 5;
+
+			if (joint) {
+				joint.SetLength(defSpring.len);
+				joint.SetDampingRatio(defSpring.damp);
+				joint.SetFrequency(defSpring.freq);
+			}
 		}
 
 		definePrismatic(args) {
