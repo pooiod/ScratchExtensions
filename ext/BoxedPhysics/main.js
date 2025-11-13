@@ -1005,8 +1005,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					xy: ['x', 'y'],
 					modes: ['normal', 'bullet'],
 					rotModes: [
-						{ text: "dynamic", value: "false" },
-						{ text: "fixed", value: "true" }
+						{ text: "dynamic", value: false },
+						{ text: "fixed", value: true }
 					],
 					costumeType: [
 						{ text: "Convex Hull", value: "hull" },
@@ -1439,7 +1439,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 		setFixedRotation({ NAME, MODE }) {
 			var body = bodies[NAME];
 			if (!body) return '';
-			body.gravityScale = (MODE == 'true');
+			body.SetFixedRotation(MODE);
 		}
 
 		setObjectLayer({ NAME, LAYERS }) {
