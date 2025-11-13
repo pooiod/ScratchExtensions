@@ -4,9 +4,9 @@
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
 // Original: Griffpatch
 // License: zlib
-// Builds: dev main
+// Builds: main dev
 // Unsandboxed: true
-// WIP: true
+// WIP: false
 // Created: Apr 15, 2024
 // Docs: /docs/#/BoxedPhysics
 // Notes: This extension was originally based on the Box2D Physics extension for ScratchX by Griffpatch. The original extension is still available at this link <a href="http://griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js">griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js</a>
