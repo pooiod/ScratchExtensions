@@ -20,8 +20,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "10/27/2025";
-	var publishedUpdateIndex = 26;
+	var b2Dupdated = "11/13/2025";
+	var publishedUpdateIndex = 27;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -130,6 +130,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'defineCircle',
 						blockType: Scratch.BlockType.COMMAND,
@@ -179,6 +180,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							}
 						}
 					},
+
 					{
 						opcode: 'placeBody',
 						blockType: Scratch.BlockType.COMMAND,
@@ -204,7 +206,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					},
 					{
 						opcode: 'ispoly',
-						hideFromPalette: !wipblocks,
 						blockType: Scratch.BlockType.BOOLEAN,
 						text: 'Is [POINTS] a polygon?',
 						arguments: {
@@ -236,6 +237,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Destroy every object',
 					},
+
 					{
 						opcode: 'changeHull',
 						blockType: Scratch.BlockType.COMMAND,
@@ -247,21 +249,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
-					{
-						opcode: 'setObjectLayer',
-						blockType: Scratch.BlockType.COMMAND,
-						text: 'Set object [NAME] to be on collision layer [LAYERS]',
-						arguments: {
-							LAYERS: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: '1',
-							},
-							NAME: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: 'Object',
-							},
-						},
-					},
+
 					{
 						opcode: 'setBodyAttr',
 						blockType: Scratch.BlockType.COMMAND,
@@ -281,6 +269,23 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
+					{
+						opcode: 'setObjectLayer',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [NAME] to be on collision layer [LAYERS]',
+						arguments: {
+							LAYERS: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: '1',
+							},
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+						},
+					},
+
 					{
 						opcode: 'applyForceToBody',
 						blockType: Scratch.BlockType.COMMAND,
@@ -333,6 +338,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'changevel',
 						blockType: Scratch.BlockType.COMMAND,
@@ -398,6 +404,37 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							NAME: {
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: "Object",
+							},
+						},
+					},
+
+					{
+						opcode: 'setBullet',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [NAME] to use [MODE] mode',
+						arguments: {
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+							MODE: {
+								type: Scratch.ArgumentType.STRING,
+								menu: 'modes',
+							},
+						},
+					},
+					{
+						opcode: 'setFixedRotation',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [NAME] to have [MODE] rotation',
+						arguments: {
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+							MODE: {
+								type: Scratch.ArgumentType.STRING,
+								menu: 'rotModes',
 							},
 						},
 					},
@@ -471,6 +508,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'getBodyAttr',
 						blockType: Scratch.BlockType.REPORTER,
@@ -486,6 +524,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'getobjects',
 						disableMonitor: true,
@@ -532,6 +571,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'createJointOfType',
 						blockType: Scratch.BlockType.COMMAND,
@@ -617,6 +657,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Destroy every joint',
 					},
+
 					{
 						opcode: 'setJointAttr',
 						blockType: Scratch.BlockType.COMMAND,
@@ -637,6 +678,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'changeSpring',
 						blockType: Scratch.BlockType.COMMAND,
@@ -644,7 +686,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						arguments: {
 							JOINTID: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: 'Joint ID',
+								defaultValue: 'Spring',
 							},
 							LENGTH: {
 								type: Scratch.ArgumentType.NUMBER,
@@ -679,6 +721,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'getJointAttr',
 						blockType: Scratch.BlockType.REPORTER,
@@ -694,6 +737,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'getjoints',
 						disableMonitor: true,
@@ -726,6 +770,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'physoptions',
 						blockType: Scratch.BlockType.COMMAND,
@@ -749,6 +794,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'setWorldForces',
 						blockType: Scratch.BlockType.COMMAND,
@@ -764,6 +810,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							}
 						},
 					},
+
 					{
 						opcode: 'getsimspeed',
 						blockType: Scratch.BlockType.REPORTER,
@@ -780,6 +827,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: 'stepSimulation',
 						blockType: Scratch.BlockType.COMMAND,
@@ -834,6 +882,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: "magnitudeOfPoint",
 						blockType: Scratch.BlockType.REPORTER,
@@ -849,6 +898,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+
 					{
 						opcode: "distanceOfPoint",
 						blockType: Scratch.BlockType.REPORTER,
@@ -934,10 +984,15 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
 						text: "Upcoming blocks (project corruption warning)"
 					}
+					{
+						hideFromPalette: !wipblocks,
+						blockType: Scratch.BlockType.LABEL,
+						text: "No wip blocks right now :/"
+					}
 				],
 				menus: {
 					sceneType: ['semi-closed stage', 'boxed stage', 'opened stage', 'nothing'],
-					BodyTypePK: ['dynamic', 'static', 'fixed with rotation'],
+					BodyTypePK: ['dynamic', 'static', 'kinematic', 'fixed with rotation'],
 					BodyTypePK2: ['dynamic', 'static', 'any'],
 					bodyAttr: ['damping', 'rotational damping'],
 					bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction', 'pressure'],
@@ -948,6 +1003,11 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'tension'],
 					xyp: ['x', 'y', 'point'],
 					xy: ['x', 'y'],
+					modes: ['normal', 'bullet'],
+					rotModes: [
+						{ text: "dynamic", value: "false" },
+						{ text: "fixed", value: "true" }
+					],
 					costumeType: [
 						{ text: "Convex Hull", value: "hull" },
 						{ text: "Edge points", value: "img" }
@@ -962,7 +1022,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			if (input == "version") {
 				return publishedUpdateIndex;
 			} else if (input == "lib") {
-				return "Box2D JS es6 (Uli Hecht's port of Box2D flash)";
+				return "Box2D JS es6 (Uli Hecht's port of Box2D flash 2.2)";
 			} else if (input == "maker") {
 				return "pooiod7";
 			} else if (input == "base") {
@@ -1136,7 +1196,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			var rest = args.BOUNCE;
 
 			ispinned = stat == 'fixed with rotation';
-			bodyDef.type = stat === 'static' ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
+			bodyDef.type = stat === 'static' ? b2Body.b2_staticBody : (stat === 'kinematic'? b2Body.b2_kinematicBody : b2Body.b2_dynamicBody);
 			fixDef.density = dens;          // 1.0
 			fixDef.friction = fric;        // 0.5
 			fixDef.restitution = rest;    // 0.2
@@ -1370,6 +1430,18 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
+		setBullet({ NAME, MODE }) {
+			var body = bodies[NAME];
+			if (!body) return '';
+			body.SetBullet(MODE == 'bullet');
+		}
+
+		setFixedRotation({ NAME, MODE }) {
+			var body = bodies[NAME];
+			if (!body) return '';
+			body.gravityScale = (MODE == 'true');
+		}
+
 		setObjectLayer({ NAME, LAYERS }) {
 			var body = bodies[NAME];
 			if (!body) return '';
@@ -1589,9 +1661,10 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				case 'damping': return body.GetAngularDamping();
 				case 'rotational damping': return body.GetLinearDamping();
 
-				case 'awake': return body.IsAwake() ? 1 : 0;
+				case 'awake': return body.IsAwake() ? true : false;
 
-				case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
+				case 'static': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
+				case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 'static' : (body.GetType() === Box2D.Dynamics.b2Body.b2_kinematicBody ? 'kinematic' : 'dynamic');
 
 				case 'friction': return this.getFriction({ NAME: args.NAME });
 				case 'pressure': return this.getPressure(body);
@@ -1841,6 +1914,19 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				joint.SetLength(defSpring.len);
 				joint.SetDampingRatio(defSpring.damp);
 				joint.SetFrequency(defSpring.freq);
+
+				const stack = [joint.GetBodyA(), joint.GetBodyB()];
+				const visited = new Set();
+				while (stack.length) {
+					const body = stack.pop();
+					if (!body || visited.has(body)) continue;
+						visited.add(body);
+						body.SetAwake(true);
+						for (let edge = body.GetJointList(); edge; edge = edge.next) {
+						const other = edge.other;
+						if (other && !visited.has(other)) stack.push(other);
+					}
+				}
 			}
 		}
 

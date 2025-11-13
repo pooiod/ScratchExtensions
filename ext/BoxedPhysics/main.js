@@ -4,19 +4,24 @@
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
 // Original: Griffpatch
 // License: zlib
-// Builds: main dev
+// Builds: dev main
 // Unsandboxed: true
-// WIP: false
+// WIP: true
 // Created: Apr 15, 2024
 // Docs: /docs/#/BoxedPhysics
 // Notes: This extension was originally based on the Box2D Physics extension for ScratchX by Griffpatch. The original extension is still available at this link <a href="http://griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js">griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js</a>
+// This extension has been tested on Turbowarp, PenguinMod, ShailIDE, and LibreKitten.
+
 // Report issues with this extension at https://p7scratchextensions.pages.dev/reportissue
+/* This extension was originally a port of the Box2D Physics extension for ScratchX by Griffpatch, 
+but has since deviated to be its own thing. (made with box2D js es6)
+*/// You can find a direct port here: https://p7scratchextensions.pages.dev/view/#/BoxedPhysics/griffpatch.js
 
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "09/24/2025";
-	var publishedUpdateIndex = 26;
+	var b2Dupdated = "11/13/2025";
+	var publishedUpdateIndex = 27;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -24,7 +29,7 @@
 
 	var b2Vec2, b2AABB, b2BodyDef, b2Body, b2FixtureDef, b2Fixture, b2World, b2MassData, b2PolygonShape, b2CircleShape, b2DebugDraw, b2MouseJointDef;
 	var b2Dworld, fixDef; var mousePVec, selectedBody, prb2djaxisX, prb2djaxisY, prb2djl, prb2dju;
-	var b2Dzoom = 50; var b2Math;
+	var b2Dzoom = 50; var b2Math, ispinned;
 
 	var physdebugmode = false;
 	var wipblocks = physdebugmode;
@@ -125,6 +130,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'defineCircle',
 						blockType: Scratch.BlockType.COMMAND,
@@ -174,6 +180,7 @@
 							}
 						}
 					},
+
 					{
 						opcode: 'placeBody',
 						blockType: Scratch.BlockType.COMMAND,
@@ -199,7 +206,6 @@
 					},
 					{
 						opcode: 'ispoly',
-						hideFromPalette: !wipblocks,
 						blockType: Scratch.BlockType.BOOLEAN,
 						text: 'Is [POINTS] a polygon?',
 						arguments: {
@@ -231,6 +237,7 @@
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Destroy every object',
 					},
+
 					{
 						opcode: 'changeHull',
 						blockType: Scratch.BlockType.COMMAND,
@@ -242,21 +249,7 @@
 							},
 						},
 					},
-					{
-						opcode: 'setObjectLayer',
-						blockType: Scratch.BlockType.COMMAND,
-						text: 'Set object [NAME] to be on collision layer [LAYERS]',
-						arguments: {
-							LAYERS: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: '1',
-							},
-							NAME: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: 'Object',
-							},
-						},
-					},
+
 					{
 						opcode: 'setBodyAttr',
 						blockType: Scratch.BlockType.COMMAND,
@@ -276,6 +269,23 @@
 							},
 						},
 					},
+
+					{
+						opcode: 'setObjectLayer',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [NAME] to be on collision layer [LAYERS]',
+						arguments: {
+							LAYERS: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: '1',
+							},
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+						},
+					},
+
 					{
 						opcode: 'applyForceToBody',
 						blockType: Scratch.BlockType.COMMAND,
@@ -328,6 +338,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'changevel',
 						blockType: Scratch.BlockType.COMMAND,
@@ -393,6 +404,37 @@
 							NAME: {
 								type: Scratch.ArgumentType.STRING,
 								defaultValue: "Object",
+							},
+						},
+					},
+
+					{
+						opcode: 'setBullet',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [NAME] to use [MODE] mode',
+						arguments: {
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+							MODE: {
+								type: Scratch.ArgumentType.STRING,
+								menu: 'modes',
+							},
+						},
+					},
+					{
+						opcode: 'setFixedRotation',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set object [NAME] to have [MODE] rotation',
+						arguments: {
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+							MODE: {
+								type: Scratch.ArgumentType.STRING,
+								menu: 'rotModes',
 							},
 						},
 					},
@@ -466,6 +508,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'getBodyAttr',
 						blockType: Scratch.BlockType.REPORTER,
@@ -481,6 +524,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'getobjects',
 						disableMonitor: true,
@@ -527,6 +571,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'createJointOfType',
 						blockType: Scratch.BlockType.COMMAND,
@@ -612,6 +657,7 @@
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Destroy every joint',
 					},
+
 					{
 						opcode: 'setJointAttr',
 						blockType: Scratch.BlockType.COMMAND,
@@ -629,6 +675,30 @@
 							VALUE: {
 								type: Scratch.ArgumentType.NUMBER,
 								defaultValue: 0,
+							},
+						},
+					},
+
+					{
+						opcode: 'changeSpring',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Redefine Spring [JOINTID], Length: [LENGTH] Damping: [DAMPING] Freq: [FREQ]',
+						arguments: {
+							JOINTID: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Spring',
+							},
+							LENGTH: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 100,
+							},
+							DAMPING: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 0.7,
+							},
+							FREQ: {
+								type: Scratch.ArgumentType.NUMBER,
+								defaultValue: 5,
 							},
 						},
 					},
@@ -651,6 +721,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'getJointAttr',
 						blockType: Scratch.BlockType.REPORTER,
@@ -666,6 +737,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'getjoints',
 						disableMonitor: true,
@@ -698,6 +770,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'physoptions',
 						blockType: Scratch.BlockType.COMMAND,
@@ -721,6 +794,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'setWorldForces',
 						blockType: Scratch.BlockType.COMMAND,
@@ -736,6 +810,7 @@
 							}
 						},
 					},
+
 					{
 						opcode: 'getsimspeed',
 						blockType: Scratch.BlockType.REPORTER,
@@ -752,6 +827,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: 'stepSimulation',
 						blockType: Scratch.BlockType.COMMAND,
@@ -806,6 +882,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: "magnitudeOfPoint",
 						blockType: Scratch.BlockType.REPORTER,
@@ -821,6 +898,7 @@
 							},
 						},
 					},
+
 					{
 						opcode: "distanceOfPoint",
 						blockType: Scratch.BlockType.REPORTER,
@@ -906,20 +984,30 @@
 						blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
 						text: "Upcoming blocks (project corruption warning)"
 					}
+					{
+						hideFromPalette: !wipblocks,
+						blockType: Scratch.BlockType.LABEL,
+						text: "No wip blocks right now :/"
+					}
 				],
 				menus: {
 					sceneType: ['semi-closed stage', 'boxed stage', 'opened stage', 'nothing'],
-					BodyTypePK: ['dynamic', 'static'],
+					BodyTypePK: ['dynamic', 'static', 'kinematic', 'fixed with rotation'],
 					BodyTypePK2: ['dynamic', 'static', 'any'],
 					bodyAttr: ['damping', 'rotational damping'],
 					bodyAttrRead: ['x', 'y', 'Xvel', 'Yvel', 'Dvel', 'direction', 'awake', 'type', 'friction', 'pressure'],
 					ForceType: ['Impulse', 'World Impulse'],
 					AngForceType: ['Impulse'],
-					JointType: ['Rotating', 'Spring', 'Weld', 'Slider'/*, 'Mouse'*/],
+					JointType: ['Rotating', 'Spring', 'Weld', 'Slider'],
 					JointAttr: ['Motor On', 'Motor Speed', 'Max Torque', 'Limits On', 'Lower Limit', 'Upper Limit'],
 					JointAttrRead: ['Angle', 'Speed', 'Motor Torque', 'Reaction Torque', 'tension'],
 					xyp: ['x', 'y', 'point'],
 					xy: ['x', 'y'],
+					modes: ['normal', 'bullet'],
+					rotModes: [
+						{ text: "dynamic", value: "false" },
+						{ text: "fixed", value: "true" }
+					],
 					costumeType: [
 						{ text: "Convex Hull", value: "hull" },
 						{ text: "Edge points", value: "img" }
@@ -934,7 +1022,7 @@
 			if (input == "version") {
 				return publishedUpdateIndex;
 			} else if (input == "lib") {
-				return "Box2D JS es6 (Uli Hecht's port of Box2D flash)";
+				return "Box2D JS es6 (Uli Hecht's port of Box2D flash 2.2)";
 			} else if (input == "maker") {
 				return "pooiod7";
 			} else if (input == "base") {
@@ -1031,6 +1119,7 @@
 
 			fixDef.shape = new b2CircleShape; // Default shape is circle 100
 			fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+			ispinned = false;
 
 			this.impacts = [];
 			this.scraping = [];
@@ -1106,7 +1195,8 @@
 			var fric = args.FRICTION;
 			var rest = args.BOUNCE;
 
-			bodyDef.type = stat === 'static' ? b2Body.b2_staticBody : b2Body.b2_dynamicBody;
+			ispinned = stat == 'fixed with rotation';
+			bodyDef.type = stat === 'static' ? b2Body.b2_staticBody : (stat === 'kinematic'? b2Body.b2_kinematicBody : b2Body.b2_dynamicBody);
 			fixDef.density = dens;          // 1.0
 			fixDef.friction = fric;        // 0.5
 			fixDef.restitution = rest;    // 0.2
@@ -1332,6 +1422,24 @@
 			body.uid = id;
 			body.CreateFixture(fixDef);
 			bodies[id] = body;
+
+			if (ispinned) {
+				var jointDef = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+				jointDef.Initialize(body, b2Dworld.GetGroundBody(), body.GetWorldCenter());
+				b2Dworld.CreateJoint(jointDef);
+			}
+		}
+
+		setBullet({ NAME, MODE }) {
+			var body = bodies[NAME];
+			if (!body) return '';
+			body.SetBullet(MODE == 'bullet');
+		}
+
+		setFixedRotation({ NAME, MODE }) {
+			var body = bodies[NAME];
+			if (!body) return '';
+			body.gravityScale = (MODE == 'true');
 		}
 
 		setObjectLayer({ NAME, LAYERS }) {
@@ -1553,9 +1661,10 @@
 				case 'damping': return body.GetAngularDamping();
 				case 'rotational damping': return body.GetLinearDamping();
 
-				case 'awake': return body.IsAwake() ? 1 : 0;
+				case 'awake': return body.IsAwake() ? true : false;
 
-				case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
+				case 'static': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 1 : 0;
+				case 'type': return body.GetType() === Box2D.Dynamics.b2Body.b2_staticBody ? 'static' : (body.GetType() === Box2D.Dynamics.b2Body.b2_kinematicBody ? 'kinematic' : 'dynamic');
 
 				case 'friction': return this.getFriction({ NAME: args.NAME });
 				case 'pressure': return this.getPressure(body);
@@ -1664,7 +1773,7 @@
 				}
 				contacts = contacts.next;
 			}
-			
+
 			return touchingObjects.join(', ');
 		}
 
@@ -1789,6 +1898,36 @@
 			defSpring.len = len < 0.1 ? 0.1 : len / b2Dzoom;
 			defSpring.damp = damp < 0 ? 0.7 : damp;
 			defSpring.freq = freq > 0 ? freq : 5;
+		}
+
+		changeSpring(args) {
+			var joint = joints[args.JOINTID];
+			var len = args.LENGTH;
+			var damp = args.DAMPING;
+			var freq = args.FREQ;
+
+			defSpring.len = len < 0.1 ? 0.1 : len / b2Dzoom;
+			defSpring.damp = damp < 0 ? 0.7 : damp;
+			defSpring.freq = freq > 0 ? freq : 5;
+
+			if (joint) {
+				joint.SetLength(defSpring.len);
+				joint.SetDampingRatio(defSpring.damp);
+				joint.SetFrequency(defSpring.freq);
+
+				const stack = [joint.GetBodyA(), joint.GetBodyB()];
+				const visited = new Set();
+				while (stack.length) {
+					const body = stack.pop();
+					if (!body || visited.has(body)) continue;
+						visited.add(body);
+						body.SetAwake(true);
+						for (let edge = body.GetJointList(); edge; edge = edge.next) {
+						const other = edge.other;
+						if (other && !visited.has(other)) stack.push(other);
+					}
+				}
+			}
 		}
 
 		definePrismatic(args) {

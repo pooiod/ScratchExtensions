@@ -79,7 +79,8 @@ Polygons are a way to get any type of shape widh BoxedPysics.
 
 **Costume-based:**<br>
 For this method, you simply run a single block and a polygon will be generated based on the current costume. <br>
-Please note that this method will not allow for concave objects.
+Please note that this method will not allow for concave objects.<br>
+*Please note that this block does not work for hidden sprites.*
 
 **Point-based:**<br>
 This method allows you to input some x and y values and convert them into a polygon of your liking by taking an array of "x y" values seperated by 3 spaces.<br>
@@ -110,6 +111,12 @@ Dеfine base, Type: [static v] Density: [0.1] Friction: [0.5] Bounce: [2] :: #2c
 Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
+There are 4 types of objects in BoxedPhysics:
+- **Dynamic** Fully simulated physics objects.
+- **Static** A static body does not move under simulation and behaves like a static wall. Static bodies do not collide with other static or kinematic bodies.
+- **Fixed with rotation** Objects that are fixed to a position but can rotate. When getting its type it will appear as a dynamic body.
+- **Kinematic** A kinematic body moves under simulation according to its velocity, but does not respond to outside forces. Kinematic bodies will push any dynamic bodies out of the way and can not be stopped unless the velocity is set directly.
+
 ---
 
 ## Modifying Objects
@@ -120,6 +127,16 @@ The damping of each object can also be changed with the `Set [BODYATTR] of objec
 ```scratch3
 when gf clicked :: cat
 Set [damping v] of object [Object1] to [0.1] :: #2cb0c0
+```
+
+### Bullet mode
+Bullet mode allows small objects to have precise collisions. 
+If you make a small object that moves fast (like a bulet) 
+You can use this mode to prevent it from phasing through other objects.
+
+```scratch3
+when gf clicked :: cat
+Set object [Object1] to use [bullet v] mode :: #2cb0c0
 ```
 
 ### Collision filtering
