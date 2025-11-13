@@ -983,7 +983,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						hideFromPalette: !wipblocks,
 						blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
 						text: "Upcoming blocks (project corruption warning)"
-					}
+					},
 					{
 						hideFromPalette: !wipblocks,
 						blockType: Scratch.BlockType.LABEL,
