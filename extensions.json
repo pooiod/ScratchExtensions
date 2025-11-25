@@ -385,6 +385,23 @@
         "hidden": false
     },
     {
+        "id": "Console",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Consle",
+        "description": "An easy to use console system.",
+        "created": "Nov 25, 2025",
+        "subtext": "",
+        "icon": "/extras/images/icons/new.svg",
+        "iconText": "New extension, please report bugs",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
         "id": "ListsPlus",
         "image": "/ext/[id]/cover.svg",
         "title": "Lists Plus",
