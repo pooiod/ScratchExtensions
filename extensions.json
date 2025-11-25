@@ -6,8 +6,8 @@
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
         "created": "Apr 15, 2024",
         "subtext": "",
-        "icon": "",
-        "iconText": "",
+        "icon": "/extras/images/icons/update.svg",
+        "iconText": "Added the ability to modify more values after creation, another physics object type, and a precision mode for bullets",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },

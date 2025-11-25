@@ -1,4 +1,4 @@
-// Name: Raccoon Facts
+// Name: Racoon Facts
 // ID: RaccFacts
 // Description: Random racoon extension because why not
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
@@ -73,6 +73,19 @@
                         }
                     },
                     {
+                        opcode: 'racoonMeme',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get [TYPE] racoon meme',
+                        disableMonitor: true,
+                        arguments: {
+                            TYPE: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'type',
+                                defaultValue: 'random',
+                            },
+                        }
+                    },
+                    {
                         opcode: 'getWikiInfo',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Wiki info on racoons',
@@ -86,7 +99,18 @@
                     },
                     time: {
                         acceptReporters: true,
-                        items: ['day', 'hour']
+                        items: [
+                            { text: "day", value: "daily" },
+                            { text: "hour", value: "hourly" },
+                            { text: "week", value: "weekly" }
+                        ],
+                    },
+                    type: {
+                        acceptReporters: true,
+                        items: [
+                            { text: "random", value: "random" },
+                            { text: "dayly", value: "daily" }
+                        ],
                     }
                 }
             };
@@ -95,12 +119,12 @@
         async getRandomFact(args) {
             try {
                 if (args.TYPE == "json") {
-                    const response = await fetch('https://some-random-api.com/animal/Raccoon');
+                    const response = await fetch('https://some-random-api.com/animal/racoon');
                     const data = await response.json();
                     if (!data) return 'Could not fetch fact.';
                     return JSON.stringify(data);
                 } else {
-                    const response = await fetch('https://api.racc.lol/v1/fact');
+                    const response = await fetch('https://api.racc.lol/fact');
                     const data = await response.json();
                     return data.data.fact || 'Could not fetch fact.';
                 }
@@ -117,7 +141,7 @@
 
         async getRandomImage() {
             try {
-                const response = await fetch('https://api.racc.lol/v1/raccoon?json=true');
+                const response = await fetch('https://api.racc.lol/raccoon?json=true');
                 const data = await response.json();
                 return data.data.url || 'Error fetching image.';
             } catch (e) {
@@ -127,9 +151,9 @@
 
         async getRandomVideo() {
             try {
-                const response = await fetch('https://api.racc.lol/v1/video?json=true');
+                const response = await fetch('https://api.racc.lol/video?json=true');
                 const data = await response.json();
-                return data.data.url || 'Error fetching image.';
+                return data.data.url || 'Error fetching video.';
             } catch (e) {
                 return 'Error fetching image.';
             }
@@ -137,7 +161,17 @@
 
         async racoonOfThe(args) {
             try {
-                const response = await fetch(`https://api.racc.lol/v1/${args.TIME=="day"?"raccoftheday":"racchour"}?json=true`);
+                const response = await fetch(`https://api.racc.lol/raccoon?json=true&${args.TIME}=true`);
+                const data = await response.json();
+                return data.data.url || 'Error fetching image.';
+            } catch (e) {
+                return 'Error fetching image.';
+            }
+        }
+
+        async racoonMeme(args) {
+            try {
+                const response = await fetch(`https://api.racc.lol/meme?json=true&${args.TYPE}=true`);
                 const data = await response.json();
                 return data.data.url || 'Error fetching image.';
             } catch (e) {
