@@ -207,17 +207,28 @@
 
             if (this.elements && this.elements.shadowHost && this.elements.textarea) {
                 this.autocompleteList = this._scanCommands();
+                this.elements.maindiv.style.transform = 'scale(0.9) translate(-55%, -55%)';
+                this.elements.maindiv.style.opacity = '0';
                 this.elements.shadowHost.style.display = "block";
                 this.elements.textarea.value = this.settings.starter;
                 this.elements.textarea.focus();
+                setTimeout(() => {
+                    this.elements.maindiv.style.transform = 'scale(1) translate(-50%, -50%)';
+                    this.elements.maindiv.style.opacity = '1';
+                }, 100);
             }
         }
 
         hideConsole() {
             if (this.elements && this.elements.shadowHost && this.elements.textarea) {
-                this.elements.shadowHost.style.display = "none";
-                this.elements.textarea.value = "";
+                this.elements.maindiv.style.transform = 'scale(0.9) translate(-55%, -55%)';
+                this.elements.autocompleteDiv.style.display = 'none';
+                this.elements.maindiv.style.opacity = '0';
                 this.elements.textarea.blur();
+                setTimeout(() => {
+                    this.elements.shadowHost.style.display = "none";
+                    this.elements.textarea.value = "";
+                }, 200);
             }
         }
 
@@ -541,6 +552,7 @@
             els.maindiv.style.transform = 'translate(-50%, -50%)';
             els.maindiv.style.border = "1px solid black";
             els.maindiv.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+            els.maindiv.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
             els.maindiv.style.display = 'flex';
             els.maindiv.style.flexDirection = 'column';
             els.maindiv.style.justifyContent = 'space-between';
@@ -574,6 +586,7 @@
             els.textarea.style.boxSizing = 'border-box';
             els.textarea.style.margin = '0';
             els.textarea.style.padding = '5px';
+            els.textarea.style.transition = 'height 0.2s ease';
             els.textarea.style.fontFamily = 'inherit';
             els.textarea.style.fontSize = 'inherit';
             els.textarea.style.color = "white";
@@ -647,7 +660,6 @@
                 if (this.elements.textarea.value.split('\n').length < 2 && this.elements.textarea.value.length < 80) {
                     this.elements.textarea.style.height = maxHeightSingle + 'px';
                 } else {
-                    this.elements.textarea.style.transition = 'height 0.2s ease';
                     this.elements.textarea.style.height = maxHeightMulti + 'px';
                 }
                 updateAutocomplete();
