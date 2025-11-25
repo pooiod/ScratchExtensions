@@ -20,18 +20,17 @@
             this.runtime = Scratch.vm.runtime;
             this.elements = null;
             this.settings = {
-                starter: "/",
-                showVoid: true,
+                starter: ">",
+                showVoid: false,
                 maxSuggestions: 3
             };
             this.autocompleteList = [];
             
             this._triggeringCommand = null;
 
-            this._Stringify = this._Stringify.bind(this);
-            this._prettyPrint = this._prettyPrint.bind(this);
-            this._scanCommands = this._scanCommands.bind(this);
-            this._getLists = this._getLists.bind(this);
+            this.runtime.on('PROJECT_LOADED', () => {
+                this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
+            });
         }
 
         getInfo() {
@@ -43,13 +42,23 @@
                     {
                         opcode: 'initConsole',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Init Console | Starter: [STARTER] | Void Msg: [VOID] | Max Sug: [MAX]',
+                        text: 'Init Console | Starter: [STARTER] | Max Sug: [MAX]',
                         arguments: {
-                            STARTER: { type: Scratch.ArgumentType.STRING, defaultValue: '/' },
-                            VOID: { type: Scratch.ArgumentType.BOOLEAN, defaultValue: true },
-                            MAX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+                            STARTER: { type: Scratch.ArgumentType.STRING, defaultValue: this.settings.starter },
+                            VOID: { type: Scratch.ArgumentType.BOOLEAN, defaultValue: this.settings.showVoid },
+                            MAX: { type: Scratch.ArgumentType.NUMBER, defaultValue: this.settings.maxSuggestions }
                         }
                     },
+                    {
+                        opcode: 'setConsoleSize',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set console size to [WIDTH] x [HEIGHT]',
+                        arguments: {
+                            WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: '50' },
+                            HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: '40' }
+                        }
+                    },
+
                     {
                         opcode: 'showConsole',
                         blockType: Scratch.BlockType.COMMAND,
@@ -65,6 +74,9 @@
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Toggle Console'
                     },
+
+                    "---",
+
                     {
                         opcode: 'logText',
                         blockType: Scratch.BlockType.COMMAND,
@@ -74,18 +86,39 @@
                         }
                     },
                     {
+                        opcode: 'warnText',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Text Warn [TEXT]',
+                        arguments: {
+                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'Warning' }
+                        }
+                    },
+                    {
+                        opcode: 'errorText',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Text Error [TEXT]',
+                        arguments: {
+                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'Error' }
+                        }
+                    },
+
+                    {
                         opcode: 'logPretty',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Pretty Log [TEXT]',
                         arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: '|color:lime;|Success!' }
+                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'Text with |color: lightblue;| color|clear|!' }
                         }
                     },
+
                     {
                         opcode: 'clearConsole',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Clear Console'
                     },
+
+                    "---",
+
                     {
                         opcode: 'onCommand',
                         blockType: Scratch.BlockType.HAT,
@@ -95,6 +128,7 @@
                         },
                         isEdgeActivated: false
                     },
+
                     {
                         opcode: 'getInput',
                         blockType: Scratch.BlockType.REPORTER,
@@ -113,14 +147,24 @@
                             }
                         }
                     },
+
                     {
                         opcode: 'returnResult',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Return [VALUE] to console',
                         isTerminal: true,
                         arguments: {
-                            VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: 'Done!' }
+                            VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
                         }
+                    },
+
+                    "---",
+
+                    {
+                        opcode: 'getCommands',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Commands',
+                        disableMonitor: true
                     }
                 ],
                 menus: {
@@ -138,15 +182,29 @@
                 this.elements = null;
             }
 
-            this.settings.starter = args.STARTER || "/";
-            this.settings.showVoid = args.VOID;
+            this.settings.starter = args.STARTER || "";
+            this.settings.showVoid = false; //args.VOID;
             this.settings.maxSuggestions = args.MAX || 5;
             this.autocompleteList = []; 
 
             this._createDOM();
         }
 
+        setConsoleSize(args) {
+            this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
+
+            if (this.elements && this.elements.maindiv) {
+                const width = parseFloat(args.WIDTH);
+                const height = parseFloat(args.HEIGHT);
+                this.elements.maindiv.style.width = `${width}%`;
+                this.elements.autocompleteDiv.style.width = `${width}%`;
+                this.elements.maindiv.style.height = `${height}%`;
+            }
+        }
+
         showConsole() {
+            if (!this.elements) this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
+
             if (this.elements && this.elements.shadowHost && this.elements.textarea) {
                 this.autocompleteList = this._scanCommands();
                 this.elements.shadowHost.style.display = "block";
@@ -164,6 +222,8 @@
         }
 
         toggleConsole() {
+            if (!this.elements) this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
+
             if (this.elements && this.elements.shadowHost) {
                 if (this.elements.shadowHost.style.display === "none") {
                     this.showConsole();
@@ -175,6 +235,14 @@
 
         logText(args) {
             this._rawLog(args.TEXT);
+        }
+
+        warnText(args) {
+            this._prettyLog("|color:#fff066;|" + args.TEXT);
+        }
+
+        errorText(args) {
+            this._prettyLog("|color:pink;|" + args.TEXT);
         }
 
         logPretty(args) {
@@ -197,6 +265,10 @@
                 return util.thread.customData.consoleSession.args;
             }
             return "";
+        }
+
+        getCommands() {
+            return this._scanCommands().join(", ");
         }
 
         getInputsToList(args, util) {
@@ -270,7 +342,6 @@
 
         _scanCommands() {
             const commands = new Set();
-            commands.add("help");
 
             if (!this.runtime || !this.runtime.targets) return Array.from(commands);
 
@@ -288,7 +359,7 @@
                             if (childBlock && childBlock.fields && childBlock.fields.TEXT) {
                                 const val = childBlock.fields.TEXT.value;
                                 if (val) {
-                                    commands.add(this.settings.starter + val);
+                                    commands.add(this.settings.starter + val.replace(/ /g, "_"));
                                 }
                             }
                         }
@@ -358,7 +429,7 @@
             if (typeof text !== 'string') text = String(text);
 
             if (text.startsWith('<!DOCTYPE html>') || /<!DOCTYPE\s+html/i.test(text)) {
-                return `<iframe style="background:white;border:none;height:30vh;width:calc(50vw - 13px);" src="data:text/html;charset=utf-8,${encodeURIComponent(text.replace(/\\n/g, "\n"))}"></iframe>`;
+                return `<iframe style="background:white;border:none;height:30vh;width:calc(${this.elements.maindiv.style.width} - 13px);" src="data:text/html;charset=utf-8,${encodeURIComponent(text.replace(/\\n/g, "\n"))}"></iframe>`;
             }
 
             if (text.startsWith("img:")) {
@@ -397,9 +468,10 @@
         }
 
         _rawLog(content) {
+            this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
             if (!this.elements || !this.elements.topDiv) return;
 
-            if (content === undefined || content === null) {
+            if (content === undefined || content === null || content === "") {
                 if(this.settings.showVoid) this._prettyLog("|color:lightgrey;|Void");
                 return;
             }
@@ -412,6 +484,7 @@
         }
 
         _prettyLog(content) {
+            this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
             if (!this.elements || !this.elements.topDiv) return;
 
             if (content) {
@@ -602,8 +675,16 @@
                         newValue = text.slice(0, start) + text.slice(end);
                         newCursor = start;
                     } else if (start > 0) {
-                        newValue = text.slice(0, start - 1) + text.slice(end);
-                        newCursor = start - 1;
+                        if (event.ctrlKey) {
+                            const leftText = text.slice(0, start);
+                            const lastSpaceIndex = leftText.lastIndexOf(' ');
+                            const deleteTo = lastSpaceIndex !== -1 ? lastSpaceIndex : 0;
+                            newValue = text.slice(0, deleteTo) + text.slice(end);
+                            newCursor = deleteTo;
+                        } else {
+                            newValue = text.slice(0, start - 1) + text.slice(end);
+                            newCursor = start - 1;
+                        }
                     } else {
                         return;
                     }
@@ -622,14 +703,13 @@
                     if (suggestions.length > 0) {
                         currentIndex = (currentIndex + (event.shiftKey ? -1 : 1) + suggestions.length) % suggestions.length;
                         Array.from(suggestions).forEach((s, i) => {
-                             s.style.backgroundColor = i === currentIndex ? 'rgba(255,255,255,0.2)' : 'transparent';
+                            s.style.backgroundColor = i === currentIndex ? 'rgba(255,255,255,0.2)' : 'transparent';
                         });
                         this.elements.textarea.value = suggestions[currentIndex].innerText.replace(/\[.*?\]/g, '"_"');
                         this.elements.autocompleteDiv.style.display = 'none';
                     }
                 } else if (event.key === 'Enter' && !event.shiftKey) {
                     event.preventDefault();
-                    const val = this.elements.textarea.value.trim();
                     if (val && val !== this.settings.starter) {
                         const displayDiv = document.createElement('div');
                         displayDiv.innerText = val;
