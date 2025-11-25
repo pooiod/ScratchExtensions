@@ -710,6 +710,7 @@
                     }
                 } else if (event.key === 'Enter' && !event.shiftKey) {
                     event.preventDefault();
+                    const val = this.elements.textarea.value.trim();
                     if (val && val !== this.settings.starter) {
                         const displayDiv = document.createElement('div');
                         displayDiv.innerText = val;
