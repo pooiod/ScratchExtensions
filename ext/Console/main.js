@@ -15,7 +15,7 @@
         throw new Error('This extension must run unsandboxed');
     }
 
-    class AdvancedConsoleExtension {
+    class P7ConsoleExtension {
         constructor() {
             this.runtime = Scratch.vm.runtime;
             this.elements = null;
@@ -270,6 +270,7 @@
 
         _scanCommands() {
             const commands = new Set();
+            commands.add("help");
 
             if (!this.runtime || !this.runtime.targets) return Array.from(commands);
 
@@ -279,7 +280,7 @@
 
                 for (const id in blocks) {
                     const block = blocks[id];
-                    if (block.opcode === 'advancedConsole_onCommand') {
+                    if (block.opcode === 'P7Console_onCommand') {
                         const inputs = block.inputs;
                         if (inputs && inputs.NAME) {
                             const childId = inputs.NAME.block;
@@ -325,7 +326,7 @@
                 }
 
                 this._triggeringCommand = commandName;
-                const threads = this.runtime.startHats('advancedConsole_onCommand');
+                const threads = this.runtime.startHats('P7Console_onCommand');
                 this._triggeringCommand = null;
 
                 if (threads.length === 0) {
@@ -652,5 +653,5 @@
         }
     }
 
-    Scratch.extensions.register(new AdvancedConsoleExtension());
+    Scratch.extensions.register(new P7ConsoleExtension());
 })(Scratch);
