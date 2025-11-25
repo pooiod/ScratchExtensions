@@ -191,7 +191,7 @@
         }
 
         setConsoleSize(args) {
-            this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
+            if (!this.elements) this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
 
             if (this.elements && this.elements.maindiv) {
                 const width = parseFloat(args.WIDTH);
@@ -479,7 +479,7 @@
         }
 
         _rawLog(content) {
-            this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
+            if (!this.elements) this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
             if (!this.elements || !this.elements.topDiv) return;
 
             if (content === undefined || content === null || content === "") {
@@ -495,7 +495,7 @@
         }
 
         _prettyLog(content) {
-            this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
+            if (!this.elements) this.initConsole({STARTER:this.settings.starter,MAX:this.settings.maxSuggestions});
             if (!this.elements || !this.elements.topDiv) return;
 
             if (content) {
