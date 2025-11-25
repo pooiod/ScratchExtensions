@@ -197,8 +197,8 @@
                 const width = parseFloat(args.WIDTH);
                 const height = parseFloat(args.HEIGHT);
                 this.elements.maindiv.style.width = `${width}%`;
-                this.elements.autocompleteDiv.style.width = `${width}%`;
                 this.elements.maindiv.style.height = `${height}%`;
+                this.elements.autocompleteDiv.style.width = `${width}%`;
             }
         }
 
@@ -605,12 +605,13 @@
                 if (!this.elements || !this.elements.textarea) return;
 
                 const input = this.elements.textarea.value.trim();
-                
+
                 if (this.autocompleteList.length > 0 && input && input !== this.settings.starter) {
+                    this.elements.autocompleteDiv.style.top = (this.elements.maindiv.offsetTop + (this.elements.maindiv.offsetHeight / 2) - 1) + 'px';
                     const suggestions = this.autocompleteList
                         .filter(item => item.startsWith(input))
                         .slice(0, this.settings.maxSuggestions);
-                    
+
                     this.elements.autocompleteDiv.innerHTML = '';
                     currentIndex = -1;
 
