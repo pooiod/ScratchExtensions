@@ -122,17 +122,45 @@
                     {
                         opcode: 'onCommand',
                         blockType: Scratch.BlockType.HAT,
-                        text: 'When console command [NAME] run',
+                        text: 'Handle console command [NAME] with [commandInputs]',
                         arguments: {
-                            NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'command1' }
+                            NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'command1' },
+                            commandInputs: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
                         },
+                        hideFromPalette: true,
                         isEdgeActivated: false
+                    },
+                    {
+                        blockType: Scratch.BlockType.XML,
+                        xml: `
+                            <block type="P7Console_onCommand">
+                                <value name="NAME">
+                                    <shadow type="text">
+                                        <field name="TEXT">command1</field>
+                                    </shadow>
+                                </value>
+                                <value name="commandInputs">
+                                    <block type="P7Console_getInput"/>
+                                </value>
+                            </block>
+                        `
+                    },
+
+                    {
+                        opcode: 'returnResult',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Return [VALUE] to console',
+                        isTerminal: true,
+                        arguments: {
+                            VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
+                        }
                     },
 
                     {
                         opcode: 'getInput',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Received input',
+                        hideFromPalette: true,
                         disableMonitor: true
                     },
                     {
@@ -145,16 +173,6 @@
                                 menu: 'allLists',
                                 defaultValue: 'my list'
                             }
-                        }
-                    },
-
-                    {
-                        opcode: 'returnResult',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Return [VALUE] to console',
-                        isTerminal: true,
-                        arguments: {
-                            VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
                         }
                     },
 
@@ -748,4 +766,39 @@
     }
 
     Scratch.extensions.register(new P7ConsoleExtension());
+
+    // Replace block on use
+    setTimeout(() => {
+        const SB = window.ScratchBlocks;
+        
+        if (!SB || !SB.Blocks.P7Console_onCommand) {
+            return;
+        }
+
+        const originalInit = SB.Blocks.P7Console_onCommand.init;
+
+        SB.Blocks.P7Console_onCommand.init = function() {
+            if (originalInit) {
+                originalInit.call(this);
+            }
+
+            this.setOnChange(function(changeEvent) {
+                if (!this.workspace || this.isInFlyout) return;
+                if (this.workspace.isDragging()) return;
+
+                const input = this.getInput('commandInputs');
+                if (input && !input.connection.targetConnection) {
+                    SB.Events.disable();
+                    try {
+                        const newBlock = this.workspace.newBlock("P7Console_getInput");
+                        newBlock.initSvg();
+                        newBlock.render();
+                        newBlock.outputConnection.connect(input.connection);
+                    } finally {
+                        SB.Events.enable();
+                    }
+                }
+            });
+        };
+    }, 100);
 })(Scratch);
