@@ -484,28 +484,40 @@
             const styleCommands = [];
             let formattedText = '';
 
+            function sanitizeHtml(input) {
+                const doc = new DOMParser().parseFromString(input, 'text/html');
+                doc.body.querySelectorAll('*').forEach(element => {
+                    if (!['BR', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'B', 'STRONG', 'I', 'EM', 'U'].includes(element.tagName)) {
+                        element.replaceWith(...element.childNodes);
+                    } else {
+                        while (element.attributes.length > 0) element.removeAttribute(element.attributes[0].name);
+                    }
+                });
+                return doc.body.innerHTML;
+            }
+
             if (typeof text !== 'string') text = String(text);
 
             if (text.startsWith('<!DOCTYPE html>') || /<!DOCTYPE\s+html/i.test(text)) {
-                return `<iframe style="background:white;border:none;height:calc(${this.elements.maindiv.style.height} - 100px);width:calc(${this.elements.maindiv.style.width} - 13px);" src="data:text/html;charset=utf-8,${encodeURIComponent(text.replace(/\\n/g, "\n"))}"></iframe>`;
+                return `<iframe style="background:white;border:none;height:calc(${this.elements.maindiv.style.height} - 100px);width:calc(${this.elements.maindiv.style.width} - 13px);" src="data:text/html;charset=utf-8,${encodeURIComponent(text.replace(/\\n/g, "\n"))}" sandbox="allow-downloads allow-forms allow-modals allow-pointer-lock"></iframe>`;
             }
 
             if (text.startsWith("img:")) {
                 const url = text.slice(4).trim();
-                return `<img src="${url}" style="max-width:100%;max-height:30vh;">`;
+                return `<img src="${url.replace(/"/g, "").replace(/\\/g, "/")}" style="max-width:100%;max-height:30vh;">`;
             }
 
             if (text.startsWith("video:")) {
                 const url = text.slice(6).trim();
-                return `<video src="${url}" controls style="max-width:100%;max-height:30vh;"></video>`;
+                return `<video src="${url.replace(/"/g, "").replace(/\\/g, "/")}" controls style="max-width:100%;max-height:30vh;"></video>`;
             }
 
             if (text.startsWith("audio:")) {
                 const url = text.slice(6).trim();
-                return `<audio src="${url}" controls></audio>`;
+                return `<audio src="${url.replace(/"/g, "").replace(/\\/g, "/")}" controls></audio>`;
             }
 
-            const parts = text.replace(/(?<!\\)\\\|/g, '│').replace("\n", '<br>').split(/(\|[^|]+\|)/);
+            const parts = sanitizeHtml(text).replace(/(?<!\\)\\\|/g, '│').replace("\n", '<br>').split(/(\|[^|]+\|)/);
 
             parts.forEach(part => {
                 if (part.startsWith('|') && part.endsWith('|')) {
