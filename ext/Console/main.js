@@ -169,7 +169,7 @@
                     {
                         opcode: 'returnResult',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Return [VALUE] to console',
+                        text: 'Return string [VALUE]',
                         isTerminal: true,
                         arguments: {
                             VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
@@ -183,6 +183,22 @@
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Commands',
                         disableMonitor: true
+                    },
+
+                    {
+                        opcode: 'runCommand',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Run command [COMMAND] with input [INPUTS]',
+                        arguments: {
+                            COMMAND: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: ''
+                            },
+                            INPUTS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: ''
+                            }
+                        }
                     }
                 ],
                 menus: {
@@ -300,6 +316,12 @@
             return this._scanCommands().map(x => x.replace(this.settings.starter, '')).join(", ");
         }
 
+        runCommand(args) {
+            const commandStr = args.COMMAND.startsWith(this.settings.starter) ? args.COMMAND : this.settings.starter + args.COMMAND;
+            const fullCommand = commandStr + (args.INPUTS ? ' ' + args.INPUTS : '');
+            return this._executeCommand(fullCommand, "Error: Command timed out (5s)", 5000);
+        }
+
         getInputsToList(args, util) {
             const rawInput = this.getInput(args, util);
             if (!rawInput) return;
@@ -409,7 +431,7 @@
             }
         }
 
-        _executeCommand(inputString) {
+        _executeCommand(inputString, err, time = 5000) {
             return new Promise((resolve) => {
                 let raw = inputString;
                 if (raw.startsWith(this.settings.starter)) {
@@ -448,6 +470,13 @@
                         }
                     };
                 });
+
+                setTimeout(() => {
+                    if (!handled) {
+                        handled = true;
+                        resolve(err);
+                    }
+                }, time);
             });
         }
 
@@ -750,9 +779,10 @@
 
                         this.elements.textarea.value = this.settings.starter;
                         updateTextArea();
-                        
-                        this._executeCommand(val)
+
+                        this._executeCommand(val, null, 10000)
                             .then(result => {
+                                if (result === null) return;
                                 this._prettyLog(this._Stringify(result));
                             })
                             .catch(err => {
