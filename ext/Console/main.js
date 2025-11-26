@@ -122,7 +122,7 @@
                     {
                         opcode: 'onCommand',
                         blockType: Scratch.BlockType.HAT,
-                        text: 'Handle console command [NAME] with [commandInputs]',
+                        text: 'Handle command [NAME] with [commandInputs]',
                         arguments: {
                             NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'command1' },
                             commandInputs: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
@@ -147,16 +147,6 @@
                     },
 
                     {
-                        opcode: 'returnResult',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Return [VALUE] to console',
-                        isTerminal: true,
-                        arguments: {
-                            VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
-                    },
-
-                    {
                         opcode: 'getInput',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Received input',
@@ -173,6 +163,16 @@
                                 menu: 'allLists',
                                 defaultValue: 'my list'
                             }
+                        }
+                    },
+
+                    {
+                        opcode: 'returnResult',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Return [VALUE] to console',
+                        isTerminal: true,
+                        arguments: {
+                            VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
                         }
                     },
 
@@ -267,7 +267,7 @@
         }
 
         warnText(args) {
-            this._prettyLog("|color:#fff066;|" + args.TEXT);
+            this._prettyLog("|color:orange;|" + args.TEXT);
         }
 
         errorText(args) {
@@ -289,7 +289,7 @@
             return args.NAME === this._triggeringCommand;
         }
 
-        getInput(args, util) {
+        getInput(_, util) {
             if (util.thread.customData && util.thread.customData.consoleSession) {
                 return util.thread.customData.consoleSession.args;
             }
@@ -297,7 +297,7 @@
         }
 
         getCommands() {
-            return this._scanCommands().join(", ");
+            return this._scanCommands().map(x => x.replace(this.settings.starter, '')).join(", ");
         }
 
         getInputsToList(args, util) {
@@ -458,7 +458,7 @@
             if (typeof text !== 'string') text = String(text);
 
             if (text.startsWith('<!DOCTYPE html>') || /<!DOCTYPE\s+html/i.test(text)) {
-                return `<iframe style="background:white;border:none;height:30vh;width:calc(${this.elements.maindiv.style.width} - 13px);" src="data:text/html;charset=utf-8,${encodeURIComponent(text.replace(/\\n/g, "\n"))}"></iframe>`;
+                return `<iframe style="background:white;border:none;height:calc(${this.elements.maindiv.style.height} - 100px);width:calc(${this.elements.maindiv.style.width} - 13px);" src="data:text/html;charset=utf-8,${encodeURIComponent(text.replace(/\\n/g, "\n"))}"></iframe>`;
             }
 
             if (text.startsWith("img:")) {
