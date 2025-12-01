@@ -166,11 +166,11 @@
                 };
             };
 
-            transaction.onerror = e => alert('Transaction failed: ' + e.target.error);
+            transaction.onerror = e => console.error('Failed: ' + e.target.error);
         };
 
         request.onerror = function(event) {
-            alert('Could not open database: ' + event.target.error);
+            console.error('Could not open database: ' + event.target.error);
         };
     })
         .catch(err => alert('Error: ' + err));
