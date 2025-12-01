@@ -66,5 +66,22 @@
         "tags": [],
         "type": ["web"],
         "hidden": false
+    },
+    {
+        "id": "PMPinSearch",
+        "image": "/tools/[id]/cover.gif",
+        "title": "Custom Extension Search",
+        "description": "Makes custom extensions not act like pins. (for PenguinMod)",
+        "created": "12/01/2025",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "Open", "color": "#cbe0f2", "link": "/tools/[id]/PinSearch.user.js" }
+        ],
+        "tags": [],
+        "type": ["web"],
+        "hidden": false
     }
 ]

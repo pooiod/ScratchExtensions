@@ -499,11 +499,11 @@
                 </div>
             ` : '';
 
-            const sandboxStatusIconHTML = `
-                <div class="card-icon2" title="${card.unsandboxed?"This extension does not work in the sandbox":"This extension works in the sandbox"}">
-                    <img src="/extras/images/icons/${card.unsandboxed?"unsandboxed":"sandboxed"}.png" alt="${card.unsandboxed?"Unsandboxed":"Sandboxed"}">
-                </div>
-            `;
+            // const sandboxStatusIconHTML = `
+            //     <div class="card-icon2" title="${card.unsandboxed?"This extension does not work in the sandbox":"This extension works in the sandbox"}">
+            //         <img src="/extras/images/icons/${card.unsandboxed?"unsandboxed":"sandboxed"}.png" alt="${card.unsandboxed?"Unsandboxed":"Sandboxed"}">
+            //     </div>
+            // `;
 
             // onclick="window.open(\`${PenguinPaint}\${encodeURIComponent(this.src)}\`, '_blank');"
 
@@ -511,7 +511,6 @@
                 ${iconHTML}
                 <img src="${imageURL}" alt="${card.title}">
                 <div class="card-content">
-                    ${sandboxStatusIconHTML}
                     <div class="card-title">${card.title}</div>
                     <div class="card-description">${card.description}</div>
                     <div class="card-subtext">${card.subtext}</div>
