@@ -72,7 +72,7 @@
         if (!res.ok) throw new Error("Could not fetch extension list");
         return res.json();
     })
-        .then(async (data) => {
+    .then(async (data) => {
         const baseUrl = 'https://p7scratchextensions.pages.dev';
 
         const visibleExtensions = data.filter(item => item.hidden !== true);
