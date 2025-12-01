@@ -47,8 +47,6 @@
             }
         });
 
-        console.log(txtVal, tags);
-
         items.forEach(i => {
             const content = i.textContent.toLowerCase();
 
