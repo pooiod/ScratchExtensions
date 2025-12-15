@@ -199,6 +199,14 @@
                                 defaultValue: ''
                             }
                         }
+                    },
+                    {
+                        opcode: 'ignore',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Run [TEXT] and ignore result',
+                        arguments: {
+                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
+                        }
                     }
                 ],
                 menus: {
@@ -209,6 +217,8 @@
                 }
             };
         }
+
+        ignore() {}
 
         initConsole(args) {
             if (this.elements && this.elements.shadowHost) {
