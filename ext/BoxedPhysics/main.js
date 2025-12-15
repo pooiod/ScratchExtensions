@@ -20,8 +20,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "11/13/2025";
-	var publishedUpdateIndex = 27;
+	var b2Dupdated = "12/14/2025";
+	var publishedUpdateIndex = 28;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -1005,8 +1005,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					xy: ['x', 'y'],
 					modes: ['normal', 'bullet'],
 					rotModes: [
-						{ text: "dynamic", value: false },
-						{ text: "fixed", value: true }
+						{ text: "dynamic", value: "false" },
+						{ text: "fixed", value: "true" }
 					],
 					costumeType: [
 						{ text: "Convex Hull", value: "hull" },
@@ -1439,7 +1439,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 		setFixedRotation({ NAME, MODE }) {
 			var body = bodies[NAME];
 			if (!body) return '';
-			body.SetFixedRotation(MODE);
+			body.SetAngularVelocity(0);
+			body.SetFixedRotation(MODE == "true");
 		}
 
 		setObjectLayer({ NAME, LAYERS }) {

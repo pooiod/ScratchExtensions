@@ -1,12 +1,12 @@
-// Name: Boxed Physics (dev build)
+// Name: Boxed Physics
 // ID: P7BoxPhys
 // Description: An implementation the Box2D physics engine with support for joints, springs, sliders, and more.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
 // Original: Griffpatch
 // License: zlib
-// Builds: dev main
+// Builds: main dev
 // Unsandboxed: true
-// WIP: true
+// WIP: false
 // Created: Apr 15, 2024
 // Docs: /docs/#/BoxedPhysics
 // Notes: This extension was originally based on the Box2D Physics extension for ScratchX by Griffpatch. The original extension is still available at this link <a href="http://griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js">griffpatch.github.io/Box2D.js-Scratch2-Extension/GriffpatchBox2D.v0.3.js</a>
@@ -20,8 +20,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "11/13/2025";
-	var publishedUpdateIndex = 27;
+	var b2Dupdated = "12/14/2025";
+	var publishedUpdateIndex = 28;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -983,7 +983,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						hideFromPalette: !wipblocks,
 						blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
 						text: "Upcoming blocks (project corruption warning)"
-					}
+					},
 					{
 						hideFromPalette: !wipblocks,
 						blockType: Scratch.BlockType.LABEL,
@@ -1439,7 +1439,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 		setFixedRotation({ NAME, MODE }) {
 			var body = bodies[NAME];
 			if (!body) return '';
-			body.gravityScale = (MODE == 'true');
+			body.SetAngularVelocity(0);
+			body.SetFixedRotation(MODE == "true");
 		}
 
 		setObjectLayer({ NAME, LAYERS }) {
