@@ -72,6 +72,23 @@
         "hidden": false
     },
     {
+        "id": "JSParser",
+        "image": "/ext/[id]/cover.svg",
+        "title": "JavaScript Parser",
+        "description": "Run sandboxed JavaScript",
+        "created": "dec 18, 2025",
+        "subtext": "",
+        "icon": "/extras/images/icons/new.svg",
+        "iconText": "Nex extension, report bugs",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
         "id": "VideoSharing",
         "image": "/ext/[id]/cover.svg",
         "title": "Video Sharing",

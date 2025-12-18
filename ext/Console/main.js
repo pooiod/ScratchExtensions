@@ -366,26 +366,7 @@
             });
 
             const listName = args.LIST;
-            const target = util.target;
-            const stage = this.runtime.getTargetForStage();
-
-            let listVar = null;
-            if (target && target.variables) {
-                for (const id in target.variables) {
-                    if (target.variables[id].name === listName && target.variables[id].type === 'list') {
-                        listVar = target.variables[id];
-                        break;
-                    }
-                }
-            }
-            if (!listVar && stage && stage.variables) {
-                for (const id in stage.variables) {
-                    if (stage.variables[id].name === listName && stage.variables[id].type === 'list') {
-                        listVar = stage.variables[id];
-                        break;
-                    }
-                }
-            }
+            let listVar = util.target.lookupVariableByNameAndType(listName, "list");
 
             if (listVar) {
                 listVar.value = parsedList;

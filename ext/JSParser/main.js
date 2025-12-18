@@ -55,7 +55,7 @@
 
     class JSParser {
         constructor() {
-            this._persistentMemory = {};
+            this.Persistent = {};
             this._triggeringFunction = null;
             this._customGlobals = {};
             this._timeout = 30000;
@@ -72,6 +72,18 @@
                 color1: '#4a4a4a',
                 blocks: [
                     {
+                        opcode: 'runNoReturn',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'run JS [CODE]',
+                        arguments: {
+                            CODE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'persistent.myData = 123;'
+                            }
+                        }
+                    },
+
+                    {
                         opcode: 'runAndReturn',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'run JS [CODE] and return',
@@ -83,29 +95,81 @@
                         }
                     },
                     {
-                        opcode: 'runNoReturn',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'run JS [CODE]',
+                        opcode: 'runAndReturnBool',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'run JS [CODE] and return',
                         arguments: {
                             CODE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'window.persistent.myData = 123;'
+                                defaultValue: 'return Math.random() >= 0.5;'
+                            }
+                        }
+                    },
+
+                    "---",
+
+                    {
+                        opcode: 'setMem',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set persistent [VAR] to [TEXT]',
+                        arguments: {
+                            VAR: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'myData'
+                            },
+                            TEXT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '123'
                             }
                         }
                     },
                     {
+                        opcode: 'removeMem',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Remove persistent [VAR]',
+                        arguments: {
+                            VAR: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'myData'
+                            }
+                        }
+                    },
+
+                    "---",
+
+                    {
                         opcode: 'onFunction',
                         blockType: Scratch.BlockType.HAT,
-                        text: 'Handle function [NAME]',
+                        text: 'Handle function [NAME] with [functionInputs]',
                         arguments: {
                             NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'command1' },
+                            functionInputs: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
                         },
-                        isEdgeActivated: false
+                        isEdgeActivated: false,
+                        hideFromPalette: true
                     },
+
+                    {
+                        blockType: Scratch.BlockType.XML,
+                        xml: `
+                            <block type="P7JSParser_onFunction">
+                                <value name="NAME">
+                                    <shadow type="text">
+                                        <field name="TEXT">command1</field>
+                                    </shadow>
+                                </value>
+                                <value name="functionInputs">
+                                    <block type="P7JSParser_getInputsToArray"/>
+                                </value>
+                            </block>
+                        `
+                    },
+
                     {
                         opcode: 'getInputsToList',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Set list [LIST] to received inputs',
+                        hideFromPalette: !Scratch.extensions.isPenguinMod,
                         arguments: {
                             LIST: {
                                 type: Scratch.ArgumentType.STRING,
@@ -113,6 +177,13 @@
                             }
                         }
                     },
+                    {
+                        opcode: 'getInputsToArray',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Received inputs',
+                        hideFromPalette: true
+                    },
+
                     {
                         opcode: 'returnResult',
                         blockType: Scratch.BlockType.COMMAND,
@@ -125,7 +196,7 @@
                 ],
                 menus: {
                     allLists: {
-                        acceptReporters: false,
+                        acceptReporters: true,
                         items: '_getLists'
                     }
                 }
@@ -150,10 +221,12 @@
         }
 
         _executeIsolated(code) {
+            // Detatch main globals so they can't be changed
             const sandboxTarget = Object.assign({}, DEFAULT_GLOBALS, this._customGlobals);
 
-            sandboxTarget.persistent = this._persistentMemory;
-            
+            // persistent mem can be changed
+            sandboxTarget.persistent = this.Persistent;
+
             sandboxTarget.SetWaitTime = (ms) => {
                 const val = parseInt(ms);
                 if (!isNaN(val) && val > 0) {
@@ -164,7 +237,7 @@
             const availableFunctions = this._scanFunctions();
             availableFunctions.forEach(funcName => {
                 sandboxTarget[funcName] = (...args) => {
-                    return this._runScratchFunction(funcName, args);
+                    return this.RunFunction(funcName, args);
                 };
             });
 
@@ -195,7 +268,7 @@
                 return runner(proxy);
 
             } catch (err) {
-                return `Error: ${err.message}`;
+                return `${err.message}`;
             }
         }
 
@@ -258,7 +331,7 @@
             return Array.from(functions);
         }
 
-        _runScratchFunction(commandName, args) {
+        RunFunction(commandName, args) {
             return new Promise((resolve) => {
                 if (!commandName) {
                     resolve("");
@@ -270,7 +343,14 @@
                 this._triggeringFunction = null;
 
                 if (threads.length === 0) {
-                    resolve(`Function not found: ${commandName}`);
+                    // resolve(`Uncaught TypeError: ${commandName} is not a function`);
+                    resolve(`Uncaught ReferenceError: ${commandName} is not defined`);
+                    return;
+                }
+
+                const availableFunctions = this._scanFunctions();
+                if (!availableFunctions.includes(commandName)) {
+                    resolve(`Uncaught ReferenceError: ${commandName} is not defined`);
                     return;
                 }
 
@@ -292,7 +372,7 @@
                 setTimeout(() => {
                     if (!handled) {
                         handled = true;
-                        resolve("Timeout");
+                        resolve("RangeError: Execution timeout");
                     }
                 }, this._timeout);
             });
@@ -302,7 +382,7 @@
             const result = this._executeIsolated(args.CODE);
 
             try {
-                const val = result instanceof Promise ? await result : result;
+                var val = result instanceof Promise ? await result : result;
                 if (val === undefined) return 'undefined';
                 if (val === null) return 'null';
                 if (typeof val === 'object') return JSON.stringify(val);
@@ -312,8 +392,24 @@
             }
         }
 
+        async runAndReturnBool(args) {
+            return (await this._executeIsolated(args.CODE)) ? true : false;
+        }
+
         async runNoReturn(args) {
-            return this.runAndReturn(args);
+            return this._executeIsolated(args.CODE);
+        }
+
+        setMem(args) {
+            if (args.VAR && args.TEXT !== null) {
+                this.Persistent[args.VAR] = args.TEXT;
+            }
+        }
+
+        removeMem(args) {
+            if (args.VAR) {
+                delete this.Persistent[args.VAR];
+            }
         }
 
         onFunction(args, util) {
@@ -373,28 +469,18 @@
             const target = util.target;
             const stage = this.runtime.getTargetForStage();
 
-            let listVar = null;
-            if (target && target.variables) {
-                for (const id in target.variables) {
-                    if (target.variables[id].name === listName && target.variables[id].type === 'list') {
-                        listVar = target.variables[id];
-                        break;
-                    }
-                }
-            }
-            if (!listVar && stage && stage.variables) {
-                for (const id in stage.variables) {
-                    if (stage.variables[id].name === listName && stage.variables[id].type === 'list') {
-                        listVar = stage.variables[id];
-                        break;
-                    }
-                }
-            }
+            let listVar = util.target.lookupVariableByNameAndType(listName, "list");
 
             if (listVar) {
                 listVar.value = inputs;
                 if (listVar._monitorUpToDate !== undefined) listVar._monitorUpToDate = false;
             }
+        }
+        getInputsToArray(_, util) {
+            const rawInput = this.getInput(util);
+            const inputs = Array.isArray(rawInput) ? rawInput : [rawInput];
+
+            return JSON.stringify(inputs);
         }
 
         returnResult(args, util) {
@@ -407,18 +493,52 @@
             }
         }
 
-        // Scratch.vm.runtime._primitives.P7JSParser_addObject(name, object)
-        addObject(name, obj) {
+        // Scratch.vm.runtime._primitives.P7JSParser_addObject(name, object, false)
+        // Scratch.vm.runtime._primitives.P7JSParser_removeObject(name, false)
+        addObject(name, obj, canChange) {
             if (name && obj !== null) {
-                this._customGlobals[name] = obj;
+                this[canChange ? "Persistent" : "_customGlobals"][name] = obj;
             }
         }
-        removeObject(name) {
+        removeObject(name, canChange) {
             if (name) {
-                delete this._customGlobals[name];
+                delete this[canChange ? "Persistent" : "_customGlobals"][name];
             }
         }
     }
 
     Scratch.extensions.register(new JSParser());
+
+    // Replace block on use
+    setTimeout(() => {
+        if (!ScratchBlocks || !ScratchBlocks.Blocks.P7JSParser_onFunction) {
+            return;
+        }
+
+        const originalInit = ScratchBlocks.Blocks.P7JSParser_onFunction.init;
+
+        ScratchBlocks.Blocks.P7JSParser_onFunction.init = function() {
+            if (originalInit) {
+                originalInit.call(this);
+            }
+
+            this.setOnChange(function() {
+                if (!this.workspace || this.isInFlyout) return;
+                if (this.workspace.isDragging()) return;
+
+                const input = this.getInput('functionInputs');
+                if (input && !input.connection.targetConnection) {
+                    ScratchBlocks.Events.disable();
+                    try {
+                        const newBlock = this.workspace.newBlock("P7JSParser_getInputsToArray");
+                        newBlock.initSvg();
+                        newBlock.render();
+                        newBlock.outputConnection.connect(input.connection);
+                    } finally {
+                        ScratchBlocks.Events.enable();
+                    }
+                }
+            });
+        };
+    }, 100);
 })(Scratch);
