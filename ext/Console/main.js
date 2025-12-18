@@ -474,7 +474,7 @@
 
                                 if (listVar && Array.isArray(listVar.value)) {
                                     listVar.value.forEach(item => {
-                                        commands.add(item);
+                                        commands.add(`${this.settings.starter}${item}`);
                                     });
                                 }
                             }
@@ -517,7 +517,14 @@
                 this._triggeringCommand = null;
 
                 if (threads.length === 0) {
-                    resolve("|color:orange;|Command not found: " + commandName);
+                    if (err == null) resolve("|color:lightgrey;|No commands found");
+                    else resolve("No commands found");
+                    return;
+                }
+
+                if (!this._scanCommands().map(x => x.replace(this.settings.starter, '')).includes(commandName)) {
+                    if (err == null) resolve("|color:orange;|Command not found: " + commandName);
+                    else resolve("Command not found: " + commandName);
                     return;
                 }
 
