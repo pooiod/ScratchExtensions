@@ -214,14 +214,40 @@
                         if (inputs?.NAME?.block) {
                             const childId = inputs.NAME.block;
                             const childBlock = blocks[childId];
-                            console.log(childBlock.fields)
                             if (childBlock?.fields?.TEXT?.value) {
                                 functions.add(childBlock.fields.TEXT.value);
                             } else if (childBlock.fields.VARIABLE) {
                                 const varcontent = target.lookupVariableById(childBlock.fields.VARIABLE.id);
                                 if (varcontent) {
-                                    console.log(varcontent)
                                     functions.add(varcontent.value);
+                                }
+                            } else if (childBlock.fields.LIST) {
+                                const listId = childBlock.fields.LIST.id;
+                                const listName = childBlock.fields.LIST.value;
+
+                                let listVar = target.lookupVariableById(listId);
+
+                                if (!listVar) {
+                                    const stage = this.runtime.getTargetForStage();
+                                    if (stage && stage.variables) {
+                                        if (stage.variables[listId]) {
+                                            listVar = stage.variables[listId];
+                                        } 
+                                        else {
+                                            for (const id in stage.variables) {
+                                                if (stage.variables[id].name === listName && stage.variables[id].type === 'list') {
+                                                    listVar = stage.variables[id];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (listVar && Array.isArray(listVar.value)) {
+                                    listVar.value.forEach(item => {
+                                        functions.add(item);
+                                    });
                                 }
                             }
                         }
@@ -290,9 +316,44 @@
             return this.runAndReturn(args);
         }
 
-        onFunction(args) {
+        onFunction(args, util) {
             if (!this._triggeringFunction) return false;
-            return args.NAME === this._triggeringFunction;
+            var nameArg = args.NAME;
+
+            const blockId = util.thread.peekStack();
+            const target = util.target;
+            const blocks = target.blocks;
+            const currentBlock = blocks.getBlock(blockId);
+
+            if (currentBlock && currentBlock.inputs.NAME && currentBlock.inputs.NAME.block) {
+                const connectedBlockId = currentBlock.inputs.NAME.block;
+                const connectedBlock = blocks.getBlock(connectedBlockId);
+
+                if (connectedBlock && connectedBlock.opcode === 'data_listcontents') {
+
+                    const listField = connectedBlock.fields.LIST;
+                    const listVar = target.lookupVariableById(listField.id);
+
+                    if (listVar && listVar.value) {
+                        return listVar.value.includes(this._triggeringFunction);
+                    }
+                }
+            }
+
+            if (Array.isArray(nameArg)) {
+                return nameArg.includes(this._triggeringFunction);
+            }
+
+            if (typeof nameArg === 'string' && nameArg.trim().startsWith('[') && nameArg.trim().endsWith(']')) {
+                try {
+                    const parsedList = JSON.parse(nameArg);
+                    if (Array.isArray(parsedList)) {
+                        return parsedList.includes(this._triggeringFunction);
+                    }
+                } catch (e) {}
+            }
+
+            return nameArg === this._triggeringFunction;
         }
 
         getInput(util) {
@@ -303,9 +364,7 @@
         }
 
         getInputsToList(args, util) {
-            console.log(args)
             const listName = args.LIST;
-            console.log(listName)
             if (!listName || listName === 'Select a list') return;
 
             const rawInput = this.getInput(util);
@@ -313,7 +372,6 @@
 
             const target = util.target;
             const stage = this.runtime.getTargetForStage();
-            console.log(target, stage)
 
             let listVar = null;
             if (target && target.variables) {
@@ -332,8 +390,6 @@
                     }
                 }
             }
-            console.log(listVar)
-            console.log(inputs)
 
             if (listVar) {
                 listVar.value = inputs;

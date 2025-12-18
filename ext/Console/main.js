@@ -310,8 +310,29 @@
             }
         }
 
-        onCommand(args) {
+        onCommand(args, util) {
             if (!this._triggeringCommand) return false;
+
+            const blockId = util.thread.peekStack();
+            const target = util.target;
+            const blocks = target.blocks;
+            const currentBlock = blocks.getBlock(blockId);
+
+            if (currentBlock && currentBlock.inputs.NAME && currentBlock.inputs.NAME.block) {
+                const connectedBlockId = currentBlock.inputs.NAME.block;
+                const connectedBlock = blocks.getBlock(connectedBlockId);
+
+                if (connectedBlock && connectedBlock.opcode === 'data_listcontents') {
+
+                    const listField = connectedBlock.fields.LIST;
+                    const listVar = target.lookupVariableById(listField.id);
+
+                    if (listVar && listVar.value) {
+                        return listVar.value.includes(this._triggeringCommand);
+                    }
+                }
+            }
+
             return args.NAME === this._triggeringCommand;
         }
 
@@ -427,6 +448,34 @@
                                 if (varcontent) {
                                     console.log(varcontent)
                                     commands.add(varcontent.value);
+                                }
+                            } else if (childBlock.fields.LIST) {
+                                const listId = childBlock.fields.LIST.id;
+                                const listName = childBlock.fields.LIST.value;
+
+                                let listVar = target.lookupVariableById(listId);
+
+                                if (!listVar) {
+                                    const stage = this.runtime.getTargetForStage();
+                                    if (stage && stage.variables) {
+                                        if (stage.variables[listId]) {
+                                            listVar = stage.variables[listId];
+                                        } 
+                                        else {
+                                            for (const id in stage.variables) {
+                                                if (stage.variables[id].name === listName && stage.variables[id].type === 'list') {
+                                                    listVar = stage.variables[id];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (listVar && Array.isArray(listVar.value)) {
+                                    listVar.value.forEach(item => {
+                                        commands.add(item);
+                                    });
                                 }
                             }
                         }
