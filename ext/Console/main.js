@@ -347,7 +347,7 @@
             const listName = args.LIST;
             const target = util.target;
             const stage = this.runtime.getTargetForStage();
-            
+
             let listVar = null;
             if (target && target.variables) {
                 for (const id in target.variables) {
@@ -421,6 +421,12 @@
                                 const val = childBlock.fields.TEXT.value;
                                 if (val) {
                                     commands.add(this.settings.starter + val.replace(/ /g, "_"));
+                                }
+                            } else if (childBlock.fields.VARIABLE) {
+                                const varcontent = target.lookupVariableById(childBlock.fields.VARIABLE.id);
+                                if (varcontent) {
+                                    console.log(varcontent)
+                                    commands.add(varcontent.value);
                                 }
                             }
                         }
