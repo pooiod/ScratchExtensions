@@ -77,7 +77,7 @@
         "title": "JavaScript Parser",
         "description": "Run sandboxed JavaScript",
         "created": "dec 18, 2025",
-        "subtext": "",
+        "subtext": "Does not work in TurboWarp",
         "icon": "/extras/images/icons/wip.png",
         "iconText": "Work in progress",
         "unsandboxed": true,
