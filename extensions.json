@@ -78,13 +78,13 @@
         "description": "Run sandboxed JavaScript",
         "created": "dec 18, 2025",
         "subtext": "",
-        "icon": "/extras/images/icons/new.svg",
-        "iconText": "Nex extension, report bugs",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "Work in progress",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
-        "tags": ["finished"],
+        "tags": ["unfinished"],
         "type": ["unsandboxed"],
         "hidden": false
     },
