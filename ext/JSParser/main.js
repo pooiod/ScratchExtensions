@@ -1,3 +1,13 @@
+// Name: JavaScript Parser
+// ID: P7JSParser
+// Description: An extension for managing a sandboxed JavaScript instance.
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: true
+// Created: 12/18/2025
+// Notes: Super buggy, work in progress
+
 (function(Scratch) {
     'use strict';
 
@@ -78,7 +88,7 @@
                         arguments: {
                             CODE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'persistent.myData = 123;'
+                                defaultValue: 'data.myData = 123;'
                             }
                         }
                     },
@@ -225,7 +235,7 @@
             const sandboxTarget = Object.assign({}, DEFAULT_GLOBALS, this._customGlobals);
 
             // persistent mem can be changed
-            sandboxTarget.persistent = this.Persistent;
+            sandboxTarget.data = this.Persistent;
 
             sandboxTarget.SetWaitTime = (ms) => {
                 const val = parseInt(ms);

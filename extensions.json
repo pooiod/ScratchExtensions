@@ -76,7 +76,7 @@
         "image": "/ext/[id]/cover.svg",
         "title": "JavaScript Parser",
         "description": "Run sandboxed JavaScript",
-        "created": "dec 18, 2025",
+        "created": "Dec 18, 2025",
         "subtext": "Does not work in TurboWarp",
         "icon": "/extras/images/icons/wip.png",
         "iconText": "Work in progress",
