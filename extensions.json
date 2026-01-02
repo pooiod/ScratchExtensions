@@ -79,7 +79,7 @@
         "created": "Dec 18, 2025",
         "subtext": "Does not work in TurboWarp",
         "icon": "/extras/images/icons/wip.png",
-        "iconText": "Work in progress",
+        "iconText": "Still working on this, generally buggy",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
