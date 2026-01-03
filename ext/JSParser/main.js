@@ -122,6 +122,7 @@
                         opcode: 'listToNLString',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'Get list [LIST] as code',
+                        hideFromPalette: !Scratch.extensions.isPenguinMod, // This block does not work in TurboWarp
                         disableMonitor: true,
                         arguments: {
                             LIST: {
@@ -194,7 +195,7 @@
                         opcode: 'getInputsToList',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Set list [LIST] to received inputs',
-                        hideFromPalette: !Scratch.extensions.isPenguinMod,
+                        hideFromPalette: !Scratch.extensions.isPenguinMod, // This block does not work in TurboWarp
                         arguments: {
                             LIST: {
                                 type: Scratch.ArgumentType.STRING,
