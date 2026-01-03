@@ -75,7 +75,7 @@
         "id": "JSParser",
         "image": "/ext/[id]/cover.svg",
         "title": "JavaScript Parser",
-        "description": "Run sandboxed JavaScript",
+        "description": "Manage your own sandboxed JavaScript environment for user-made code execution.",
         "created": "Dec 18, 2025",
         "subtext": "Does not work in TurboWarp",
         "icon": "/extras/images/icons/wip.png",
