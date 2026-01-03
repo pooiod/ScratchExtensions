@@ -119,6 +119,21 @@
                     "---",
 
                     {
+                        opcode: 'listToNLString',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get list [LIST] as code',
+                        disableMonitor: true,
+                        arguments: {
+                            LIST: {
+                                type: Scratch.ArgumentType.STRING,
+                                menu: 'allLists'
+                            }
+                        }
+                    },
+
+                    "---",
+
+                    {
                         opcode: 'setMem',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Set persistent [VAR] to [TEXT]',
@@ -206,7 +221,7 @@
                 ],
                 menus: {
                     allLists: {
-                        acceptReporters: true,
+                        // acceptReporters: true,
                         items: '_getLists'
                     }
                 }
@@ -231,13 +246,14 @@
         }
 
         _executeIsolated(code) {
-            // Detatch main globals so they can't be changed
+            // Detatch main globals so they reset every time
             const sandboxTarget = Object.assign({}, DEFAULT_GLOBALS, this._customGlobals);
 
-            // persistent mem can be changed
+            // Persistent mem can be changed
             sandboxTarget.data = this.Persistent;
 
-            sandboxTarget.SetWaitTime = (ms) => {
+            // Allow changing max execution time
+            sandboxTarget.SetMaxExecutionTime = (ms) => {
                 const val = parseInt(ms);
                 if (!isNaN(val) && val > 0) {
                     this._timeout = val;
@@ -265,20 +281,29 @@
                 }
             });
 
+            code = code.replace(/\[nl\]/g, '\n');
+
             try {
+                console.log(code);
                 const runner = new Function('__scope__', `
                     with(__scope__) {
-                        return (async function() { 
+                        return (async function() {
                             "use strict";
-                            ${code} 
+                            try {
+                                ${code}
+                            } catch (err) {
+                                const match = err.stack.match(/<anonymous>:(\\d+):\\d+/);
+                                let lineNumber = match ? parseInt(match[1], 10) - 7 : 1;
+                                return \`Error: \${err.message} at line \${lineNumber}\`;
+                            }
                         }).call(__scope__);
                     }
                 `);
 
                 return runner(proxy);
-
             } catch (err) {
-                return `${err.message}`;
+                console.error(err);
+                return `Internal error: ${err.message}`;
             }
         }
 
@@ -501,6 +526,14 @@
                     session.resolve = null; 
                 }
             }
+        }
+
+        listToNLString(args, util) {
+            const listName = args.LIST;
+            if (!listName || listName === 'Select a list') return '';
+            const listVar = util.target.lookupVariableByNameAndType(listName, 'list');
+            if (!listVar || !Array.isArray(listVar.value)) return '';
+            return listVar.value.map(item => item + '[nl]').join('');
         }
 
         // Scratch.vm.runtime._primitives.P7JSParser_addObject(name, object, false)
