@@ -414,7 +414,24 @@
             });
         }
 
-        async runAndReturn(args) {
+        async runAndReturn(args, util) {
+            const blockId = util.thread.peekStack();
+            const target = util.target;
+            const blocks = target.blocks;
+            const currentBlock = blocks.getBlock(blockId);
+
+            if (currentBlock && currentBlock.inputs.CODE && currentBlock.inputs.CODE.block) {
+                const connectedBlockId = currentBlock.inputs.CODE.block;
+                const connectedBlock = blocks.getBlock(connectedBlockId);
+
+                if (connectedBlock && connectedBlock.opcode === 'data_listcontents') {
+                    const listField = connectedBlock.fields.LIST;
+                    const listVar = target.lookupVariableById(listField.id);
+
+                    args.CODE = listVar.value.join('[nl]');
+                }
+            }
+
             const result = this._executeIsolated(args.CODE);
 
             try {
@@ -428,11 +445,45 @@
             }
         }
 
-        async runAndReturnBool(args) {
+        async runAndReturnBool(args, util) {
+            const blockId = util.thread.peekStack();
+            const target = util.target;
+            const blocks = target.blocks;
+            const currentBlock = blocks.getBlock(blockId);
+
+            if (currentBlock && currentBlock.inputs.CODE && currentBlock.inputs.CODE.block) {
+                const connectedBlockId = currentBlock.inputs.CODE.block;
+                const connectedBlock = blocks.getBlock(connectedBlockId);
+
+                if (connectedBlock && connectedBlock.opcode === 'data_listcontents') {
+                    const listField = connectedBlock.fields.LIST;
+                    const listVar = target.lookupVariableById(listField.id);
+
+                    args.CODE = listVar.value.join('[nl]');
+                }
+            }
+
             return (await this._executeIsolated(args.CODE)) ? true : false;
         }
 
-        async runNoReturn(args) {
+        async runNoReturn(args, util) {
+            const blockId = util.thread.peekStack();
+            const target = util.target;
+            const blocks = target.blocks;
+            const currentBlock = blocks.getBlock(blockId);
+
+            if (currentBlock && currentBlock.inputs.CODE && currentBlock.inputs.CODE.block) {
+                const connectedBlockId = currentBlock.inputs.CODE.block;
+                const connectedBlock = blocks.getBlock(connectedBlockId);
+
+                if (connectedBlock && connectedBlock.opcode === 'data_listcontents') {
+                    const listField = connectedBlock.fields.LIST;
+                    const listVar = target.lookupVariableById(listField.id);
+
+                    args.CODE = listVar.value.join('[nl]');
+                }
+            }
+
             return this._executeIsolated(args.CODE);
         }
 
@@ -534,7 +585,7 @@
             if (!listName || listName === 'Select a list') return '';
             const listVar = util.target.lookupVariableByNameAndType(listName, 'list');
             if (!listVar || !Array.isArray(listVar.value)) return '';
-            return listVar.value.map(item => item + '[nl]').join('');
+            return listVar.value.join('[nl]');
         }
 
         // Scratch.vm.runtime._primitives.P7JSParser_addObject(name, object, false)
