@@ -640,7 +640,7 @@
                 }
             }
 
-            const result = this._executeIsolated(args.CODE);
+            const result = this._executeIsolated("return " + args.CODE);
 
             try {
                 var val = result instanceof Promise ? await result : result;
@@ -671,7 +671,7 @@
                 }
             }
 
-            return (await this._executeIsolated(args.CODE)) ? true : false;
+            return (await this._executeIsolated("return " + args.CODE)) ? true : false;
         }
 
         async runNoReturn(args, util) {
