@@ -35,7 +35,8 @@
             },
             vm: {
                 runtime: {
-                    on: () => {}
+                    on: () => {},
+                    startHats: () => {}
                 }
             }
         };
