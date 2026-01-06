@@ -38,6 +38,9 @@
                     on: () => {},
                     startHats: () => {}
                 }
+            },
+            Cast:{
+                toString: (val) => val.toString()
             }
         };
     };
