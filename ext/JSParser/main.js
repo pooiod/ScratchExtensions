@@ -407,14 +407,14 @@
                     {
                         opcode: 'addLib',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Add [TYPE] library [URL]',
+                        text: 'Load library [URL]',
                         arguments: {
                             URL: { type: Scratch.ArgumentType.STRING, defaultValue: 'https://p7scratchextensions.pages.dev/ext/BoxedPhysics/aslib.js' },
                             TYPE: { type: Scratch.ArgumentType.STRING, menu: 'loadTypes' }
                         }
                     },
                     {
-                        opcode: 'reloveLib',
+                        opcode: 'removeLib',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Remove library [LIB]',
                         arguments: {
@@ -435,60 +435,6 @@
                     }
                 }
             };
-        }
-
-        async addLib(args) {
-            var { URL, TYPE } = args;
-
-            if (!Scratch.canFetch(URL)) {
-                console.error(`Denied loading load library from ${URL}`);
-                return;
-            }
-
-            const sandboxed = TYPE != 0;
-            if (!sandboxed && !this.sandboxedTiemout) {
-                if (!await Scratch.canUnsandbox()) {
-                    console.error("Denied unsandboxed permission");
-                    return;
-                } else {
-                    clearTimeout(this.sandboxedTiemout);
-                    this.sandboxedTiemout = setTimeout(() => {
-                        this.sandboxedTiemout = null;
-                    }, 5000); // Unsandboxed permission only lasts 5 seconds
-                }
-            }
-
-            return loadLib(URL, sandboxed).then(({ added, name, lib }) => {
-                if (Object.keys(added).length > 1) {
-                    this.addObject(name, added, false);
-                } else {
-                    this.addObject(name, lib, false);
-                }
-                console.log(`Loaded library ${URL} as ${name}`, added);
-            }).catch(err => {
-                console.error(`Failed to load library ${URL}:`, err);
-            });
-        }
-
-        reloveLib(args) {
-            var { LIB } = args;
-            if (LIB === "all") {
-                const iframes = document.querySelectorAll("iframe[id^='LoadedLib-']");
-                iframes.forEach(frame => {
-                    var name = frame.id.replace('LoadedLib-', '');
-                    this.removeObject(name, false);
-                });
-                const scripts = document.querySelectorAll("script[id^='LoadedScript-']");
-                scripts.forEach(script => {
-                    var name = script.id.replace('LoadedScript-', '');
-                    this.removeObject(name, false);
-                });
-                deloadLib("all");
-            } else {
-                this.removeObject(LIB, false);
-                deloadLib(LIB);
-                this.removeObject(LIB, false);
-            }
         }
 
         _getLists() {
@@ -848,6 +794,60 @@
             const listVar = util.target.lookupVariableByNameAndType(listName, 'list');
             if (!listVar || !Array.isArray(listVar.value)) return '';
             return listVar.value.join('[nl]');
+        }
+
+        async addLib(args) {
+            var { URL, TYPE } = args;
+
+            if (!Scratch.canFetch(URL)) {
+                console.error(`Denied loading load library from ${URL}`);
+                return;
+            }
+
+            const sandboxed = TYPE != 0;
+            if (!sandboxed && !this.sandboxedTiemout) {
+                if (!await Scratch.canUnsandbox()) {
+                    console.error("Denied unsandboxed permission");
+                    return;
+                } else {
+                    clearTimeout(this.sandboxedTiemout);
+                    this.sandboxedTiemout = setTimeout(() => {
+                        this.sandboxedTiemout = null;
+                    }, 5000); // Unsandboxed permission only lasts 5 seconds
+                }
+            }
+
+            return loadLib(URL, sandboxed).then(({ added, name, lib }) => {
+                if (Object.keys(added).length > 1) {
+                    this.addObject(name, added, false);
+                } else {
+                    this.addObject(name, lib, false);
+                }
+                console.log(`Loaded library ${URL} as ${name}`, added);
+            }).catch(err => {
+                console.error(`Failed to load library ${URL}:`, err);
+            });
+        }
+
+        removeLib(args) {
+            var { LIB } = args;
+            if (LIB === "all") {
+                const iframes = document.querySelectorAll("iframe[id^='LoadedLib-']");
+                iframes.forEach(frame => {
+                    var name = frame.id.replace('LoadedLib-', '');
+                    this.removeObject(name, false);
+                });
+                const scripts = document.querySelectorAll("script[id^='LoadedScript-']");
+                scripts.forEach(script => {
+                    var name = script.id.replace('LoadedScript-', '');
+                    this.removeObject(name, false);
+                });
+                deloadLib("all");
+            } else {
+                this.removeObject(LIB, false);
+                deloadLib(LIB);
+                this.removeObject(LIB, false);
+            }
         }
 
         // Scratch.vm.runtime._primitives.P7JSParser_addObject(name, object, false)
