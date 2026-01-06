@@ -78,7 +78,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			this.vm.runtime.on('PROJECT_STOP', () => {
 				this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
 			});
-			this. vm.runtime.on('PROJECT_START', () => {
+			this.vm.runtime.on('PROJECT_START', () => {
 				this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });
 			});
 			this.init({ "SCALE": b2Dzoom, "GRAVITY": -10, "SCENE": "stage" });

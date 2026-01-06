@@ -101,9 +101,7 @@
         }
 
         window["BoxedPhysics"] = wrappedExports;
-        
-        console.log("BoxedPhysics loaded with wrappers:", Object.keys(wrappedExports));
-
+        console.log("BoxedPhysics loaded");
     } catch (e) {
         console.error('Extension Loading Error:', e);
     }

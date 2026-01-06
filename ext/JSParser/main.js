@@ -63,12 +63,193 @@
         decodeURIComponent
     };
 
+    function loadLib(url, sandboxed = true) {
+        return new Promise((resolve, reject) => {
+
+            function guessName(url, keys) {
+                const base = url.split('/').pop().split('.')[0].toLowerCase();
+                let best = null;
+                let score = -1;
+                for (const k of keys) {
+                    const kl = k.toLowerCase();
+                    let s = 0;
+                    if (kl === base) s = 100;
+                    else if (kl.includes(base) || base.includes(kl)) s = 80;
+                    else {
+                        for (let i = 0; i < Math.min(kl.length, base.length); i++) {
+                            if (kl[i] === base[i]) s++;
+                            else break;
+                        }
+                    }
+                    if (s > score) {
+                        score = s;
+                        best = k;
+                    }
+                }
+                return best || keys[0] || null;
+            }
+
+            const wait = (ms) => new Promise(r => setTimeout(r, ms));
+
+            function setupNetworkMonitor(win) {
+                let activeRequests = 0;
+                let onIdleResolve = null;
+                const originalFetch = win.fetch;
+
+                win.fetch = function(...args) {
+                    activeRequests++;
+                    return originalFetch.apply(this, args).finally(() => {
+                        activeRequests--;
+                        if (activeRequests === 0 && onIdleResolve) {
+                            onIdleResolve();
+                        }
+                    });
+                };
+
+                return {
+                    waitForIdle: () => {
+                        return new Promise(r => {
+                            if (activeRequests === 0) r();
+                            else onIdleResolve = r;
+                        });
+                    },
+                    restore: () => {
+                        win.fetch = originalFetch;
+                    }
+                };
+            }
+
+            const iframeMode = sandboxed;
+
+            let win;
+            let iframe = null;
+
+            if (iframeMode) {
+                iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                if (sandboxed) iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-presentation';
+                document.body.appendChild(iframe);
+                win = iframe.contentWindow;
+            } else {
+                win = window;
+            }
+
+            const netMon = setupNetworkMonitor(win);
+            
+            const before = new Set(Object.getOwnPropertyNames(win));
+            
+            const script = win.document.createElement('script');
+            script.src = url;
+
+            script.onload = async () => {
+                try {
+                    await netMon.waitForIdle();
+                    
+                    await wait(200);
+
+                    netMon.restore();
+
+                    const after = Object.getOwnPropertyNames(win);
+                    var addedKeys = [];
+                    const added = {};
+                    for (const k of after) {
+                        if (!before.has(k)) {
+                            added[k] = win[k];
+                            addedKeys.push(k);
+                        }
+                    }
+
+                    var name = guessName(url, addedKeys);
+
+                    if (iframeMode && iframe) {
+                        iframe.id = `LoadedLib-${name}`;
+                    }
+
+                    if (!sandboxed && addedKeys.length === 0) {
+                        netMon.restore();
+                        script.remove();
+                        loadLib(url, true).then(({ added2, name2, lib }) => {
+                            const realAdded = {};
+                            if (!added2) {
+                                deloadLib(name, true);
+                                throw new Error('Library failed to load');
+                            }
+                            for (const k of Object.keys(added2)) {
+                                realAdded[k] = window[k];
+                            }
+                            added = realAdded;
+                            name = name2;
+                        });
+                        deloadLib(name, true);
+                    }
+
+                    script.onerror = () => {
+                        netMon.restore();
+                        script.remove();
+                        reject(new Error('Library failed to start'));
+                    };
+
+                    script.id = `LoadedScript-${name}`;
+                    resolve({ added, name, lib: added[name] });
+                } catch (err) {
+                    reject(err);
+                }
+            };
+
+            script.onerror = e => {
+                netMon.restore();
+                reject(e);
+            };
+
+            win.document.head.appendChild(script);
+        });
+    }
+
+    function deloadLib(input, ignoreUnsandboxed) {
+        if (input === "all") {
+            const iframes = document.querySelectorAll("iframe[id^='LoadedLib-']");
+            iframes.forEach(f => f.remove());
+            if (!ignoreUnsandboxed) {
+                const scripts = document.querySelectorAll("script[id^='LoadedScript-']");
+                scripts.forEach(script => {
+                    loadLib(script.src, true).then(({ added, name, lib }) => {
+                        for (const k of Object.keys(added)) {
+                            delete window[k];
+                        }
+                    });
+                    script.remove();
+                });
+            }
+        } else {
+            const id = `LoadedLib-${input}`;
+            const iframe = document.getElementById(id);
+            if (iframe) iframe.remove();
+            if (!ignoreUnsandboxed) {
+                const sid = `LoadedScript-${input}`;
+                const script = document.getElementById(sid);
+                if (script) {
+                    loadLib(script.src, true).then(({ added, name, lib }) => {
+                        for (const k of Object.keys(added)) {
+                            delete window[k];
+                        }
+                    });
+                    script.remove();
+                }
+            }
+        }
+    }
+
     class JSParser {
         constructor() {
             this.Persistent = {};
             this._triggeringFunction = null;
             this._customGlobals = {};
             this._timeout = 30000;
+            this.sandboxedTiemout = null;
+
+            vm.runtime.on('PROJECT_LOADED', () => {
+                this.deloadLib("all");
+            });
         }
 
         get runtime() {
@@ -168,7 +349,7 @@
                         blockType: Scratch.BlockType.HAT,
                         text: 'Handle function [NAME] with [functionInputs]',
                         arguments: {
-                            NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'command1' },
+                            NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'function1' },
                             functionInputs: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
                         },
                         isEdgeActivated: false,
@@ -181,7 +362,7 @@
                             <block type="P7JSParser_onFunction">
                                 <value name="NAME">
                                     <shadow type="text">
-                                        <field name="TEXT">command1</field>
+                                        <field name="TEXT">function1</field>
                                     </shadow>
                                 </value>
                                 <value name="functionInputs">
@@ -219,14 +400,95 @@
                             VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
                         }
                     },
+
+                    "---",
+
+                    // Possibly dangerous blocks
+                    {
+                        opcode: 'addLib',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Add [TYPE] library [URL]',
+                        arguments: {
+                            URL: { type: Scratch.ArgumentType.STRING, defaultValue: 'https://p7scratchextensions.pages.dev/ext/BoxedPhysics/aslib.js' },
+                            TYPE: { type: Scratch.ArgumentType.STRING, menu: 'loadTypes' }
+                        }
+                    },
+                    {
+                        opcode: 'reloveLib',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Remove library [LIB]',
+                        arguments: {
+                            LIB: { type: Scratch.ArgumentType.STRING, defaultValue: 'all' }
+                        }
+                    },
                 ],
                 menus: {
                     allLists: {
-                        // acceptReporters: true,
+                        acceptReporters: true,
                         items: '_getLists'
+                    },
+                    loadTypes: {
+                        items: [
+                            { text: 'Sandboxed', value: "1" },
+                            { text: 'Unsandboxed', value: "0" }
+                        ]
                     }
                 }
             };
+        }
+
+        async addLib(args) {
+            var { URL, TYPE } = args;
+
+            if (!Scratch.canFetch(URL)) {
+                console.error(`Denied loading load library from ${URL}`);
+                return;
+            }
+
+            const sandboxed = TYPE != 0;
+            if (!sandboxed && !this.sandboxedTiemout) {
+                if (!await Scratch.canUnsandbox()) {
+                    console.error("Denied unsandboxed permission");
+                    return;
+                } else {
+                    clearTimeout(this.sandboxedTiemout);
+                    this.sandboxedTiemout = setTimeout(() => {
+                        this.sandboxedTiemout = null;
+                    }, 5000); // Unsandboxed permission only lasts 5 seconds
+                }
+            }
+
+            return loadLib(URL, sandboxed).then(({ added, name, lib }) => {
+                if (Object.keys(added).length > 1) {
+                    this.addObject(name, added, false);
+                } else {
+                    this.addObject(name, lib, false);
+                }
+                console.log(`Loaded library ${URL} as ${name}`, added);
+            }).catch(err => {
+                console.error(`Failed to load library ${URL}:`, err);
+            });
+        }
+
+        reloveLib(args) {
+            var { LIB } = args;
+            if (LIB === "all") {
+                const iframes = document.querySelectorAll("iframe[id^='LoadedLib-']");
+                iframes.forEach(frame => {
+                    var name = frame.id.replace('LoadedLib-', '');
+                    this.removeObject(name, false);
+                });
+                const scripts = document.querySelectorAll("script[id^='LoadedScript-']");
+                scripts.forEach(script => {
+                    var name = script.id.replace('LoadedScript-', '');
+                    this.removeObject(name, false);
+                });
+                deloadLib("all");
+            } else {
+                this.removeObject(LIB, false);
+                deloadLib(LIB);
+                this.removeObject(LIB, false);
+            }
         }
 
         _getLists() {
@@ -590,6 +852,7 @@
 
         // Scratch.vm.runtime._primitives.P7JSParser_addObject(name, object, false)
         // Scratch.vm.runtime._primitives.P7JSParser_removeObject(name, false)
+        // Scratch.vm.runtime._primitives.P7JSParser_getObject(name, false)
         addObject(name, obj, canChange) {
             if (name && obj !== null) {
                 this[canChange ? "Persistent" : "_customGlobals"][name] = obj;
@@ -599,6 +862,9 @@
             if (name) {
                 delete this[canChange ? "Persistent" : "_customGlobals"][name];
             }
+        }
+        getObject(name, canChange) {
+            return this[canChange ? "Persistent" : "_customGlobals"][name] = obj;
         }
     }
 
