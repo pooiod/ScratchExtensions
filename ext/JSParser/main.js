@@ -805,7 +805,7 @@
             }
 
             const sandboxed = TYPE != 0;
-            if (!sandboxed && !this.sandboxedTiemout) {
+            if (!this.sandboxedTiemout) {
                 if (!await Scratch.canUnsandbox()) {
                     console.error("Denied unsandboxed permission");
                     return;
