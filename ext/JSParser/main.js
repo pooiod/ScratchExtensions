@@ -281,7 +281,7 @@
                         arguments: {
                             CODE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'return Math.random();'
+                                defaultValue: 'Math.random();'
                             }
                         }
                     },
@@ -292,7 +292,7 @@
                         arguments: {
                             CODE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'return Math.random() >= 0.5;'
+                                defaultValue: 'Math.random() >= 0.5;'
                             }
                         }
                     },
