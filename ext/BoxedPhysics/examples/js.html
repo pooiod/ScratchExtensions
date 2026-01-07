@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ANGRY birds</title>
+    <style>
+        body {
+            margin: 0;
+            background: #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: white;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+        canvas {
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%);
+            border: 4px solid #444;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #333;
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+        select {
+            padding: 5px;
+            border-radius: 4px;
+            background: #555;
+            color: white;
+            border: none;
+        }
+        button {
+            padding: 5px 15px;
+            cursor: pointer;
+            background: #FF5722;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        button:hover { background: #E64A19; }
+        #msg { color: #FFA500; font-weight: bold; min-width: 150px; text-align: center;}
+    </style>
+</head>
+<body>
+
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    
+    <div class="controls">
+        <label>Level:</label>
+        <select id="levelSelect" onchange="changeLevel(this.value)"></select>
+        <button onclick="restartCurrentLevel()">Restart</button>
+        <span id="msg">Loading...</span>
+    </div>
+
+    <script src="https://p7scratchextensions.pages.dev/ext/BoxedPhysics/aslib.js"></script>
+
+    <script>
+        const levels = [
+            {
+                boxes: [
+                    {x:-26, y:13}, {x:26, y:13},
+                    {x:0, y:39}
+                ],
+                pigs: [{x:0, y:13}]
+            },
+            {
+                boxes: [
+                    {x:-40, y:13}, {x:0, y:13}, {x:40, y:13},
+                    {x:-20, y:39}, {x:20, y:39},
+                    {x:0, y:65}
+                ],
+                pigs: [{x:0, y:90}, {x:-40, y:39}, {x:40, y:39}]
+            },
+            {
+                boxes: [
+                    {x:-35, y:20, w:20, h:40}, {x:35, y:20, w:20, h:40},
+                    {x:0, y:46, w:100, h:12}
+                ],
+                pigs: [{x:0, y:13}, {x:0, y:65}]
+            },
+            {
+                boxes: [
+                    {x:-55, y:13}, {x:-28, y:13}, {x:0, y:13}, {x:28, y:13}, {x:55, y:13},
+                    {x:-42, y:39}, {x:-14, y:39}, {x:14, y:39}, {x:42, y:39},
+                    {x:-28, y:65}, {x:0, y:65}, {x:28, y:65}
+                ],
+                pigs: [{x:0, y:90}, {x:55, y:39}, {x:-55, y:39}]
+            },
+            {
+                boxes: [
+                    {x:-40, y:20, w:20, h:40}, {x:40, y:20, w:20, h:40},
+                    {x:-40, y:60, w:20, h:40}, {x:40, y:60, w:20, h:40},
+                    {x:0, y:86, w:120, h:12}
+                ],
+                pigs: [{x:0, y:13}, {x:0, y:100}]
+            },
+            {
+                boxes: [
+                    {x:-60, y:13}, {x:60, y:13},
+                    {x:-50, y:39}, {x:50, y:39},
+                    {x:-40, y:65}, {x:40, y:65},
+                    {x:0, y:13, w:50, h:25}
+                ],
+                pigs: [{x:0, y:40}, {x:-60, y:90}, {x:60, y:90}]
+            },
+            {
+                boxes: [
+                    {x:0, y:13, w:25, h:25},
+                    {x:0, y:39, w:50, h:25},
+                    {x:0, y:65, w:75, h:25},
+                    {x:0, y:91, w:100, h:25}
+                ],
+                pigs: [{x:-40, y:13}, {x:40, y:13}, {x:0, y:115}]
+            },
+            {
+                boxes: [
+                    {x:-50, y:25, w:20, h:50}, {x:50, y:25, w:20, h:50},
+                    {x:0, y:56, w:140, h:12},
+                    {x:-30, y:82}, {x:30, y:82},
+                    {x:0, y:108, w:80, h:12}
+                ],
+                pigs: [{x:0, y:20}, {x:0, y:125}]
+            },
+            {
+                boxes: [
+                    {x:-60, y:13}, {x:-30, y:13}, {x:0, y:13}, {x:30, y:13}, {x:60, y:13},
+                    {x:-45, y:39}, {x:-15, y:39}, {x:15, y:39}, {x:45, y:39},
+                    {x:-30, y:65}, {x:0, y:65}, {x:30, y:65},
+                    {x:-15, y:91}, {x:15, y:91},
+                    {x:0, y:117}
+                ],
+                pigs: [{x:-75, y:13}, {x:75, y:13}, {x:0, y:142}]
+            },
+            {
+                boxes: [
+                    {x:-50, y:20, w:30, h:40}, {x:0, y:20, w:30, h:40}, {x:50, y:20, w:30, h:40},
+                    {x:-25, y:46, w:80, h:12}, {x:25, y:46, w:80, h:12},
+                    {x:-25, y:72}, {x:25, y:72},
+                    {x:0, y:98, w:100, h:12}
+                ],
+                pigs: [{x:-25, y:20}, {x:25, y:20}, {x:0, y:115}]
+            }
+        ];
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const msgDiv = document.getElementById('msg');
+        const selectBox = document.getElementById('levelSelect');
+
+        const WORLD_W = 480;
+        const WORLD_H = 360; 
+        const SLING_X = -150;
+        const SLING_Y = -50;
+        const BIRD_RAD = 12;
+        const PLATFORM_X = 150;
+        const PLATFORM_Y = -100;
+
+        let gameObjects = []; 
+        let activePigs = [];  
+        let physicsInterval = null;
+        let isBirdLaunched = false;
+        let stopCounter = 0;
+        let currentLevelIndex = 0;
+        let levelCompletePending = false;
+
+        let isDragging = false;
+        let dragCurrent = { x: SLING_X, y: SLING_Y };
+
+        const FPS_CAP = 30;
+        const FPS_INTERVAL = 1000 / FPS_CAP;
+        let then = Date.now();
+
+        levels.forEach((lvl, idx) => {
+            let opt = document.createElement('option');
+            opt.value = idx;
+            opt.innerHTML = `Level ${idx+1}`;
+            selectBox.appendChild(opt);
+        });
+
+        const checkLibLoad = setInterval(() => {
+            if (window.BoxedPhysics && typeof window.BoxedPhysics.init === 'function') {
+                clearInterval(checkLibLoad);
+                msgDiv.innerText = "Ready!";
+                msgDiv.style.color = "#4CAF50";
+                renderLoop();
+                loadLevel(0);
+            }
+        }, 100);
+
+        function changeLevel(val) {
+            loadLevel(parseInt(val));
+        }
+
+        function restartCurrentLevel() {
+            loadLevel(currentLevelIndex);
+        }
+
+        function loadLevel(index) {
+            if (index >= levels.length) index = 0; 
+            currentLevelIndex = index;
+            selectBox.value = index;
+            levelCompletePending = false;
+            msgDiv.innerText = "";
+
+            if (physicsInterval) clearInterval(physicsInterval);
+
+            window.BoxedPhysics.init(30, -10, 0, 'nothing');
+            gameObjects = [];
+            activePigs = [];
+
+            createBox("ground", 0, -160, 480, 20, true, "#4CAF50");
+            createBox("platform", PLATFORM_X, PLATFORM_Y, 150, 10, true, "#795548");
+
+            const lvl = levels[index];
+            lvl.boxes.forEach((b, i) => {
+                const w = b.w || 25;
+                const h = b.h || 25;
+                const name = `box_${i}`;
+                const absX = PLATFORM_X + b.x;
+                const absY = PLATFORM_Y + 5 + (h/2) + b.y; 
+                createBox(name, absX, absY, w-2, h-2, false, "#FF9800"); 
+            });
+
+            lvl.pigs.forEach((p, i) => {
+                const size = 20;
+                const name = `pig_${i}`;
+                const absX = PLATFORM_X + p.x;
+                const absY = PLATFORM_Y + 5 + (size/2) + p.y;
+                createPig(name, absX, absY, size);
+            });
+
+            spawnBird();
+            physicsInterval = setInterval(gameTick, FPS_INTERVAL);
+        }
+
+        function gameTick() {
+            window.BoxedPhysics.stepSimulation();
+            
+            for (let i = activePigs.length - 1; i >= 0; i--) {
+                const pigName = activePigs[i];
+                let dead = false;
+
+                try {
+                    const y = parseFloat(window.BoxedPhysics.getBodyAttr('y', pigName));
+                    const x = parseFloat(window.BoxedPhysics.getBodyAttr('x', pigName));
+                    
+                    if (y < -200 || x > 300 || x < -300) dead = true;
+
+                    if (!dead && window.BoxedPhysics.impactDetectionBool(pigName)) {
+                        const xv = parseFloat(window.BoxedPhysics.getBodyAttr('Xvel', pigName));
+                        const yv = parseFloat(window.BoxedPhysics.getBodyAttr('Yvel', pigName));
+                        const speed = Math.sqrt(xv*xv + yv*yv);
+                        if(speed > 4) dead = true; 
+                    }
+                } catch(e) { dead = true; } 
+
+                if (dead) {
+                    window.BoxedPhysics.destroyBody(pigName);
+                    gameObjects = gameObjects.filter(obj => obj.name !== pigName);
+                    activePigs.splice(i, 1);
+                }
+            }
+
+            if (activePigs.length === 0 && !levelCompletePending) {
+                levelCompletePending = true;
+                msgDiv.innerText = "Victory!";
+                msgDiv.style.color = "#00FF00";
+                setTimeout(() => {
+                    loadLevel(currentLevelIndex + 1);
+                }, 1500);
+            }
+
+            checkRespawnCondition();
+        }
+
+        function checkRespawnCondition() {
+            if(!isBirdLaunched || levelCompletePending) return;
+
+            try {
+                const birdY = parseFloat(window.BoxedPhysics.getBodyAttr('y', 'bird'));
+                const birdX = parseFloat(window.BoxedPhysics.getBodyAttr('x', 'bird'));
+                
+                if (birdY < -200 || birdX > 300 || birdX < -300) {
+                    spawnBird();
+                    return;
+                }
+
+                const vx = parseFloat(window.BoxedPhysics.getBodyAttr('Xvel', 'bird'));
+                const vy = parseFloat(window.BoxedPhysics.getBodyAttr('Yvel', 'bird'));
+                const speed = Math.sqrt(vx*vx + vy*vy);
+
+                if (speed < 0.2) stopCounter++;
+                else stopCounter = 0;
+
+                if (stopCounter > 60) spawnBird();
+
+            } catch(e) { spawnBird(); }
+        }
+
+        function spawnBird() {
+            try { window.BoxedPhysics.destroyBody('bird'); } catch(e){}
+            
+            isBirdLaunched = false;
+            stopCounter = 0;
+            isDragging = false;
+            dragCurrent = { x: SLING_X, y: SLING_Y };
+            
+            createCircle("bird", SLING_X, SLING_Y, BIRD_RAD*2, true, "#F44336");
+        }
+
+        function createBox(name, x, y, w, h, isStatic, color) {
+            const type = isStatic ? 'static' : 'dynamic';
+            window.BoxedPhysics.setBodyAttrs(type, 1, 0.8, 0.1);
+            window.BoxedPhysics.defineRect(w, h);
+            window.BoxedPhysics.placeBody(name, x, y, 90);
+            gameObjects.push({ name, type: 'rect', w, h, color });
+        }
+
+        function createCircle(name, x, y, size, isStatic, color) {
+            const type = isStatic ? 'static' : 'dynamic';
+            window.BoxedPhysics.setBodyAttrs(type, 2, 0.5, 0.4); 
+            window.BoxedPhysics.defineCircle(size);
+            window.BoxedPhysics.placeBody(name, x, y, 90);
+            
+            const idx = gameObjects.findIndex(o => o.name === name);
+            if(idx > -1) gameObjects.splice(idx, 1);
+            
+            gameObjects.push({ name, type: 'circle', r: size / 2, color });
+        }
+
+        function createPig(name, x, y, size) {
+            window.BoxedPhysics.setBodyAttrs('dynamic', 1, 0.3, 0.2);
+            window.BoxedPhysics.defineCircle(size);
+            window.BoxedPhysics.placeBody(name, x, y, 90);
+            window.BoxedPhysics.whenImpactDetected(name); 
+
+            activePigs.push(name);
+            gameObjects.push({ name, type: 'pig', r: size/2, color: '#8BC34A' });
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (isBirdLaunched || levelCompletePending) return;
+            const pos = getMousePos(e);
+            if (dist(pos, {x:SLING_X, y:SLING_Y}) < 60) isDragging = true;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const pos = getMousePos(e);
+                const d = dist(pos, {x:SLING_X, y:SLING_Y});
+                const maxPull = 80;
+
+                if (d > maxPull) {
+                    const ratio = maxPull / d;
+                    dragCurrent = {
+                        x: SLING_X + (pos.x - SLING_X) * ratio,
+                        y: SLING_Y + (pos.y - SLING_Y) * ratio
+                    };
+                } else {
+                    dragCurrent = pos;
+                }
+                window.BoxedPhysics.moveto(dragCurrent.x, dragCurrent.y, 'bird');
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                isBirdLaunched = true;
+
+                const dx = SLING_X - dragCurrent.x;
+                const dy = SLING_Y - dragCurrent.y;
+                let angleRad = Math.atan2(dy, dx);
+                let angleDeg = angleRad * (180 / Math.PI);
+                let scratchDir = 90 - angleDeg; 
+                const power = dist(dragCurrent, {x:SLING_X, y:SLING_Y}) * 0.45;
+
+                window.BoxedPhysics.destroyBody('bird');
+                window.BoxedPhysics.setBodyAttrs('dynamic', 2, 0.5, 0.4);
+                window.BoxedPhysics.defineCircle(BIRD_RAD*2);
+                window.BoxedPhysics.placeBody('bird', dragCurrent.x, dragCurrent.y, 90);
+                window.BoxedPhysics.setBullet('bird', 'bullet');
+                window.BoxedPhysics.applyForceToBody('Impulse', 'bird', 0, 0, power, scratchDir);
+            }
+        });
+
+        function renderLoop() {
+            requestAnimationFrame(renderLoop);
+
+            const now = Date.now();
+            const elapsed = now - then;
+            if (elapsed > FPS_INTERVAL) {
+                then = now - (elapsed % FPS_INTERVAL);
+                drawFrame();
+            }
+        }
+
+        function drawFrame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (isDragging && !isBirdLaunched) drawSlingBand(dragCurrent);
+
+            gameObjects.forEach(obj => {
+                let x, y, dir;
+
+                if (obj.name === 'bird' && isDragging) {
+                    x = dragCurrent.x; y = dragCurrent.y; dir = 90;
+                } else {
+                    const state = getObjState(obj.name);
+                    if (isNaN(state.x)) return; 
+                    x = state.x; y = state.y; dir = state.dir;
+                }
+
+                const center = worldToCanvas(x, y);
+                ctx.save();
+                ctx.translate(center.x, center.y);
+                ctx.rotate((dir - 90) * (Math.PI / 180));
+
+                ctx.fillStyle = obj.color;
+                ctx.strokeStyle = "#333";
+                ctx.lineWidth = 2;
+
+                if (obj.type === 'rect') {
+                    const drawW = obj.w * (canvas.width / WORLD_W);
+                    const drawH = obj.h * (canvas.height / WORLD_H);
+                    ctx.fillRect(-drawW/2, -drawH/2, drawW, drawH);
+                    ctx.strokeRect(-drawW/2, -drawH / 2, drawW, drawH);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-drawW/2, -drawH/2); ctx.lineTo(drawW/2, drawH/2);
+                    ctx.moveTo(drawW/2, -drawH/2); ctx.lineTo(-drawW/2, drawH/2);
+                    ctx.strokeStyle="rgba(0,0,0,0.1)"; ctx.stroke();
+                } else if (obj.type === 'circle' || obj.type === 'pig') {
+                    const drawR = obj.r * (canvas.width / WORLD_W);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, drawR, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    if (obj.type === 'pig') {
+                        ctx.fillStyle = "#689F38";
+                        ctx.beginPath(); ctx.arc(0, 4, drawR/2, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = "black"; 
+                        ctx.beginPath(); ctx.arc(-3, 4, 2, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(3, 4, 2, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = "white";
+                        ctx.beginPath(); ctx.arc(-5, -5, 4, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(5, -5, 4, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = "black";
+                        ctx.beginPath(); ctx.arc(-5, -5, 1.5, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(5, -5, 1.5, 0, Math.PI*2); ctx.fill();
+                    } else {
+                        ctx.fillStyle = "white";
+                        ctx.beginPath(); ctx.arc(5, -5, 4, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = "black";
+                        ctx.beginPath(); ctx.arc(7, -5, 1.5, 0, Math.PI*2); ctx.fill();
+                    }
+                }
+                ctx.restore();
+            });
+
+            drawSlingshot();
+            if (isDragging && !isBirdLaunched) drawSlingBand(dragCurrent, true);
+        }
+
+        function drawSlingshot() {
+            const pos = worldToCanvas(SLING_X, SLING_Y);
+            ctx.save();
+            ctx.strokeStyle = "#8D6E63"; ctx.lineWidth = 8;
+            ctx.lineCap = "round"; ctx.lineJoin = "round";
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y + 120); 
+            ctx.lineTo(pos.x, pos.y + 20);
+            ctx.lineTo(pos.x - 15, pos.y);
+            ctx.moveTo(pos.x, pos.y + 20);
+            ctx.lineTo(pos.x + 15, pos.y);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawSlingBand(birdPos, isFront = false) {
+            const s = worldToCanvas(SLING_X, SLING_Y);
+            const b = worldToCanvas(birdPos.x, birdPos.y);
+            ctx.save();
+            ctx.strokeStyle = "#3E2723"; ctx.lineWidth = 5;
+            ctx.beginPath();
+            if(isFront) { ctx.moveTo(s.x + 15, s.y); ctx.lineTo(b.x, b.y); } 
+            else { ctx.moveTo(s.x - 15, s.y); ctx.lineTo(b.x, b.y); }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function getMousePos(evt) {
+            const r = canvas.getBoundingClientRect();
+            return {
+                x: ((evt.clientX - r.left) / canvas.width) * WORLD_W - (WORLD_W/2),
+                y: (WORLD_H/2) - ((evt.clientY - r.top) / canvas.height) * WORLD_H
+            };
+        }
+
+        function getObjState(name) {
+            try {
+                return {
+                    x: parseFloat(window.BoxedPhysics.getBodyAttr('x', name)),
+                    y: parseFloat(window.BoxedPhysics.getBodyAttr('y', name)),
+                    dir: parseFloat(window.BoxedPhysics.getBodyAttr('direction', name))
+                };
+            } catch(e) { return { x: NaN, y: NaN, dir: 0 }; }
+        }
+
+        function worldToCanvas(wx, wy) {
+            return {
+                x: (wx + WORLD_W/2) * (canvas.width / WORLD_W),
+                y: (WORLD_H/2 - wy) * (canvas.height / WORLD_H)
+            };
+        }
+
+        function dist(a, b) { return Math.sqrt(Math.pow(a.x-b.x, 2) + Math.pow(a.y-b.y, 2)); }
+
+    </script>
+</body>
+</html>
