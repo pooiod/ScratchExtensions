@@ -248,7 +248,7 @@
             this.sandboxedTiemout = null;
 
             vm.runtime.on('PROJECT_LOADED', () => {
-                this.deloadLib("all");
+                this.removeLib("all");
             });
         }
 
