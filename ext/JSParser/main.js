@@ -833,7 +833,9 @@
             const sandboxed = TYPE != 0;
             if (!this.sandboxedTiemout) {
                 if (!Scratch.canUnsandbox) {
-                    Scratch.canUnsandbox = confirm;
+                    Scratch.canUnsandbox = function(msg) {
+                        return window.confirm(msg);
+                    };
                 }
                 if (!await Scratch.canUnsandbox(`Do you want to allow the loading of unsandboxed libraries?`)) {
                     console.error("Denied unsandboxed permission");
