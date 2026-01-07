@@ -720,7 +720,15 @@
 
         getMem(args) {
             if (args.VAR && args.VAR in this.Persistent) {
-                return this.Persistent[args.VAR];
+                var data = this.Persistent[args.VAR];
+                try {
+                    if (data === undefined) return 'undefined';
+                    if (data === null) return 'null';
+                    if (typeof data === 'object') return JSON.stringify(data);
+                    return String(data);
+                } catch (err) {
+                    return err.toString();
+                }
             }
             return '';
         }
