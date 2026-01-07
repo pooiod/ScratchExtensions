@@ -493,7 +493,6 @@
             code = code.replace(/\[nl\]/g, '\n');
 
             try {
-                console.log(code);
                 const runner = new Function('__scope__', `
                     with(__scope__) {
                         return (async function() {
