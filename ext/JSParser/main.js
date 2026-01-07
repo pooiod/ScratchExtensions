@@ -318,7 +318,7 @@
                     {
                         opcode: 'setMem',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set persistent [VAR] to [TEXT]',
+                        text: 'Send data [TEXT] as [VAR]',
                         arguments: {
                             VAR: {
                                 type: Scratch.ArgumentType.STRING,
@@ -333,7 +333,19 @@
                     {
                         opcode: 'removeMem',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Remove persistent [VAR]',
+                        text: 'Remove [VAR] from data',
+                        arguments: {
+                            VAR: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'myData'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'getMem',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get [VAR] from data',
+                        disableMonitor: true,
                         arguments: {
                             VAR: {
                                 type: Scratch.ArgumentType.STRING,
@@ -704,6 +716,13 @@
             if (args.VAR) {
                 delete this.Persistent[args.VAR];
             }
+        }
+
+        getMem(args) {
+            if (args.VAR && args.VAR in this.Persistent) {
+                return this.Persistent[args.VAR];
+            }
+            return '';
         }
 
         onFunction(args, util) {
