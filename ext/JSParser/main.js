@@ -825,7 +825,7 @@
         async addLib(args) {
             var { URL, TYPE } = args;
 
-            if (!Scratch.canFetch(URL)) {
+            if (!await Scratch.canFetch(URL)) {
                 console.error(`Denied loading load library from ${URL}`);
                 return;
             }
