@@ -871,9 +871,9 @@
     Scratch.extensions.register(new JSParser());
 
     window.JSParser = {
-        addLib: Scratch.vm.runtime._primitives.P7JSParser_addObject,
-        removeLib: Scratch.vm.runtime._primitives.P7JSParser_removeObject,
-        getLib: Scratch.vm.runtime._primitives.P7JSParser_getObject
+        addObject: Scratch.vm.runtime._primitives.P7JSParser_addObject,
+        removeObject: Scratch.vm.runtime._primitives.P7JSParser_removeObject,
+        getObject: Scratch.vm.runtime._primitives.P7JSParser_getObject
     };
 
     // Replace block on use
