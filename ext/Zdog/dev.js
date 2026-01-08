@@ -1,4 +1,11 @@
-// Zdog Scratch extension
+// Name: Zdog
+// ID: P7Zdog
+// Description: Render in 3D with Zdog
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: dev
+// Unsandboxed: true
+// WIP: true
+// Created: ?/?/202?
 
 (function(Scratch) {
 
@@ -13,9 +20,18 @@
                 svg: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
                 canvas: document.createElement('canvas')
             };
+
             this.illo = new Zdog.Illustration({
                 element: this.renders.canvas,
+                dragRotate: false,
+                resize: true
             });
+
+            this.world['world'] = this.illo;
+
+            this.parentStack = [this.illo];
+
+            this.lastShape = null;
         }
 
         getInfo() {
@@ -23,27 +39,20 @@
                 id: 'P7Zdog',
                 name: 'Zdog',
                 color1: '#eeaa00',
-                color2: '#ee6622',
                 blocks: [
+                    { blockType: Scratch.BlockType.LABEL, text: "Render" },
                     {
                         opcode: 'getRender',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get render using width [WIDTH] and height [HEIGHT]',
+                        text: 'Get render: width [WIDTH] height [HEIGHT]',
                         arguments: {
-                            TYPE: { type: Scratch.ArgumentType.STRING, menu: 'RENDER_TYPE', defaultValue: 'svg' },
-                            WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: '100' },
-                            HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: '100' }
+                            TYPE: { type: Scratch.ArgumentType.STRING, menu: 'RENDER_TYPE', defaultValue: 'png' },
+                            WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: '480' },
+                            HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: '360' }
                         }
                     },
-                    {
-                        opcode: 'onBeforeRender',
-                        blockType: Scratch.BlockType.EVENT,
-                        text: 'On before render',
-                        arguments: {}
-                    },
-
-                    "---",
-
+                    
+                    { blockType: Scratch.BlockType.LABEL, text: "World" },
                     {
                         opcode: 'newWorld',
                         blockType: Scratch.BlockType.COMMAND,
@@ -67,8 +76,7 @@
                         }
                     },
 
-                    "---",
-
+                    { blockType: Scratch.BlockType.LABEL, text: "Modify" },
                     {
                         opcode: 'removeShape',
                         blockType: Scratch.BlockType.COMMAND,
@@ -154,12 +162,17 @@
                         text: 'Get shapes',
                         arguments: {}
                     },
+                    {
+                        opcode: 'getGroups',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get groups',
+                        arguments: {}
+                    },
 
-                    "---",
-
+                    { blockType: Scratch.BlockType.LABEL, text: "Groups" },
                     {
                         opcode: 'createGroup',
-                        blockType: Scratch.BlockType.CONDITIONAL,
+                        blockType: Scratch.BlockType.LOOP,
                         text: 'Create group [NAME]',
                         arguments: {
                             NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'group1' }
@@ -175,6 +188,7 @@
                         }
                     },
 
+                    { blockType: Scratch.BlockType.LABEL, text: "Shapes" },
                     {
                         opcode: 'createRectangle',
                         blockType: Scratch.BlockType.COMMAND,
@@ -249,16 +263,15 @@
                     },
                     {
                         opcode: 'createShape',
-                        blockType: Scratch.BlockType.CONDITIONAL,
+                        blockType: Scratch.BlockType.LOOP,
                         text: 'Create shape [NAME] with props [PROPS]',
                         arguments: {
                             NAME: { type: Scratch.ArgumentType.STRING, defaultValue: 'shape1' },
-                            PROPS: { type: Scratch.ArgumentType.STRING, defaultValue: 'key: "val", key2: 4, key3: true' }
+                            PROPS: { type: Scratch.ArgumentType.STRING, defaultValue: 'stroke: 10, color: "#636"' }
                         }
                     },
 
-                    "---",
-
+                    { blockType: Scratch.BlockType.LABEL, text: "Paths" },
                     {
                         opcode: 'pathMoveTo',
                         blockType: Scratch.BlockType.COMMAND,
@@ -301,8 +314,7 @@
                         arguments: {}
                     },
 
-                    "---",
-
+                    { blockType: Scratch.BlockType.LABEL, text: "Vectors" },
                     {
                         opcode: 'expandProps',
                         blockType: Scratch.BlockType.REPORTER,
@@ -334,25 +346,28 @@
                     {
                         opcode: 'addVector',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Add vector [VECTOR]',
+                        text: 'Add vector [VECTOR1] and [VECTOR2]',
                         arguments: {
-                            VECTOR: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
+                            VECTOR1: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' },
+                            VECTOR2: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
                         }
                     },
                     {
                         opcode: 'subtractVector',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Subtract vector [VECTOR]',
+                        text: 'Subtract vector [VECTOR1] by [VECTOR2]',
                         arguments: {
-                            VECTOR: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
+                            VECTOR1: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' },
+                            VECTOR2: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
                         }
                     },
                     {
                         opcode: 'multiplyVector',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Multiply vector [VECTOR]',
+                        text: 'Multiply vector [VECTOR1] by [VECTOR2]',
                         arguments: {
-                            VECTOR: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
+                            VECTOR1: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' },
+                            VECTOR2: { type: Scratch.ArgumentType.STRING, defaultValue: '0, 0, 0' }
                         }
                     },
                     {
@@ -394,29 +409,292 @@
                     }
                 ],
                 menus: {
-                    RENDER_TYPE: ['png', 'svg'],
-                    PROP_MENU: ['addTo', 'width', 'height', 'depth', 'radius', 'sides', 'diameter', 'length', 'stroke', 'color', 'leftFace', 'rightFace', 'topFace', 'bottomFace', 'cornerRadius', 'backface'],
+                    RENDER_TYPE: {
+                        acceptReporters: true,
+                        items: ['png', 'svg']
+                    },
+                    PROP_MENU: {
+                        isTypeable: true,
+                        acceptReporters: true,
+                        items: ['addTo', 'width', 'height', 'depth', 'radius', 'sides', 'diameter', 'length', 'stroke', 'color', 'leftFace', 'rightFace', 'topFace', 'bottomFace', 'cornerRadius', 'backface', 'visible', 'closed']
+                    },
                     VECTOR_PROP_MENU: ['x', 'y', 'z']
                 }
             };
         }
 
-        getRender({ TYPE, WIDTH, HEIGHT }) {
-            this.illo.setSize(WIDTH, HEIGHT);
-            this.illo.updateRenderGraph(this.illo);
-            this.illo.renderGraph(this.illo);
+        _parseProps(str) {
+            if (!str) return {};
+            const props = {};
+            const regex = /([a-zA-Z0-9_]+)\s*:\s*((?:"[^"]*")|(?:'[^']*')|(?:[^,]+))/g;
+            let match;
+            while ((match = regex.exec(str)) !== null) {
+                const key = match[1];
+                let val = match[2].trim();
+                if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+                    val = val.slice(1, -1);
+                } 
+                else if (val === 'true') val = true;
+                else if (val === 'false') val = false;
+                else if (!isNaN(Number(val)) && val !== '') val = Number(val);
 
-            return this.renders.canvas.toDataURL(TYPE || "png");
+                if (key === 'addTo') {
+                    if (this.world[val]) val = this.world[val];
+                    else val = this.illo;
+                }
+                props[key] = val;
+            }
+            return props;
         }
 
-        createRectangle({ NAME, PROPS }) { // 'width: "120", height: "80", stroke: "20", color: "#E62"'
-            this.world[NAME] = new Zdog.Rect({
-                addTo: this.illo,
-                width: 120,
-                height: 80,
-                stroke: 20,
-                color: '#E62',
+        _parseVector(str) {
+            const parts = str.split(',').map(s => parseFloat(s.trim()) || 0);
+            return { x: parts[0] || 0, y: parts[1] || 0, z: parts[2] || 0 };
+        }
+
+        _registerShape(name, shape) {
+            if (this.world[name]) {
+                if (typeof this.world[name].remove === 'function') {
+                    this.world[name].remove();
+                }
+                delete this.world[name];
+            }
+            this.world[name] = shape;
+            this.lastShape = shape;
+        }
+
+        getRender({ TYPE, WIDTH, HEIGHT }) {
+            this.renders.canvas.width = WIDTH;
+            this.renders.canvas.height = HEIGHT;
+            this.illo.setSize(WIDTH, HEIGHT);
+            this.illo.updateRenderGraph();
+            this.illo.renderGraph();
+            
+            if (TYPE === 'svg') {
+                return this.renders.canvas.toDataURL("image/svg+xml");
+            }
+            return this.renders.canvas.toDataURL("image/png");
+        }
+
+        newWorld() {
+            this.illo.children = [];
+            this.illo.updateGraph();
+            this.world = { 'world': this.illo };
+            this.parentStack = [this.illo];
+            this.lastShape = null;
+        }
+
+        setWorldRotation({ ROT }) {
+            this.illo.rotate.set(this._parseVector(ROT));
+        }
+
+        setCameraZoom({ ZOOM }) {
+            this.illo.zoom = ZOOM;
+        }
+
+        removeShape({ NAME }) {
+            if (this.world[NAME]) {
+                this.world[NAME].remove();
+                delete this.world[NAME];
+            }
+        }
+
+        scaleShape({ NAME, SIZE }) {
+            if (this.world[NAME]) this.world[NAME].scale.set(this._parseVector(SIZE));
+        }
+
+        moveShape({ NAME, POS }) {
+            if (this.world[NAME]) this.world[NAME].translate.set(this._parseVector(POS));
+        }
+
+        rotateShape({ NAME, ROTATION }) {
+            if (this.world[NAME]) this.world[NAME].rotate.set(this._parseVector(ROTATION));
+        }
+
+        copyShape({ NAME }) {
+            if (this.world[NAME]) {
+                const copy = this.world[NAME].copy();
+                const newName = NAME + "_copy_" + Math.floor(Math.random()*1000);
+                this._registerShape(newName, copy);
+            }
+        }
+
+        copyShapes({ NAME }) {
+            if (this.world[NAME]) {
+                const copy = this.world[NAME].copyGraph();
+                const newName = NAME + "_copyGraph_" + Math.floor(Math.random()*1000);
+                this._registerShape(newName, copy);
+            }
+        }
+
+        setProps({ NAME, PROPS }) {
+            if (this.world[NAME]) Object.assign(this.world[NAME], this._parseProps(PROPS));
+        }
+
+        setProp({ PROP, NAME, VALUE }) {
+            if (this.world[NAME]) {
+                let val = VALUE;
+                if (val === 'true') val = true;
+                if (val === 'false') val = false;
+                if (!isNaN(Number(val))) val = Number(val);
+                this.world[NAME][PROP] = val;
+            }
+        }
+
+        getShapeProp({ PROP, NAME }) {
+            return (this.world[NAME]) ? this.world[NAME][PROP] : '';
+        }
+
+        getShapes() {
+            return Object.entries(this.world)
+                .filter(([key, val]) => key !== 'world' && !(val instanceof Zdog.Group))
+                .map(([key, val]) => key)
+                .join(', ');
+        }
+
+        getGroups() {
+            return Object.entries(this.world)
+                .filter(([key, val]) => val instanceof Zdog.Group)
+                .map(([key, val]) => key)
+                .join(', ');
+        }
+
+        _createPrimitive(ClassRef, name, propsStr) {
+            const props = this._parseProps(propsStr);
+            if (!props.addTo) {
+                props.addTo = this.parentStack[this.parentStack.length - 1];
+            }
+            const shape = new ClassRef(props);
+            this._registerShape(name, shape);
+        }
+
+        createGroup(args, util) {
+            if (!util.stackFrame.executed) {
+                util.stackFrame.executed = true;
+                
+                const props = { addTo: this.parentStack[this.parentStack.length - 1] };
+                const group = new Zdog.Group(props);
+                this._registerShape(args.NAME, group);
+                
+                this.parentStack.push(group);
+                return true;
+            }
+            this.parentStack.pop();
+            return false;
+        }
+
+        createShape(args, util) {
+            if (!util.stackFrame.executed) {
+                util.stackFrame.executed = true;
+                
+                const props = this._parseProps(args.PROPS);
+                if (!props.addTo) props.addTo = this.parentStack[this.parentStack.length - 1];
+                
+                const shape = new Zdog.Shape(props);
+                this._registerShape(args.NAME, shape);
+                
+                this.parentStack.push(shape);
+                return true;
+            }
+            this.parentStack.pop();
+            return false;
+        }
+
+        createAnchor({ NAME, POS }) {
+            const pos = this._parseVector(POS);
+            const anchor = new Zdog.Anchor({
+                addTo: this.parentStack[this.parentStack.length - 1],
+                translate: pos
             });
+            this._registerShape(NAME, anchor);
+        }
+
+        createRectangle(args) { this._createPrimitive(Zdog.Rect, args.NAME, args.PROPS); }
+        createRoundedRectangle(args) { this._createPrimitive(Zdog.RoundedRect, args.NAME, args.PROPS); }
+        createEllipse(args) { this._createPrimitive(Zdog.Ellipse, args.NAME, args.PROPS); }
+        createPolygon(args) { this._createPrimitive(Zdog.Polygon, args.NAME, args.PROPS); }
+        createHemisphere(args) { this._createPrimitive(Zdog.Hemisphere, args.NAME, args.PROPS); }
+        createCone(args) { this._createPrimitive(Zdog.Cone, args.NAME, args.PROPS); }
+        createCylinder(args) { this._createPrimitive(Zdog.Cylinder, args.NAME, args.PROPS); }
+        createBox(args) { this._createPrimitive(Zdog.Box, args.NAME, args.PROPS); }
+
+        _addToPath(cmd) {
+            if (!this.lastShape) return;
+            if (!this.lastShape.path) this.lastShape.path = [];
+            this.lastShape.path.push(cmd);
+            this.lastShape.updatePath();
+        }
+
+        pathMoveTo({ POS }) { this._addToPath({ move: this._parseVector(POS) }); }
+        pathLineTo({ POS }) { this._addToPath({ line: this._parseVector(POS) }); }
+        pathArcTo({ BEND, POS }) { this._addToPath({ arc: [this._parseVector(BEND), this._parseVector(POS)] }); }
+        pathBezierTo({ START, CONTROL, POS }) { this._addToPath({ bezier: [this._parseVector(START), this._parseVector(CONTROL), this._parseVector(POS)] }); }
+        pathClose() { 
+            if (this.lastShape) {
+                this.lastShape.closed = true;
+                this.lastShape.updatePath();
+            }
+        }
+
+        expandProps({ PROPS1, PROPS2 }) {
+            const p1 = this._parseProps(PROPS1);
+            const p2 = this._parseProps(PROPS2);
+            return Object.entries({...p1, ...p2}).map(([k,v]) => `${k}: "${v}"`).join(', ');
+        }
+
+        createVector3({ X, Y, Z }) { return `${X}, ${Y}, ${Z}`; }
+        
+        getVectorProp({ VECTOR_PROP, VECTOR3 }) {
+            return this._parseVector(VECTOR3)[VECTOR_PROP];
+        }
+
+        addVector({ VECTOR1, VECTOR2 }) {
+            const v1 = this._parseVector(VECTOR1);
+            const v2 = this._parseVector(VECTOR2);
+            return `${v1.x + v2.x}, ${v1.y + v2.y}, ${v1.z + v2.z}`;
+        }
+
+        subtractVector({ VECTOR1, VECTOR2 }) {
+            const v1 = this._parseVector(VECTOR1);
+            const v2 = this._parseVector(VECTOR2);
+            return `${v1.x - v2.x}, ${v1.y - v2.y}, ${v1.z - v2.z}`;
+        }
+
+        multiplyVector({ VECTOR1, VECTOR2 }) {
+            const v1 = this._parseVector(VECTOR1);
+            const v2 = this._parseVector(VECTOR2);
+            return `${v1.x * v2.x}, ${v1.y * v2.y}, ${v1.z * v2.z}`;
+        }
+
+        rotateVector({ VECTOR1, VECTOR2 }) {
+            const v = new Zdog.Vector(this._parseVector(VECTOR1));
+            v.rotate(this._parseVector(VECTOR2));
+            return `${v.x}, ${v.y}, ${v.z}`;
+        }
+
+        getMagnitude({ VECTOR1, VECTOR2 }) {
+            const v1 = this._parseVector(VECTOR1);
+            const v2 = this._parseVector(VECTOR2);
+            const dx = v1.x - v2.x;
+            const dy = v1.y - v2.y;
+            const dz = v1.z - v2.z;
+            return Math.sqrt(dx*dx + dy*dy + dz*dz);
+        }
+
+        lerpVector({ VECTOR1, VECTOR2, VALUE }) {
+            const v1 = this._parseVector(VECTOR1);
+            const v2 = this._parseVector(VECTOR2);
+            const alpha = parseFloat(VALUE) || 0;
+            const x = v1.x + (v2.x - v1.x) * alpha;
+            const y = v1.y + (v2.y - v1.y) * alpha;
+            const z = v1.z + (v2.z - v1.z) * alpha;
+            return `${x}, ${y}, ${z}`;
+        }
+
+        modVector({ VECTOR1, VECTOR2 }) {
+            const v1 = this._parseVector(VECTOR1);
+            const v2 = this._parseVector(VECTOR2);
+            return `${v1.x % v2.x}, ${v1.y % v2.y}, ${v1.z % v2.z}`;
         }
     }
 
