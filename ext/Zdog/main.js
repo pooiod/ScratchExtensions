@@ -8,8 +8,6 @@
 // Created: 1/7/2026
 
 (function (Scratch) {
-    'use strict';
-
     if (!Scratch.extensions.unsandboxed) {
         throw new Error('This extension must run unsandboxed');
     }
