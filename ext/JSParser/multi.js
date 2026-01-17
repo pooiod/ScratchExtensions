@@ -23,6 +23,8 @@
             this._loadFromStorage();
             this._fetchBaseCode();
 
+            window.JSParser = window.JSParser || {};
+
             runtime.on('PROJECT_LOADED', () => {
                 this._loadFromStorage();
                 if (this.baseCode) this._rehydrateAll();
@@ -81,7 +83,7 @@
             }
 
             if (this.instances.length === 0 && this.isLoaded) {
-                this._createInstanceFromCode("Default", false);
+                this._createInstanceFromCode("VM1", false);
             }
         }
 
@@ -186,7 +188,7 @@
             }];
 
             for (const inst of this.instances) {
-                if (this.instances.length > 1 || inst.name !== "Default") blocks.push({ blockType: Scratch.BlockType.LABEL, text: `VM: ${inst.name}` });
+                if (this.instances.length > 1 || inst.name !== "VM1") blocks.push({ blockType: Scratch.BlockType.LABEL, text: `${inst.name}` });
 
                 const removeFunc = `removeVM_${inst.name}`;
                 this[removeFunc] = () => this._removeVM(inst.name);
@@ -203,6 +205,7 @@
                         const op = b.originalOpcode || b.opcode || b.func;
                         const newOp = `${inst.name}_${op}`;
 
+                        if (newBlock.text && this.instances.length > 1) newBlock.text = `${inst.name}: ${newBlock.text}`;
                         if (b.opcode) newBlock.opcode = newOp;
                         else if (b.func) newBlock.func = newOp;
 
@@ -266,7 +269,7 @@
             if (!this.baseCode) return;
             let code = this.baseCode
                 .replace(/P7JSParser/g, `${ID}_${name}`)
-                .replace(/window\.JSParser/g, `window["${name}"]`);
+                .replace(/window\.JSParser/g, `window.JSParser["${name}"]`);
 
             const self = this;
             return new Promise((resolve) => {
@@ -283,7 +286,6 @@
                             const mapped = (info.blocks || []).map(b => {
                                 if (typeof b !== 'object' || b.blockType === Scratch.BlockType.LABEL) return b;
                                 const nb = { ...b };
-                                if (nb.text) nb.text = `${name}: ${nb.text}`;
                                 const op = b.opcode || b.func;
                                 nb.originalOpcode = op;
                                 if (op) {
