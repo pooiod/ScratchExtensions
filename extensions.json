@@ -437,6 +437,23 @@
         "hidden": false
     },
     {
+        "id": "LoaderX",
+        "image": "/ext/[id]/cover.png",
+        "title": "ScratchX Loader",
+        "description": "Better ScratchX extension support for TurboWarp",
+        "created": "Jan 17, 2026",
+        "subtext": "",
+        "icon": "/extras/images/icons/wip.png",
+        "iconText": "Still working on this, generally buggy",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["unfinished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
         "id": "ListsPlus",
         "image": "/ext/[id]/cover.svg",
         "title": "Lists Plus",
