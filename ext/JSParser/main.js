@@ -2,7 +2,7 @@
 // ID: P7JSParser
 // Description: An extension for managing a sandboxed JavaScript instance.
 // By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
-// Builds: main
+// Builds: main, multi
 // Unsandboxed: true
 // WIP: true
 // Created: 12/18/2025
