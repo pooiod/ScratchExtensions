@@ -237,6 +237,8 @@ Do more testing and bug fixing
                     this[menuOpcode] = () => this.openExtensionMenu(ext, rt);
                 }
 
+                blocks.push("---");
+
                 blocks.push({
                     opcode: menuOpcode,
                     blockType: Scratch.BlockType.BUTTON,
