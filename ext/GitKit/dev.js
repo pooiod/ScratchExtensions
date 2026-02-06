@@ -10,11 +10,45 @@
     }
 
     var vm = Scratch.vm;
-    const JSZip = Scratch.vm.exports.JSZip;
+    var JSZip = Scratch.vm.exports.JSZip;
+    var originalRenameSprite;
+    var originalDeleteSprite;
+    var isconnecting = false;
+    var editing = {};
+    var client;
+
+    var isCancled = false;
+    var incompatable = false;
+
+    var compatability = [
+        ["turbowarp.org", "mirror.turbowarp.xyz", "robo-code.pages.dev"],
+        ["studio.penguinmod.com"],
+        ["snail-ide.js.org"],
+        ["alpha.unsandboxed.org"],
+        ["ampmod.codeberg.page", "50-scratch-tabs.github.io"],
+        ["librekitten.org"]
+    ];
+
+    var warnCompatableIssue = [
+        "rc.40code.com",
+        "xplab.vercel.app",
+        "electramod.vercel.app"
+    ];
+
+    var usebackup = [];
+
+    function isCompatible(str1, str2) {
+        return str1 == str2 || compatability.some(arr => arr.includes(str1) && arr.includes(str2));
+    }
+
     var loaded = false;
     setTimeout(() => {
         loaded = true;
     }, 500);
+
+    function RunCommand(func, ...inputs) {
+        Scratch.vm.runtime._primitives[`P7GitKit_${func}`](...inputs);
+    }
 
     const supercoolghthemecss = `
         :root {
@@ -106,7 +140,7 @@
 
     function close(el, cb, val) {
         el.classList.add('closing');
-        el.addEventListener('animationend', () => { el.remove(); if(cb) cb(val); });
+        el.addEventListener('animationend', () => { el.remove(); if (cb) cb(val); });
     }
 
     function modal(title, body, btns, iconHtml) {
@@ -114,10 +148,10 @@
         ov.className = 'gh-overlay';
         const box = document.createElement('div');
         box.className = 'gh-box';
-        
+
         const head = document.createElement('div');
         head.className = 'gh-header';
-        if(iconHtml) head.innerHTML += iconHtml;
+        if (iconHtml) head.innerHTML += iconHtml;
         const h3 = document.createElement('h3');
         h3.className = 'gh-title';
         h3.textContent = title;
@@ -125,15 +159,15 @@
 
         const b = document.createElement('div');
         b.className = 'gh-body';
-        if(typeof body === 'string') b.textContent = body;
+        if (typeof body === 'string') b.textContent = body;
         else b.appendChild(body);
 
         const foot = document.createElement('div');
         foot.className = 'gh-footer';
-        
+
         btns.forEach(c => {
             const btn = document.createElement('button');
-            btn.className = 'gh-btn ' + (c.cls||'');
+            btn.className = 'gh-btn ' + (c.cls || '');
             btn.textContent = c.txt;
             btn.onclick = () => c.fn(ov);
             foot.appendChild(btn);
@@ -145,8 +179,8 @@
         return { ov, box };
     }
 
-    alert = function(text, type = 'info') {
-        if(type === 'notif') {
+    alert = function (text, type = 'info') {
+        if (type === 'notif') {
             const t = document.createElement('div');
             t.className = 'gh-toast';
             t.textContent = text;
@@ -160,7 +194,7 @@
         box.querySelector('.gh-btn').focus();
     };
 
-    confirm = function(text, yes = 'Yes', no = 'No') {
+    confirm = function (text, yes = 'Yes', no = 'No') {
         return new Promise(r => {
             const { box } = modal('Confirm', text, [
                 { txt: no, fn: (ov) => close(ov, r, false) },
@@ -170,7 +204,7 @@
         });
     };
 
-    prompt = function(text, def = '') {
+    prompt = function (text, def = '') {
         return new Promise(r => {
             const div = document.createElement('div');
             div.textContent = text;
@@ -178,7 +212,7 @@
             inp.className = 'gh-input';
             inp.value = def;
             div.appendChild(inp);
-            
+
             const sub = (ov) => close(ov, r, inp.value);
             const { box, ov } = modal('Input', div, [
                 { txt: 'Cancel', fn: (ov) => close(ov, r, null) },
@@ -186,19 +220,113 @@
             ], icons.info);
 
             inp.onkeydown = e => {
-                if(e.key === 'Enter') sub(ov);
-                if(e.key === 'Escape') close(ov, r, null);
+                if (e.key === 'Enter') sub(ov);
+                if (e.key === 'Escape') close(ov, r, null);
             };
             setTimeout(() => { inp.focus(); inp.select(); }, 50);
         });
     };
+
+    var GHuser = false;
+    async function getGitHubUserName(token) {
+        const url = 'https://api.github.com/user';
+
+        if (!token) {
+            token = ('; ' + document.cookie).split('; .GHK824=').pop().split(';')[0];
+        }
+
+        if (!token) {
+            return 'User' + Math.floor(Math.random() * 1000);
+        }
+
+        if (GHuser) {
+            return GHuser;
+        }
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'X-GitHub-Api-Version': '2022-11-28'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`GitHub API error: ${errorData.message}`);
+            }
+
+            const userData = await response.json();
+
+            const name = userData.name;
+            const username = userData.login;
+
+            if (name) {
+                GHuser = name;
+                return name;
+            } else {
+                GHuser = username;
+                return username;
+            }
+
+        } catch (error) {
+            console.error('Error fetching name:', error.message);
+            return null;
+        }
+    }
+
+    function findSpriteVisual(name) {
+        const container = document.querySelector("#app > div > div > div > div.gui_body-wrapper_-N0sA.box_box_2jjDp > div > div.gui_stage-and-target-wrapper_69KBf.box_box_2jjDp > div.gui_target-wrapper_36Gbz.box_box_2jjDp > div > div.sprite-selector_sprite-selector_2KgCX.box_box_2jjDp > div.sprite-selector_scroll-wrapper_3NNnc.box_box_2jjDp > div.sprite-selector_items-wrapper_4bcOj.box_box_2jjDp");
+        if (!container) return null;
+
+        const elements = container.querySelectorAll('*');
+        for (const element of elements) {
+            if (element.textContent.trim() === name) {
+                return element.parentElement;
+            }
+        }
+        return null;
+    }
+
+	function getColorFromID(id, brightness = 80) {
+		var hue = Array.from(id).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+		var hexColor = `hsl(${(hue + 130) % 360}, 50%, ${brightness}%)`;
+		return hexColor;
+	}
+
+    async function alertUserSpriteChange(dat) {
+        const parsedData = JSON.parse(dat);
+        const {
+            sprite,
+            dothing,
+            from
+        } = parsedData;
+
+        if (from == await getGitHubUserName()) {
+            return;
+        } else {
+            if (editing[from]) findSpriteVisual(editing[from].sprite).style = "";
+            findSpriteVisual(sprite).style.borderColor = getColorFromID(from, 50);
+
+            editing[from] = {
+                sprite: sprite,
+                time: Math.floor(Date.now() / 1000)
+            };
+        }
+
+        // if (dothing) {
+        //     alert(`${from} is now editing "${sprite}"`, "notif");
+        // }
+    }
 
     function deleteSprite(SPRITE) {
         const target = Scratch.vm.runtime.getSpriteTargetByName(SPRITE);
         if (!target || target.isStage) {
             return;
         }
-        vm.deleteSprite(target.id);
+        originalDeleteSprite(target.id);
     }
 
     async function blobToBase64(blob) {
@@ -271,7 +399,7 @@
     if (location.href.includes("project_url=") && location.href.includes("raw.githubusercontent.com") && location.href.includes("/index.project")) {
         const repo = location.href.split("raw.githubusercontent.com/")[1].split("/")[0] + "/" + location.href.split("raw.githubusercontent.com/")[1].split("/")[1];
 
-        const apiKey = ('; ' + document.cookie).split('; github_api_key=').pop().split(';')[0];
+        const apiKey = ('; ' + document.cookie).split('; .GHK824=').pop().split(';')[0];
         const headers = apiKey ? { 'Authorization': `token ${apiKey}` } : {};
 
         fetch(`https://api.github.com/repos/${repo}/contents/`, { headers: headers })
@@ -284,6 +412,7 @@
             })
             .then(data => {
                 if (data && data.length) {
+                    alert("Downloading sprites", "notif");
                     const sprites = data.filter(file => file.name.endsWith(".sprite")).map(file => file.name);
                     if (sprites.length) {
                         let i = 0;
@@ -293,6 +422,8 @@
                                     i++;
                                     next();
                                 });
+                            } else {
+                                alert("Project loaded :D", "notif");
                             }
                         }
                         next();
@@ -300,8 +431,195 @@
                 }
             })
             .catch(error => {
+                alert("Failed to load project", "error");
                 console.error("GitKit: Error loading sprites from repository.", error);
             });
+
+        const mqttBroker = "wss://broker.emqx.io:8084/mqtt";
+
+        setTimeout(function() {
+            var script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js';
+            script.onload = function() {
+                start();
+            };
+            document.head.appendChild(script);
+        }, 1000);
+
+        var firstTimeConnect = true;
+        async function onConnect() {
+            console.log("Connected to MQTT broker");
+
+            client.onMessageArrived = gotMessage;
+            client.subscribe("chat" + repo);
+            client.subscribe("usrtrack" + repo);
+            client.subscribe("joined" + repo);
+            client.subscribe("scratchVersion" + repo);
+            client.subscribe("commit" + repo);
+
+            if (firstTimeConnect) {
+                main();
+                sendmsg("joined", await getGitHubUserName())
+            } else {
+                alert("Regained connection", 2000, "notif");
+            }
+
+            isconnecting = false;
+        }
+
+        function sendmsg(varName, content) {
+            const message = new Paho.MQTT.Message(content);
+            message.destinationName = varName + repo;
+            client.send(message);
+        }
+
+        async function gotMessage(message) {
+            // console.log("Message received on topic " + message.destinationName + ": " + message.payloadString);
+            try {
+                function isJsonString(str) {
+                    try {
+                        JSON.parse(str);
+                    } catch (e) {
+                        return false;
+                    }
+                    return true;
+                }
+                if (isJsonString(message.payloadString)) {
+                    if (message.destinationName == "chat" + repo) {
+                        dochat(message.payloadString);
+                    } else if (message.destinationName == "commit" + repo) {
+                        if (message.payloadString != await getGitHubUserName()) {
+                            RunCommand("checkForUpdates", false);
+                        }
+                    } else if (message.destinationName == "usrtrack" + repo) {
+                        alertUserSpriteChange(message.payloadString);
+                    }
+                } else if (message.destinationName == "joined" + repo) {
+                    if (await getGitHubUserName() == message.payloadString) {
+                        var data = localStorage.getItem('tw:addons');
+                        if (data) {
+                            data = JSON.parse(data);
+                        }
+
+                        if (data && data["remove-sprite-confirm"] && data["remove-sprite-confirm"].enabled) {
+                            alert(`Please disable the Sprite deletion confirmation" addon. (addons.html#confirmation)`, "notif");
+                        }
+
+                        if (!data) {
+                        data = { "_": 5, "remove-sprite-confirm": { "enabled": false } };
+                        localStorage.setItem(key, JSON.stringify(data));
+                        }
+                        // else {
+                        //   data = JSON.parse(data);
+                        //   data["remove-sprite-confirm"] = { "enabled": false };
+                        //   localStorage.setItem(key, JSON.stringify(data));
+                        // }
+                        // alert(`Connected to colab`, "notif");
+                    } else {
+                        alert(`${message.payloadString} has joined the colab`, "notif");
+                        if (!incompatable) sendmsg("scratchVersion", window.location.host);
+                    }
+                } else if (message.destinationName == "scratchVersion" + repo) {
+                    if (!isCompatible(window.location.host, message.payloadString) && !incompatable) {
+                        incompatable = true;
+                        alert(`This project is being hosted in ${message.payloadString} and may not be compatable with ${window.location.host}. Please be cautious of project corruption when using multiple mods for a single project!`, "error");
+                    }
+                }
+            } catch (err) {
+                err = err;
+            }
+        }
+
+        function getEditingSprite(sprite) {
+            for (const user in editing) {
+                if (editing[user].sprite === sprite) {
+                    return user;
+                }
+            }
+            return;
+        }
+
+        function onFailure(err) {
+            if (document.getElementById("BlockLinkButtonStatusIcon")) document.getElementById("BlockLinkButtonStatusIcon").src = 'https://p7scratchextensions.pages.dev/ext/BlockLink/error.svg';
+            alert("Connection error", "error");
+            console.error("Failed to connect to MQTT broker: ", err);
+        }
+
+        function onConnectionLost(response) {
+            if (response.errorCode !== 0) {
+                setTimeout(()=>{
+                    alert("Reconnecting: " + response.errorMessage, 1000, "notif");
+                    // console.error("Connection lost: ", response.errorMessage);
+                    start();
+                }, 1000);
+            }
+        }
+
+        async function start() {
+            client = new Paho.MQTT.Client(mqttBroker, await getGitHubUserName());
+
+            client.onConnectionLost = onConnectionLost;
+
+            client.connect({
+                onSuccess: onConnect,
+                onFailure: onFailure
+            });
+        }
+
+        async function main() {
+            originalRenameSprite = Scratch.vm.renameSprite;
+            Scratch.vm.renameSprite = function (targetId, newName) {
+                const target = Scratch.vm.runtime.getTargetById(targetId);
+                if (target) {
+                    const oldName = target.getName();
+                    if (oldName !== newName) {
+                        RunCommand("renameSpriteAndCommit", targetId, newName);
+                    }
+                }
+            };
+
+            originalDeleteSprite = Scratch.vm.deleteSprite;
+            Scratch.vm.deleteSprite = function (targetId) {
+                const target = Scratch.vm.runtime.getTargetById(targetId);
+                if (target) {
+                    const name = target.getName();
+                    RunCommand("deleteSpriteAndCommit", targetId);
+                }
+            };
+
+            var ignoreSwap = false;
+            var prevtarget = Scratch.vm.runtime.getEditingTarget();
+            Scratch.vm.on('targetsUpdate', (event) => {
+                if (ignoreSwap) return;
+                ignoreSwap = true;
+                setTimeout(async ()=>{
+                    ignoreSwap = false;
+                    let target = Scratch.vm.runtime.getEditingTarget(); // event.editingTarget
+
+                    if (prevtarget.getName() == target.getName()) {
+                        return;
+                    } else {
+                        // var edit = getEditingSprite(prevtarget.getName());
+                        // if (!edit || edit == await getGitHubUserName()) {
+                        //     commit(prevtarget);
+                        // }
+
+                        var edit = getEditingSprite(target.getName());
+                        if (edit && edit != await getGitHubUserName()) {
+                            alert(`Warning: ${edit} is already editing "${target.getName()}"`, "notif");
+                        }
+
+                        sendmsg("usrtrack", JSON.stringify({
+                            sprite: target.getName(),
+                            dothing: true,
+                            from: await getGitHubUserName()
+                        }));
+
+                        prevtarget = target;
+                    }
+                }, 500);
+            });
+        }
     }
 
     class GitKit {
@@ -317,7 +635,7 @@
         init() {
             if (location.href.includes("raw.githubusercontent.com")) {
                 this.repo = location.href.split("raw.githubusercontent.com/")[1].split("/")[0] + "/" + location.href.split("raw.githubusercontent.com/")[1].split("/")[1];
-                this.apiKey = ('; ' + document.cookie).split(`; github_api_key=`).pop().split(';')[0];
+                this.apiKey = ('; ' + document.cookie).split(`; .GHK824=`).pop().split(';')[0];
 
                 if (this.apiKey && this.repo) {
                     this.startCommitChecker();
@@ -342,6 +660,7 @@
                 { func: "setKey", blockType: Scratch.BlockType.BUTTON, text: "Set api key" },
                 { func: "loadFromRepo", blockType: Scratch.BlockType.BUTTON, text: "Connect to a repo" },
                 { func: isstage ? "commitStage" : "commitSprite", blockType: Scratch.BlockType.BUTTON, text: "Save and commit" },
+                { func: "renameAndCommit", blockType: Scratch.BlockType.BUTTON, hideFromPalette: isstage, text: "Rename and commit" },
                 { func: "deleteSpriteAndCommit", blockType: Scratch.BlockType.BUTTON, hideFromPalette: isstage, text: "Delete and commit" },
                 { func: "undoLastCommit", blockType: Scratch.BlockType.BUTTON, text: "Undo Last Commit" },
                 { func: "resync", blockType: Scratch.BlockType.BUTTON, text: "Resync" }
@@ -358,7 +677,7 @@
                 var d = new Date();
                 d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
                 var expires = "expires=" + d.toUTCString();
-                document.cookie = "github_api_key=" + key + ";" + expires + ";path=/";
+                document.cookie = ".GHK824=" + key + ";" + expires + ";path=/";
                 await alert("API key set for 30 days. You may need to reload for all features to activate.", "notif");
                 this.init();
             }
@@ -494,8 +813,66 @@
             }
         }
 
-        async deleteSpriteAndCommit() {
-            const sprite = Scratch.vm.runtime.getEditingTarget();
+        async renameAndCommit(targetId, newName) {
+            const sprite = Scratch.vm.runtime.getTargetById(targetId) || Scratch.vm.runtime.getEditingTarget();
+            if (sprite.isStage) {
+                await alert("You are not editing a sprite. Please select a sprite to rename and commit.", "error");
+                return;
+            }
+            const oldName = sprite.getName();
+
+            if (!newName) {
+                newName = await prompt(`Enter a new name for '${oldName}':`, oldName);
+                if (!newName || newName === oldName) {
+                    return;
+                }
+            }
+            const apiKey = this.apiKey;
+            if (!apiKey) {
+                await alert("GitHub API key not set. Please set it first.", "error");
+                this.setKey();
+                return;
+            }
+            if (!this.repo) {
+                await alert("Not in a GitHub project. Please connect to a repo first.", "error");
+                return;
+            }
+            const commitMessage = await prompt(`Enter a commit message for renaming '${oldName}' to '${newName}':`, `Rename ${oldName} to ${newName}`);
+            if (!commitMessage) {
+                commitMessage = `Rename ${oldName} to ${newName}`;
+            }
+            const oldFileName = `${oldName}.sprite`;
+            const newFileName = `${newName}.sprite`;
+            const apiUrlOld = `https://api.github.com/repos/${this.repo}/contents/${oldFileName}`;
+            const apiUrlNew = `https://api.github.com/repos/${this.repo}/contents/${newFileName}`;
+            const payload = {
+                message: commitMessage,
+                content: await this.getSpriteContent(oldName),
+                sha: await this.getFileSha(oldFileName)
+            };
+
+            try {
+                const response = await fetch(apiUrlOld, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${apiKey}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    await alert(`Sprite renamed from '${oldName}' to '${newName}' successfully.`, "notif");
+                    this.deleteFile(oldFileName);
+                } else {
+                    const errorData = await response.json();
+                    await alert(`Failed to rename sprite: ${errorData.message}`, "error");
+                }
+            } catch (error) {
+                await alert("An error occurred while renaming the sprite.", "error");
+                console.error("Rename sprite error:", error);
+            }
+        }
+
+        async deleteSpriteAndCommit(targetId) {
+            const sprite = Scratch.vm.runtime.getTargetById(targetId) || Scratch.vm.runtime.getEditingTarget();
             if (sprite.isStage) {
                 await alert("Cannot delete the stage. Select a sprite to delete.", "error");
                 return;
@@ -557,11 +934,11 @@
                 });
 
                 if (deleteResponse.ok) {
-                    await alert(`Sprite '${spriteName}' deleted successfully from the repository.`, "notif");
+                    await alert(`Sprite '${spriteName}' deleted.`, "notif");
                     deleteSprite(spriteName);
                 } else {
                     const errorData = await deleteResponse.json();
-                    await alert(`Failed to delete sprite from repository: ${errorData.message}`, "error");
+                    await alert(`Failed to delete: ${errorData.message}`, "error");
                     console.error("GitHub API Error:", errorData);
                 }
             } catch (error) {
