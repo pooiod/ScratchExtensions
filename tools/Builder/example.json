@@ -21,6 +21,7 @@
                 "INPUT1": {
                     "type": "STRING",
                     "defaultValue": "\"Hello\"",
+                    "hideFromPalette": "false",
                     "menu": "formats"
                 }
             },
@@ -34,6 +35,7 @@
                 "INPUT1": {
                     "type": "STRING",
                     "defaultValue": "\"Hello\"",
+                    "hideFromPalette": "false",
                     "menu": "formats"
                 }
             },
@@ -45,7 +47,8 @@
             { "text": "Video", "value": "mp4" },
             { "text": "Audio", "value": "mp3" }
         ],
-        "linkTypeConvert": ["url", "uri"]
+        "linkTypeConvert": ["url", "uri"],
+        "Menu3": "JSCODE"
     },
     "constructor": ""
 }

@@ -1,3 +1,17 @@
+// Name: GitKit
+// ID: P7GitKit
+// Description: An extension to automatically break up projects for collaborative editing with GitHub
+// By: pooiod7 <https://scratch.mit.edu/users/pooiod7/>
+// Builds: main
+// Unsandboxed: true
+// WIP: true
+// Created: before 2/06/2026
+// Notes: This extension is a work in progress, please report any bugs
+
+// Current servers used:
+// wss://broker.emqx.io:8084/mqtt (for client communications)
+// litterbox.catbox.moe (tmp storage)
+
 (function (Scratch) {
     'use strict';
 
