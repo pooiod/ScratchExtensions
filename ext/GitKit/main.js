@@ -416,6 +416,12 @@
         const apiKey = ('; ' + document.cookie).split('; .GHK824=').pop().split(';')[0];
         const headers = apiKey ? { 'Authorization': `token ${apiKey}` } : {};
 
+        async function waitForTextToDisappear(text, interval = 500) {
+            while (document.body && document.body.innerText.includes(text)) {
+                await new Promise(resolve => setTimeout(resolve, interval));
+            }
+        }
+
         fetch(`https://api.github.com/repos/${repo}/contents/`, { headers: headers })
             .then(res => {
                 if (!res.ok) {
@@ -424,9 +430,10 @@
                 }
                 return res.json();
             })
-            .then(data => {
+            .then(async (data) => {
                 if (data && data.length) {
-                    setTimeout(function() {
+                    setTimeout(async () => {
+                        await waitForTextToDisappear("The project wants to load a custom extension from the URL:");
                         alert("Downloading sprites", "notif");
                         const sprites = data.filter(file => file.name.endsWith(".sprite")).map(file => file.name);
                         if (sprites.length) {
