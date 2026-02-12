@@ -417,7 +417,7 @@
         const headers = apiKey ? { 'Authorization': `token ${apiKey}` } : {};
 
         async function waitForTextToDisappear(text, interval = 500) {
-            while (document.body && document.body.innerText.includes(text)) {
+            while (Array.from(document.querySelectorAll('p')).some(p => p.innerText.includes(text))) {
                 await new Promise(resolve => setTimeout(resolve, interval));
             }
         }
