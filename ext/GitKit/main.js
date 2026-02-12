@@ -433,7 +433,7 @@
             .then(async (data) => {
                 if (data && data.length) {
                     setTimeout(async () => {
-                        await waitForTextToDisappear("The project wants to load a custom extension from the URL:");
+                        await waitForTextToDisappear("project wants to load a custom extension");
                         alert("Downloading sprites", "notif");
                         const sprites = data.filter(file => file.name.endsWith(".sprite")).map(file => file.name);
                         if (sprites.length) {
