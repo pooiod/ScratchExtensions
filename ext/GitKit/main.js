@@ -426,22 +426,24 @@
             })
             .then(data => {
                 if (data && data.length) {
-                    alert("Downloading sprites", "notif");
-                    const sprites = data.filter(file => file.name.endsWith(".sprite")).map(file => file.name);
-                    if (sprites.length) {
-                        let i = 0;
-                        function next() {
-                            if (i < sprites.length) {
-                                importSprite(`https://raw.githubusercontent.com/${repo}/main/${sprites[i]}`, () => {
-                                    i++;
-                                    next();
-                                });
-                            } else {
-                                alert("Project loaded :D", "notif");
+                    setTimeout(function() {
+                        alert("Downloading sprites", "notif");
+                        const sprites = data.filter(file => file.name.endsWith(".sprite")).map(file => file.name);
+                        if (sprites.length) {
+                            let i = 0;
+                            function next() {
+                                if (i < sprites.length) {
+                                    importSprite(`https://raw.githubusercontent.com/${repo}/main/${sprites[i]}`, () => {
+                                        i++;
+                                        next();
+                                    });
+                                } else {
+                                    alert("Project loaded :D", "notif");
+                                }
                             }
+                            next();
                         }
-                        next();
-                    }
+                    }, 1000);
                 }
             })
             .catch(error => {
