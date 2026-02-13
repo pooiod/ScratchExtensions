@@ -416,7 +416,7 @@
         const apiKey = ('; ' + document.cookie).split('; .GHK824=').pop().split(';')[0];
         const headers = apiKey ? { 'Authorization': `token ${apiKey}` } : {};
 
-        async function waitForTextToDisappear(text, interval = 500) {
+        async function waitForTextToDisappear(text, interval = 1000) {
             while (Array.from(document.querySelectorAll('p')).some(p => p.innerText.includes(text))) {
                 await new Promise(resolve => setTimeout(resolve, interval));
             }
