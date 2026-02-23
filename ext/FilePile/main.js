@@ -154,6 +154,7 @@
             this.polls = {};
             this.seeders = {};
             this.fileSeeders = {};
+            this.knownMeta = {};
             this.displayName = 'Piler' + randDigits(4);
             this.searchResponses = {};
             this._nextSearchId = 1;
@@ -162,7 +163,7 @@
             this.MAX_CHUNK_BYTES = 524288;
             this.DEFAULT_RETRIES = 6;
             this.DEFAULT_CONCURRENCY = 8;
-            this.MinSearchTime = 5; // how long to wait for reciving search items
+            this.MinSearchTime = 5;
         }
 
         getInfo() {
@@ -246,6 +247,21 @@
                         }
                     },
                     {
+                        opcode: 'setFileMeta',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set meta data of file [FILENAME] to [META]',
+                        arguments: {
+                            FILENAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'hello.txt'
+                            },
+                            META: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'author: bob'
+                            }
+                        }
+                    },
+                    {
                         opcode: 'removeFile',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Remove file [FILENAME]',
@@ -259,7 +275,7 @@
                     {
                         opcode: 'removeFiles',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Remove all files'
+                        text: 'Remove all active files'
                     },
 
                     "---",
@@ -277,6 +293,17 @@
                                 type: Scratch.ArgumentType.STRING,
                                 menu: 'fileFormats',
                                 defaultValue: 'Raw'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'getFileMeta',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'Get meta data of file [FILENAME]',
+                        arguments: {
+                            FILENAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'hello.txt'
                             }
                         }
                     },
@@ -413,7 +440,7 @@
                 menus: {
                     searchModes: {
                         acceptReporters: true,
-                        items: ['File Name', 'File Text', 'File Content']
+                        items: ['File Name', 'File Text', 'File Content', 'Meta']
                     },
                     fileFormats: {
                         acceptReporters: true,
@@ -501,6 +528,7 @@
                             integrity: r.integrity,
                             sizeBits: r.sizeBits,
                             score: r.score,
+                            meta: r.meta || '',
                             from: this.displayName
                         };
                         if (i % 1000 === 0) await new Promise(r => setTimeout(r, 0));
@@ -513,6 +541,10 @@
                     const sid = data.searchId;
                     if (!this.searchResponses[sid]) this.searchResponses[sid] = [];
                     if (!data.file || !data.integrity) return;
+                    
+                    this.knownMeta[data.file + ':' + data.integrity] = data.meta || '';
+                    this.knownMeta[data.file] = data.meta || '';
+
                     const exists = this.searchResponses[sid].some(r => r.file === data.file && r.integrity === data.integrity);
                     if (!exists) {
                         this.searchResponses[sid].push({
@@ -520,6 +552,7 @@
                             integrity: data.integrity,
                             sizeBits: data.sizeBits || 0,
                             score: data.score || 0,
+                            meta: data.meta || '',
                             from: data.from
                         });
                     }
@@ -602,7 +635,13 @@
                         const content = parts.join('');
                         const fullIntegrity = this._getIntegrity(content);
                         if (fullIntegrity === dl.integrity) {
-                            this.files[dl.file] = { content: content, integrity: dl.integrity, from: this.displayName, sizeBits: content.length * 8 };
+                            this.files[dl.file] = { 
+                                content: content, 
+                                integrity: dl.integrity, 
+                                from: this.displayName, 
+                                sizeBits: content.length * 8,
+                                meta: this.knownMeta[dl.file + ':' + dl.integrity] || this.knownMeta[dl.file] || ''
+                            };
                         }
                         if (dl.completionPoll) {
                             clearInterval(dl.completionPoll);
@@ -668,7 +707,7 @@
                         return;
                     }
                     if ((m = tok.match(/^"(.+)"$/))) {
-                        const text = m[1].toLowerCase();
+                        const text = m[1];
                         filters.push({ type: 'text', text, neg });
                         return;
                     }
@@ -676,7 +715,7 @@
                         filters.push({ type: 'all', neg });
                         return;
                     }
-                    filters.push({ type: 'text', text: tok.toLowerCase(), neg });
+                    filters.push({ type: 'text', text: tok, neg });
                 });
                 return filters;
             });
@@ -704,20 +743,55 @@
                     } else if (f.type === 'integrity') {
                         ok = integrity === f.val;
                     } else if (f.type === 'from') {
-                        ok = from === f.name;
+                        ok = entry.from === f.name;
                     } else if (f.type === 'size') {
                         if (f.op === '>') ok = size > f.val;
                         else if (f.op === '<') ok = size < f.val;
                         else ok = size === f.val;
                     } else if (f.type === 'text') {
+                        const qTextLow = f.text.toLowerCase();
                         if (mode === 'File Name') {
-                            ok = name.indexOf(f.text) !== -1;
+                            ok = name.indexOf(qTextLow) !== -1;
                         } else if (mode === 'File Text') {
-                            ok = contentLower.indexOf(f.text) !== -1;
+                            ok = contentLower.indexOf(qTextLow) !== -1;
                         } else if (mode === 'File Content') {
-                            ok = hexContent.indexOf(f.text) !== -1;
+                            ok = hexContent.indexOf(qTextLow) !== -1;
+                        } else if (mode === 'Meta') {
+                            const metaStr = entry.meta || '';
+                            let qText = f.text;
+                            let op = '';
+                            if (qText.startsWith('>=')) { op = '>='; qText = qText.slice(2); }
+                            else if (qText.startsWith('<=')) { op = '<='; qText = qText.slice(2); }
+                            else if (qText.startsWith('>')) { op = '>'; qText = qText.slice(1); }
+                            else if (qText.startsWith('<')) { op = '<'; qText = qText.slice(1); }
+                            else if (qText.startsWith('=')) { op = '='; qText = qText.slice(1); }
+
+                            if (op) {
+                                const numMeta = parseFloat(metaStr);
+                                const numQ = parseFloat(qText);
+                                if (!isNaN(numMeta) && !isNaN(numQ)) {
+                                    if (op === '>=') ok = numMeta >= numQ;
+                                    else if (op === '<=') ok = numMeta <= numQ;
+                                    else if (op === '>') ok = numMeta > numQ;
+                                    else if (op === '<') ok = numMeta < numQ;
+                                    else if (op === '=') ok = numMeta === numQ;
+                                } else {
+                                    if (op === '>=') ok = metaStr >= qText;
+                                    else if (op === '<=') ok = metaStr <= qText;
+                                    else if (op === '>') ok = metaStr > qText;
+                                    else if (op === '<') ok = metaStr < qText;
+                                    else if (op === '=') ok = metaStr === qText;
+                                }
+                            } else {
+                                try {
+                                    const regex = new RegExp(qText);
+                                    ok = regex.test(metaStr);
+                                } catch (e) {
+                                    ok = metaStr.indexOf(qText) !== -1;
+                                }
+                            }
                         } else {
-                            ok = name.indexOf(f.text) !== -1 || contentLower.indexOf(f.text) !== -1 || hexContent.indexOf(f.text) !== -1;
+                            ok = name.indexOf(qTextLow) !== -1 || contentLower.indexOf(qTextLow) !== -1 || hexContent.indexOf(qTextLow) !== -1;
                         }
                     } else if (f.type === 'all') {
                         ok = true;
@@ -754,6 +828,10 @@
                 if (max === 0) return 1;
                 const dist = this._lev(hex, q);
                 return 1 - (dist / max);
+            } else if (mode === 'Meta') {
+                const metaStr = (entry.meta || '').toString();
+                if (metaStr === q) return 1;
+                return 0.5;
             } else {
                 return this._scoreEntryAgainstQuery(entry, query, 'File Name');
             }
@@ -783,7 +861,7 @@
             for (let i = 0; i < fileNames.length; i++) {
                 const name = fileNames[i];
                 const e = this.files[name];
-                const entry = { file: name, integrity: e.integrity || this._getIntegrity(e.content || ''), sizeBits: e.sizeBits || ((e.content || '').length * 8), from: e.from, content: e.content };
+                const entry = { file: name, integrity: e.integrity || this._getIntegrity(e.content || ''), sizeBits: e.sizeBits || ((e.content || '').length * 8), from: e.from, content: e.content, meta: e.meta || '' };
                 if (this._entryMatchesOrClauses(entry, orClauses, mode)) {
                     entry.score = this._scoreEntryAgainstQuery(entry, query, mode);
                     res.push(entry);
@@ -836,11 +914,16 @@
             const seen = {};
             local.forEach(r => {
                 const key = r.file + '::' + r.integrity;
-                if (!seen[key]) { combined.push(r); seen[key] = true; }
+                if (!seen[key]) { 
+                    combined.push(r); 
+                    seen[key] = true;
+                    this.knownMeta[r.file + ':' + r.integrity] = r.meta || '';
+                    this.knownMeta[r.file] = r.meta || '';
+                }
             });
             remote.forEach(r => {
                 if (!r.file || !r.integrity) return;
-                const entry = { file: r.file, integrity: r.integrity, sizeBits: r.sizeBits || 0, from: r.from };
+                const entry = { file: r.file, integrity: r.integrity, sizeBits: r.sizeBits || 0, from: r.from, meta: r.meta || '' };
                 const key = entry.file + '::' + entry.integrity;
                 if (!seen[key]) {
                     entry.score = this._scoreEntryAgainstQuery(entry, queryRaw, mode);
@@ -1181,15 +1264,34 @@
                 content,
                 integrity: this._getIntegrity(content),
                 from: this.displayName,
-                sizeBits: (content || '').length * 8
+                sizeBits: (content || '').length * 8,
+                meta: ''
             };
         }
 
+        setFileMeta(args) {
+            const name = (args.FILENAME || '').toString();
+            if (this.files[name]) {
+                this.files[name].meta = String(args.META || '').substring(0, 200);
+            }
+        }
+
         removeFile(args) {
-            delete this.files[args.FILENAME];
+            const name = (args.FILENAME || '').toString();
+            if (this.files[name]) {
+                const integrity = this.files[name].integrity;
+                delete this.knownMeta[name];
+                delete this.knownMeta[name + ':' + integrity];
+                delete this.files[name];
+            }
         }
 
         removeFiles() {
+            for (const name in this.files) {
+                const integrity = this.files[name].integrity;
+                delete this.knownMeta[name];
+                delete this.knownMeta[name + ':' + integrity];
+            }
             this.files = {};
         }
 
@@ -1218,6 +1320,52 @@
             if (format === 'Base64') return toBase64(content);
             if (format === 'Binary') return stringToBinary(content);
             return content;
+        }
+
+        async getFileMeta(args) {
+            const name = (args.FILENAME || '').toString();
+
+            let baseName = name;
+            let wantedIntegrity = null;
+            if (name.indexOf(':') !== -1) {
+                const parts = name.split(':');
+                wantedIntegrity = parts.pop();
+                baseName = parts.join(':');
+            }
+
+            if (this.files[name] && this.files[name].meta !== undefined) {
+                return this.files[name].meta;
+            }
+            if (wantedIntegrity && this.files[baseName] && this.files[baseName].integrity === wantedIntegrity && this.files[baseName].meta !== undefined) {
+                return this.files[baseName].meta;
+            }
+
+            if (this.knownMeta[name] !== undefined) {
+                return this.knownMeta[name];
+            }
+            if (wantedIntegrity && this.knownMeta[baseName + ':' + wantedIntegrity] !== undefined) {
+                return this.knownMeta[baseName + ':' + wantedIntegrity];
+            }
+            if (!wantedIntegrity && this.knownMeta[baseName] !== undefined) {
+                return this.knownMeta[baseName];
+            }
+
+            let query = `filename:"${baseName}"`;
+            if (wantedIntegrity) query += ` integrity:${wantedIntegrity}`;
+
+            await this.search({ THING: query, MODE: 'File Name' });
+
+            if (this.knownMeta[name] !== undefined) {
+                return this.knownMeta[name];
+            }
+            if (wantedIntegrity && this.knownMeta[baseName + ':' + wantedIntegrity] !== undefined) {
+                return this.knownMeta[baseName + ':' + wantedIntegrity];
+            }
+            if (!wantedIntegrity && this.knownMeta[baseName] !== undefined) {
+                return this.knownMeta[baseName];
+            }
+
+            return '';
         }
 
         setDisplayName(args) {

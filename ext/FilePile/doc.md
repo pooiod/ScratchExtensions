@@ -2,8 +2,8 @@
 FilePile lets you implament a file sharing system in your projects.
 You can almost compare it to a google drive folder where anyone can upload files.
 
-> Note: FilePile should not be used for the distribution of executable files. This includes applications, unsandboxed code, and anything that can potentially do harm. <br>
-> This extension is made for tasks like level sharing and distribution of assets. Please use with respect.
+> Note: The FilePile network should NOT be used for sharing malicious content. <br>
+> Please use FilePile with respect.
 
 ---
 
@@ -76,6 +76,7 @@ Searching for files can be done using 3 different modes
 * **File Name** – matches text in file names
 * **File Text** – searches the content of files for text
 * **File Content** – uses hex input for searching the content of non-text files
+* **Meta Data** - searches the meta data using regex
 
 You can also use search filters
 * `filetype:txt`
@@ -107,14 +108,10 @@ Start downloading [hello.txt:123456] :: #4C7C8E //you can input "filename:integr
 If you don't include an integrity id it will grab the first file it recives.
 If nobody has the file yet, FilePile will check every 10 seconds until someone does.
 
-Downloads can also be paused and resumed using these blocks:
+Downloads can also be paused, resumed, and canceled
 ```scratch3
 Pause download [hello.txt] :: #4C7C8E
 Resume download [hello.txt] :: #4C7C8E
-```
-
-And can be canceled:
-```scratch3
 Cancel download [hello.txt] :: #4C7C8E
 ```
 
@@ -158,6 +155,16 @@ Generate one from any text using the `Integrity of content` block
 
 ```scratch3
 Integrity of content [Hello, world] :: reporter #4C7C8E
+```
+
+### Meta data
+The meta data system is simpe. 
+You can add up to 200 text characters to any file. This data does not change the integrity ID. <br>
+You can use this for file authors, icons, and anything else you may need.
+
+```scratch3
+Set meta data of file [hello.txt] to [icon = data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAEpJREFUKFOdkFEKACAIQ+f9D20sUqZUUH45fajTUMObttCZACCkmkzWorGDYtjsEVTomHewnZjSv8Hr6uJu3cxaMfr8Hn2FGspBA/gaFwffFgUWAAAAAElFTkSuQmCC]
+(Get meta data of file [hello.txt])
 ```
 
 ---
