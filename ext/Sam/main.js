@@ -156,9 +156,12 @@
         }
 
         fixTTS(text) {
+            text = text.toLowerCase();
             text = text.replace(/pooiod/g, 'poiod');
             text = text.replace(/\bama(?![a-rt-z])\b/g, 'awma');
-            text = text.replace(/JavaScript/g, 'jawva script');
+            text = text.replace(/javascript/g, 'jawva script');
+            text = text.replace(/skibidi/g, 'skibidee');
+            text = text.replace(/abraham/g, 'aybraham');
             return text;
         }
 
