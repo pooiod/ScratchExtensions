@@ -163,8 +163,8 @@ You can add up to 200 text characters to any file. This data does not change the
 You can use this for file authors, icons, and anything else you may need.
 
 ```scratch3
-Set meta data of file [hello.txt] to [icon = data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAEpJREFUKFOdkFEKACAIQ+f9D20sUqZUUH45fajTUMObttCZACCkmkzWorGDYtjsEVTomHewnZjSv8Hr6uJu3cxaMfr8Hn2FGspBA/gaFwffFgUWAAAAAElFTkSuQmCC]
-(Get meta data of file [hello.txt])
+Set meta data of file [hello.txt] to [icon = data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAEpJREFUKFOdkFEKACAIQ+f9D20sUqZUUH45fajTUMObttCZACCkmkzWorGDYtjsEVTomHewnZjSv8Hr6uJu3cxaMfr8Hn2FGspBA/gaFwffFgUWAAAAAElFTkSuQmCC] :: #4C7C8E
+(Get meta data of file [hello.txt]) :: #4C7C8E
 ```
 
 ---
