@@ -810,11 +810,15 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
                     {
                         opcode: 'applyGLSL',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'apply shader [G] on image',
+                        text: 'apply shader [G] on editing image witn input [I]',
                         arguments: {
                             G: {
                                 type: Scratch.ArgumentType.STRING,
                                 defaultValue: defaultShader
+                            },
+                            I: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: ""
                             }
                         }
                     }
@@ -1188,84 +1192,145 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
             }
             ctx.putImageData(imgD, 0, 0);
         }
-        applyGLSL(a) {
-            let input = String(a.G);
-            let glsl = input.replace(/\|/g, '\n').replace(/\btexture\s*\(/g, 'texture2D(');
-            let w = canvas.width, h = canvas.height;
+
+        isvalid(inputImageDataURI) {
+            return inputImageDataURI && inputImageDataURI !== "" && inputImageDataURI !== null && inputImageDataURI !== undefined && inputImageDataURI !== "null" && inputImageDataURI !== "undefined";
+        }
+
+        async applyGLSL(a) {
+            const glslInput = String(a.G || "");
+            const inputImageDataURI = String(a.I || "").trim();
             
-            let c = document.createElement('canvas'); 
+            let glsl = glslInput.replace(/\|/g, '\n');
+
+            const w = canvas.width;
+            const h = canvas.height;
+            const c = document.createElement('canvas');
             c.width = w; c.height = h;
-            let gl = c.getContext('webgl', { preserveDrawingBuffer: true }); 
-            if(!gl) return;
             
-            let vs = gl.createShader(gl.VERTEX_SHADER);
-            gl.shaderSource(vs, 'attribute vec2 p;varying vec2 v;void main(){v=p*0.5+0.5;gl_Position=vec4(p,0.0,1.0);}');
+            const gl = c.getContext('webgl2', { preserveDrawingBuffer: true });
+            if (!gl) return;
+
+            const cleanup = (g) => {
+                const ext = g.getExtension('WEBGL_lose_context');
+                if (ext) ext.loseContext();
+            };
+
+            const vs = gl.createShader(gl.VERTEX_SHADER);
+            gl.shaderSource(vs, `#version 300 es
+            in vec2 p; out vec2 v_uv;
+            void main(){ v_uv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }`);
             gl.compileShader(vs);
+
+            const fs = gl.createShader(gl.FRAGMENT_SHADER);
+            const fsSource = `#version 300 es
+            precision highp float;
+            in vec2 v_uv;
+            uniform vec3 iResolution;
+            uniform float iTime;
+            uniform sampler2D iChannel0;
+            uniform sampler2D iChannel1;
+            out vec4 P7_OUT_COL;
             
-            let fs = gl.createShader(gl.FRAGMENT_SHADER);
-            let fsSource = `precision highp float;\nvarying vec2 v;\nuniform vec3 iResolution;\nuniform float iTime;\nuniform sampler2D iChannel0;\n\n${glsl}\n`;
-            
-            if (glsl.includes('mainImage')) {
-                fsSource += `\nvoid main() {\n  vec4 c = vec4(0.0);\n  mainImage(c, v * iResolution.xy);\n  gl_FragColor = c;\n}`;
-            } else if (!glsl.includes('void main')) {
-                fsSource += `\nvoid main() {\n  gl_FragColor = texture2D(iChannel0, v);\n}`;
-            }
+            ${glsl}
+
+            void main() {
+                vec4 col = vec4(0.0);
+                mainImage(col, v_uv * iResolution.xy);
+                P7_OUT_COL = col;
+            }`;
 
             gl.shaderSource(fs, fsSource);
             gl.compileShader(fs);
-            
-            let p = gl.createProgram(); 
-            gl.attachShader(p, vs); 
-            gl.attachShader(p, fs); 
-            gl.linkProgram(p);
-            
-            if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
-                console.error(gl.getShaderInfoLog(fs));
-                gl.deleteShader(vs);
-                gl.deleteShader(fs);
-                gl.deleteProgram(p);
-                let ext = gl.getExtension('WEBGL_lose_context');
-                if (ext) ext.loseContext();
+
+            if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+                const err = gl.getShaderInfoLog(fs);
+                console.error("Shader Compile Error:", err);
+                
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = 'red';
+                
+                const fontSize = Math.max(8, Math.floor(w / 25));
+                ctx.font = `${fontSize}px monospace`;
+                const lines = err.split('\n');
+                let drawY = fontSize;
+                
+                for (let line of lines) {
+                    if (drawY > h) break;
+                    let words = line.split(' ');
+                    let currentLine = '';
+                    for (let word of words) {
+                        let test = currentLine + word + ' ';
+                        if (ctx.measureText(test).width > w - 10 && currentLine !== '') {
+                            ctx.fillText(currentLine, 5, drawY);
+                            currentLine = word + ' ';
+                            drawY += fontSize;
+                        } else {
+                            currentLine = test;
+                        }
+                    }
+                    ctx.fillText(currentLine, 5, drawY);
+                    drawY += fontSize;
+                }
+                
+                cleanup(gl);
                 return;
             }
-            
-            gl.useProgram(p);
-            
-            let buf = gl.createBuffer(); 
+
+            const prog = gl.createProgram();
+            gl.attachShader(prog, vs);
+            gl.attachShader(prog, fs);
+            gl.linkProgram(prog);
+            gl.useProgram(prog);
+
+            let img0 = null;
+            if (inputImageDataURI !== "" && this.isvalid(inputImageDataURI)) {
+                img0 = await loadI(inputImageDataURI);
+            }
+            if (!img0) img0 = canvas; 
+
+            const setupTexture = (unit, source) => {
+                const tex = gl.createTexture();
+                gl.activeTexture(gl.TEXTURE0 + unit);
+                gl.bindTexture(gl.TEXTURE_2D, tex);
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                return tex;
+            };
+
+            const t0 = setupTexture(0, img0);
+            const t1 = setupTexture(1, canvas);
+
+            const buf = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,-1, 1,1, -1,1]), gl.STATIC_DRAW);
-            
-            let loc = gl.getAttribLocation(p, 'p'); 
-            gl.enableVertexAttribArray(loc); 
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, 1]), gl.STATIC_DRAW);
+            const loc = gl.getAttribLocation(prog, 'p');
+            gl.enableVertexAttribArray(loc);
             gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-            
-            let tex = gl.createTexture(); 
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, tex);
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); 
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            
-            gl.uniform3f(gl.getUniformLocation(p, 'iResolution'), w, h, 1.0);
-            gl.uniform1f(gl.getUniformLocation(p, 'iTime'), performance.now() / 1000);
-            gl.uniform1i(gl.getUniformLocation(p, 'iChannel0'), 0);
-            
+
+            gl.uniform3f(gl.getUniformLocation(prog, 'iResolution'), w, h, 1.0);
+            gl.uniform1f(gl.getUniformLocation(prog, 'iTime'), performance.now() / 1000);
+            gl.uniform1i(gl.getUniformLocation(prog, 'iChannel0'), 0);
+            gl.uniform1i(gl.getUniformLocation(prog, 'iChannel1'), 1);
+
             gl.drawArrays(gl.TRIANGLES, 0, 6);
             ctx.clearRect(0, 0, w, h);
             ctx.drawImage(c, 0, 0);
 
-            gl.deleteTexture(tex);
+            gl.deleteTexture(t0);
+            gl.deleteTexture(t1);
             gl.deleteBuffer(buf);
-            gl.deleteProgram(p);
+            gl.deleteProgram(prog);
             gl.deleteShader(vs);
             gl.deleteShader(fs);
-            
-            let ext = gl.getExtension('WEBGL_lose_context');
-            if (ext) ext.loseContext();
+            cleanup(gl);
         }
+
         repColor(a) {
             let tol = Scratch.Cast.toNumber(a.V), t = hToRgb(a.C), c = hToRgb(pen.color);
             let imgD = ctx.getImageData(0,0,canvas.width,canvas.height), d = imgD.data;
