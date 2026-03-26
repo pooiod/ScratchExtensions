@@ -83,7 +83,7 @@
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "Multi VM version", "color": "#cbe0f2", "link": "/ext/JSParser/[id]/multi.js" }
+            { "text": "Multi VM version", "color": "#cbe0f2", "link": "/view/#/[id]/multi.js" }
         ],
         "tags": ["unfinished"],
         "type": ["unsandboxed"],
