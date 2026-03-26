@@ -1031,7 +1031,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
             if(l==='top-right'){dx=w*2;dy=0;}
             if(l==='bottom-left'){dx=0;dy=h*2;}
             if(l==='bottom-right'){dx=w*2;dy=h*2;}
-
             let c=document.createElement('canvas');
             c.width=Math.max(1,canvas.width+w*2);
             c.height=Math.max(1,canvas.height+h*2);
