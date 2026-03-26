@@ -239,6 +239,10 @@
         }
     }
 
+    function RandFrom(arr){
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
     class JSParser {
         constructor() {
             this.Persistent = {};
@@ -246,6 +250,7 @@
             this._customGlobals = {};
             this._timeout = 30000;
             this.sandboxedTiemout = null;
+            this.dataname = 'data';
 
             vm.runtime.on('PROJECT_LOADED', () => {
                 this.removeLib("all");
@@ -415,13 +420,38 @@
 
                     "---",
 
+                    {
+                        opcode: 'setMemID',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set js data object to [NAME]',
+                        arguments: {
+                            NAME: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'data'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'setmaxExecTime',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'Set max execution time to [TIME] seconds',
+                        arguments: {
+                            TIME: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: this._timeout / 1000
+                            }
+                        }
+                    },
+
+                    "---",
+
                     // Possibly dangerous blocks
                     {
                         opcode: 'addLib',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Load library [URL]',
                         arguments: {
-                            URL: { type: Scratch.ArgumentType.STRING, defaultValue: 'https://p7scratchextensions.pages.dev/ext/BoxedPhysics/aslib.js' },
+                            URL: { type: Scratch.ArgumentType.STRING, defaultValue: RandFrom(['https://p7scratchextensions.pages.dev/ext/BoxedPhysics/aslib.js', 'http://pooiod7.pages.dev/libs/googleLogin.js']) },
                             TYPE: { type: Scratch.ArgumentType.STRING, menu: 'loadTypes' }
                         }
                     },
@@ -470,20 +500,64 @@
             // Detatch main globals so they reset every time
             const sandboxTarget = Object.assign({}, DEFAULT_GLOBALS, this._customGlobals);
 
-            // Persistent mem can be changed
-            sandboxTarget.data = this.Persistent;
+            // Persistent mem can be changed by the js
+            sandboxTarget[this.dataname || "data"] = this.Persistent;
 
-            // Allow changing max execution time
-            sandboxTarget.SetMaxExecutionTime = (ms) => {
-                const val = parseInt(ms);
-                if (!isNaN(val) && val > 0) {
-                    this._timeout = val;
-                }
-            };
+            // sandboxTarget.SetMaxExecutionTime = (ms) => {
+            //     const val = parseInt(ms);
+            //     if (!isNaN(val) && val > 0) {
+            //         this._timeout = val;
+            //     }
+            // };
 
             const availableFunctions = this._scanFunctions();
             availableFunctions.forEach(funcName => {
-                sandboxTarget[funcName] = (...args) => {
+                funcName = String(funcName);
+                const parts = funcName.split('.');
+                let current = sandboxTarget;
+                for (let i = 0; i < parts.length - 1; i++) {
+                    const part = parts[i];
+                    if (part === '__proto__' || part === 'constructor' || part === 'prototype') return;
+
+                    let next = current[part];
+
+                    if (current === sandboxTarget) {
+                        if (next === DEFAULT_GLOBALS[part] || next === this._customGlobals[part]) {
+                            if (typeof next === 'object' && next !== null) {
+                                next = Object.create(next);
+                                current[part] = next;
+                            } else if (typeof next === 'function') {
+                                const orig = next;
+                                next = function(...args) { return orig.apply(this, args); };
+                                Object.assign(next, orig);
+                                current[part] = next;
+                            }
+                        }
+                    } else {
+                        if (!Object.prototype.hasOwnProperty.call(current, part) && next !== undefined) {
+                            if (typeof next === 'object' && next !== null) {
+                                next = Object.create(next);
+                            } else if (typeof next === 'function') {
+                                const orig = next;
+                                next = function(...args) { return orig.apply(this, args); };
+                                Object.assign(next, orig);
+                            } else {
+                                next = {};
+                            }
+                            current[part] = next;
+                        }
+                    }
+
+                    if ((typeof next !== 'object' && typeof next !== 'function') || next === null) {
+                        next = {};
+                        current[part] = next;
+                    }
+
+                    current = next;
+                }
+                const lastPart = parts[parts.length - 1];
+                if (lastPart === '__proto__' || lastPart === 'constructor' || lastPart === 'prototype') return;
+                current[lastPart] = (...args) => {
                     return this.RunFunction(funcName, args);
                 };
             });
@@ -706,21 +780,56 @@
             return this._executeIsolated(args.CODE);
         }
 
+        setMemID(args) {
+            this.dataname = args.NAME || "data";
+        }
+
         setMem(args) {
             if (args.VAR && args.TEXT !== null) {
-                this.Persistent[args.VAR] = args.TEXT;
+                const parts = String(args.VAR).split('.');
+                let current = this.Persistent;
+                for (let i = 0; i < parts.length - 1; i++) {
+                    const part = parts[i];
+                    if (part === '__proto__' || part === 'constructor' || part === 'prototype') return;
+                    if (typeof current[part] !== 'object' || current[part] === null) {
+                        current[part] = {};
+                    }
+                    current = current[part];
+                }
+                const lastPart = parts[parts.length - 1];
+                if (lastPart === '__proto__' || lastPart === 'constructor' || lastPart === 'prototype') return;
+                current[lastPart] = args.TEXT;
             }
         }
 
         removeMem(args) {
             if (args.VAR) {
-                delete this.Persistent[args.VAR];
+                const parts = String(args.VAR).split('.');
+                let current = this.Persistent;
+                for (let i = 0; i < parts.length - 1; i++) {
+                    const part = parts[i];
+                    if (part === '__proto__' || part === 'constructor' || part === 'prototype') return;
+                    if (typeof current[part] !== 'object' || current[part] === null) return;
+                    current = current[part];
+                }
+                const lastPart = parts[parts.length - 1];
+                if (lastPart === '__proto__' || lastPart === 'constructor' || lastPart === 'prototype') return;
+                delete current[lastPart];
             }
         }
 
         getMem(args) {
-            if (args.VAR && args.VAR in this.Persistent) {
-                var data = this.Persistent[args.VAR];
+            if (args.VAR) {
+                const parts = String(args.VAR).split('.');
+                let current = this.Persistent;
+                for (let i = 0; i < parts.length; i++) {
+                    const part = parts[i];
+                    if (part === '__proto__' || part === 'constructor' || part === 'prototype') return '';
+                    if (current === null || typeof current !== 'object') return '';
+                    if (!(part in current)) return '';
+                    current = current[part];
+                }
+                var data = current;
                 try {
                     if (data === undefined) return 'undefined';
                     if (data === null) return 'null';
@@ -879,6 +988,10 @@
                 deloadLib(LIB);
                 this.removeObject(LIB, false);
             }
+        }
+
+        setmaxExecTime(args){
+            this._timeout = args.TIME * 1000;
         }
 
         // Scratch.vm.runtime._primitives.P7JSParser_addObject(name, object, false)
