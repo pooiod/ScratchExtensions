@@ -1019,26 +1019,30 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
             ctx.clearRect(0,0,w,h); ctx.drawImage(c, 0, 0);
         }
         expandImg(a){
-            let l=a.L;
+            let l=a.L||'center';
             let w=Scratch.Cast.toNumber(a.W),h=Scratch.Cast.toNumber(a.H);
             let dx=0,dy=0;
-            if(l==='center'){dx=w;dy=h}
-            if(l==='left'){dx=0;dy=h}
-            if(l==='right'){dx=w*2;dy=h}
-            if(l==='top'){dx=w;dy=0}
-            if(l==='bottom'){dx=w;dy=h*2}
-            if(l==='top-left'){dx=0;dy=0}
-            if(l==='top-right'){dx=w*2;dy=0}
-            if(l==='bottom-left'){dx=0;dy=h*2}
-            if(l==='bottom-right'){dx=w*2;dy=h*2}
+            console.log('expandImg input:',l,w,h);
+            if(l==='center'){dx=w;dy=h;}
+            if(l==='left'){dx=0;dy=h;}
+            if(l==='right'){dx=w*2;dy=h;}
+            if(l==='top'){dx=w;dy=0;}
+            if(l==='bottom'){dx=w;dy=h*2;}
+            if(l==='top-left'){dx=0;dy=0;}
+            if(l==='top-right'){dx=w*2;dy=0;}
+            if(l==='bottom-left'){dx=0;dy=h*2;}
+            if(l==='bottom-right'){dx=w*2;dy=h*2;}
+            console.log('offset:',dx,dy);
             let c=document.createElement('canvas');
             c.width=Math.max(1,canvas.width+w*2);
             c.height=Math.max(1,canvas.height+h*2);
+            console.log('new size:',c.width,c.height);
             c.getContext('2d').drawImage(canvas,dx,dy);
             canvas.width=c.width;
             canvas.height=c.height;
             ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.drawImage(c,0,0);
+            console.log('done');
         }
         setPenPos(a) { pen.x = toCX(a.X); pen.y = toCY(a.Y); }
         getW() { return canvas.width; }
