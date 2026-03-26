@@ -1035,7 +1035,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
             let c=document.createElement('canvas');
             c.width=Math.max(1,canvas.width+w*2);
             c.height=Math.max(1,canvas.height+h*2);
-            console.log('new size:',c.width,c.height);
             c.getContext('2d').drawImage(canvas,dx,dy);
             canvas.width=c.width;
             canvas.height=c.height;
