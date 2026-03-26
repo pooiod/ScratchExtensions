@@ -451,7 +451,7 @@
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Load library [URL]',
                         arguments: {
-                            URL: { type: Scratch.ArgumentType.STRING, defaultValue: RandFrom(['https://p7scratchextensions.pages.dev/ext/BoxedPhysics/aslib.js', 'http://pooiod7.pages.dev/libs/googleLogin.js']) },
+                            URL: { type: Scratch.ArgumentType.STRING, defaultValue: RandFrom(['https://p7scratchextensions.pages.dev/ext/BoxedPhysics/aslib.js']) },
                             TYPE: { type: Scratch.ArgumentType.STRING, menu: 'loadTypes' }
                         }
                     },
