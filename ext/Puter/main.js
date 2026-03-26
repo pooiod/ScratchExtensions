@@ -235,6 +235,7 @@
                         opcode: 'fsStopHost',
                         blockType: Scratch.BlockType.COMMAND,
                         text: 'Stop hosting [FOLDER]',
+                        hideFromPalette: true,
                         arguments: {
                             FOLDER: { type: Scratch.ArgumentType.STRING, defaultValue: 'host' }
                         }

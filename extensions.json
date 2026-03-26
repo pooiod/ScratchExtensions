@@ -202,7 +202,7 @@
         "created": "3/24/2026",
         "subtext": "",
         "icon": "/extras/images/icons/new.svg",
-        "iconText": "wip",
+        "iconText": "new extension, report bugs",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
