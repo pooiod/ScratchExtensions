@@ -408,7 +408,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
                     {
                         opcode: 'expandImg',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'expand image width [W] height [H]',
+                        text: 'expand image to width [W] height [H] and lock at [L]',
                         arguments: {
                             W: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -417,6 +417,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
                             H: {
                                 type: Scratch.ArgumentType.NUMBER,
                                 defaultValue: 10
+                            },
+                            L: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                menu: 'ImageLocks'
                             }
                         }
                     },
@@ -849,6 +853,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
                     exportFormats: {
                         items: ['png', 'jpeg', 'webp']
                     },
+                    ImageLocks: {
+                        items: ['center', 'left', 'right', 'top', 'bottom','top-left', 'top-right', 'bottom-left', 'bottom-right']
+                    },
                     lists: '_getLists'
                 }
             };
@@ -1011,12 +1018,27 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord ){
             canvas.width = w; canvas.height = h;
             ctx.clearRect(0,0,w,h); ctx.drawImage(c, 0, 0);
         }
-        expandImg(a) {
-            let w = Scratch.Cast.toNumber(a.W), h = Scratch.Cast.toNumber(a.H);
-            let c = document.createElement('canvas'); c.width = Math.max(1, canvas.width+w*2); c.height = Math.max(1, canvas.height+h*2);
-            c.getContext('2d').drawImage(canvas, w, h);
-            canvas.width = c.width; canvas.height = c.height;
-            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(c, 0, 0);
+        expandImg(a){
+            let l=a.L;
+            let w=Scratch.Cast.toNumber(a.W),h=Scratch.Cast.toNumber(a.H);
+            let dx=0,dy=0;
+            if(l==='center'){dx=w;dy=h}
+            if(l==='left'){dx=0;dy=h}
+            if(l==='right'){dx=w*2;dy=h}
+            if(l==='top'){dx=w;dy=0}
+            if(l==='bottom'){dx=w;dy=h*2}
+            if(l==='top-left'){dx=0;dy=0}
+            if(l==='top-right'){dx=w*2;dy=0}
+            if(l==='bottom-left'){dx=0;dy=h*2}
+            if(l==='bottom-right'){dx=w*2;dy=h*2}
+            let c=document.createElement('canvas');
+            c.width=Math.max(1,canvas.width+w*2);
+            c.height=Math.max(1,canvas.height+h*2);
+            c.getContext('2d').drawImage(canvas,dx,dy);
+            canvas.width=c.width;
+            canvas.height=c.height;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(c,0,0);
         }
         setPenPos(a) { pen.x = toCX(a.X); pen.y = toCY(a.Y); }
         getW() { return canvas.width; }
