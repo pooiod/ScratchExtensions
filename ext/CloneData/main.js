@@ -177,14 +177,6 @@
                             ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'clone1' }
                         }
                     },
-                    {
-                        opcode: 'runAsSprite',
-                        blockType: Scratch.BlockType.LOOP,
-                        text: 'Run as sprite [SPRITE]',
-                        arguments: {
-                            SPRITE: { type: Scratch.ArgumentType.STRING, menu: 'SPRITE_MENU' }
-                        }
-                    },
 
                     '---',
 
