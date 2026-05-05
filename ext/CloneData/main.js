@@ -176,7 +176,7 @@
                             TAGS: { type: Scratch.ArgumentType.STRING, defaultValue: 'enemy' },
                             VAR: { type: Scratch.ArgumentType.STRING, menu: 'VARIABLES' }
                         }
-                    }
+                    },
 
                     {
                         opcode: 'runAsClone',
