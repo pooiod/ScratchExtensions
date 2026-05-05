@@ -126,6 +126,23 @@
         "hidden": false
     },
     {
+        "id": "CloneData",
+        "image": "/ext/[id]/cover.svg",
+        "title": "Clone Data",
+        "description": "Track and control clones.",
+        "created": "5/5/2026",
+        "subtext": "",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "buttons": [
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        ],
+        "tags": ["finished"],
+        "type": ["unsandboxed"],
+        "hidden": false
+    },
+    {
         "id": "ElementalImages",
         "image": "/ext/[id]/cover.svg",
         "title": "Elemental Images",
