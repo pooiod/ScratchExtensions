@@ -416,15 +416,45 @@
         }
 
         runAsClone(args, util) {
-            const target = this.getTargetById(args.ID, util.target);
-            if (!target) return;
-            if (typeof util.stackFrame.state === 'undefined') {
-                util.stackFrame.state = 1;
-                util.stackFrame.originalTarget = util.thread.target;
-                util.thread.target = target;
+            const thread = util.thread;
+            if (!util.stackFrame.started) {
+                util.stackFrame.started = true;
+                const target = this.getTargetById(args.ID, util.target);
+                if (!target) return;
+
+                const originalTarget = thread.target;
+                util.stackFrame.originalTarget = originalTarget;
+                thread.target = target;
+
+                Object.defineProperty(util, 'target', {
+                    value: target,
+                    writable: true,
+                    configurable: true
+                });
+
+                const layerMethods = ['goToFront', 'goToBack', 'goForwardLayers', 'goBackwardLayers', 'moveLayer'];
+                util.stackFrame.patchedMethods = {};
+                layerMethods.forEach(method => {
+                    if (typeof originalTarget[method] === 'function') {
+                        util.stackFrame.patchedMethods[method] = originalTarget[method];
+                        originalTarget[method] = (...args) => target[method](...args);
+                    }
+                });
+
                 util.startBranch(1, true);
-            } else if (util.stackFrame.state === 1) {
-                util.thread.target = util.stackFrame.originalTarget;
+            } else {
+                const original = util.stackFrame.originalTarget;
+                thread.target = original;
+                Object.defineProperty(util, 'target', {
+                    value: original,
+                    writable: true,
+                    configurable: true
+                });
+                if (util.stackFrame.patchedMethods) {
+                    for (const method in util.stackFrame.patchedMethods) {
+                        original[method] = util.stackFrame.patchedMethods[method];
+                    }
+                }
             }
         }
 
