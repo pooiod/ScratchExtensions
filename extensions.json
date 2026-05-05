@@ -132,8 +132,8 @@
         "description": "Track and control clones.",
         "created": "5/5/2026",
         "subtext": "",
-        "icon": "",
-        "iconText": "",
+        "icon": "/extras/images/icons/new.svg",
+        "iconText": "new extension, report bugs",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
@@ -218,8 +218,8 @@
         "description": "Cloud services from <a href=\"https://developer.puter.com\">puter.com</a>",
         "created": "3/24/2026",
         "subtext": "",
-        "icon": "/extras/images/icons/new.svg",
-        "iconText": "new extension, report bugs",
+        "icon": "",
+        "iconText": "",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
