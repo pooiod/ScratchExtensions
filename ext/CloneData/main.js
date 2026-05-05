@@ -168,6 +168,15 @@
                             VAR: { type: Scratch.ArgumentType.STRING, menu: 'VARIABLES' }
                         }
                     },
+                    {
+                        opcode: 'forEachCloneWithTags',
+                        blockType: Scratch.BlockType.LOOP,
+                        text: 'for each clone with tags [TAGS] set [VAR] to ID',
+                        arguments: {
+                            TAGS: { type: Scratch.ArgumentType.STRING, defaultValue: 'enemy' },
+                            VAR: { type: Scratch.ArgumentType.STRING, menu: 'VARIABLES' }
+                        }
+                    }
 
                     {
                         opcode: 'runAsClone',
@@ -407,6 +416,39 @@
             return JSON.stringify(Array.from(uniqueTags));
         }
 
+        forEachCloneWithTags(args, util) {
+            if (typeof util.stackFrame.index === 'undefined') {
+                util.stackFrame.index = 0;
+                const searchTags = args.TAGS.split(/\s+/).filter(t => t !== '');
+                const sprite = util.target.sprite;
+                const matches = [];
+
+                if (sprite) {
+                    for (const clone of sprite.clones) {
+                        if (clone.isOriginal) continue;
+                        const cloneTags = this.cloneTags.get(clone.id);
+                        if (cloneTags) {
+                            const hasAllTags = searchTags.every(tag => cloneTags.has(tag));
+                            if (hasAllTags) {
+                                const id = this.cloneIds.get(clone.id);
+                                if (id) matches.push(id);
+                            }
+                        }
+                    }
+                }
+                util.stackFrame.ids = matches;
+            }
+
+            if (util.stackFrame.index < util.stackFrame.ids.length) {
+                const variable = this.getVariable(util.target, args.VAR);
+                if (variable) {
+                    variable.value = util.stackFrame.ids[util.stackFrame.index];
+                }
+                util.stackFrame.index++;
+                util.startBranch(1, true);
+            }
+        }
+
         runAsClone(args, util) {
             const thread = util.thread;
             if (!util.stackFrame.started) {
@@ -416,6 +458,7 @@
 
                 const originalTarget = thread.target;
                 util.stackFrame.originalTarget = originalTarget;
+                
                 thread.target = target;
 
                 Object.defineProperty(util, 'target', {
@@ -426,9 +469,14 @@
 
                 const layerMethods = ['goToFront', 'goToBack', 'goForwardLayers', 'goBackwardLayers', 'moveLayer'];
                 util.stackFrame.patchedMethods = {};
+                
                 layerMethods.forEach(method => {
                     if (typeof originalTarget[method] === 'function') {
-                        util.stackFrame.patchedMethods[method] = originalTarget[method];
+                        const isOwn = Object.prototype.hasOwnProperty.call(originalTarget, method);
+                        util.stackFrame.patchedMethods[method] = {
+                            isOwn: isOwn,
+                            value: originalTarget[method]
+                        };
                         originalTarget[method] = (...args) => target[method](...args);
                     }
                 });
@@ -436,15 +484,19 @@
                 util.startBranch(1, true);
             } else {
                 const original = util.stackFrame.originalTarget;
+                
                 thread.target = original;
-                Object.defineProperty(util, 'target', {
-                    value: original,
-                    writable: true,
-                    configurable: true
-                });
+                
+                delete util.target;
+                
                 if (util.stackFrame.patchedMethods) {
                     for (const method in util.stackFrame.patchedMethods) {
-                        original[method] = util.stackFrame.patchedMethods[method];
+                        const patch = util.stackFrame.patchedMethods[method];
+                        if (patch.isOwn) {
+                            original[method] = patch.value;
+                        } else {
+                            delete original[method];
+                        }
                     }
                 }
             }
