@@ -24,7 +24,6 @@
             this.fullResult = "";
             this.isListening = false;
 
-            // pollyfill for browsers without the speech api
             (function () {
                 if (window.SpeechRecognition || window.webkitSpeechRecognition) {
                     return;
@@ -211,12 +210,12 @@
                     {
                         opcode: 'WaitAndrecognizeSpeech',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Recognize speech and wait',
+                        text: 'recognize speech and wait',
                     },
                     {
                         opcode: 'getRecognizedSpeech',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'Last recognized speech',
+                        text: 'last recognized speech',
                     },
                     {
                         opcode: 'GetSpeech',
@@ -230,14 +229,14 @@
                     {
                         opcode: 'startContinuous',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Start continuous recognition',
+                        text: 'start continuous recognition',
                     },
-
                     {
                         opcode: 'stopContinuous',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: 'Stop continuous recognition',
+                        text: 'stop continuous recognition',
                     },
+
                     {
                         opcode: 'getCurrentContinuous',
                         blockType: Scratch.BlockType.REPORTER,
