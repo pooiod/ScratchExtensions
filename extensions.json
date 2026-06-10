@@ -263,24 +263,6 @@
         "hidden": false
     },
     {
-        "id": "BlockAI",
-        "image": "/ext/[id]/cover.svg",
-        "title": "Block АІ",
-        "description": "Create projects with the power of AI",
-        "created": "Apr 13, 2025",
-        "roughdate": true,
-        "subtext": "Work in progress",
-        "icon": "/extras/images/icons/wip.png",
-        "iconText": "This extension is in development, and may be changed frequently",
-        "unsandboxed": true,
-        "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
-        ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
-        "hidden": true
-    },
-    {
         "id": "ScratchBlocks",
         "image": "/ext/[id]/cover.svg",
         "title": "ScratchBlocks",
@@ -354,13 +336,12 @@
         "title": "Dictation",
         "description": "Convert your voice into text.",
         "created": "May 17, 2024",
-        "subtext": "not supported in all browsers",
+        "subtext": "",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
         "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "Browser support", "color": "#cbe0f2", "link": "https://caniuse.com/speech-recognition" }
+            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
         "tags": ["finished"],
         "type": ["unsandboxed"],
