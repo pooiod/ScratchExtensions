@@ -25,7 +25,7 @@
             this.isListening = false;
 
             (function () {
-                if ((window.SpeechRecognition || window.webkitSpeechRecognition) && !navigator.brave && !navigator.brave.isBrave) {
+                if ((window.SpeechRecognition || window.webkitSpeechRecognition) && !(navigator.brave && navigator.brave.isBrave)) {
                     return;
                 }
 
