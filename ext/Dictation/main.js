@@ -25,7 +25,7 @@
             this.isListening = false;
 
             (function () {
-                if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+                if ((window.SpeechRecognition || window.webkitSpeechRecognition) && !navigator.brave && !navigator.brave.isBrave) {
                     return;
                 }
 
@@ -863,7 +863,6 @@
                         this._isListening = false;
                         this._loadedModelUrl = "";
 
-						// I can not make this local without crashing, and the normal api doesn't always work offline anyways sooo ¯\_(ツ)_/¯
                         this.modelUrl = "https://ccoreilly.github.io/vosk-browser/models/vosk-model-small-en-us-0.15.tar.gz";
 
                         this.isLoadedScript = false;
@@ -904,6 +903,7 @@
                             this._isListening = false;
                             this._fireError("not-loaded", "The dictation api has not been loaded yet");
                             if (this.onend) this.onend();
+                            return;
                         }
 
                         try {
@@ -917,15 +917,16 @@
                                 audio: {
                                     echoCancellation: true,
                                     noiseSuppression: true,
-                                    channelCount: 1,
-                                    sampleRate: 16000
+                                    channelCount: 1
                                 }
                             });
 
-                            this._audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+                            this._audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            const currentSampleRate = this._audioContext.sampleRate;
+
                             const source = this._audioContext.createMediaStreamSource(this._mediaStream);
 
-                            this._recognizer = new this._model.KaldiRecognizer(16000);
+                            this._recognizer = new this._model.KaldiRecognizer(currentSampleRate);
 
                             if (this.onstart) this.onstart();
 
@@ -946,16 +947,40 @@
                                 }
                             });
 
-                            this._processor = this._audioContext.createScriptProcessor(4096, 1, 1);
-                            source.connect(this._processor);
-                            this._processor.connect(this._audioContext.destination);
+                            const workletCode = `
+                                class VoskProcessor extends AudioWorkletProcessor {
+                                    process(inputs, outputs, parameters) {
+                                        const input = inputs[0];
+                                        if (input && input.length > 0) {
+                                            const channelData = input[0];
+                                            this.port.postMessage(channelData);
+                                        }
+                                        return true;
+                                    }
+                                }
+                                registerProcessor('vosk-processor', VoskProcessor);
+                            `;
 
-                            this._processor.onaudioprocess = (e) => {
+                            const blob = new Blob([workletCode], { type: 'application/javascript' });
+                            const workletUrl = URL.createObjectURL(blob);
+
+                            await this._audioContext.audioWorklet.addModule(workletUrl);
+                            URL.revokeObjectURL(workletUrl);
+
+                            this._processor = new AudioWorkletNode(this._audioContext, 'vosk-processor');
+
+                            this._processor.port.onmessage = (e) => {
                                 if (!this._isListening) return;
                                 try {
-                                    this._recognizer.acceptWaveform(e.inputBuffer);
+                                    const sampleRate = this._audioContext.sampleRate;
+                                    const audioBuffer = this._audioContext.createBuffer(1, e.data.length, sampleRate);
+                                    audioBuffer.getChannelData(0).set(e.data);
+                                    this._recognizer.acceptWaveform(audioBuffer);
                                 } catch (err) {}
                             };
+
+                            source.connect(this._processor);
+                            this._processor.connect(this._audioContext.destination);
 
                         } catch (err) {
                             this._isListening = false;
@@ -983,7 +1008,9 @@
                         this._isListening = false;
 
                         if (this._processor) {
-                            this._processor.onaudioprocess = null;
+                            if (this._processor.port) {
+                                this._processor.port.onmessage = null;
+                            }
                             try { this._processor.disconnect(); } catch (e) {}
                         }
                         if (this._mediaStream) {
