@@ -252,13 +252,16 @@
             this.sandboxedTiemout = null;
             this.dataname = 'data';
 
-            vm.runtime.on('PROJECT_LOADED', () => {
-                this.removeLib("all");
-            });
+            const runtime = Scratch.vm ? Scratch.vm.runtime : Scratch.runtime;
+            if (runtime) {
+                runtime.on('PROJECT_LOADED', () => {
+                    this.removeLib("all");
+                });
+            }
         }
 
         get runtime() {
-            return vm.runtime;
+            return Scratch.vm ? Scratch.vm.runtime : Scratch.runtime;
         }
 
         getInfo() {
