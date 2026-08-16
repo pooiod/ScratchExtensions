@@ -54,7 +54,7 @@
         "id": "MegaRepo",
         "image": "https://scratchmegarepo.pages.dev/icon.svg",
         "title": "The Scratch Mega Repo",
-        "description": "A large database of Scratch extensions and mods from all over the internet",
+        "description": "Super out of date thingy because I have not pushed the new updates yet. I will fix eventually, but manually researching every extension is very time consuming",
         "created": "---",
         "subtext": "",
         "icon": "",
@@ -65,7 +65,7 @@
         ],
         "tags": [],
         "type": ["web"],
-        "hidden": false
+        "hidden": true
     },
     {
         "id": "PMPinSearch",
