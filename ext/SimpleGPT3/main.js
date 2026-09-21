@@ -29,7 +29,7 @@
 				blocks: [
 					{
 						opcode: 'setApiUrl',
-						hideFromPalette: true,
+						hideFromPalette: false,
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'Set reverse proxy API to [URL]',
 						arguments: {

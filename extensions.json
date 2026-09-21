@@ -132,8 +132,8 @@
         "description": "Track and control clones.",
         "created": "5/5/2026",
         "subtext": "",
-        "icon": "/extras/images/icons/new.svg",
-        "iconText": "new extension, report bugs",
+        "icon": "",
+        "iconText": "",
         "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
@@ -366,20 +366,20 @@
         "hidden": false
     },
     {
-        "id": "SimpleGPT3",
+        "id": "LocalAI",
         "image": "/ext/[id]/cover.svg",
-        "title": "Simple GPT3",
-        "description": "A simple extension to interact with GPT3",
-        "created": "Jul 18, 2024",
-        "subtext": "",
-        "icon": "/extras/images/icons/UnoficialAPI.svg",
-        "iconText": "This extension uses a third party api that may go down sometimes",
-        "unsandboxed": false,
+        "title": "Local AI",
+        "description": "Run your own local text AI right in scratch.",
+        "created": "9/21/2026",
+        "subtext": "Requires a powerful computer",
+        "icon": "/extras/images/icons/new.svg",
+        "iconText": "new extension, report bugs",
+        "unsandboxed": true,
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
-        "tags": ["finished"],
-        "type": ["sandboxed"],
+        "tags": ["finished","ai"],
+        "type": ["unsandboxed"],
         "hidden": false
     },
     {
