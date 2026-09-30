@@ -6,6 +6,7 @@
 // Unsandboxed: true
 // WIP: false
 // Created: Dec 5, 2024
+// Trusted: false
 
 (function (Scratch) {
     'use strict';

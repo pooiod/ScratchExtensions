@@ -1,4 +1,5 @@
 // Simple page opening extension
+// Trusted: false
 
 (function (Scratch) {
   'use strict';

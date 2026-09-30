@@ -7,6 +7,7 @@
 // Unsandboxed: true
 // WIP: false
 // Created: Deg 5, 2024
+// Trusted: false
 
 (function (Scratch) {
   'use strict';

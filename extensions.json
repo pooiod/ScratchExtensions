@@ -464,6 +464,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "trusted": false,
         "tags": ["unfinished"],
         "type": ["unsandboxed"],
         "hidden": false
@@ -532,6 +533,7 @@
         "buttons": [
             { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
         ],
+        "trusted": false,
         "tags": ["finished"],
         "type": ["unsandboxed"],
         "hidden": false

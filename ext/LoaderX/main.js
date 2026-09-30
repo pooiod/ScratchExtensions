@@ -8,6 +8,7 @@
 // WIP: true
 // Created: 1/12/2026
 // Notes: This extension is made for TurboWarp, but works in PenguinMod
+// Trusted: false
 
 /** Todo:
 Add proper support for multi-lenguage extensions
