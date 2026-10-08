@@ -74,17 +74,14 @@ Make object [Object1] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
 #### Polygons
-Polygons are the most complex object type, having the ability to match almost any shape you want. <br>
-Polygons are a way to get any type of shape widh BoxedPysics.
-
-**Costume-based:**<br>
-For this method, you simply run a single block and a polygon will be generated based on the current costume. <br>
-Please note that this method will not allow for concave objects.<br>
-*Please note that this block does not work for hidden sprites.*
+Polygons are the most complex object type, having the ability to match almost any shape you want. 
 
 **Point-based:**<br>
-This method allows you to input some x and y values and convert them into a polygon of your liking by taking an array of "x y" values seperated by 3 spaces.<br>
-Please note that this method will not allow for concave objects eather. The only way to do this is to weld objects togeather.
+This method allows you to provide an array of "x y" values seperated by 3 spaces to set a polygon.
+
+**Costume-based:**<br>
+This method will automatically generate a polygon based on the current costume of the sprite.<br>
+*Please note that this block does not work for hidden sprites.*
 
 ```scratch3
 Dеfine polygon as this costume :: #2cb0c0
@@ -94,8 +91,15 @@ Dеfine polygon, Points: [0 50   40 -50   -40 -50] :: #2cb0c0 //Triangle
 Make object [Object3] at X: [0] y: [0] Dir: [90] :: #2cb0c0
 ```
 
-I have created a simple tool that you can use to visualise any point-based polygon. <br>
-Note that the dark blue outline is roughly the area that will be concidered as the object hitbox by BoxedPhysics.
+By default all objects must be convex hulls for performance reasons, meaning they do not allow for holes or open shapes.
+
+If you want more complex shapes you can enable concave shapes with the `setConcaveShapes` block.
+
+```scratch3
+Allow concave shapes: <true :: #5EC15D> :: #2cb0c0
+```
+
+You can visualize the concave shape hulls by using the scratch project below.
 
 <demo src="/ext/BoxedPhysics/examples/BoxedPhysics point render system.pmp" editor="false" />
 

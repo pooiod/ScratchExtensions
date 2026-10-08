@@ -20,8 +20,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "12/14/2025";
-	var publishedUpdateIndex = 28;
+	var b2Dupdated = "10/08/2025";
+	var publishedUpdateIndex = 30;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -34,6 +34,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 	var physdebugmode = false;
 	var wipblocks = physdebugmode;
 	var legacymode = false;
+	var allowConcave = false;
+	var currentShapes = [];
 
 	var positerations = 10;
 	var veliterations = 10;
@@ -172,7 +174,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						opcode: 'difineCostume',
 						blockType: Scratch.BlockType.COMMAND,
 						filter: [Scratch.TargetType.SPRITE],
-						text: 'Define polygon as this costume',
+						text: 'Define polygon from this costume',
 						arguments: {
 							TYPE: {
 								type: Scratch.ArgumentType.STRING,
@@ -204,17 +206,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
-					{
-						opcode: 'ispoly',
-						blockType: Scratch.BlockType.BOOLEAN,
-						text: 'Is [POINTS] a polygon?',
-						arguments: {
-							POINTS: {
-								type: Scratch.ArgumentType.STRING,
-								defaultValue: "0 50   40 -50   -40 -50",
-							},
-						},
-					},
 
 					{ blockType: Scratch.BlockType.LABEL, text: "Modify objects" }, // ---- Modify objects ---
 					{
@@ -227,10 +218,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 								defaultValue: 'Object',
 							},
 						},
-					},
-					{ // hidden block becayse of mispelled opcode
-						opcode: 'destroyBodys', blockType: Scratch.BlockType.COMMAND,
-						hideFromPalette: true, text: 'Destroy every object',
 					},
 					{
 						opcode: 'destroyBodies',
@@ -531,6 +518,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.REPORTER,
 						text: 'All objects',
 					},
+					{
+						opcode: 'getPointMesh',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Get point mesh of object [NAME]',
+						arguments: {
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+						},
+					},
 
 					{ blockType: Scratch.BlockType.LABEL, text: "Define joints" }, // ---- Define joints -----
 					{
@@ -794,6 +792,17 @@ but has since deviated to be its own thing. (made with box2D js es6)
 							},
 						},
 					},
+					{
+						opcode: 'setConcaveShapes',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Allow concave shapes: [ENABLE]',
+						arguments: {
+							ENABLE: {
+								type: Scratch.ArgumentType.BOOLEAN,
+								defaultValue: false,
+							},
+						},
+					},
 
 					{
 						opcode: 'setWorldForces',
@@ -928,6 +937,11 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.LABEL,  // ---- Legacy blocks (old and not recomended for use) ----
 						text: `Legacy blocks`
 					},
+					{ // hidden block because of mispelled opcode
+						opcode: 'destroyBodys', blockType: Scratch.BlockType.COMMAND,
+						hideFromPalette: true, text: 'Destroy every object',
+					},
+
 					{
 						opcode: 'createNoCollideSet',
 						blockType: Scratch.BlockType.COMMAND,
@@ -1119,6 +1133,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 			fixDef.shape = new b2CircleShape; // Default shape is circle 100
 			fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+			currentShapes = [fixDef.shape];
 			ispinned = false;
 
 			this.impacts = [];
@@ -1205,15 +1220,192 @@ but has since deviated to be its own thing. (made with box2D js es6)
 		defineCircle(args) {
 			fixDef.shape = new b2CircleShape;
 			fixDef.shape.SetRadius(args.SIZE / 2 / b2Dzoom);
+			currentShapes = [fixDef.shape];
 		}
 
 		defineRect(args) {
 			fixDef.shape = new b2PolygonShape;
 			fixDef.shape.SetAsBox(args.WIDTH / 2 / b2Dzoom, args.HEIGHT / 2 / b2Dzoom);
+			currentShapes = [fixDef.shape];
 		}
 
-		difineCostume(_, util) {
-			try { // does not work with hidden sprites
+		cleanVertices(verts) {
+			if (!verts || verts.length < 3) return [];
+			let cleaned = [];
+			for (let i = 0; i < verts.length; i++) {
+				const curr = verts[i];
+				const next = verts[(i + 1) % verts.length];
+				const dx = next.x - curr.x;
+				const dy = next.y - curr.y;
+				if ((dx * dx + dy * dy) > 1e-8) {
+					cleaned.push(curr);
+				}
+			}
+			let result = [];
+			for (let i = 0; i < cleaned.length; i++) {
+				const prev = cleaned[(i - 1 + cleaned.length) % cleaned.length];
+				const curr = cleaned[i];
+				const next = cleaned[(i + 1) % cleaned.length];
+				const d1x = curr.x - prev.x;
+				const d1y = curr.y - prev.y;
+				const d2x = next.x - curr.x;
+				const d2y = next.y - curr.y;
+				const cross = d1x * d2y - d1y * d2x;
+				if (Math.abs(cross) > 1e-7) {
+					result.push(curr);
+				}
+			}
+			return result.length >= 3 ? result : cleaned;
+		}
+
+		traceCostumeContour(drawable) {
+			const skin = drawable.skin;
+			if (!skin) return null;
+
+			if (skin.updateSilhouette && (!skin._silhouette || !skin._silhouette._colorData)) {
+				skin.updateSilhouette();
+			}
+
+			let w = 0, h = 0, data = null;
+			if (skin._silhouette && skin._silhouette._colorData && skin._silhouette._width > 0) {
+				w = skin._silhouette._width;
+				h = skin._silhouette._height;
+				data = skin._silhouette._colorData;
+			} else if (skin._canvas) {
+				w = skin._canvas.width;
+				h = skin._canvas.height;
+				try {
+					data = skin._canvas.getContext('2d').getImageData(0, 0, w, h).data;
+				} catch (e) {
+					return null;
+				}
+			}
+			if (!w || !h || !data) return null;
+
+			const isSolid = (x, y) => {
+				if (x < 0 || y < 0 || x >= w || y >= h) return false;
+				return data[(y * w + x) * 4 + 3] > 20;
+			};
+
+			let startX = -1, startY = -1;
+			for (let y = 0; y < h; y++) {
+				for (let x = 0; x < w; x++) {
+					if (isSolid(x, y)) {
+						startX = x;
+						startY = y;
+						break;
+					}
+				}
+				if (startX !== -1) break;
+			}
+			if (startX === -1) return null;
+
+			const dx8 = [-1, -1, 0, 1, 1, 1, 0, -1];
+			const dy8 = [0, -1, -1, -1, 0, 1, 1, 1];
+
+			let cx = startX;
+			let cy = startY;
+			let bdir = 0;
+			const boundary = [];
+			const maxSteps = w * h * 4;
+			let steps = 0;
+
+			do {
+				boundary.push([cx, cy]);
+				let nextX = -1;
+				let nextY = -1;
+				let nextBdir = 0;
+
+				for (let i = 0; i < 8; i++) {
+					const idx = (bdir + i) % 8;
+					const nx = cx + dx8[idx];
+					const ny = cy + dy8[idx];
+					if (isSolid(nx, ny)) {
+						nextX = nx;
+						nextY = ny;
+						nextBdir = (idx + 5) % 8;
+						break;
+					}
+				}
+
+				if (nextX === -1) break;
+				cx = nextX;
+				cy = nextY;
+				bdir = nextBdir;
+				steps++;
+			} while ((cx !== startX || cy !== startY) && steps < maxSteps);
+
+			if (boundary.length < 3) return null;
+
+			const simplified = [];
+			for (let i = 0; i < boundary.length; i++) {
+				const prev = boundary[(i - 1 + boundary.length) % boundary.length];
+				const curr = boundary[i];
+				const next = boundary[(i + 1) % boundary.length];
+				const dx1 = curr[0] - prev[0];
+				const dy1 = curr[1] - prev[1];
+				const dx2 = next[0] - curr[0];
+				const dy2 = next[1] - curr[1];
+				if (dx1 * dy2 !== dy1 * dx2) {
+					simplified.push(curr);
+				}
+			}
+
+			if (simplified.length < 3) return null;
+
+			if (simplified.length > 36) {
+				let maxD = 0;
+				let oppIdx = 0;
+				for (let i = 1; i < simplified.length; i++) {
+					const d = Math.hypot(simplified[i][0] - simplified[0][0], simplified[i][1] - simplified[0][1]);
+					if (d > maxD) {
+						maxD = d;
+						oppIdx = i;
+					}
+				}
+
+				const rdp = (pts, eps) => {
+					if (pts.length <= 2) return pts;
+					let maxDist = 0;
+					let idx = 0;
+					const p1 = pts[0];
+					const p2 = pts[pts.length - 1];
+					const lenSq = Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
+
+					for (let i = 1; i < pts.length - 1; i++) {
+						let dist = 0;
+						if (lenSq === 0) {
+							dist = Math.hypot(pts[i][0] - p1[0], pts[i][1] - p1[1]);
+						} else {
+							dist = Math.abs((p2[1] - p1[1]) * pts[i][0] - (p2[0] - p1[0]) * pts[i][1] + p2[0] * p1[1] - p2[1] * p1[0]) / Math.sqrt(lenSq);
+						}
+						if (dist > maxDist) {
+							maxDist = dist;
+							idx = i;
+						}
+					}
+
+					if (maxDist > eps) {
+						const left = rdp(pts.slice(0, idx + 1), eps);
+						const right = rdp(pts.slice(idx), eps);
+						return left.slice(0, -1).concat(right);
+					}
+					return [p1, p2];
+				};
+
+				const half1 = simplified.slice(0, oppIdx + 1);
+				const half2 = simplified.slice(oppIdx).concat([simplified[0]]);
+				const s1 = rdp(half1, 2.0);
+				const s2 = rdp(half2, 2.0);
+				const res = s1.slice(0, -1).concat(s2.slice(0, -1));
+				return { points: res.length >= 3 ? res : simplified, width: w, height: h };
+			}
+
+			return { points: simplified, width: w, height: h };
+		}
+
+		difineCostume(args, util) {
+			try {
 				const target = util.target;
 				if (target.isStage) {
 					return;
@@ -1221,68 +1413,90 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 				const r = this.runtime.renderer;
 				const drawable = r._allDrawables[target.drawableID];
+				const skin = drawable.skin;
 
-				// if (TYPE == "img") {
-				// 	function uint8ArrayToBase64(uint8Array) {
-				// 		let binary = '';
-				// 		const len = uint8Array.byteLength;
-				// 		for (let i = 0; i < len; i++) {
-				// 			binary += String.fromCharCode(uint8Array[i]);
-				// 		}
-				// 		return window.btoa(binary);
-				// 	}
-
-				// 	var costume = sprite.costumes_[util.target.currentCostume];
-				// 	const costumeData = costume.asset.data;
-				// 	const mimeType = costume.asset.assetType.contentType;
-
-				// 	if (costumeData) {
-				// 		const base64Data = uint8ArrayToBase64(costumeData);
-				// 		this.definePoly(`data:${mimeType};base64,${base64Data}`);
-				// 		return;
-				// 	} else {
-				// 		console.warn("Unable to ubtain costume data, using hull method")
-				// 	}
-				// }
-
-				// Tell the Drawable about its updated convex hullPoints, if necessary.
-				if (drawable.needsConvexHullPoints()) {
-					const points = r._getConvexHullPointsForDrawable(target.drawableID);
-					drawable.setConvexHullPoints(points);
+				let contourData = null;
+				if (allowConcave || (args && args.TYPE === 'img')) {
+					contourData = this.traceCostumeContour(drawable);
 				}
 
-				const points = drawable._convexHullPoints;
 				const scaleX = drawable.scale[0] / 100;
-				const scaleY = drawable.scale[1] / -100; // Flip Y for hulls
-				const offset = drawable.skin.rotationCenter;
-				let allHulls = null;
+				const scaleY = drawable.scale[1] / -100;
+				const offset = skin.rotationCenter;
 
 				const hullPoints = [];
-				for (const i in points) {
-					hullPoints.push({
-						x: (points[i][0] - offset[0]) * scaleX,
-						y: (points[i][1] - offset[1]) * scaleY,
-					});
+
+				if (contourData && contourData.points) {
+					const ratioX = skin.size[0] / contourData.width;
+					const ratioY = skin.size[1] / contourData.height;
+					const pts = contourData.points;
+					for (let i = 0; i < pts.length; i++) {
+						const cx = pts[i][0] * ratioX;
+						const cy = pts[i][1] * ratioY;
+						hullPoints.push({
+							x: (cx - offset[0]) * scaleX,
+							y: (cy - offset[1]) * scaleY,
+						});
+					}
+				} else {
+					if (drawable.needsConvexHullPoints()) {
+						const hullPts = r._getConvexHullPointsForDrawable(target.drawableID);
+						drawable.setConvexHullPoints(hullPts);
+					}
+					const points = drawable._convexHullPoints;
+					for (const i in points) {
+						hullPoints.push({
+							x: (points[i][0] - offset[0]) * scaleX,
+							y: (points[i][1] - offset[1]) * scaleY,
+						});
+					}
+				}
+
+				let vertices = [];
+				for (let i = 0; i < hullPoints.length; i++) {
+					vertices.push(new b2Vec2(hullPoints[i].x / b2Dzoom, hullPoints[i].y / b2Dzoom));
+				}
+
+				vertices = this.cleanVertices(vertices);
+
+				if (vertices.length < 3) {
+					fixDef.shape = new b2CircleShape;
+					fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+					currentShapes = [fixDef.shape];
+					return;
+				}
+
+				if (this.polygonArea(vertices) < 0) {
+					vertices.reverse();
+				}
+
+				if (allowConcave && !this.isPolygonConvex(vertices)) {
+					const triangles = this.triangulate(vertices);
+					currentShapes = [];
+					for (let i = 0; i < triangles.length; i++) {
+						const tri = triangles[i];
+						if (tri.length === 3) {
+							if (this.polygonArea(tri) < 0) tri.reverse();
+							if (this.polygonArea(tri) > 1e-6) {
+								const poly = new b2PolygonShape();
+								poly.SetAsArray(tri);
+								currentShapes.push(poly);
+							}
+						}
+					}
+					if (currentShapes.length > 0) {
+						fixDef.shape = currentShapes[0];
+						return;
+					}
 				}
 
 				fixDef.shape = new b2PolygonShape();
-
-				const vertices = [];
-
-				let prev = null;
-				for (let i = hullPoints.length - 1; i >= 0; i--) {
-					const b2Vec = new b2Vec2(hullPoints[i].x / b2Dzoom, hullPoints[i].y / b2Dzoom);
-					if (prev !== null && b2Math.SubtractVV(b2Vec, prev).LengthSquared() > Number.MIN_VALUE) {
-						vertices.push(b2Vec);
-					}
-					prev = b2Vec;
-				}
-
 				fixDef.shape.SetAsArray(vertices);
+				currentShapes = [fixDef.shape];
 			} catch (error) {
-				// console.warn(error);
 				fixDef.shape = new b2CircleShape;
 				fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+				currentShapes = [fixDef.shape];
 				console.error("Unable to create hull for hidden sprite.");
 				console.warn("Defaulting to \"circle 100\"");
 				return;
@@ -1340,6 +1554,129 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			});
 		}
 
+		polygonArea(points) {
+			let area = 0;
+			for (let i = 0; i < points.length; i++) {
+				const j = (i + 1) % points.length;
+				area += points[i].x * points[j].y - points[j].x * points[i].y;
+			}
+			return area / 2;
+		}
+
+		isPolygonConvex(points) {
+			if (points.length < 3) return false;
+			let sign = 0;
+			const n = points.length;
+			for (let i = 0; i < n; i++) {
+				const p1 = points[i];
+				const p2 = points[(i + 1) % n];
+				const p3 = points[(i + 2) % n];
+				const cross = (p2.x - p1.x) * (p3.y - p2.y) - (p2.y - p1.y) * (p3.x - p2.x);
+				if (Math.abs(cross) > 1e-7) {
+					const curSign = cross > 0 ? 1 : -1;
+					if (sign === 0) sign = curSign;
+					else if (curSign !== sign) return false;
+				}
+			}
+			return true;
+		}
+
+		triangulate(points) {
+			let pts = this.cleanVertices(points);
+			if (pts.length < 3) return [];
+			if (pts.length === 3) {
+				if (this.polygonArea(pts) < 0) pts.reverse();
+				return this.polygonArea(pts) > 1e-6 ? [pts] : [];
+			}
+
+			if (this.polygonArea(pts) < 0) pts.reverse();
+
+			const triangles = [];
+			const indices = [];
+			for (let i = 0; i < pts.length; i++) indices.push(i);
+
+			const isPointInTri = (p, a, b, c) => {
+				const c1 = (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+				const c2 = (c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x);
+				const c3 = (a.x - c.x) * (p.y - c.y) - (a.y - c.y) * (p.x - c.x);
+				return (c1 >= -1e-8 && c2 >= -1e-8 && c3 >= -1e-8);
+			};
+
+			let maxIters = indices.length * indices.length * 4;
+			let iter = 0;
+			while (indices.length > 3 && iter < maxIters) {
+				iter++;
+				let earFound = false;
+				for (let i = 0; i < indices.length; i++) {
+					const prevIdx = indices[(i - 1 + indices.length) % indices.length];
+					const currIdx = indices[i];
+					const nextIdx = indices[(i + 1) % indices.length];
+
+					const a = pts[prevIdx];
+					const b = pts[currIdx];
+					const c = pts[nextIdx];
+
+					const cross = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+					if (cross <= 1e-7) continue;
+
+					let hasInside = false;
+					for (let j = 0; j < indices.length; j++) {
+						const testIdx = indices[j];
+						if (testIdx === prevIdx || testIdx === currIdx || testIdx === nextIdx) continue;
+						if (isPointInTri(pts[testIdx], a, b, c)) {
+							hasInside = true;
+							break;
+						}
+					}
+
+					if (!hasInside) {
+						triangles.push([a, b, c]);
+						indices.splice(i, 1);
+						earFound = true;
+						break;
+					}
+				}
+
+				if (!earFound) {
+					let bestIdx = -1;
+					let maxCross = 1e-7;
+					for (let i = 0; i < indices.length; i++) {
+						const prevIdx = indices[(i - 1 + indices.length) % indices.length];
+						const currIdx = indices[i];
+						const nextIdx = indices[(i + 1) % indices.length];
+						const a = pts[prevIdx];
+						const b = pts[currIdx];
+						const c = pts[nextIdx];
+						const cross = (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+						if (cross > maxCross) {
+							maxCross = cross;
+							bestIdx = i;
+						}
+					}
+					if (bestIdx !== -1) {
+						const prevIdx = indices[(bestIdx - 1 + indices.length) % indices.length];
+						const currIdx = indices[bestIdx];
+						const nextIdx = indices[(bestIdx + 1) % indices.length];
+						triangles.push([pts[prevIdx], pts[currIdx], pts[nextIdx]]);
+						indices.splice(bestIdx, 1);
+					} else {
+						break;
+					}
+				}
+			}
+
+			if (indices.length === 3) {
+				const a = pts[indices[0]];
+				const b = pts[indices[1]];
+				const c = pts[indices[2]];
+				if (this.polygonArea([a, b, c]) > 1e-6) {
+					triangles.push([a, b, c]);
+				}
+			}
+
+			return triangles;
+		}
+
 		ispoly(args) {
 			let tmpshape = new b2PolygonShape;
 			var points = args.POINTS;
@@ -1358,6 +1695,10 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					if (isNaN(Number(pts[i - 2])) || isNaN(Number(pts[i - 1]))) return false;
 					vertices.push(new b2Vec2(parseFloat(pts[i - 2]) / b2Dzoom, parseFloat(pts[i - 1]) / b2Dzoom));
 				}
+				vertices = this.cleanVertices(vertices);
+				if (vertices.length < 3) return false;
+				if (allowConcave) return true;
+				if (this.polygonArea(vertices) < 0) vertices.reverse();
 				tmpshape.SetAsArray(vertices);
 				return true;
 			} catch (error) {
@@ -1385,11 +1726,43 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				for (var i = pts.length; i > 0; i -= 2) {
 					vertices.push(new b2Vec2(parseFloat(pts[i - 2]) / b2Dzoom, parseFloat(pts[i - 1]) / b2Dzoom));
 				}
+
+				vertices = this.cleanVertices(vertices);
+				if (vertices.length < 3) {
+					throw new Error("Less than 3 vertices");
+				}
+
+				if (this.polygonArea(vertices) < 0) {
+					vertices.reverse();
+				}
+
+				if (allowConcave && !this.isPolygonConvex(vertices)) {
+					const triangles = this.triangulate(vertices);
+					currentShapes = [];
+					for (let i = 0; i < triangles.length; i++) {
+						const tri = triangles[i];
+						if (tri.length === 3) {
+							if (this.polygonArea(tri) < 0) tri.reverse();
+							if (this.polygonArea(tri) > 1e-6) {
+								const poly = new b2PolygonShape();
+								poly.SetAsArray(tri);
+								currentShapes.push(poly);
+							}
+						}
+					}
+					if (currentShapes.length > 0) {
+						fixDef.shape = currentShapes[0];
+						return true;
+					}
+				}
+
 				fixDef.shape.SetAsArray(vertices);
+				currentShapes = [fixDef.shape];
 				return true;
 			} catch (error) {
 				fixDef.shape = new b2CircleShape;
 				fixDef.shape.SetRadius(100 / 2 / b2Dzoom);
+				currentShapes = [fixDef.shape];
 				console.error("Incorrect polly format", points);
 				console.warn("Defaulting to \"circle 100\"");
 				return false;
@@ -1399,10 +1772,16 @@ but has since deviated to be its own thing. (made with box2D js es6)
 		changeHull({ NAME }) {
 			if (!bodies[NAME]) return;
 			const body = bodies[NAME];
-			body.DestroyFixture(body.GetFixtureList());
+			while (body.GetFixtureList()) {
+				body.DestroyFixture(body.GetFixtureList());
+			}
 			fixDef.filter.categoryBits = bodyCategoryBits;
 			fixDef.filter.maskBits = bodyMaskBits;
-			body.CreateFixture(fixDef);
+			const shapes = currentShapes && currentShapes.length > 0 ? currentShapes : [fixDef.shape];
+			for (let i = 0; i < shapes.length; i++) {
+				fixDef.shape = shapes[i];
+				body.CreateFixture(fixDef);
+			}
 		}
 
 		placeBody(args) {
@@ -1420,7 +1799,11 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			bodyDef.angle = (90 - args.DIR) * toRad;
 			var body = b2Dworld.CreateBody(bodyDef);
 			body.uid = id;
-			body.CreateFixture(fixDef);
+			const shapes = currentShapes && currentShapes.length > 0 ? currentShapes : [fixDef.shape];
+			for (let i = 0; i < shapes.length; i++) {
+				fixDef.shape = shapes[i];
+				body.CreateFixture(fixDef);
+			}
 			bodies[id] = body;
 
 			if (ispinned) {
@@ -1537,6 +1920,40 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				}
 			}
 			return Scratch.Cast.toString(bodynames);
+		}
+
+		getPointMesh(args) {
+			const body = bodies[args.NAME];
+			if (!body) return '';
+
+			const pts = [];
+			for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+				const shape = f.GetShape();
+				if (shape instanceof b2CircleShape) {
+					const radius = shape.GetRadius() * b2Dzoom;
+					const pos = shape.GetLocalPosition();
+					const segments = 16;
+					for (let i = 0; i < segments; i++) {
+						const angle = (i / segments) * 2 * Math.PI;
+						const px = Math.round(((pos.x * b2Dzoom) + radius * Math.cos(angle)) * 100) / 100;
+						const py = Math.round(((pos.y * b2Dzoom) + radius * Math.sin(angle)) * 100) / 100;
+						pts.push(`${px} ${py}`);
+					}
+				} else if (shape instanceof b2PolygonShape) {
+					const count = shape.GetVertexCount();
+					const verts = shape.GetVertices();
+					for (let i = 0; i < count; i++) {
+						const px = Math.round((verts[i].x * b2Dzoom) * 100) / 100;
+						const py = Math.round((verts[i].y * b2Dzoom) * 100) / 100;
+						pts.push(`${px} ${py}`);
+					}
+				}
+			}
+			return pts.join('   ');
+		}
+
+		setConcaveShapes(args) {
+			allowConcave = Scratch.Cast.toBoolean(args.ENABLE);
 		}
 
 		destroyBodys() { return this.destroyBodies(); }
