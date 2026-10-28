@@ -40,8 +40,27 @@
 			this.password = null;
 			this.cleansession = true;
 
+			this.roomId = null;
+
 			this.subscribedTopics = new Set();
 			this.topicData = {};
+		}
+
+		getPrefix() {
+			const room = this.roomId !== null && this.roomId !== undefined ? String(this.roomId) : (typeof location !== 'undefined' ? location.href : '');
+			return room + '/';
+		}
+
+		prefixTopic(topic) {
+			return this.getPrefix() + String(topic);
+		}
+
+		stripPrefix(topic) {
+			const prefix = this.getPrefix();
+			if (topic.startsWith(prefix)) {
+				return topic.slice(prefix.length);
+			}
+			return topic;
 		}
 
 		getInfo() {
@@ -65,9 +84,21 @@
 					},
 
 					{
+						opcode: 'set_room_id',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'set room id [room]',
+						arguments: {
+							room: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: window.location.hash || Math.round(Math.random() * 99999)
+							}
+						}
+					},
+
+					{
 						opcode: 'is_connected',
 						blockType: Scratch.BlockType.BOOLEAN,
-						text: 'connected?'
+						text: 'connected to mqtt'
 					},
 
 					{
@@ -195,6 +226,10 @@
 			};
 		}
 
+		set_room_id(args) {
+			this.roomId = String(args.room);
+		}
+
 		parseUrl(inputUrl) {
 			let urlStr = String(inputUrl).trim();
 			if (!urlStr.includes('://')) {
@@ -267,7 +302,7 @@
 			}
 			this.subscribedTopics.forEach((topic) => {
 				try {
-					this.mqtt.subscribe(topic, { qos: 0 });
+					this.mqtt.subscribe(this.prefixTopic(topic), { qos: 0 });
 				} catch (e) {
 					this.lastError = e && e.message ? e.message : String(e);
 					this.hasError = true;
@@ -288,17 +323,28 @@
 		}
 
 		onMessageArrived(message) {
-			const topic = message.destinationName;
+			const rawTopic = message.destinationName;
+			const topic = this.stripPrefix(rawTopic);
 			const payload = message.payloadString;
 			this.topicData[topic] = payload;
 			this.lastReceivedTopic = topic;
 			this.newMessage = true;
 			if (this.debugMode) {
-				console.log('received:', topic, payload);
+				console.log('received:', rawTopic, 'as', topic, payload);
 			}
 		}
 
 		connect_server(args) {
+			if (this.mqtt && this.mqtt.isConnected()) {
+				this.subscribedTopics.forEach((topic) => {
+					try {
+						this.mqtt.unsubscribe(this.prefixTopic(topic));
+					} catch (e) {}
+				});
+			}
+			this.subscribedTopics.clear();
+			this.topicData = {};
+
 			this.parseUrl(args.url);
 			if (this.mqtt && this.mqtt.isConnected()) {
 				try {
@@ -315,9 +361,10 @@
 		send_message(args) {
 			if (this.mqtt && this.mqtt.isConnected()) {
 				try {
-					this.mqtt.send(String(args.topic), String(args.message));
+					const fullTopic = this.prefixTopic(args.topic);
+					this.mqtt.send(fullTopic, String(args.message));
 					if (this.debugMode) {
-						console.log('sent:', args.topic, args.message);
+						console.log('sent:', fullTopic, args.message);
 					}
 				} catch (e) {
 					this.lastError = e && e.message ? e.message : String(e);
@@ -333,7 +380,7 @@
 				this.subscribedTopics.add(topic);
 				if (this.mqtt && this.mqtt.isConnected()) {
 					try {
-						this.mqtt.subscribe(topic, { qos: 0 });
+						this.mqtt.subscribe(this.prefixTopic(topic), { qos: 0 });
 						return true;
 					} catch (e) {
 						this.lastError = e && e.message ? e.message : String(e);
@@ -355,7 +402,7 @@
 				this.subscribedTopics.add(topic);
 				if (this.mqtt && this.mqtt.isConnected()) {
 					try {
-						this.mqtt.subscribe(topic, { qos: 0 });
+						this.mqtt.subscribe(this.prefixTopic(topic), { qos: 0 });
 					} catch (e) {
 						this.lastError = e && e.message ? e.message : String(e);
 						this.hasError = true;
@@ -376,7 +423,7 @@
 			}
 			if (this.mqtt && this.mqtt.isConnected()) {
 				try {
-					this.mqtt.unsubscribe(topic);
+					this.mqtt.unsubscribe(this.prefixTopic(topic));
 				} catch (e) {
 					this.lastError = e && e.message ? e.message : String(e);
 					this.hasError = true;
