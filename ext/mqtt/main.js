@@ -99,7 +99,7 @@
 					},
 					{
 						opcode: 'topic_subscribe',
-						blockType: Scratch.BlockType.REPORTER,
+						blockType: Scratch.BlockType.COMMAND,
 						text: 'subscribe to [topic]',
 						arguments: {
 							topic: {
