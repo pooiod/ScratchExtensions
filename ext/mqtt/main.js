@@ -98,6 +98,17 @@
 						}
 					},
 					{
+						opcode: 'topic_subscribe',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'subscribe to [topic]',
+						arguments: {
+							topic: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'topic'
+							}
+						}
+					},
+					{
 						opcode: 'unsubscribe_topic',
 						blockType: Scratch.BlockType.COMMAND,
 						text: 'unsubscribe from [topic]',
@@ -313,6 +324,28 @@
 					this.hasError = true;
 					console.error('Send error:', e);
 				}
+			}
+		}
+
+		topic_subscribe(args) {
+			const topic = String(args.topic);
+			if (!this.subscribedTopics.has(topic)) {
+				this.subscribedTopics.add(topic);
+				if (this.mqtt && this.mqtt.isConnected()) {
+					try {
+						this.mqtt.subscribe(topic, { qos: 0 });
+						return true;
+					} catch (e) {
+						this.lastError = e && e.message ? e.message : String(e);
+						this.hasError = true;
+						console.error('Subscribe error:', e);
+						return false;
+					}
+				} else {
+					return false;
+				}
+			} else {
+				return true;
 			}
 		}
 
