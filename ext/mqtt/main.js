@@ -200,7 +200,7 @@
 						opcode: 'when_message_arrived',
 						blockType: Scratch.BlockType.HAT,
 						text: 'when message [topic] recived',
-						isEdgeActivated: true,
+						isEdgeActivated: false,
 						arguments: {
 							topic: {
 								type: Scratch.ArgumentType.STRING,
