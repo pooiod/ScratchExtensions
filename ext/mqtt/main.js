@@ -48,6 +48,9 @@
 
 			this.subscribedTopics = new Set();
 			this.topicData = {};
+
+			this.messageCounter = 0;
+			this.topicCounters = {};
 		}
 
 		getPrefix(customRoom) {
@@ -158,6 +161,11 @@
 							}
 						}
 					},
+					{
+						opcode: 'unsubscribe_all',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'unsubscribe from all topics'
+					},
 
 					{
 						opcode: 'get_subscribed_topics',
@@ -191,8 +199,14 @@
 					{
 						opcode: 'when_message_arrived',
 						blockType: Scratch.BlockType.HAT,
-						text: 'when message recived',
-						isEdgeActivated: true
+						text: 'when message [topic] recived',
+						isEdgeActivated: true,
+						arguments: {
+							topic: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: ''
+							}
+						}
 					},
 					{
 						opcode: 'when_error',
@@ -363,7 +377,8 @@
 			const payload = message.payloadString;
 			this.topicData[topic] = payload;
 			this.lastReceivedTopic = topic;
-			this.newMessage = true;
+			this.messageCounter++;
+			this.topicCounters[topic] = (this.topicCounters[topic] || 0) + 1;
 			if (this.debugMode) {
 				console.log('received:', rawTopic, 'as', topic, payload);
 			}
@@ -484,6 +499,21 @@
 			}
 		}
 
+		unsubscribe_all() {
+			if (this.mqtt && this.mqtt.isConnected()) {
+				this.subscribedTopics.forEach((topic) => {
+					try {
+						this.mqtt.unsubscribe(this.prefixTopic(topic));
+					} catch (e) {
+						this.lastError = e && e.message ? e.message : String(e);
+						this.hasError = true;
+					}
+				});
+			}
+			this.subscribedTopics.clear();
+			this.topicData = {};
+		}
+
 		get_subscribed_topics() {
 			return JSON.stringify(Array.from(this.subscribedTopics));
 		}
@@ -516,9 +546,17 @@
 			return false;
 		}
 
-		when_message_arrived() {
-			if (this.newMessage) {
-				this.newMessage = false;
+		when_message_arrived(args, util) {
+			const targetTopic = args && args.topic !== undefined ? String(args.topic).trim() : '';
+			if (!util.stackFrame.mqtt) {
+				util.stackFrame.mqtt = {
+					lastCount: targetTopic === '' ? this.messageCounter : (this.topicCounters[targetTopic] || 0)
+				};
+				return false;
+			}
+			const currentCount = targetTopic === '' ? this.messageCounter : (this.topicCounters[targetTopic] || 0);
+			if (currentCount > util.stackFrame.mqtt.lastCount) {
+				util.stackFrame.mqtt.lastCount = currentCount;
 				return true;
 			}
 			return false;
