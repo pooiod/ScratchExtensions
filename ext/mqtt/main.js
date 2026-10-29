@@ -7,12 +7,16 @@
 // WIP: true
 // Created: 10/27/2026
 
+// not ready yet
+// breaking changes may happen and you are on your own
+// if you want to use this, don't use the url feature so updates don't break your project
+
 (function(Scratch) {
 	'use strict';
 
-    if (!Scratch.extensions.unsandboxed) {
-        throw new Error('This extension can\'t run in the sandbox');
-    }
+	if (!Scratch.extensions.unsandboxed) {
+		throw new Error('This extension can\'t run in the sandbox');
+	}
 
 	if (!window.Paho) {
 		var script = document.createElement('script');
@@ -46,13 +50,13 @@
 			this.topicData = {};
 		}
 
-		getPrefix() {
-			const room = this.roomId !== null && this.roomId !== undefined ? String(this.roomId) : (typeof location !== 'undefined' ? location.href : '');
+		getPrefix(customRoom) {
+			const room = customRoom !== undefined ? (customRoom !== null ? String(customRoom) : (typeof location !== 'undefined' ? location.href : '')) : (this.roomId !== null && this.roomId !== undefined ? String(this.roomId) : (typeof location !== 'undefined' ? location.href : ''));
 			return room + '/';
 		}
 
-		prefixTopic(topic) {
-			return this.getPrefix() + String(topic);
+		prefixTopic(topic, customRoom) {
+			return this.getPrefix(customRoom) + String(topic);
 		}
 
 		stripPrefix(topic) {
@@ -82,7 +86,11 @@
 							}
 						}
 					},
-
+					{
+						opcode: 'disconnect_server',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'disconnect'
+					},
 					{
 						opcode: 'set_room_id',
 						blockType: Scratch.BlockType.COMMAND,
@@ -90,7 +98,7 @@
 						arguments: {
 							room: {
 								type: Scratch.ArgumentType.STRING,
-								defaultValue: window.location.hash || Math.round(Math.random() * 99999)
+								defaultValue: 'my-room'
 							}
 						}
 					},
@@ -98,7 +106,7 @@
 					{
 						opcode: 'is_connected',
 						blockType: Scratch.BlockType.BOOLEAN,
-						text: 'connected to mqtt'
+						text: 'connected?'
 					},
 
 					{
@@ -227,7 +235,34 @@
 		}
 
 		set_room_id(args) {
-			this.roomId = String(args.room);
+			const newRoomId = String(args.room);
+			const oldRoomId = this.roomId;
+			if (newRoomId === oldRoomId) return;
+
+			if (this.mqtt && this.mqtt.isConnected()) {
+				this.subscribedTopics.forEach((topic) => {
+					try {
+						this.mqtt.unsubscribe(this.prefixTopic(topic, oldRoomId));
+					} catch (e) {
+						this.lastError = e && e.message ? e.message : String(e);
+						this.hasError = true;
+					}
+				});
+			}
+
+			this.roomId = newRoomId;
+			this.topicData = {};
+
+			if (this.mqtt && this.mqtt.isConnected()) {
+				this.subscribedTopics.forEach((topic) => {
+					try {
+						this.mqtt.subscribe(this.prefixTopic(topic), { qos: 0 });
+					} catch (e) {
+						this.lastError = e && e.message ? e.message : String(e);
+						this.hasError = true;
+					}
+				});
+			}
 		}
 
 		parseUrl(inputUrl) {
@@ -352,6 +387,23 @@
 				} catch (e) {}
 			}
 			this.MQTTconnect();
+		}
+
+		disconnect_server() {
+			if (this.mqtt && this.mqtt.isConnected()) {
+				this.subscribedTopics.forEach((topic) => {
+					try {
+						this.mqtt.unsubscribe(this.prefixTopic(topic));
+					} catch (e) {}
+				});
+				try {
+					this.mqtt.disconnect();
+				} catch (e) {}
+			}
+			this.subscribedTopics.clear();
+			this.topicData = {};
+			this.hasDisconnected = true;
+			this.lastDisconnectReason = 'Disconnected by user';
 		}
 
 		is_connected() {
