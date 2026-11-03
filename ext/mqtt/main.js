@@ -48,6 +48,19 @@
 
 			this.subscribedTopics = new Set();
 			this.topicData = {};
+			this.messageQueue = [];
+			this.newMessage = false;
+
+			Scratch.vm.runtime.on('BEFORE_EXECUTE', () => this.stepQueue());
+		}
+
+		stepQueue() {
+			if (this.messageQueue.length > 0) {
+				const next = this.messageQueue.shift();
+				this.topicData[next.topic] = next.payload;
+				this.lastReceivedTopic = next.topic;
+				this.newMessage = true;
+			}
 		}
 
 		getPrefix(customRoom) {
@@ -158,6 +171,11 @@
 							}
 						}
 					},
+					{
+						opcode: 'unsubscribe_all',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'unsubscribe from all topics'
+					},
 
 					{
 						opcode: 'get_subscribed_topics',
@@ -252,6 +270,7 @@
 
 			this.roomId = newRoomId;
 			this.topicData = {};
+			this.messageQueue = [];
 
 			if (this.mqtt && this.mqtt.isConnected()) {
 				this.subscribedTopics.forEach((topic) => {
@@ -361,9 +380,7 @@
 			const rawTopic = message.destinationName;
 			const topic = this.stripPrefix(rawTopic);
 			const payload = message.payloadString;
-			this.topicData[topic] = payload;
-			this.lastReceivedTopic = topic;
-			this.newMessage = true;
+			this.messageQueue.push({ topic, payload });
 			if (this.debugMode) {
 				console.log('received:', rawTopic, 'as', topic, payload);
 			}
@@ -379,6 +396,7 @@
 			}
 			this.subscribedTopics.clear();
 			this.topicData = {};
+			this.messageQueue = [];
 
 			this.parseUrl(args.url);
 			if (this.mqtt && this.mqtt.isConnected()) {
@@ -402,6 +420,7 @@
 			}
 			this.subscribedTopics.clear();
 			this.topicData = {};
+			this.messageQueue = [];
 			this.hasDisconnected = true;
 			this.lastDisconnectReason = 'Disconnected by user';
 		}
@@ -482,6 +501,22 @@
 					console.error('Unsubscribe error:', e);
 				}
 			}
+		}
+
+		unsubscribe_all() {
+			if (this.mqtt && this.mqtt.isConnected()) {
+				this.subscribedTopics.forEach((topic) => {
+					try {
+						this.mqtt.unsubscribe(this.prefixTopic(topic));
+					} catch (e) {
+						this.lastError = e && e.message ? e.message : String(e);
+						this.hasError = true;
+					}
+				});
+			}
+			this.subscribedTopics.clear();
+			this.topicData = {};
+			this.messageQueue = [];
 		}
 
 		get_subscribed_topics() {
