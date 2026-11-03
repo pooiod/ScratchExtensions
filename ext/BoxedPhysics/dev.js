@@ -20,8 +20,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "10/08/2025";
-	var publishedUpdateIndex = 30;
+	var b2Dupdated = "11/02/2026";
+	var publishedUpdateIndex = 31;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -73,6 +73,10 @@ but has since deviated to be its own thing. (made with box2D js es6)
 
 			this.scraping = [];
 			this.impacts = [];
+
+			this.lastTickTime = 0;
+			this.tickDeltaTime = 0;
+			this.tickCount = 0;
 
 			this.vm.runtime.on('PROJECT_LOADED', () => {
 				this.physoptions({ "CONPHYS": true, "WARMSTART": true, "POS": 10, "VEL": 10 });
@@ -228,7 +232,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					{
 						opcode: 'changeHull',
 						blockType: Scratch.BlockType.COMMAND,
-						text: 'Update hitbox of object [NAME]',
+						text: 'Update shape of object [NAME]',
 						arguments: {
 							NAME: {
 								type: Scratch.ArgumentType.STRING,
@@ -518,10 +522,11 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.REPORTER,
 						text: 'All objects',
 					},
+
 					{
 						opcode: 'getPointMesh',
 						blockType: Scratch.BlockType.REPORTER,
-						text: 'Get point mesh of object [NAME]',
+						text: 'Get shape of object [NAME] as polygon',
 						arguments: {
 							NAME: {
 								type: Scratch.ArgumentType.STRING,
@@ -818,6 +823,12 @@ but has since deviated to be its own thing. (made with box2D js es6)
 								defaultValue: 0,
 							}
 						},
+					},
+
+					{
+						opcode: 'deltaSimSpeed',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Delta time',
 					},
 
 					{
@@ -1769,19 +1780,65 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
-		changeHull({ NAME }) {
-			if (!bodies[NAME]) return;
-			const body = bodies[NAME];
+		changeHull(args) {
+			const name = args.NAME;
+			if (!bodies[name]) return;
+			const body = bodies[name];
+
+			let shapes = [];
+			if (allowConcave && currentShapes && currentShapes.length > 0) {
+				shapes = currentShapes;
+			} else if (fixDef && fixDef.shape) {
+				shapes = [fixDef.shape];
+			} else if (currentShapes && currentShapes.length > 0) {
+				shapes = [currentShapes[0]];
+			} else {
+				const fallbackCircle = new b2CircleShape();
+				fallbackCircle.SetRadius(10 / b2Dzoom);
+				shapes = [fallbackCircle];
+			}
+
+			let density = fixDef.density;
+			let friction = fixDef.friction;
+			let restitution = fixDef.restitution;
+			let isSensor = fixDef.isSensor;
+			let filter = null;
+
+			const firstFixture = body.GetFixtureList();
+			if (firstFixture) {
+				density = firstFixture.GetDensity();
+				friction = firstFixture.GetFriction();
+				restitution = firstFixture.GetRestitution();
+				isSensor = firstFixture.IsSensor();
+				filter = firstFixture.GetFilterData();
+			}
+
 			while (body.GetFixtureList()) {
 				body.DestroyFixture(body.GetFixtureList());
 			}
-			fixDef.filter.categoryBits = bodyCategoryBits;
-			fixDef.filter.maskBits = bodyMaskBits;
-			const shapes = currentShapes && currentShapes.length > 0 ? currentShapes : [fixDef.shape];
+
+			fixDef.density = density;
+			fixDef.friction = friction;
+			fixDef.restitution = restitution;
+			fixDef.isSensor = isSensor;
+			if (filter) {
+				fixDef.filter = filter;
+			} else {
+				fixDef.filter.categoryBits = bodyCategoryBits;
+				fixDef.filter.maskBits = bodyMaskBits;
+			}
+
 			for (let i = 0; i < shapes.length; i++) {
 				fixDef.shape = shapes[i];
 				body.CreateFixture(fixDef);
 			}
+
+			if (body.layers && body.layers.length > 0) {
+				this.setObjectLayer({ NAME: name, LAYERS: body.layers.join(' ') });
+			}
+
+			body.ResetMassData();
+			body.SetAwake(true);
 		}
 
 		placeBody(args) {
@@ -1926,29 +1983,105 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			const body = bodies[args.NAME];
 			if (!body) return '';
 
-			const pts = [];
+			const polyFixtures = [];
+			const circleFixtures = [];
+
 			for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
 				const shape = f.GetShape();
 				if (shape instanceof b2CircleShape) {
-					const radius = shape.GetRadius() * b2Dzoom;
-					const pos = shape.GetLocalPosition();
-					const segments = 16;
-					for (let i = 0; i < segments; i++) {
-						const angle = (i / segments) * 2 * Math.PI;
-						const px = Math.round(((pos.x * b2Dzoom) + radius * Math.cos(angle)) * 100) / 100;
-						const py = Math.round(((pos.y * b2Dzoom) + radius * Math.sin(angle)) * 100) / 100;
-						pts.push(`${px} ${py}`);
-					}
+					circleFixtures.push(shape);
 				} else if (shape instanceof b2PolygonShape) {
+					polyFixtures.push(shape);
+				}
+			}
+
+			const pts = [];
+
+			for (let c = 0; c < circleFixtures.length; c++) {
+				const shape = circleFixtures[c];
+				const radius = shape.GetRadius() * b2Dzoom;
+				const pos = shape.GetLocalPosition();
+				const segments = 16;
+				for (let i = 0; i < segments; i++) {
+					const angle = (i / segments) * 2 * Math.PI;
+					const px = Math.round(((pos.x * b2Dzoom) + radius * Math.cos(angle)) * 100) / 100;
+					const py = Math.round(((pos.y * b2Dzoom) + radius * Math.sin(angle)) * 100) / 100;
+					pts.push(`${px} ${py}`);
+				}
+			}
+
+			if (polyFixtures.length === 1) {
+				const shape = polyFixtures[0];
+				const count = shape.GetVertexCount();
+				const verts = shape.GetVertices();
+				for (let i = 0; i < count; i++) {
+					const px = Math.round((verts[i].x * b2Dzoom) * 100) / 100;
+					const py = Math.round((verts[i].y * b2Dzoom) * 100) / 100;
+					pts.push(`${px} ${py}`);
+				}
+			} else if (polyFixtures.length > 1) {
+				const key = (x, y) => `${Math.round(x * b2Dzoom * 100) / 100},${Math.round(y * b2Dzoom * 100) / 100}`;
+				const edgeMap = new Map();
+
+				for (let f = 0; f < polyFixtures.length; f++) {
+					const shape = polyFixtures[f];
 					const count = shape.GetVertexCount();
 					const verts = shape.GetVertices();
+
 					for (let i = 0; i < count; i++) {
-						const px = Math.round((verts[i].x * b2Dzoom) * 100) / 100;
-						const py = Math.round((verts[i].y * b2Dzoom) * 100) / 100;
-						pts.push(`${px} ${py}`);
+						const v1 = verts[i];
+						const v2 = verts[(i + 1) % count];
+						const k1 = key(v1.x, v1.y);
+						const k2 = key(v2.x, v2.y);
+
+						if (k1 === k2) continue;
+
+						const forwardKey = `${k1}->${k2}`;
+						const reverseKey = `${k2}->${k1}`;
+
+						if (edgeMap.has(reverseKey)) {
+							edgeMap.delete(reverseKey);
+						} else {
+							edgeMap.set(forwardKey, { fromKey: k1, toKey: k2, fromPt: v1, toPt: v2 });
+						}
+					}
+				}
+
+				if (edgeMap.size > 0) {
+					const nextEdge = new Map();
+					for (const edge of edgeMap.values()) {
+						nextEdge.set(edge.fromKey, edge);
+					}
+
+					const visited = new Set();
+					for (const firstEdge of nextEdge.values()) {
+						if (visited.has(firstEdge.fromKey)) continue;
+
+						let curr = firstEdge;
+						while (curr && !visited.has(curr.fromKey)) {
+							visited.add(curr.fromKey);
+							const px = Math.round((curr.fromPt.x * b2Dzoom) * 100) / 100;
+							const py = Math.round((curr.fromPt.y * b2Dzoom) * 100) / 100;
+							pts.push(`${px} ${py}`);
+
+							curr = nextEdge.get(curr.toKey);
+							if (curr && curr.fromKey === firstEdge.fromKey) break;
+						}
+					}
+				} else {
+					for (let f = 0; f < polyFixtures.length; f++) {
+						const shape = polyFixtures[f];
+						const count = shape.GetVertexCount();
+						const verts = shape.GetVertices();
+						for (let i = 0; i < count; i++) {
+							const px = Math.round((verts[i].x * b2Dzoom) * 100) / 100;
+							const py = Math.round((verts[i].y * b2Dzoom) * 100) / 100;
+							pts.push(`${px} ${py}`);
+						}
 					}
 				}
 			}
+
 			return pts.join('   ');
 		}
 
@@ -2579,6 +2712,21 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
+		deltaSimSpeed() {
+			if (this.tickCount < 2 || !this.tickDeltaTime || this.tickDeltaTime <= 0) {
+				return 0;
+			}
+			const fps = 1 / this.tickDeltaTime;
+			let targetSpeed = 0;
+			if (fps < 30) {
+				targetSpeed = (fps - 30) / 2.9;
+				if (targetSpeed < -10) targetSpeed = -10;
+			} else {
+				targetSpeed = fps - 30;
+			}
+			return Math.round(targetSpeed * 100) / 100;
+		}
+
 		setsimspeed(args) {
 			simspeed = args.VALUE;
 		}
@@ -2601,8 +2749,28 @@ but has since deviated to be its own thing. (made with box2D js es6)
 		}
 
 		stepSimulation() {
-			var secondsimspeed = Math.abs(simspeed + 30);
-			if (secondsimspeed == 0) secondsimspeed = 1;
+			const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+			if (this.lastTickTime > 0) {
+				this.tickDeltaTime = (now - this.lastTickTime) / 1000;
+				this.tickCount++;
+			} else {
+				this.tickCount = 1;
+			}
+			this.lastTickTime = now;
+
+			let effSpeed = simspeed;
+			if (effSpeed < -10) {
+				effSpeed = -10 + Math.abs(effSpeed - (-10));
+			}
+
+			let secondsimspeed;
+			if (effSpeed < 0) {
+				secondsimspeed = 30 + (effSpeed * 2.9);
+			} else {
+				secondsimspeed = 30 + effSpeed;
+			}
+			secondsimspeed = Math.abs(secondsimspeed);
+			if (secondsimspeed < 1) secondsimspeed = 1;
 
 			this.impacts = [];
 			this.scraping = [];
