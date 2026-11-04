@@ -31,7 +31,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 	var b2Dworld, fixDef; var mousePVec, selectedBody, prb2djaxisX, prb2djaxisY, prb2djl, prb2dju;
 	var b2Dzoom = 50; var b2Math, ispinned;
 
-	var physdebugmode = true;
+	var physdebugmode = false;
 	var wipblocks = physdebugmode;
 	var legacymode = false;
 	var allowConcave = false;
