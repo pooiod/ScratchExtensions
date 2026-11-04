@@ -535,6 +535,70 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						},
 					},
 
+					{
+						opcode: 'getAttachedJoints',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Get joints attached to object [NAME]',
+						arguments: {
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+						},
+					},
+
+					{ blockType: Scratch.BlockType.LABEL, text: "Custom data" }, // ------ Modify joints ---
+					{
+						opcode: 'setCustomData',
+						blockType: Scratch.BlockType.COMMAND,
+						text: 'Set custom [KEY] of object [NAME] to [VALUE]',
+						arguments: {
+							KEY: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'tag',
+							},
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+							VALUE: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'value',
+							},
+						},
+					},
+					{
+						opcode: 'getCustomData',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Get custom [KEY] from object [NAME]',
+						arguments: {
+							KEY: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'tag',
+							},
+							NAME: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'Object',
+							},
+						},
+					},
+
+					{
+						opcode: 'filterByCustomData',
+						blockType: Scratch.BlockType.REPORTER,
+						text: 'Get objects where [KEY] matches regex [REGEX]',
+						arguments: {
+							KEY: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: 'tag',
+							},
+							REGEX: {
+								type: Scratch.ArgumentType.STRING,
+								defaultValue: '.*',
+							},
+						},
+					},
+
 					{ blockType: Scratch.BlockType.LABEL, text: "Define joints" }, // ---- Define joints -----
 					{
 						opcode: 'defineSpring',
@@ -1048,6 +1112,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 				return publishedUpdateIndex;
 			} else if (input == "lib") {
 				return "Box2D JS es6 (Uli Hecht's port of Box2D flash 2.2)";
+			} else if (input == "liburl") {
+				return "https://www.npmjs.com/package/box2dweb";
 			} else if (input == "maker") {
 				return "pooiod7";
 			} else if (input == "base") {
@@ -1061,7 +1127,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			} else if (input == "origin") {
 				return this.origin;
 			} else {
-				return '["version", "lib", "maker", "base", "docs", "lastupdated", "fromPenguinMod", "origin"]';
+				return '["version", "lib", "liburl", "maker", "base", "docs", "lastupdated", "fromPenguinMod", "origin"]';
 			}
 		}; ignore(){}
 
@@ -1870,6 +1936,51 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 		}
 
+		setCustomData(args) {
+			const body = bodies[args.NAME];
+			if (!body) return;
+
+			if (!body.customData) {
+				body.customData = {};
+			}
+
+			body.customData[args.KEY] = args.VALUE;
+		}
+
+		getCustomData(args) {
+			const body = bodies[args.NAME];
+			if (!body || !body.customData || !(args.KEY in body.customData)) {
+				return '';
+			}
+
+			return Scratch.Cast.toString(body.customData[args.KEY]);
+		}
+
+		filterByCustomData(args) {
+			const matchingIDs = [];
+			let regex;
+
+			try {
+				regex = new RegExp(args.REGEX);
+			} catch (e) {
+				return '';
+			}
+
+			for (const bodyName in bodies) {
+				if (Object.prototype.hasOwnProperty.call(bodies, bodyName)) {
+					const body = bodies[bodyName];
+					if (body && body.customData && Object.prototype.hasOwnProperty.call(body.customData, args.KEY)) {
+						const valueStr = Scratch.Cast.toString(body.customData[args.KEY]);
+						if (regex.test(valueStr)) {
+							matchingIDs.push(bodyName);
+						}
+					}
+				}
+			}
+
+			return matchingIDs.join(', ');
+		}
+
 		setBullet({ NAME, MODE }) {
 			var body = bodies[NAME];
 			if (!body) return '';
@@ -2123,78 +2234,273 @@ but has since deviated to be its own thing. (made with box2D js es6)
 		}
 
 		getPressure(body) {
+			if (!body) return 0;
+
+			let dt = 1 / 30;
+			if (this.tickDeltaTime && this.tickDeltaTime > 0) {
+				dt = Math.min(Math.max(this.tickDeltaTime, 1 / 120), 1 / 10);
+			}
+
 			const world = body.GetWorld();
 			const gravity = world.GetGravity();
-			const gx = gravity.x;
-			const gy = gravity.y;
-			const gMag = Math.hypot(gx, gy);
-			const mass = body.GetMass();
-			const weight = mass * gMag;
-			const v = body.GetLinearVelocity();
+			const isStaticA = body.GetType() === b2Body.b2_staticBody;
+			const isKinematicA = body.GetType() === b2Body.b2_kinematicBody;
+			const massA = (isStaticA || isKinematicA) ? 0 : body.GetMass();
+			const posA = body.GetWorldCenter();
 
-			let area = 0;
-			for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
-				const shape = f.GetShape();
-				if (shape instanceof b2CircleShape) {
-					const r = shape.GetRadius();
-					const a = Math.PI * r * r;
-					area += a;
-				} else if (shape instanceof b2PolygonShape) {
-					const count = shape.GetVertexCount();
-					const verts = shape.GetVertices();
-					let a = 0;
+			const WorldManifoldClass = (typeof b2WorldManifold !== 'undefined')
+				? b2WorldManifold
+				: (Box2D && Box2D.Collision && Box2D.Collision.b2WorldManifold);
 
-					for (let i = 0; i < count; i++) {
-						const v0 = verts[i];
-						const v1 = verts[(i + 1) % count];
-						a += v0.x * v1.y - v1.x * v0.y;
+			const resolveBodyMotion = (b, contactPt) => {
+				const directVel = b.GetLinearVelocity();
+				const directAng = b.GetAngularVelocity() || 0;
+				const fallbackVx = directVel ? directVel.x : 0;
+				const fallbackVy = directVel ? directVel.y : 0;
+
+				let repVx = 0;
+				let repVy = 0;
+				let repW = directAng;
+
+				if (b.uid) {
+					const rx = this.getBodyAttr({ NAME: b.uid, BODYATTRREAD: 'Xvel' });
+					const ry = this.getBodyAttr({ NAME: b.uid, BODYATTRREAD: 'Yvel' });
+					const rw = this.getBodyAttr({ NAME: b.uid, BODYATTRREAD: 'Dvel' });
+					repVx = (typeof rx === 'number') ? rx : parseFloat(rx) || 0;
+					repVy = (typeof ry === 'number') ? ry : parseFloat(ry) || 0;
+					if (typeof rw === 'number' || (typeof rw === 'string' && rw.length > 0)) {
+						repW = parseFloat(rw) || 0;
+					}
+				}
+
+				const baseVx = repVx !== 0 ? repVx : fallbackVx;
+				const baseVy = repVy !== 0 ? repVy : fallbackVy;
+
+				if (contactPt) {
+					const bCenter = b.GetWorldCenter();
+					const rx = contactPt.x - bCenter.x;
+					const ry = contactPt.y - bCenter.y;
+					return {
+						x: baseVx - repW * ry,
+						y: baseVy + repW * rx,
+						w: repW
+					};
+				}
+
+				return { x: baseVx, y: baseVy, w: repW };
+			};
+
+			const getChainLoad = (startBody, pushDirX, pushDirY) => {
+				let transmittedForce = 0;
+				const visited = new Set([body, startBody]);
+				const queue = [startBody];
+
+				while (queue.length > 0) {
+					const curr = queue.shift();
+					if (curr.GetType() === b2Body.b2_staticBody) continue;
+
+					const m = curr.GetMass();
+
+					if (m > 0) {
+						const gDot = (gravity.x * pushDirX + gravity.y * pushDirY);
+						if (gDot > 0) {
+							transmittedForce += m * gDot;
+						}
 					}
 
-					const polyArea = Math.abs(a) * 0.5;
-					area += polyArea;
-				}
-			}
+					if (curr.m_force) {
+						const fDot = (curr.m_force.x * pushDirX + curr.m_force.y * pushDirY);
+						if (fDot > 0) {
+							transmittedForce += fDot;
+						}
+					}
 
-			let contactForce = 0;
+					const vCurr = resolveBodyMotion(curr, null);
+					const vDot = (vCurr.x * pushDirX + vCurr.y * pushDirY);
+					if (vDot > 0.05 && m > 0) {
+						transmittedForce += (m * vDot) / dt;
+					}
+
+					for (let ce = curr.GetContactList(); ce; ce = ce.next) {
+						const c = ce.contact;
+						if (!c.IsTouching() || c.IsSensor()) continue;
+						const otherB = ce.other;
+						if (!otherB || visited.has(otherB)) continue;
+
+						const pCurr = curr.GetWorldCenter();
+						const pOther = otherB.GetWorldCenter();
+						const dX = pCurr.x - pOther.x;
+						const dY = pCurr.y - pOther.y;
+						const dLen = Math.hypot(dX, dY);
+
+						if (dLen > 0.0001) {
+							const align = (dX / dLen) * pushDirX + (dY / dLen) * pushDirY;
+							if (align > 0.25) {
+								visited.add(otherB);
+								queue.push(otherB);
+							}
+						}
+					}
+
+					for (let je = curr.GetJointList(); je; je = je.next) {
+						const joint = je.joint;
+						if (!joint) continue;
+						const otherB = je.other;
+						if (!otherB || visited.has(otherB)) continue;
+
+						const pCurr = curr.GetWorldCenter();
+						const pOther = otherB.GetWorldCenter();
+						const dX = pCurr.x - pOther.x;
+						const dY = pCurr.y - pOther.y;
+						const dLen = Math.hypot(dX, dY);
+
+						if (dLen > 0.0001) {
+							const align = (dX / dLen) * pushDirX + (dY / dLen) * pushDirY;
+							if (align > 0.25) {
+								visited.add(otherB);
+								queue.push(otherB);
+							}
+						}
+					}
+				}
+
+				return transmittedForce;
+			};
+
+			let totalContactForce = 0;
+			let totalContactWidth = 0;
+			let touchingCount = 0;
+			const processedBodies = new Set();
+
 			for (let ce = body.GetContactList(); ce; ce = ce.next) {
 				const contact = ce.contact;
-				if (!contact.IsTouching()) continue;
+				if (!contact.IsTouching() || contact.IsSensor()) continue;
 
-				const manifold = contact.GetManifold();
-				const pc = manifold.m_pointCount;
+				const other = ce.other;
+				if (!other || processedBodies.has(other)) continue;
 
-				for (let i = 0; i < pc; i++) {
-					contactForce += manifold.m_points[i].m_normalImpulse;
+				processedBodies.add(other);
+
+				const isStaticB = other.GetType() === b2Body.b2_staticBody;
+				const isKinematicB = other.GetType() === b2Body.b2_kinematicBody;
+				const massB = (isStaticB || isKinematicB) ? 0 : other.GetMass();
+				const posB = other.GetWorldCenter();
+
+				let contactPt = null;
+				if (WorldManifoldClass) {
+					const wm = new WorldManifoldClass();
+					contact.GetWorldManifold(wm);
+					if (wm.m_points && wm.m_points[0]) {
+						contactPt = wm.m_points[0];
+					}
 				}
+
+				let pushX = posA.x - posB.x;
+				let pushY = posA.y - posB.y;
+				let pushDist = Math.hypot(pushX, pushY);
+
+				if (pushDist > 0.0001) {
+					pushX /= pushDist;
+					pushY /= pushDist;
+				} else {
+					pushX = 0;
+					pushY = 1;
+				}
+
+				if (!contactPt) {
+					contactPt = {
+						x: posB.x + pushX * (pushDist * 0.5),
+						y: posB.y + pushY * (pushDist * 0.5)
+					};
+				}
+
+				const vA = resolveBodyMotion(body, contactPt);
+				const vB = resolveBodyMotion(other, contactPt);
+
+				let selfSupportForce = 0;
+				if (massA > 0) {
+					const gDot = -(gravity.x * pushX + gravity.y * pushY);
+					if (gDot > 0) {
+						selfSupportForce += massA * gDot;
+					}
+				}
+
+				if (body.m_force) {
+					const fDot = -(body.m_force.x * pushX + body.m_force.y * pushY);
+					if (fDot > 0) {
+						selfSupportForce += fDot;
+					}
+				}
+
+				const incomingChainForce = getChainLoad(other, pushX, pushY);
+
+				const relVx = vB.x - vA.x;
+				const relVy = vB.y - vA.y;
+				const approachSpeed = (relVx * pushX + relVy * pushY);
+				let directDynamicForce = 0;
+
+				if (approachSpeed > 0.05) {
+					let collisionMass = 0;
+					if (massA > 0 && massB > 0) {
+						collisionMass = (massA * massB) / (massA + massB);
+					} else {
+						collisionMass = massA > 0 ? massA : massB;
+					}
+					directDynamicForce = (collisionMass * approachSpeed) / dt;
+				}
+
+				const contactForce = selfSupportForce + incomingChainForce + directDynamicForce;
+				totalContactForce += contactForce;
+
+				let fixturePatchSize = 0.5;
+				const fA = contact.GetFixtureA();
+				if (fA && fA.GetShape()) {
+					fixturePatchSize = Math.max(fA.GetShape().m_radius || 0.5, 0.2);
+				}
+				totalContactWidth += fixturePatchSize;
+				touchingCount++;
 			}
 
-			let velAdjust = 0;
-			if (gx !== 0) {
-				const valX = v.x / (100 / Math.abs(gx));
-				if (v.x * gx > 0) velAdjust -= Math.abs(valX);
-				else velAdjust += Math.abs(valX);
-			} else {
-				const valX = Math.abs(v.x) / 100;
-				velAdjust += valX;
+			for (let je = body.GetJointList(); je; je = je.next) {
+				const joint = je.joint;
+				if (!joint) continue;
+				const other = je.other;
+
+				try {
+					const rf = joint.GetReactionForce(1 / dt);
+					if (rf) {
+						const fMag = Math.hypot(rf.x, rf.y);
+						if (fMag > 0.001) {
+							totalContactForce += fMag;
+							totalContactWidth += 0.25;
+							touchingCount++;
+						}
+					}
+				} catch (e) {}
 			}
 
-			if (gy !== 0) {
-				const valY = v.y / (100 / Math.abs(gy));
-				if (v.y * gy > 0) velAdjust -= Math.abs(valY);
-				else velAdjust += Math.abs(valY);
-			} else {
-				const valY = Math.abs(v.y) / 100;
-				velAdjust += valY;
-			}
-
-			if (area === 0) {
+			if (touchingCount === 0 || totalContactWidth <= 0) {
 				return 0;
 			}
 
-			const effectiveForce = weight + contactForce + velAdjust;
-			const pressure = effectiveForce / area;
+			const instantPressure = totalContactForce / totalContactWidth;
+			return Math.round(instantPressure * 100) / 100;
+		}
 
-			return pressure;
+		getAttachedJoints(args) {
+			const body = bodies[args.NAME];
+			if (!body) return '';
+
+			const attachedJoints = [];
+
+			for (let edge = body.GetJointList(); edge; edge = edge.next) {
+				const joint = edge.joint;
+				if (joint && joint.uid) {
+					attachedJoints.push(joint.uid);
+				}
+			}
+
+			return attachedJoints.join(', ');
 		}
 
 		getBodyAttr(args) {
@@ -2547,6 +2853,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			body.SetAwake(true);
 
 			if (jName.length == 0) jName = '_' + (++ujid_seq);
+			joint.uid = jName;
 			joints[jName] = joint;
 		}
 
@@ -2638,6 +2945,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 			}
 
 			if (jName.length == 0) jName = '_' + (++ujid_seq);
+			joint.uid = jName;
 			joints[jName] = joint;
 		}
 
