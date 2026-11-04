@@ -20,8 +20,8 @@ but has since deviated to be its own thing. (made with box2D js es6)
 (function(Scratch) {
 	'use strict';
 
-	var b2Dupdated = "11/02/2026";
-	var publishedUpdateIndex = 31;
+	var b2Dupdated = "11/03/2026";
+	var publishedUpdateIndex = 32;
 
 	if (!Scratch.extensions.unsandboxed) {
 		throw new Error('Boxed Physics can\'t run in the sandbox');
@@ -31,7 +31,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 	var b2Dworld, fixDef; var mousePVec, selectedBody, prb2djaxisX, prb2djaxisY, prb2djl, prb2dju;
 	var b2Dzoom = 50; var b2Math, ispinned;
 
-	var physdebugmode = false;
+	var physdebugmode = true;
 	var wipblocks = physdebugmode;
 	var legacymode = false;
 	var allowConcave = false;
