@@ -1046,7 +1046,7 @@ but has since deviated to be its own thing. (made with box2D js es6)
 					{
 						hideFromPalette: !physdebugmode,
 						blockType: Scratch.BlockType.LABEL, // --------------------- Debug blocks ----
-						text: "Debug blocks (can brake projects)"
+						text: "Debug/wip blocks (can brake projects)"
 					}, // the ids on any of the following can change because these are used for debugging while making the extension (not for debugging projects), so it's YOUR fault if you use them and your project brakes
 					{
 						opcode: 'ignore',
@@ -1066,17 +1066,6 @@ but has since deviated to be its own thing. (made with box2D js es6)
 						blockType: Scratch.BlockType.REPORTER,
 						hideFromPalette: !physdebugmode,
 						text: 'Get all impacts',
-					},
-
-					{
-						hideFromPalette: !wipblocks,
-						blockType: Scratch.BlockType.LABEL, // --------------------- Work in progress blocks ----
-						text: "Upcoming blocks (project corruption warning)"
-					},
-					{
-						hideFromPalette: !wipblocks,
-						blockType: Scratch.BlockType.LABEL,
-						text: "No wip blocks right now :/"
 					}
 				],
 				menus: {

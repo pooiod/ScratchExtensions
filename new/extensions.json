@@ -1,0 +1,846 @@
+[
+    {
+        "id": "BoxedPhysics",
+        "title": "Boxed Physics",
+        "image": "/ext/[id]/cover.svg",
+        "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
+        "subtext": "",
+        "created": "Apr 15, 2024",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/[build].js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/Box2D.js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]",
+            "PenguinMod": ""
+        },
+        "extras": {
+            "Example projects": "/ext/[id]/examples"
+        },
+        "tags": [
+            "physics",
+            "simulation",
+            "advanced"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "KoboldAI",
+        "title": "Kobold AI",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Generate text and images for free with the power of <a href='//stablehorde.net'>The Horde</a>",
+        "subtext": "",
+        "created": "Jan 4, 2025",
+        "icon": "[icons]/UnoficialAPI.svg",
+        "iconText": "This extension uses a third party api that may go down sometimes",
+        "unsandboxed": false,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {},
+        "tags": [
+            "ai",
+            "advanced"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "BlockLink",
+        "title": "BlockLink",
+        "image": "/ext/[id]/cover.svg",
+        "description": "A collaberation system for TurboWarp based Scratch mods",
+        "subtext": "Work in progress",
+        "created": "---",
+        "icon": "[icons]/wip.png",
+        "iconText": "Work in progress",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "collaboration",
+            "networking"
+        ],
+        "hidden": true
+    },
+    {
+        "id": "HTMLcanvas",
+        "title": "HTML Canvas",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Use HTML and CSS to make projects with complex visual interfaces.",
+        "subtext": "Requires PenguinMod for some inputs",
+        "created": "May 29, 2024",
+        "icon": "[icons]/wip.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {},
+        "tags": [
+            "graphics",
+            "ui",
+            "web",
+            "advanced"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "JSParser",
+        "title": "JavaScript Parser",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Manage your own sandboxed JavaScript environment for user-made code.",
+        "subtext": "",
+        "created": "Dec 18, 2025",
+        "icon": "[icons]/wip.png",
+        "iconText": "Still working on this, generally buggy",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "multi": {
+                "link": "/view/#/[id]/multi.js",
+                "direct": "/ext/[id]/multi.js",
+                "docs": "main"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "coding",
+            "scripting",
+            "vm",
+            "advanced"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "VideoSharing",
+        "title": "Video Sharing",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Share your screen or camera on your project as a data-uri.",
+        "subtext": "",
+        "created": "Oct 02, 2023",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/VideoSharing.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "video",
+            "camera"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "FilePile",
+        "title": "FilePile",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Decentralized peer-to-peer file sharing",
+        "subtext": "",
+        "created": "Nov 3, 2025",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {
+            "Example project": "/ext/[id]/demo.html"
+        },
+        "tags": [
+            "networking"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "CloneData",
+        "title": "Clone Data",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Track and control clones.",
+        "subtext": "",
+        "created": "5/5/2026",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "clones"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "ElementalImages",
+        "title": "Elemental Images",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Create and manipulate image elements in scratch.",
+        "subtext": "",
+        "created": "Oct 02, 2023",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "graphics",
+            "ui"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "Zdog",
+        "title": "Zdog",
+        "image": "/ext/[id]/cover.svg",
+        "description": "A Round, flat pseudo-3D engine.",
+        "subtext": "",
+        "created": "1/7/2026",
+        "icon": "[icons]/wip.png",
+        "iconText": "wip",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "3d",
+            "graphics"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "Scene3D",
+        "title": "Scene 3D",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Render complex 3D scenes",
+        "subtext": "work in progress, may change frequently",
+        "created": "Feb 9 2025",
+        "icon": "[icons]/wip.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "3d",
+            "rendering"
+        ],
+        "hidden": true
+    },
+    {
+        "id": "Splats",
+        "title": "Luma Splats",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Render 3D gaussian splats from <a href=\"https://lumalabs.ai/featured\">LumaLabs</a>",
+        "subtext": "Requires Scene3D",
+        "created": "Feb 4 2025",
+        "icon": "[icons]/wip.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "nodocs"
+            },
+            "standalone": {
+                "link": "/view/#/[id]/standalone.js",
+                "direct": "/ext/[id]/standalone.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "3d",
+            "splats",
+            "rendering"
+        ],
+        "hidden": true
+    },
+    {
+        "id": "Puter",
+        "title": "Puter",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Cloud services from <a href=\"https://developer.puter.com\">puter.com</a>",
+        "subtext": "",
+        "created": "3/24/2026",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "cloud",
+            "ai",
+            "storage",
+            "auth"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "Ace",
+        "title": "Ace Editor",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Create and manipulate an instance of the Ace code editor.",
+        "subtext": "Work in progress",
+        "created": "June 18, 2023",
+        "icon": "[icons]/wip.png",
+        "iconText": "This extension is in development, and may be changed frequently",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "ui",
+            "coding"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "Sam",
+        "title": "Sam Speech",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Generate speech from text using <a href=\"https://imrane03.github.io/better-sam\">sam</a>",
+        "subtext": "",
+        "created": "Oct 9, 2025",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "audio",
+            "tts",
+            "speech"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "ScratchBlocks",
+        "title": "ScratchBlocks",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Generate blocks in the Scratch3, or Scratch2 format.",
+        "subtext": "",
+        "created": "Apr 05, 2024",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/Scratchblocks.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "graphics"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "HandPos",
+        "title": "Hand Positions",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Hand tracking in scratch",
+        "subtext": "Known to crash when camera is enabled more than once",
+        "created": "Feb 11, 2025",
+        "icon": "[icons]/warn.png",
+        "iconText": "Has a memmory leak",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "ai",
+            "camera",
+            "tracking"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "ProjectParser",
+        "title": "Project Parser",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Load and parse Scratch3 projects",
+        "subtext": "",
+        "created": "Mar 30, 2025",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "scratch",
+            "files"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "BasicTTS",
+        "title": "Text to Speech",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Make your project read text out loud.",
+        "subtext": "",
+        "created": "Dec 18, 2023",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "audio",
+            "tts",
+            "speech"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "Dictation",
+        "title": "Dictation",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Convert your voice into text.",
+        "subtext": "",
+        "created": "May 17, 2024",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/Dictation.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "audio",
+            "voice",
+            "speech"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "RaccFacts",
+        "title": "Racoon Facts",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Get random information on racoons.",
+        "subtext": "",
+        "created": "Dec 8, 2024",
+        "icon": "[icons]/UnoficialAPI.svg",
+        "iconText": "This extension uses a third party api that may go down sometimes",
+        "unsandboxed": false,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "joke"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "LocalAI",
+        "title": "Local AI",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Run your own local text AI right in scratch.",
+        "subtext": "Requires a powerful computer",
+        "created": "9/21/2026",
+        "icon": "[icons]/new.svg",
+        "iconText": "new extension, report bugs",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "ai"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "ScrollUtilities",
+        "title": "Scroll Utilities",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Detect user scrolling on the page",
+        "subtext": "",
+        "created": "Oct 05, 2023",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/[build].js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "inputs"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "SuperStorage",
+        "title": "Super Storage",
+        "image": "/ext/[id]/cover.png",
+        "description": "Store and retrieve data locally on device, or remotely on a server.",
+        "subtext": "",
+        "created": "Nov 13, 2024",
+        "icon": "[icons]/UnoficialAPI.svg",
+        "iconText": "This extension uses a third party api that may go down sometimes",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {},
+        "tags": [
+            "storage",
+            "data",
+            "networking"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "QuickSkins",
+        "title": "Quick Skins",
+        "image": "/ext/[id]/cover.svg",
+        "description": "A simple extension to render images from data uris super quickly",
+        "subtext": "",
+        "created": "Feb 4 2025",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "graphics",
+            "sprites"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "Console",
+        "title": "Console",
+        "image": "/ext/[id]/cover.svg",
+        "description": "An easy to use console system.",
+        "subtext": "",
+        "created": "Nov 25, 2025",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "debug"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "LoaderX",
+        "title": "ScratchX Loader",
+        "image": "/ext/[id]/cover.png",
+        "description": "Better ScratchX extension support for TurboWarp",
+        "subtext": "",
+        "created": "Jan 17, 2026",
+        "icon": "[icons]/wip.png",
+        "iconText": "Still working on this, generally buggy",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "loader",
+            "compatibility"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "ListsPlus",
+        "title": "Lists Plus",
+        "image": "/ext/[id]/cover.svg",
+        "description": "A simple extension to create lists within lists, and place them in variables.",
+        "subtext": "",
+        "created": "Jun 15, 2023",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": false,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "data"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "YouTilities",
+        "title": "You-tilities",
+        "image": "/ext/[id]/cover.svg",
+        "description": "An extension to interface with youtube.",
+        "subtext": "Download api is down, everything else works",
+        "created": "Apr 22, 2024",
+        "icon": "[icons]/UnoficialAPI.svg",
+        "iconText": "This extension uses third party apis",
+        "unsandboxed": true,
+        "unfinished": true,
+        "builds": {
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "video",
+            "networking",
+            "media"
+        ],
+        "hidden": true
+    },
+    {
+        "id": "WindowHasher",
+        "title": "Window Hasher",
+        "image": "/ext/[id]/cover.png",
+        "description": "Interact with URL hash. <br>(the part of the URL after a hashtag)",
+        "subtext": "",
+        "created": "Aug 27, 2024",
+        "icon": "[icons]/warn.png",
+        "iconText": "will set a url query instead of the hash in most editors, this does not happen when compiled",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "url"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "PageOpener",
+        "title": "Page Opener",
+        "image": "/ext/[id]/cover.svg",
+        "description": "A simple extension to open websites.",
+        "subtext": "",
+        "created": "Dec 5, 2024",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "web"
+        ],
+        "hidden": false
+    },
+    {
+        "id": "Fetch",
+        "title": "Fetch",
+        "image": "/ext/[id]/cover.svg",
+        "description": "Make requests to the internet.",
+        "subtext": "",
+        "created": "May 22, 2023",
+        "icon": "",
+        "iconText": "",
+        "unsandboxed": false,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "networking"
+        ],
+        "hidden": false
+    }
+]
