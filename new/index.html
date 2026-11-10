@@ -18,7 +18,24 @@
     <meta name="twitter:image" content="/extras/images/P7ExtGalleryCover.png">
 
     <link rel="preload" href="/extras/images/ErrorPageAxolotl.svg" as="image">
-    <link rel="preload" href="./extensions.js" as="fetch" type="application/javascript">
+    <link rel="preload" href="/new/extensions.json" as="fetch" type="application/json">
+    <script src="https://pooiod7.pages.dev/libs/contextMenu.js"></script>
+
+    <script>
+        const isInIframe = window.self !== window.top;
+        if (isInIframe) {
+            const base = document.createElement('base');
+            base.target = '_blank';
+            document.head.appendChild(base);
+        }
+
+        const themeParam = new URLSearchParams(window.location.search).get('theme');
+        if (themeParam === 'light') {
+            document.documentElement.classList.add('theme-light');
+        } else if (themeParam === 'dark') {
+            document.documentElement.classList.add('theme-dark');
+        }
+    </script>
 
     <style>
         body {
@@ -29,6 +46,8 @@
             color: #000;
             min-height: 100vh;
             height: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -50,29 +69,113 @@
         }
 
         .footer {
-            text-align: center;
-            margin: 0px;
-            background-color: #edfaff;
-            border-top: #cfeaf1 1px solid;
-            position: relative;
-            padding: 5px;
-            left: 0px;
-            right: 0px;
-            bottom: 0px;
+            margin: auto 0 0 0;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 1.75rem 1.5rem 1.5rem;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .footer-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer- {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .footer--title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .footer--desc {
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+
+        .footer-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: #475569;
+            transition: color 0.15s ease;
+        }
+
+        .footer-nav a:hover {
+            color: #2563eb;
         }
 
         .search-bar {
             display: flex;
             justify-content: center;
-            margin: 1rem;
+            margin: 0.75rem 1rem;
+            position: relative;
         }
-        .search-bar input {
+        .search-wrapper {
+            position: relative;
             width: 80%;
             max-width: 600px;
+        }
+        .search-bar input {
+            width: 100%;
+            box-sizing: border-box;
             padding: 0.5rem;
             font-size: 1rem;
             border-radius: 5px;
             border: 1px solid #ccc;
+            outline: none;
+            background: #ffffff;
+            color: inherit;
+        }
+        .search-bar input:focus {
+            border-color: #2563eb;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            z-index: 10000;
+            max-height: 240px;
+            overflow-y: auto;
+            display: none;
+            scrollbar-width: thin;
+        }
+        .autocomplete-dropdown.visible {
+            display: block;
+        }
+        .autocomplete-item {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: block;
+        }
+        .autocomplete-item:hover, .autocomplete-item.active {
+            background-color: #eff6ff;
+            color: #1d4ed8;
         }
 
         .cards-container {
@@ -80,72 +183,195 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 1rem;
-            padding: 1rem;
+            padding: 0.5rem 1rem 1rem;
             max-width: 1000px;
-            min-height: calc(100vh - 241px);
-            margin: auto;
+            margin: 0 auto;
+            flex-grow: 1;
         }
         .card {
             width: 300px;
+            height: 265px;
+            max-height: 265px;
+            min-height: 265px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            background-color: white;
+            background-color: #ffffff;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
-            transition: outline 0.3s ease-in-out;
+            user-select: none;
+            outline: none;
+            box-sizing: border-box;
+            transition: box-shadow 0.25s ease-in-out, border-color 0.25s ease-in-out;
         }
-        .card:focus, .card.focused {
-            outline: 2px solid #007BFF;
+        .card:focus-visible, .card.focused {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4), 0 8px 20px rgba(37, 99, 235, 0.15);
         }
 
-        .card img {
+        .card-media {
+            position: relative;
             width: 100%;
-            aspect-ratio: 6 / 3;
+            height: 150px;
+            flex-shrink: 0;
+            overflow: hidden;
             border-bottom: 1px solid #ccc;
+            transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-media img.cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            display: block;
+        }
+
+        .card-body {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 0.55rem 0.85rem 0.65rem;
+            background-color: #ffffff;
+            box-sizing: border-box;
+            overflow: hidden;
+            justify-content: space-between;
+        }
+
+        .card-body-bg {
+            position: absolute;
+            top: -150px;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background-size: 100% 150px;
+            background-repeat: no-repeat;
+            background-position: top center;
+            filter: blur(12px);
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 1;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .card-content {
-            padding: 1rem;
-            flex-grow: 1;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
             position: relative;
+            margin-bottom: 0.15rem;
+            z-index: 2;
         }
 
         .card-title {
-            font-size: 1.2rem;
-            margin: 0 0 0.5rem;
+            font-size: 1.15rem;
+            margin: 0;
             font-weight: bold;
+            color: inherit;
         }
-        .card-description {
-            font-size: 0.9rem;
-            margin: 0 0 0.5rem;
+
+        .card-desc {
+            font-size: 0.88rem;
+            line-height: 1.35;
+            color: #374151;
+            margin: 0 0 0.45rem 0;
+            height: 1.35em;
+            min-height: 1.35em;
+            max-height: 1.35em;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-word;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+            position: relative;
+            z-index: 2;
         }
-        .card-subtext {
-            font-size: 0.8rem;
-            color: #666;
-            margin: 0 0 0.6rem;
+
+        .card-desc::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        .card-desc a, 
+        .card-desc a:link, 
+        .card-desc a:visited {
+            display: inline !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            float: none !important;
+            white-space: normal !important;
+            text-decoration: underline !important;
+            color: #2563eb !important;
+            font-weight: 500;
+        }
+
+        .card-desc a:hover {
+            color: #1d4ed8 !important;
+        }
+
+        .card[data-multiline="true"]:hover .card-media,
+        .card[data-multiline="true"].active-overlay .card-media,
+        .card[data-multiline="true"]:focus-within .card-media,
+        .card[data-multiline="true"].focused .card-media {
+            height: calc(150px - var(--expand-diff, 48px));
+        }
+
+        .card[data-multiline="true"]:hover .card-body-bg,
+        .card[data-multiline="true"].active-overlay .card-body-bg,
+        .card[data-multiline="true"]:focus-within .card-body-bg,
+        .card[data-multiline="true"].focused .card-body-bg {
+            transform: translateY(calc(var(--expand-diff, 48px) * -1));
+        }
+
+        .card[data-multiline="true"]:hover .card-desc,
+        .card[data-multiline="true"].active-overlay .card-desc,
+        .card[data-multiline="true"]:focus-within .card-desc,
+        .card[data-multiline="true"].focused .card-desc {
+            height: var(--desc-full-height, 120px);
+            max-height: var(--desc-full-height, 120px);
+            -webkit-line-clamp: unset;
+            display: block;
+            overflow-y: auto;
         }
 
         .card-buttons {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: auto;
-            margin-bottom: 5px;
+            gap: 0.45rem;
+            margin: 0;
+            position: relative;
+            z-index: 2;
         }
+
         .card-button {
             flex: 1;
             text-align: center;
-            padding: 0.5rem;
-            border: none;
+            padding: 0.45rem 0.6rem;
+            border: 1px solid #cbe0f2;
+            background-color: #f5f9fc;
             border-radius: 4px;
             cursor: pointer;
             color: black;
             font-size: 0.8rem;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .card-button.more-btn {
+            flex: 0 0 34px;
+            padding: 0.45rem 0;
+            font-weight: bold;
+            font-size: 0.95rem;
         }
 
         .card-icon {
@@ -155,29 +381,57 @@
             padding: 0px;
             margin-top: 5px;
             margin-right: 5px;
+            z-index: 2;
+            cursor: help;
         }
         .card-icon img {
             width: 35px;
             height: 35px;
             opacity: 1;
             border: none;
+            display: block;
         }
 
         .card-icon2 {
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding: 5px;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: help;
         }
         .card-icon2 img {
-            transition: opacity 0.5s ease-in-out;
-            width: 14px;
-            height: 14px;
-            opacity: 0.5;
+            transition: opacity 0.3s ease-in-out;
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
             border: none;
+            display: block;
         }
-        .card-icon2 img:hover {
+        .card-icon2:hover img {
             opacity: 1;
+        }
+
+        #global-tooltip {
+            position: fixed;
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            transition: opacity 0.15s ease, visibility 0.15s ease;
+            z-index: 999999999;
+            max-width: 250px;
+            line-height: 1.35;
+            text-align: center;
+        }
+
+        #global-tooltip.visible {
+            opacity: 1;
+            visibility: visible;
         }
 
         a {
@@ -185,27 +439,55 @@
         }
 
         #navbutton {
-			position: fixed;
-			bottom: 0px;
-			right: 0px;
-			background: #eee;
-			color: #000;
-			border: 0px;
-			border-left: 1px solid #ccc;
-			border-top: 1px solid #ccc;
-			transition: width 0.3s ease-in-out;
-			border-top-left-radius: 10px;
-			padding: 6px 10px;
-			font-size: 18px;
-			cursor: pointer;
-			z-index: 10000;
-			height: 40px;
+            display: none !important;
         }
 
-        @media (max-width: 700px) {
+        .context-wrapper, .submenu-box {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            overscroll-behavior: contain !important;
+            scrollbar-width: thin;
+        }
+
+        .context-wrapper::-webkit-scrollbar,
+        .submenu-box::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .context-wrapper::-webkit-scrollbar-thumb,
+        .submenu-box::-webkit-scrollbar-thumb {
+            background: rgba(120, 120, 120, 0.4);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 700px), (hover: none) {
+            .cards-container {
+                padding-bottom: 0.5rem;
+            }
             .card {
                 width: 100%;
                 max-width: 400px;
+                height: auto;
+                max-height: none;
+                min-height: auto;
+            }
+            .card-media {
+                height: 150px !important;
+            }
+            .card-body-bg {
+                display: none;
+            }
+            .card-desc {
+                height: auto !important;
+                min-height: 1.35em !important;
+                max-height: none !important;
+                display: block !important;
+                overflow: visible !important;
+                -webkit-line-clamp: unset !important;
+            }
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
 
@@ -247,31 +529,83 @@
         }
 
         @media (prefers-color-scheme: dark) {
-            body {
+            html:not(.theme-light) body {
                 background-color: #000;
                 color: #e0e0e0;
             }
 
-            header {
+            html:not(.theme-light) header {
                 background-color: #0c3f00;
                 border-bottom: #00650d 1px solid;
                 color: #eaf8eb;
             }
 
-            .search-bar {
-                filter: invert(1);
+            html:not(.theme-light) .search-bar input {
+                background-color: #121212;
+                border: 1px solid #444;
+                color: #e0e0e0;
             }
 
-            .card {
+            html:not(.theme-light) .autocomplete-dropdown {
+                background: #18191c;
+                border-color: #374151;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            html:not(.theme-light) .autocomplete-item:hover,
+            html:not(.theme-light) .autocomplete-item.active {
+                background-color: #1e293b;
+                color: #60a5fa;
+            }
+
+            html:not(.theme-light) .card {
                 background-color: #121212;
                 border: 1px solid #444;
             }
-
-            .card-button {
-                color: white;
+            html:not(.theme-light) .card:focus-visible,
+            html:not(.theme-light) .card.focused {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 8px 24px rgba(59, 130, 246, 0.25);
             }
 
-            .notice {
+            html:not(.theme-light) .card-body {
+                background-color: #121212;
+            }
+
+            html:not(.theme-light) .card-body-bg {
+                opacity: 0.3;
+            }
+
+            html:not(.theme-light) .card-desc {
+                color: #9ca3af;
+            }
+
+            html:not(.theme-light) .card-desc a, 
+            html:not(.theme-light) .card-desc a:link, 
+            html:not(.theme-light) .card-desc a:visited {
+                color: #60a5fa !important;
+            }
+
+            html:not(.theme-light) .card-desc a:hover {
+                color: #93c5fd !important;
+            }
+
+            html:not(.theme-light) .card-button {
+                color: white;
+                background-color: #1b2836;
+                border: 1px solid #3b6082;
+            }
+
+            html:not(.theme-light) .card-media {
+                border-bottom: 1px solid #444;
+            }
+
+            html:not(.theme-light) #global-tooltip {
+                background: #f1f5f9;
+                color: #0f172a;
+            }
+
+            html:not(.theme-light) .notice {
                 text-align: center;
                 margin: 0px;
                 background-color: #211400;
@@ -281,34 +615,164 @@
                 right: 0px;
             }
 
-            .footer {
-                text-align: center;
-                margin: 0px;
-                background-color: #06191f;
-                border-top: #11353e 1px solid;
-                position: relative;
-                padding: 5px;
-                left: 0px;
-                right: 0px;
-                bottom: 0px;
+            html:not(.theme-light) .footer {
+                background-color: #0b1120;
+                border-top: 1px solid #1e293b;
             }
 
-            .card img {
-                border-bottom: 1px solid #444;
-            }
-            .card-icon2 img {
-                border: none;
-            }
-            .card-icon img {
-                border: none;
+            html:not(.theme-light) .footer--title {
+                color: #f1f5f9;
             }
 
-            #navbutton {
-                background: #222;
-                color: #fff;
-                border-left: 1px solid #444;
-                border-top: 1px solid #444;
+            html:not(.theme-light) .footer--desc {
+                color: #94a3b8;
             }
+
+            html:not(.theme-light) .footer-nav a {
+                color: #cbd5e1;
+            }
+
+            html:not(.theme-light) .footer-nav a:hover {
+                color: #60a5fa;
+            }
+
+            html:not(.theme-light) .footer-issue-btn {
+                background-color: #1e293b;
+                border-color: #334155;
+                color: #f1f5f9;
+            }
+
+            html:not(.theme-light) .footer-issue-btn:hover {
+                background-color: #334155;
+                border-color: #475569;
+            }
+
+            html:not(.theme-light) .card-icon2 img {
+                border: none;
+            }
+            html:not(.theme-light) .card-icon img {
+                border: none;
+            }
+        }
+
+        html.theme-dark body {
+            background-color: #000;
+            color: #e0e0e0;
+        }
+
+        html.theme-dark header {
+            background-color: #0c3f00;
+            border-bottom: #00650d 1px solid;
+            color: #eaf8eb;
+        }
+
+        html.theme-dark .search-bar input {
+            background-color: #121212;
+            border: 1px solid #444;
+            color: #e0e0e0;
+        }
+
+        html.theme-dark .autocomplete-dropdown {
+            background: #18191c;
+            border-color: #374151;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        html.theme-dark .autocomplete-item:hover,
+        html.theme-dark .autocomplete-item.active {
+            background-color: #1e293b;
+            color: #60a5fa;
+        }
+
+        html.theme-dark .card {
+            background-color: #121212;
+            border: 1px solid #444;
+        }
+        html.theme-dark .card:focus-visible,
+        html.theme-dark .card.focused {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 8px 24px rgba(59, 130, 246, 0.25);
+        }
+
+        html.theme-dark .card-body {
+            background-color: #121212;
+        }
+
+        html.theme-dark .card-body-bg {
+            opacity: 0.3;
+        }
+
+        html.theme-dark .card-desc {
+            color: #9ca3af;
+        }
+
+        html.theme-dark .card-desc a, 
+        html.theme-dark .card-desc a:link, 
+        html.theme-dark .card-desc a:visited {
+            color: #60a5fa !important;
+        }
+
+        html.theme-dark .card-desc a:hover {
+            color: #93c5fd !important;
+        }
+
+        html.theme-dark .card-button {
+            color: white;
+            background-color: #1b2836;
+            border: 1px solid #3b6082;
+        }
+
+        html.theme-dark .card-media {
+            border-bottom: 1px solid #444;
+        }
+
+        html.theme-dark #global-tooltip {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        html.theme-dark .notice {
+            background-color: #211400;
+            border-bottom: #3f3006 1px solid;
+        }
+
+        html.theme-dark .footer {
+            background-color: #0b1120;
+            border-top: 1px solid #1e293b;
+        }
+
+        html.theme-dark .footer--title {
+            color: #f1f5f9;
+        }
+
+        html.theme-dark .footer--desc {
+            color: #94a3b8;
+        }
+
+        html.theme-dark .footer-nav a {
+            color: #cbd5e1;
+        }
+
+        html.theme-dark .footer-nav a:hover {
+            color: #60a5fa;
+        }
+
+        html.theme-dark .footer-issue-btn {
+            background-color: #1e293b;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+
+        html.theme-dark .footer-issue-btn:hover {
+            background-color: #334155;
+            border-color: #475569;
+        }
+
+        html.theme-dark .card-icon2 img {
+            border: none;
+        }
+        html.theme-dark .card-icon img {
+            border: none;
         }
     </style>
 </head>
@@ -317,27 +781,15 @@
         <h1>Pooiod7's Scratch Extensions</h1>
     </header>
 
+    <div id="global-tooltip"></div>
+
     <noscript><div class="notice">
         Please enable JavaScript to use this site
     </div></noscript>
     <script>
-        var PenguinPaint = "https://penguinpaint.statichost.app/?size=600x300&import=";
-
         function showNotification(message, color, time) {
             let existingNotification = Array.from(document.querySelectorAll('.stacked-notification'))
                 .find(notif => notif.textContent === message);
-
-            function darkenHexColor(hex, percent) {
-                let r = parseInt(hex.slice(1, 3), 16);
-                let g = parseInt(hex.slice(3, 5), 16);
-                let b = parseInt(hex.slice(5, 7), 16);
-
-                r = Math.max(0, r - r * percent / 100);
-                g = Math.max(0, g - g * percent / 100);
-                b = Math.max(0, b - b * percent / 100);
-
-                return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}`;
-            }
 
             let notification = document.createElement('div');
             notification.textContent = message;
@@ -347,7 +799,7 @@
             notification.style.backgroundColor = color;
             notification.style.color = '#000';
             notification.style.padding = '10px 20px';
-            notification.style.border = '1px solid ' + darkenHexColor(color, "20");
+            notification.style.border = '1px solid #ccc';
             notification.style.borderRadius = '5px';
             notification.style.zIndex = '9999999999999999';
             notification.style.opacity = '0';
@@ -415,29 +867,78 @@
             if (event.message == "Script error.") return;
             showNotification(event.message, "#ffd6d6", 3000);
         });
+
+        function setupTooltip(element, text) {
+            if (!element || !text) return;
+            const tooltip = document.getElementById('global-tooltip');
+
+            function show() {
+                tooltip.textContent = text;
+                tooltip.classList.add('visible');
+
+                const rect = element.getBoundingClientRect();
+                const tipRect = tooltip.getBoundingClientRect();
+                const margin = 8;
+
+                let left = rect.left + (rect.width / 2) - (tipRect.width / 2);
+                let top = rect.top - tipRect.height - 8;
+
+                if (top < margin) {
+                    top = rect.bottom + 8;
+                }
+                if (left < margin) {
+                    left = margin;
+                } else if (left + tipRect.width > window.innerWidth - margin) {
+                    left = window.innerWidth - tipRect.width - margin;
+                }
+
+                tooltip.style.left = Math.round(left) + 'px';
+                tooltip.style.top = Math.round(top) + 'px';
+            }
+
+            function hide() {
+                tooltip.classList.remove('visible');
+            }
+
+            element.addEventListener('mouseenter', show);
+            element.addEventListener('mouseleave', hide);
+            element.addEventListener('focus', show);
+            element.addEventListener('blur', hide);
+        }
     </script>
 
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Search extensions..." oninput="filterCards()">
+        <div class="search-wrapper">
+            <input type="text" id="search" placeholder="Search extensions (e.g. tag:physics, is:unsandboxed, 'Box2D')..." oninput="onSearchInput()" autocomplete="off">
+            <div id="autocomplete-list" class="autocomplete-dropdown"></div>
+        </div>
     </div>
 
     <div class="cards-container" id="cards-container"></div>
     <p id="loader"></p>
 
     <footer class="footer">
-        Having issues with my extensions? Tell me <a href="/reportissue#new">here</a>!
+        <div class="footer-inner">
+            <div class="footer-">
+                <span class="footer--title">Pooiod7's Scratch Extensions</span>
+                <span class="footer--desc">Hosted from github at <a href="https://github.com/pooiod/ScratchExtensions">pooiod/ScratchExtensions</a></span>
+            </div>
+            <nav class="footer-nav">
+                <a href="/tools">Tools</a>
+                <a href="/archives">Archived extensions</a>
+                <a href="/reportissue#new">Report an issue</a>
+            </nav>
+        </div>
     </footer>
-
-    <a href="/tools"><button id="navbutton">Tools</button></a>
 
     <script>
         let cardsData = [];
-        let footerHTML = document.querySelector(".footer").innerHTML;
+        let activeAutocompleteIndex = -1;
 
         if(!window.location.origin.includes('p7scratchextensions.pages.dev') && !window.location.origin.includes('pooiod.github.io')) {
             if (window.location.hostname.includes('archive.org') || window.location.hostname.endsWith('translate.goog')) {
             } else {
-                if (window.location.origin.includes('p7extensions.pages.dev')) {
+                if (window.location.origin.includes('.pages.dev')) {
                     showWarning("You are on a mirror site, please be cautious about using links here, as this site may go down without warning! You can go to my full site <a href=\"https://p7scratchextensions.pages.dev\">here</a>.");
                 } else {
                     showWarning("You are on an unofficial mirror or proxy site. Please be cautious about running code from this site as it may have been changed. You can go to my original site at \"p7scratchextensions.pages.dev\".");
@@ -445,7 +946,7 @@
             }
         }
 
-        if (false && (window.location.pathname !== "/" && window.location.pathname !== "/serious" && window.location.pathname !== "/test") && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
+        if ((window.location.pathname !== "/" && window.location.pathname !== "/serious" && window.location.pathname !== "/test") && window.location.hostname.includes('p7scratchextensions.pages.dev')) {
             document.body.innerHTML = '';
             document.title += " - page not found";
 
@@ -489,161 +990,351 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
                 return out;
             }
 
+            function toAbsoluteDirectUrl(rawUrl, card, buildName) {
+                let resolved = replacePlaceholders(rawUrl, card, buildName);
+                if (!resolved) return "";
+                if (!resolved.startsWith("http")) {
+                    resolved = `https://p7scratchextensions.pages.dev${resolved.startsWith("/") ? "" : "/"}${resolved}`;
+                }
+                return resolved;
+            }
+
+            function resolveDocsUrl(card, buildName) {
+                if (!card.docs) return "";
+                if (typeof card.docs === "string") {
+                    return card.docs === "nodocs" ? "" : replacePlaceholders(card.docs, card, buildName);
+                }
+                const b = card.builds && buildName ? card.builds[buildName] : null;
+                if (b && b.docs) {
+                    if (b.docs === "nodocs") return "";
+                    if (card.docs[b.docs]) return replacePlaceholders(card.docs[b.docs], card, b.docs);
+                    return replacePlaceholders(b.docs, card, buildName);
+                }
+                if (buildName && card.docs[buildName]) {
+                    return card.docs[buildName] === "nodocs" ? "" : replacePlaceholders(card.docs[buildName], card, buildName);
+                }
+                if (card.docs.main) {
+                    return card.docs.main === "nodocs" ? "" : replacePlaceholders(card.docs.main, card, "main");
+                }
+                const firstKey = Object.keys(card.docs)[0];
+                if (firstKey && card.docs[firstKey] !== "nodocs") {
+                    return replacePlaceholders(card.docs[firstKey], card, firstKey);
+                }
+                return "";
+            }
+
+            function getContextMenuItems(card) {
+                const items = [];
+                let builds = card.builds;
+                if (!builds || typeof builds !== 'object') {
+                    builds = {
+                        "main": {
+                            "link": "/view/#/[id]",
+                            "direct": "/ext/[id]/[build].js"
+                        }
+                    };
+                }
+
+                const buildKeys = Object.keys(builds);
+                let defaultBuildName = builds.main ? "main" : (buildKeys[0] || "main");
+                let defaultBuild = builds[defaultBuildName] || {};
+
+                let viewExtUrl = "";
+                if (defaultBuild.link) {
+                    viewExtUrl = replacePlaceholders(defaultBuild.link, card, defaultBuildName);
+                } else if (Array.isArray(card.buttons) && card.buttons.length > 0) {
+                    viewExtUrl = replacePlaceholders(card.buttons[0].link, card);
+                } else {
+                    viewExtUrl = `/view/#/${card.id}`;
+                }
+
+                items.push({
+                    type: 'link',
+                    label: 'View extension',
+                    title: 'View extension',
+                    text: 'View extension',
+                    href: viewExtUrl,
+                    target: isInIframe ? '_blank' : '_self'
+                });
+
+                const docsUrl = resolveDocsUrl(card, defaultBuildName);
+                if (docsUrl) {
+                    items.push({
+                        type: 'link',
+                        label: 'View docs',
+                        title: 'View docs',
+                        text: 'View docs',
+                        href: docsUrl,
+                        target: isInIframe ? '_blank' : '_self'
+                    });
+                }
+
+                let directUrl = "";
+                if (defaultBuild.direct) {
+                    directUrl = toAbsoluteDirectUrl(defaultBuild.direct, card, defaultBuildName);
+                } else {
+                    directUrl = `https://p7scratchextensions.pages.dev/ext/${card.id}/${defaultBuildName}.js`;
+                }
+
+                items.push({
+                    type: 'js',
+                    label: 'Copy direct link',
+                    title: 'Copy direct link',
+                    text: 'Copy direct link',
+                    run: () => {
+                        navigator.clipboard.writeText(directUrl);
+                        showNotification("Link copied to clipboard", "#ededed", 1000);
+                    }
+                });
+
+                const extras = card.extras || {};
+                const extraKeys = Object.keys(extras);
+                if (extraKeys.length === 1) {
+                    const singleKey = extraKeys[0];
+                    items.push({
+                        type: 'link',
+                        label: singleKey,
+                        title: singleKey,
+                        text: singleKey,
+                        href: replacePlaceholders(extras[singleKey], card),
+                        target: isInIframe ? '_blank' : '_self'
+                    });
+                } else if (extraKeys.length > 1) {
+                    const extraSubmenu = extraKeys.map(k => ({
+                        type: 'link',
+                        label: k,
+                        title: k,
+                        text: k,
+                        href: replacePlaceholders(extras[k], card),
+                        target: isInIframe ? '_blank' : '_self'
+                    }));
+                    items.push({
+                        type: 'submenu',
+                        label: 'Extra links',
+                        title: 'Extra links',
+                        text: 'Extra links',
+                        json: extraSubmenu
+                    });
+                }
+
+                if (buildKeys.length > 0) {
+                    const buildsSubmenu = buildKeys.map(bKey => {
+                        const bObj = builds[bKey] || {};
+                        const bLink = replacePlaceholders(bObj.link || `/view/#/[id]/${bKey}.js`, card, bKey);
+                        const bDirect = toAbsoluteDirectUrl(bObj.direct || `/ext/[id]/${bKey}.js`, card, bKey);
+                        const bDocs = resolveDocsUrl(card, bKey);
+
+                        const actions = [
+                            {
+                                type: 'link',
+                                label: 'View build',
+                                title: 'View build',
+                                text: 'View build',
+                                href: bLink,
+                                target: isInIframe ? '_blank' : '_self'
+                            }
+                        ];
+
+                        if (bDocs) {
+                            actions.push({
+                                type: 'link',
+                                label: 'View docs',
+                                title: 'View docs',
+                                text: 'View docs',
+                                href: bDocs,
+                                target: isInIframe ? '_blank' : '_self'
+                            });
+                        }
+
+                        actions.push({
+                            type: 'js',
+                            label: 'Copy build link',
+                            title: 'Copy build link',
+                            text: 'Copy build link',
+                            run: () => {
+                                navigator.clipboard.writeText(bDirect);
+                                showNotification("Build link copied to clipboard", "#ededed", 1000);
+                            }
+                        });
+
+                        return {
+                            type: 'submenu',
+                            label: bKey,
+                            title: bKey,
+                            text: bKey,
+                            json: actions
+                        };
+                    });
+
+                    items.push({
+                        type: 'submenu',
+                        label: 'Builds',
+                        title: 'Builds',
+                        text: 'Builds',
+                        json: buildsSubmenu
+                    });
+                }
+
+                return items;
+            }
+
+            function openBouncingContextMenu(items, anchorBtn) {
+                if (!window.ContextMenu || !anchorBtn) return;
+
+                const rect = anchorBtn.getBoundingClientRect();
+                const estWidth = 190;
+                const margin = 8;
+                const viewportW = window.innerWidth;
+
+                let posX = rect.left;
+                if (posX + estWidth > viewportW - margin) {
+                    posX = viewportW - estWidth - margin;
+                }
+                if (posX < margin) posX = margin;
+
+                let posY = rect.bottom + 4;
+
+                ContextMenu.open(items, Math.round(posX), Math.round(posY));
+            }
+
             function createCard(card, showhidden) {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card';
                 cardDiv.id = card.id;
+                cardDiv.tabIndex = 0;
+
+                cardDiv.addEventListener('mousedown', (e) => {
+                    if (e.target.closest('a') || e.target.closest('button')) return;
+                    e.preventDefault();
+                });
 
                 var imageURL = card.image ? replacePlaceholders(card.image, card) : "";
                 if (!imageURL || imageURL == "") {
                     imageURL = "https://dummyimage.com/600x300/e0e0e0/000&text=" + card.id;
                 }
 
-                function lightenHexColor(hex, percent) {
-                    let r = parseInt(hex.slice(1, 3), 16);
-                    let g = parseInt(hex.slice(3, 5), 16);
-                    let b = parseInt(hex.slice(5, 7), 16);
-
-                    r = Math.min(255, r + (255 - r) * percent / 100);
-                    g = Math.min(255, g + (255 - g) * percent / 100);
-                    b = Math.min(255, b + (255 - b) * percent / 100);
-
-                    return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
-                }
-                function darkenHexColor(hex, percent) {
-                    let r = parseInt(hex.slice(1, 3), 16);
-                    let g = parseInt(hex.slice(3, 5), 16);
-                    let b = parseInt(hex.slice(5, 7), 16);
-
-                    r = Math.max(0, r - r * percent / 100);
-                    g = Math.max(0, g - g * percent / 100);
-                    b = Math.max(0, b - b * percent / 100);
-
-                    return `#${Math.round(r).toString(16).padStart(2, '0')}${Math.round(g).toString(16).padStart(2, '0')}${Math.round(b).toString(16).padStart(2, '0')}`;
-                }
-
-                let buttons = [];
-                if (Array.isArray(card.buttons)) {
-                    buttons = card.buttons.map(b => ({
-                        text: b.text,
-                        color: b.color || "#cbe0f2",
-                        link: replacePlaceholders(b.link, card)
-                    }));
-                } else {
-                    const builds = card.builds || {};
-                    const buildKeys = Object.keys(builds);
-
-                    if (builds.main) {
-                        buttons.push({
-                            text: "View extension",
-                            color: "#cbe0f2",
-                            link: replacePlaceholders(builds.main.link, card, "main")
-                        });
-                    }
-
-                    buildKeys.forEach(key => {
-                        if (key === "main") return;
-                        let label = `View ${key}`;
-                        if (key.toLowerCase() === "dev") label = "View dev build";
-                        if (key === "PenguinMod") label = "PenguinMod build";
-                        buttons.push({
-                            text: label,
-                            color: "#cbe0f2",
-                            link: replacePlaceholders(builds[key].link, card, key)
-                        });
-                    });
-
-                    if (card.docs) {
-                        let docsUrl = "";
-                        if (typeof card.docs === "string") {
-                            docsUrl = card.docs;
-                        } else if (card.docs.main) {
-                            docsUrl = card.docs.main;
-                        } else {
-                            const firstDocKey = Object.keys(card.docs)[0];
-                            if (firstDocKey) docsUrl = card.docs[firstDocKey];
-                        }
-                        if (docsUrl && docsUrl !== "nodocs") {
-                            buttons.push({
-                                text: "View docs",
-                                color: "#cbe0f2",
-                                link: replacePlaceholders(docsUrl, card)
-                            });
-                        }
-                    }
-
-                    if (card.extras && typeof card.extras === "object") {
-                        Object.keys(card.extras).forEach(extraKey => {
-                            buttons.push({
-                                text: extraKey,
-                                color: "#cbe0f2",
-                                link: replacePlaceholders(card.extras[extraKey], card)
-                            });
-                        });
-                    }
-                }
-
-                var buttonsHTML = buttons.map(button => `
-                    <a href="${button.link}" 
-                    class="card-button" 
-                    style="background-color: ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(button.color, 80):lightenHexColor(button.color, 90)}; border: solid 1px ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(button.color, 50):button.color}">
-                    ${button.text.replace(/ /g, '&nbsp;')}
-                    </a>
-                `).join('');
-
-                if (navigator.clipboard) {
-                    let directUrl = "";
-                    if (card.builds) {
-                        if (card.builds.main && card.builds.main.direct) {
-                            directUrl = replacePlaceholders(card.builds.main.direct, card, "main");
-                        } else if (card.builds.dev && card.builds.dev.direct) {
-                            directUrl = replacePlaceholders(card.builds.dev.direct, card, "dev");
-                        }
-                    } else if (buttons.some(b => b.link && b.link.includes('view/'))) {
-                        const isdev = buttons.some(b => b.link.includes('dev.js'));
-                        directUrl = `/ext/${card.id}/${isdev ? "dev" : "main"}.js`;
-                    }
-
-                    if (directUrl) {
-                        if (!directUrl.startsWith("http")) {
-                            directUrl = `https://p7scratchextensions.pages.dev${directUrl.startsWith("/") ? "" : "/"}${directUrl}`;
-                        }
-                        var color = "#cbe0f2";
-                        buttonsHTML += `
-                            <a href="${directUrl}" 
-                            class="card-button"
-                            onclick='event.preventDefault(); navigator.clipboard.writeText(this.href); showNotification("Link copied to clipboard", "#ededed", 1000);'
-                            style="background-color: ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(color, 80):lightenHexColor(color, 90)}; border: solid 1px ${window.matchMedia('(prefers-color-scheme: dark)').matches?darkenHexColor(color, 50):color}">
-                            ${"Copy direct link".replace(/ /g, '&nbsp;')}
-                            </a>
-                        `;
-                    }
-                }
-
                 const resolvedIcon = card.icon ? replacePlaceholders(card.icon, card) : "";
                 const iconHTML = resolvedIcon ? `
-                    <div class="card-icon" title="${card.iconText || ""}">
+                    <div class="card-icon" tabindex="0">
                         <img src="${resolvedIcon}" alt="Icon" id="${resolvedIcon.includes("new.svg")||resolvedIcon.includes("update.svg")||resolvedIcon.includes("release.svg")?"wobble":""}">
                     </div>
                 ` : '';
 
+                const isUnsandboxed = !!card.unsandboxed;
+                const tooltipText = isUnsandboxed ? "This extension does not work in the sandbox" : "This extension works in the sandbox";
                 const sandboxStatusIconHTML = `
-                    <div class="card-icon2" title="${card.unsandboxed?"This extension does not work in the sandbox":"This extension works in the sandbox"}">
-                        <img src="/extras/images/icons/${card.unsandboxed?"unsandboxed":"sandboxed"}.png" alt="${card.unsandboxed?"Unsandboxed":"Sandboxed"}">
+                    <div class="card-icon2" tabindex="0">
+                        <img src="/extras/images/icons/${isUnsandboxed ? "unsandboxed" : "sandboxed"}.png" alt="${isUnsandboxed ? "Unsandboxed" : "Sandboxed"}">
                     </div>
                 `;
 
+                let builds = card.builds;
+                if (!builds || typeof builds !== 'object') {
+                    builds = {
+                        "main": {
+                            "link": "/view/#/[id]",
+                            "direct": "/ext/[id]/[build].js"
+                        }
+                    };
+                }
+                const buildKeys = Object.keys(builds);
+                let defaultBuildName = builds.main ? "main" : (buildKeys[0] || "main");
+                let defaultBuild = builds[defaultBuildName] || {};
+
+                let mainViewLink = "";
+                if (defaultBuild.link) {
+                    mainViewLink = replacePlaceholders(defaultBuild.link, card, defaultBuildName);
+                } else if (Array.isArray(card.buttons) && card.buttons.length > 0) {
+                    mainViewLink = replacePlaceholders(card.buttons[0].link, card);
+                } else {
+                    mainViewLink = `/view/#/${card.id}`;
+                }
+
+                let docsUrl = resolveDocsUrl(card, defaultBuildName);
+                const targetAttr = isInIframe ? 'target="_blank"' : 'target="_self"';
+                let docsBtnHTML = docsUrl ? `<a href="${docsUrl}" class="card-button" ${targetAttr}>Docs</a>` : "";
+
                 cardDiv.innerHTML = `
-                    ${iconHTML}
-                    <img src="${imageURL}" alt="${card.title}">
-                    <div class="card-content">
-                        ${sandboxStatusIconHTML}
-                        <p class="card-title">${card.title}</p>
-                        <p class="card-description">${card.description}</p>
-                        <p class="card-subtext">${card.subtext || ""}</p>
-                        <p class="card-buttons">${buttonsHTML}</p>
+                    <div class="card-media">
+                        ${iconHTML}
+                        <img class="cover-img" src="${imageURL}" alt="${card.title}">
+                    </div>
+                    <div class="card-body">
+                        <div class="card-body-bg" style="background-image: url('${imageURL}')"></div>
+                        <div class="card-content">
+                            <p class="card-title">${card.title}</p>
+                            ${sandboxStatusIconHTML}
+                        </div>
+                        <div class="card-desc">${card.description || ""}</div>
+                        <div class="card-buttons">
+                            <a href="${mainViewLink}" class="card-button" ${targetAttr}>View extension</a>
+                            ${docsBtnHTML}
+                            <button type="button" class="card-button more-btn" title="More options">⋮</button>
+                        </div>
                     </div>
                 `;
+
+                const descEl = cardDiv.querySelector('.card-desc');
+                if (descEl) {
+                    requestAnimationFrame(() => {
+                        const tempEl = document.createElement('div');
+                        tempEl.style.cssText = 'position:absolute;visibility:hidden;width:270px;font-size:0.88rem;line-height:1.35;word-break:break-word;';
+                        tempEl.innerHTML = card.description || "";
+                        document.body.appendChild(tempEl);
+                        const fullHeight = tempEl.offsetHeight;
+                        document.body.removeChild(tempEl);
+
+                        const singleLineHeight = 19;
+                        if (fullHeight > singleLineHeight + 4) {
+                            cardDiv.dataset.multiline = "true";
+                            const extraHeight = Math.min(fullHeight - singleLineHeight, 95);
+                            cardDiv.style.setProperty('--expand-diff', extraHeight + 'px');
+                            cardDiv.style.setProperty('--desc-full-height', (fullHeight + 2) + 'px');
+                        }
+                    });
+                }
+
+                const sandboxIconEl = cardDiv.querySelector('.card-icon2');
+                if (sandboxIconEl) {
+                    setupTooltip(sandboxIconEl, tooltipText);
+                }
+
+                const topIconEl = cardDiv.querySelector('.card-icon');
+                if (topIconEl && card.iconText) {
+                    setupTooltip(topIconEl, card.iconText);
+                }
+
+                let touchMoved = false;
+                cardDiv.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
+                cardDiv.addEventListener('touchstart', () => { touchMoved = false; }, { passive: true });
+
+                cardDiv.addEventListener('touchend', (e) => {
+                    if (touchMoved) return;
+                    if (e.target.closest('.card-button') || e.target.closest('.card-icon2') || e.target.closest('.card-icon') || e.target.closest('a')) return;
+                    if (!cardDiv.classList.contains('active-overlay')) {
+                        document.querySelectorAll('.card.active-overlay').forEach(c => {
+                            if (c !== cardDiv) c.classList.remove('active-overlay');
+                        });
+                        cardDiv.classList.add('active-overlay');
+                    }
+                });
+
+                const moreBtn = cardDiv.querySelector('.more-btn');
+                if (moreBtn) {
+                    moreBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openBouncingContextMenu(getContextMenuItems(card), moreBtn);
+                    });
+                }
+
+                cardDiv.addEventListener('contextmenu', (e) => {
+                    if (window.ContextMenu) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        ContextMenu.open(getContextMenuItems(card), e.clientX, e.clientY);
+                    }
+                });
 
                 cardDiv.style.display = card.hidden && !showhidden ? "none" : "";
 
@@ -652,26 +1343,15 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
 
             async function fetchExtensions() {
                 try {
-                    const response = await fetch('./extensions.js');
+                    const response = await fetch('/new/extensions.json');
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    const text = await response.text();
-                    try {
-                        cardsData = JSON.parse(text);
-                    } catch {
-                        const match = text.match(/(\[.*\]|\{.*\})/s);
-                        if (match) {
-                            cardsData = (new Function(`return ${match[0]}`))();
-                        } else {
-                            throw new Error('Failed to parse extensions data');
-                        }
-                    }
+                    cardsData = await response.json();
 
                     const loader = document.getElementById("loader");
                     if (loader) loader.remove();
 
-                    document.querySelector(".footer").innerHTML = footerHTML;
                     if (window.location.search.includes('?q=')) {
                         filterCards();
                     } else {
@@ -694,85 +1374,313 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
                 scrollToHash();
             }
 
-            function filterCards() {
-                document.querySelector(".footer").innerHTML = footerHTML;
+            function tokenizeSearch(raw) {
+                const tokens = [];
+                const regex = /"([^"]+)"|'([^']+)'|(\S+)/g;
+                let match;
+                while ((match = regex.exec(raw)) !== null) {
+                    tokens.push(match[1] || match[2] || match[3]);
+                }
+                return tokens;
+            }
 
-                const query = document.getElementById('search').value.toLowerCase().replace("include:hidden", "");
-                const filters = query.split(/\s+/);
-                
-                let filteredData = cardsData.filter(card => {
-                    let includeCard = true;
-                    
-                    for (const filter of filters) {
-                        if (filter.startsWith('-')) {
-                            const negativeTerm = filter.slice(1);
-                            const cardText = `${card.title} ${card.description} ${card.subtext || ""}`.toLowerCase();
-                            includeCard = includeCard && !cardText.includes(negativeTerm);
-                        } else if (!filter.startsWith('is:')) {
-                            const cardText = `${card.title} ${card.description} ${card.subtext || ""}`.toLowerCase();
-                            includeCard = includeCard && cardText.includes(filter);
-                        }
+            function evaluateToken(token, card) {
+                const lower = token.toLowerCase();
+
+                if (lower.startsWith('tag:')) {
+                    const tagVal = lower.slice(4);
+                    return Array.isArray(card.tags) && card.tags.some(t => t.toLowerCase() === tagVal);
+                }
+                if (lower.startsWith('-tag:')) {
+                    const tagVal = lower.slice(5);
+                    return !Array.isArray(card.tags) || !card.tags.some(t => t.toLowerCase() === tagVal);
+                }
+
+                if (lower.startsWith('title:')) {
+                    const val = lower.slice(6);
+                    return (card.title || '').toLowerCase().includes(val);
+                }
+                if (lower.startsWith('-title:')) {
+                    const val = lower.slice(7);
+                    return !(card.title || '').toLowerCase().includes(val);
+                }
+
+                if (lower.startsWith('desc:') || lower.startsWith('description:')) {
+                    const val = lower.slice(lower.indexOf(':') + 1);
+                    return (card.description || '').toLowerCase().includes(val);
+                }
+
+                if (lower.startsWith('id:')) {
+                    const val = lower.slice(3);
+                    return (card.id || '').toLowerCase().includes(val);
+                }
+
+                if (lower === 'is:sandboxed') return card.unsandboxed === false;
+                if (lower === 'is:unsandboxed') return card.unsandboxed === true;
+                if (lower === '-is:sandboxed') return card.unsandboxed === true;
+                if (lower === '-is:unsandboxed') return card.unsandboxed === false;
+
+                if (lower === 'is:hidden') return card.hidden === true;
+                if (lower === '-is:hidden') return !card.hidden;
+
+                if (lower === 'is:unfinished' || lower === 'is:wip') return card.unfinished === true;
+                if (lower === '-is:unfinished' || lower === '-is:wip') return !card.unfinished;
+
+                if (lower === 'is:dev') return !!(card.builds && card.builds.dev);
+                if (lower === 'is:docs') return !!(card.docs && Object.keys(card.docs).length > 0);
+                if (lower === 'is:extras') return !!(card.extras && Object.keys(card.extras).length > 0);
+
+                if (lower.startsWith('is:')) {
+                    const match = lower.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
+                    if (match) {
+                        const [, key, val] = match;
+                        const keys = key.split('.');
+                        const cardValue = keys.reduce((o, k) => (o ? o[k] : undefined), card);
+                        if (val !== undefined) return String(cardValue).toLowerCase().includes(val.toLowerCase());
+                        return !!cardValue;
                     }
+                }
 
-                    if (!includeCard) return false;
+                if (lower.startsWith('-is:')) {
+                    const match = lower.match(/^-is:([\w.]+)(?:\((.*?)\))?$/);
+                    if (match) {
+                        const [, key, val] = match;
+                        const keys = key.split('.');
+                        const cardValue = keys.reduce((o, k) => (o ? o[k] : undefined), card);
+                        if (val !== undefined) return !String(cardValue).toLowerCase().includes(val.toLowerCase());
+                        return !cardValue;
+                    }
+                }
 
-                    const checkIsFilters = filters.filter(filter => filter.startsWith('is:') || filter.startsWith('-is:'));
-                    checkIsFilters.forEach(filter => {
-                        if (filter.startsWith('is:')) {
-                            const match = filter.match(/^is:([\w.]+)(?:\((.*?)\))?$/);
-                            if (match) {
-                                const [, key, value] = match;
-                                const keys = key.split('.');
-                                const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+                if (lower.startsWith('-')) {
+                    const term = lower.slice(1);
+                    const haystack = `${card.title || ''} ${card.description || ''} ${card.subtext || ''} ${card.id || ''} ${(card.tags || []).join(' ')}`.toLowerCase();
+                    return !haystack.includes(term);
+                }
 
-                                if (value) {
-                                    includeCard = includeCard && String(cardValue).toLowerCase().includes(value.toLowerCase());
-                                } else {
-                                    includeCard = includeCard && !!cardValue;
-                                }
-                            }
-                        } else if (filter.startsWith('-is:')) {
-                            const match = filter.match(/^-is:([\w.]+)(?:\((.*?)\))?$/);
-                            if (match) {
-                                const [, key, value] = match;
-                                const keys = key.split('.');
-                                const cardValue = keys.reduce((obj, k) => (obj ? obj[k] : undefined), card);
+                const haystack = `${card.title || ''} ${card.description || ''} ${card.subtext || ''} ${card.id || ''} ${(card.tags || []).join(' ')}`.toLowerCase();
+                return haystack.includes(lower);
+            }
 
-                                if (value) {
-                                    includeCard = includeCard && !String(cardValue).toLowerCase().includes(value.toLowerCase());
-                                } else {
-                                    includeCard = includeCard && !cardValue;
-                                }
-                            }
+            function getDynamicSuggestions(currentWord) {
+                if (!currentWord || !currentWord.trim()) return [];
+                const word = currentWord.toLowerCase();
+                const suggestions = [];
+
+                const allTags = new Set();
+                const allIds = new Set();
+                const allTitles = new Set();
+
+                cardsData.forEach(c => {
+                    if (Array.isArray(c.tags)) c.tags.forEach(t => allTags.add(t.toLowerCase()));
+                    if (c.id) allIds.add(c.id);
+                    if (c.title) allTitles.add(c.title);
+                });
+
+                if (word.startsWith('tag:')) {
+                    const sub = word.slice(4);
+                    allTags.forEach(t => {
+                        if (t.startsWith(sub)) {
+                            suggestions.push(`tag:${t}`);
                         }
                     });
+                    return suggestions.slice(0, 7);
+                }
 
-                    return includeCard;
+                if (word.startsWith('-tag:')) {
+                    const sub = word.slice(5);
+                    allTags.forEach(t => {
+                        if (t.startsWith(sub)) {
+                            suggestions.push(`-tag:${t}`);
+                        }
+                    });
+                    return suggestions.slice(0, 7);
+                }
+
+                if (word.startsWith('id:')) {
+                    const sub = word.slice(3);
+                    allIds.forEach(id => {
+                        if (id.toLowerCase().startsWith(sub)) {
+                            suggestions.push(`id:${id}`);
+                        }
+                    });
+                    return suggestions.slice(0, 7);
+                }
+
+                if (word.startsWith('title:')) {
+                    const sub = word.slice(6);
+                    allTitles.forEach(title => {
+                        if (title.toLowerCase().startsWith(sub)) {
+                            suggestions.push(`title:"${title}"`);
+                        }
+                    });
+                    return suggestions.slice(0, 7);
+                }
+
+                if (word.startsWith('is:') || word.startsWith('-is:')) {
+                    return [];
+                }
+
+                allTitles.forEach(t => {
+                    if (t.toLowerCase().includes(word)) {
+                        suggestions.push(t);
+                    }
                 });
+
+                return suggestions.slice(0, 7);
+            }
+
+            function onSearchInput() {
+                filterCards();
+                renderAutocomplete();
+            }
+
+            function renderAutocomplete() {
+                const input = document.getElementById('search');
+                const list = document.getElementById('autocomplete-list');
+                const val = input.value;
+                const cursorPos = input.selectionStart || val.length;
+
+                const textBeforeCursor = val.slice(0, cursorPos);
+                const words = textBeforeCursor.split(/\s+/);
+                const currentWord = words[words.length - 1] || "";
+
+                if (!currentWord.trim()) {
+                    list.innerHTML = '';
+                    list.classList.remove('visible');
+                    activeAutocompleteIndex = -1;
+                    return;
+                }
+
+                const suggestions = getDynamicSuggestions(currentWord);
+
+                if (suggestions.length === 0) {
+                    list.innerHTML = '';
+                    list.classList.remove('visible');
+                    activeAutocompleteIndex = -1;
+                    return;
+                }
+
+                list.innerHTML = '';
+                suggestions.forEach((text) => {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    item.textContent = text;
+                    item.onclick = (e) => {
+                        e.stopPropagation();
+                        applySuggestion(text);
+                    };
+                    list.appendChild(item);
+                });
+
+                list.classList.add('visible');
+                activeAutocompleteIndex = -1;
+            }
+
+            function applySuggestion(suggestedText) {
+                const input = document.getElementById('search');
+                const val = input.value;
+                const cursorPos = input.selectionStart || val.length;
+
+                const textBeforeCursor = val.slice(0, cursorPos);
+                const textAfterCursor = val.slice(cursorPos);
+
+                const lastMatch = textBeforeCursor.match(/\S+$/);
+                const replaceStart = lastMatch ? textBeforeCursor.length - lastMatch[0].length : cursorPos;
+
+                const prefix = val.slice(0, replaceStart);
+                input.value = prefix + suggestedText + ' ' + textAfterCursor.trimStart();
+                const newPos = (prefix + suggestedText + ' ').length;
+                input.setSelectionRange(newPos, newPos);
+
+                const list = document.getElementById('autocomplete-list');
+                list.innerHTML = '';
+                list.classList.remove('visible');
+                activeAutocompleteIndex = -1;
+
+                filterCards();
+                input.focus();
+            }
+
+            document.getElementById('search').addEventListener('keydown', function(event) {
+                const list = document.getElementById('autocomplete-list');
+                const items = list.querySelectorAll('.autocomplete-item');
+
+                if (list.classList.contains('visible') && items.length > 0) {
+                    if (event.key === 'ArrowDown') {
+                        event.preventDefault();
+                        activeAutocompleteIndex = (activeAutocompleteIndex + 1) % items.length;
+                        items.forEach((it, idx) => it.classList.toggle('active', idx === activeAutocompleteIndex));
+                        return;
+                    } else if (event.key === 'ArrowUp') {
+                        event.preventDefault();
+                        activeAutocompleteIndex = (activeAutocompleteIndex - 1 + items.length) % items.length;
+                        items.forEach((it, idx) => it.classList.toggle('active', idx === activeAutocompleteIndex));
+                        return;
+                    } else if (event.key === 'Enter') {
+                        if (activeAutocompleteIndex >= 0 && items[activeAutocompleteIndex]) {
+                            event.preventDefault();
+                            items[activeAutocompleteIndex].click();
+                            return;
+                        }
+                    } else if (event.key === 'Escape') {
+                        list.classList.remove('visible');
+                        activeAutocompleteIndex = -1;
+                        return;
+                    }
+                }
+
+                if (event.key === 'Enter') {
+                    const query = this.value.trim();
+                    const url = new URL(window.location);
+                    if (query) {
+                        url.searchParams.set('q', query);
+                    } else {
+                        url.searchParams.delete('q');
+                    }
+                    window.history.pushState({}, '', url);
+                    list.classList.remove('visible');
+                    this.blur();
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-wrapper')) {
+                    const list = document.getElementById('autocomplete-list');
+                    if (list) list.classList.remove('visible');
+                }
+            });
+
+            function filterCards() {
+                const rawVal = document.getElementById('search').value;
+                const includeHidden = rawVal.toLowerCase().includes('include:hidden') || rawVal.toLowerCase().includes('is:hidden');
+                const cleanedQuery = rawVal.replace(/include:hidden/gi, '').trim();
+
+                let filteredData = cardsData;
+
+                if (cleanedQuery) {
+                    const orGroups = cleanedQuery.split(/\s+\bOR\b\s+/i);
+
+                    filteredData = cardsData.filter(card => {
+                        return orGroups.some(group => {
+                            const tokens = tokenizeSearch(group);
+                            return tokens.every(tok => evaluateToken(tok, card));
+                        });
+                    });
+                }
+
+                const visibleResults = filteredData.filter(card => includeHidden || !card.hidden);
 
                 const container = document.getElementById('cards-container');
                 container.innerHTML = '';
 
-                if (!query.includes('is:hidden') && !document.getElementById('search').value.toLowerCase().includes('include:hidden')) {
-                    if (filteredData.filter(filter => !filter.hidden).length === 0) {
-                        const noResultsMessage = document.createElement('div');
-                        noResultsMessage.textContent = 'No results found';
-                        container.appendChild(noResultsMessage);
-                    }
-                    if (document.getElementById('search').value) {
-                        document.querySelector(".footer").innerHTML = `Didn't find what you wanted? Try including <a onclick="document.getElementById('search').value += ' include:hidden'; filterCards();" style='text-decoration: underline;'>hidden</a> extensions in your search`;
-                    }
-                }
-
-                if (filteredData.length === 0) {
+                if (visibleResults.length === 0) {
                     const noResultsMessage = document.createElement('div');
-                    container.textContent = 'No results found';
-                    if (document.getElementById('search').value) {
-                        document.querySelector(".footer").innerHTML = `Didn't find what you wanted? It coule be in <a href="/archives">the archives</a>`;
-                    }
+                    noResultsMessage.textContent = 'No results found';
+                    container.appendChild(noResultsMessage);
                 } else {
-                    filteredData.forEach(card => {
-                        container.appendChild(createCard(card, query.includes('is:hidden') || document.getElementById('search').value.toLowerCase().includes('include:hidden')));
+                    visibleResults.forEach(card => {
+                        container.appendChild(createCard(card, includeHidden));
                     });
                 }
             }
@@ -793,19 +1701,30 @@ Why not check out my <b>AWSOME</b> Scratch extensions while you're <a href="/" s
 
             window.addEventListener('hashchange', scrollToHash);
 
-            if (new URL(window.location).searchParams.get("q")) {
-                document.getElementById('search').value = new URL(window.location).searchParams.get("q");
+            const initialQuery = new URL(window.location).searchParams.get("q");
+            if (initialQuery !== null) {
+                if (initialQuery.trim()) {
+                    document.getElementById('search').value = initialQuery;
+                } else {
+                    const cleanedUrl = new URL(window.location);
+                    cleanedUrl.searchParams.delete('q');
+                    window.history.replaceState({}, '', cleanedUrl);
+                }
             }
 
-            document.getElementById('search').addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    const query = this.value;
-                    const url = new URL(window.location);
-                    url.searchParams.set('q', query);
-                    window.history.pushState({}, '', url);
-                    this.blur();
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.card')) {
+                    document.querySelectorAll('.card.active-overlay').forEach(c => c.classList.remove('active-overlay'));
                 }
             });
+
+            window.addEventListener('scroll', (e) => {
+                if (e.target && e.target.classList && (e.target.classList.contains('context-wrapper') || e.target.classList.contains('submenu-box'))) {
+                    return;
+                }
+                const tooltip = document.getElementById('global-tooltip');
+                if (tooltip) tooltip.classList.remove('visible');
+            }, { passive: true, capture: true });
 
             fetchExtensions();
         }
