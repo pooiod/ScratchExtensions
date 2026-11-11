@@ -1,558 +1,841 @@
 [
     {
         "id": "BoxedPhysics",
-        "image": "/ext/[id]/cover.svg",
         "title": "Boxed Physics",
+        "image": "/ext/[id]/cover.svg",
         "description": "An implementation the Box2D physics engine with support for joints, springs, sliders, and more.",
-        "created": "Apr 15, 2024",
         "subtext": "",
+        "created": "Apr 15, 2024",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
-            { "text": "Example projects", "color": "#cbe0f2", "link": "/ext/[id]/examples" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/[build].js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/Box2D.js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]",
+            "PenguinMod": ""
+        },
+        "extras": {
+            "Example projects": "/ext/[id]/examples"
+        },
+        "tags": [
+            "physics",
+            "simulation",
+            "advanced"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "KoboldAI",
-        "image": "/ext/[id]/cover.svg",
         "title": "Kobold AI",
+        "image": "/ext/[id]/cover.svg",
         "description": "Generate text and images for free with the power of <a href='//stablehorde.net'>The Horde</a>",
-        "created": "Jan 4, 2025",
         "subtext": "",
-        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "created": "Jan 4, 2025",
+        "icon": "[icons]/UnoficialAPI.svg",
         "iconText": "This extension uses a third party api that may go down sometimes",
         "unsandboxed": false,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {},
+        "tags": [
+            "ai",
+            "advanced"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "BlockLink",
-        "image": "/ext/[id]/cover.svg",
         "title": "BlockLink",
+        "image": "/ext/[id]/cover.svg",
         "description": "A collaberation system for TurboWarp based Scratch mods",
-        "created": "---",
         "subtext": "Work in progress",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "---",
+        "icon": "[icons]/wip.png",
         "iconText": "Work in progress",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "collaboration",
+            "networking"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": true
     },
     {
         "id": "HTMLcanvas",
-        "image": "/ext/[id]/cover.svg",
         "title": "HTML Canvas",
+        "image": "/ext/[id]/cover.svg",
         "description": "Use HTML and CSS to make projects with complex visual interfaces.",
-        "created": "May 29, 2024",
         "subtext": "Requires PenguinMod for some inputs",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "May 29, 2024",
+        "icon": "[icons]/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
-            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js",
+                "docs": "main"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {},
+        "tags": [
+            "graphics",
+            "ui",
+            "web",
+            "advanced"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed", "penguinmod"],
         "hidden": false
     },
     {
         "id": "JSParser",
-        "image": "/ext/[id]/cover.svg",
         "title": "JavaScript Parser",
+        "image": "/ext/[id]/cover.svg",
         "description": "Manage your own sandboxed JavaScript environment for user-made code.",
-        "created": "Dec 18, 2025",
         "subtext": "",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "Dec 18, 2025",
+        "icon": "[icons]/wip.png",
         "iconText": "Still working on this, generally buggy",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "Multi VM version", "color": "#cbe0f2", "link": "/view/#/[id]/multi.js" }
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "multi": {
+                "link": "/view/#/[id]/multi.js",
+                "direct": "/ext/[id]/multi.js",
+                "docs": "nodocs"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "coding",
+            "scripting",
+            "vm",
+            "advanced"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "VideoSharing",
-        "image": "/ext/[id]/cover.svg",
         "title": "Video Sharing",
+        "image": "/ext/[id]/cover.svg",
         "description": "Share your screen or camera on your project as a data-uri.",
-        "created": "Oct 02, 2023",
         "subtext": "",
+        "created": "Oct 02, 2023",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/VideoSharing.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "video",
+            "camera"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "FilePile",
-        "image": "/ext/[id]/cover.svg",
         "title": "FilePile",
+        "image": "/ext/[id]/cover.svg",
         "description": "Decentralized peer-to-peer file sharing",
-        "created": "Nov 3, 2025",
         "subtext": "",
+        "created": "Nov 3, 2025",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" },
-            { "text": "Example project", "color": "#cbe0f2", "link": "/ext/[id]/demo.html" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {
+            "Example project": "/ext/[id]/demo.html"
+        },
+        "tags": [
+            "networking"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "CloneData",
-        "image": "/ext/[id]/cover.svg",
         "title": "Clone Data",
+        "image": "/ext/[id]/cover.svg",
         "description": "Track and control clones.",
-        "created": "5/5/2026",
         "subtext": "",
+        "created": "5/5/2026",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "clones"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "ElementalImages",
-        "image": "/ext/[id]/cover.svg",
         "title": "Elemental Images",
+        "image": "/ext/[id]/cover.svg",
         "description": "Create and manipulate image elements in scratch.",
-        "created": "Oct 02, 2023",
         "subtext": "",
+        "created": "Oct 02, 2023",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "graphics",
+            "ui"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "Zdog",
-        "image": "/ext/[id]/cover.svg",
         "title": "Zdog",
+        "image": "/ext/[id]/cover.svg",
         "description": "A Round, flat pseudo-3D engine.",
-        "created": "1/7/2026",
         "subtext": "",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "1/7/2026",
+        "icon": "[icons]/wip.png",
         "iconText": "wip",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "3d",
+            "graphics"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "Scene3D",
-        "image": "/ext/[id]/cover.svg",
         "title": "Scene 3D",
+        "image": "/ext/[id]/cover.svg",
         "description": "Render complex 3D scenes",
-        "created": "Feb 9 2025",
         "subtext": "work in progress, may change frequently",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "Feb 9 2025",
+        "icon": "[icons]/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        "unfinished": true,
+        "builds": {
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "3d",
+            "rendering"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": true
     },
     {
         "id": "Splats",
-        "image": "/ext/[id]/cover.svg",
         "title": "Luma Splats",
+        "image": "/ext/[id]/cover.svg",
         "description": "Render 3D gaussian splats from <a href=\"https://lumalabs.ai/featured\">LumaLabs</a>",
-        "created": "Feb 4 2025",
         "subtext": "Requires Scene3D",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "Feb 4 2025",
+        "icon": "[icons]/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" },
-            { "text": "View standalone build", "color": "#cbe0f2", "link": "/view/#/[id]/standalone.js" }
+        "unfinished": true,
+        "builds": {
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "standalone": {
+                "link": "/view/#/[id]/standalone.js",
+                "direct": "/ext/[id]/standalone.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "3d",
+            "splats",
+            "rendering"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": true
     },
     {
         "id": "Puter",
-        "image": "/ext/[id]/cover.svg",
         "title": "Puter",
+        "image": "/ext/[id]/cover.svg",
         "description": "Cloud services from <a href=\"https://developer.puter.com\">puter.com</a>",
-        "created": "3/24/2026",
         "subtext": "",
+        "created": "3/24/2026",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "cloud",
+            "ai",
+            "storage",
+            "auth"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "Ace",
-        "image": "/ext/[id]/cover.svg",
         "title": "Ace Editor",
+        "image": "/ext/[id]/cover.svg",
         "description": "Create and manipulate an instance of the Ace code editor.",
-        "created": "June 18, 2023",
         "subtext": "Work in progress",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "June 18, 2023",
+        "icon": "[icons]/wip.png",
         "iconText": "This extension is in development, and may be changed frequently",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View dev build", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "ui",
+            "coding"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "Sam",
-        "image": "/ext/[id]/cover.svg",
         "title": "Sam Speech",
+        "image": "/ext/[id]/cover.svg",
         "description": "Generate speech from text using <a href=\"https://imrane03.github.io/better-sam\">sam</a>",
-        "created": "Oct 9, 2025",
         "subtext": "",
+        "created": "Oct 9, 2025",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "audio",
+            "tts",
+            "speech"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "ScratchBlocks",
-        "image": "/ext/[id]/cover.svg",
         "title": "ScratchBlocks",
+        "image": "/ext/[id]/cover.svg",
         "description": "Generate blocks in the Scratch3, or Scratch2 format.",
-        "created": "Apr 05, 2024",
         "subtext": "",
+        "created": "Apr 05, 2024",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/Scratchblocks.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "graphics"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "HandPos",
-        "image": "/ext/[id]/cover.svg",
         "title": "Hand Positions",
+        "image": "/ext/[id]/cover.svg",
         "description": "Hand tracking in scratch",
-        "created": "Feb 11, 2025",
         "subtext": "Known to crash when camera is enabled more than once",
-        "icon": "/extras/images/icons/warn.png",
+        "created": "Feb 11, 2025",
+        "icon": "[icons]/warn.png",
         "iconText": "Has a memmory leak",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "ai",
+            "camera",
+            "tracking"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "ProjectParser",
-        "image": "/ext/[id]/cover.svg",
         "title": "Project Parser",
+        "image": "/ext/[id]/cover.svg",
         "description": "Load and parse Scratch3 projects",
-        "created": "Mar 30, 2025",
         "subtext": "",
+        "created": "Mar 30, 2025",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "scratch",
+            "files"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "BasicTTS",
-        "image": "/ext/[id]/cover.svg",
         "title": "Text to Speech",
+        "image": "/ext/[id]/cover.svg",
         "description": "Make your project read text out loud.",
-        "created": "Dec 18, 2023",
         "subtext": "",
+        "created": "Dec 18, 2023",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "audio",
+            "tts",
+            "speech"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "Dictation",
-        "image": "/ext/[id]/cover.svg",
         "title": "Dictation",
+        "image": "/ext/[id]/cover.svg",
         "description": "Convert your voice into text.",
-        "created": "May 17, 2024",
         "subtext": "",
+        "created": "May 17, 2024",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "PenguinMod": {
+                "link": "https://extensions.penguinmod.com/#:~:text=[title]",
+                "direct": "https://extensions.penguinmod.com/extensions/pooiod/Dictation.js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "audio",
+            "voice",
+            "speech"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "RaccFacts",
-        "image": "/ext/[id]/cover.svg",
         "title": "Racoon Facts",
+        "image": "/ext/[id]/cover.svg",
         "description": "Get random information on racoons.",
-        "created": "Dec 8, 2024",
         "subtext": "",
-        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "created": "Dec 8, 2024",
+        "icon": "[icons]/UnoficialAPI.svg",
         "iconText": "This extension uses a third party api that may go down sometimes",
-        "new": false,
         "unsandboxed": false,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "joke"
         ],
-        "tags": ["finished", "joke"],
-        "type": ["sandboxed"],
         "hidden": false
     },
     {
         "id": "LocalAI",
-        "image": "/ext/[id]/cover.svg",
         "title": "Local AI",
+        "image": "/ext/[id]/cover.svg",
         "description": "Run your own local text AI right in scratch.",
-        "created": "9/21/2026",
         "subtext": "Requires a powerful computer",
-        "icon": "/extras/images/icons/new.svg",
+        "created": "9/21/2026",
+        "icon": "[icons]/new.svg",
         "iconText": "new extension, report bugs",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "ai"
         ],
-        "tags": ["finished","ai"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "ScrollUtilities",
-        "image": "/ext/[id]/cover.svg",
         "title": "Scroll Utilities",
+        "image": "/ext/[id]/cover.svg",
         "description": "Detect user scrolling on the page",
-        "created": "Oct 05, 2023",
         "subtext": "",
+        "created": "Oct 05, 2023",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            },
+            "dev": {
+                "link": "/view/#/[id]/[build].js",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "inputs"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "SuperStorage",
-        "image": "/ext/[id]/cover.png",
         "title": "Super Storage",
+        "image": "/ext/[id]/cover.png",
         "description": "Store and retrieve data locally on device, or remotely on a server.",
-        "created": "Nov 13, 2024",
         "subtext": "",
-        "icon": "/extras/images/icons/UnoficialAPI.svg",
+        "created": "Nov 13, 2024",
+        "icon": "[icons]/UnoficialAPI.svg",
         "iconText": "This extension uses a third party api that may go down sometimes",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" },
-            { "text": "View docs", "color": "#cbe0f2", "link": "/docs/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {
+            "main": "/docs/#/[id]"
+        },
+        "extras": {},
+        "tags": [
+            "storage",
+            "data",
+            "networking"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "QuickSkins",
-        "image": "/ext/[id]/cover.svg",
         "title": "Quick Skins",
+        "image": "/ext/[id]/cover.svg",
         "description": "A simple extension to render images from data uris super quickly",
-        "created": "Feb 4 2025",
         "subtext": "",
+        "created": "Feb 4 2025",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "graphics",
+            "sprites"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "Console",
-        "image": "/ext/[id]/cover.svg",
         "title": "Console",
+        "image": "/ext/[id]/cover.svg",
         "description": "An easy to use console system.",
-        "created": "Nov 25, 2025",
         "subtext": "",
+        "created": "Nov 25, 2025",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "debug"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "LoaderX",
-        "image": "/ext/[id]/cover.png",
         "title": "ScratchX Loader",
+        "image": "/ext/[id]/cover.png",
         "description": "Better ScratchX extension support for TurboWarp",
-        "created": "Jan 17, 2026",
         "subtext": "",
-        "icon": "/extras/images/icons/wip.png",
+        "created": "Jan 17, 2026",
+        "icon": "[icons]/wip.png",
         "iconText": "Still working on this, generally buggy",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "unfinished": true,
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "loader",
+            "compatibility"
         ],
-        "trusted": false,
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "ListsPlus",
-        "image": "/ext/[id]/cover.svg",
         "title": "Lists Plus",
+        "image": "/ext/[id]/cover.svg",
         "description": "A simple extension to create lists within lists, and place them in variables.",
-        "created": "Jun 15, 2023",
         "subtext": "",
+        "created": "Jun 15, 2023",
         "icon": "",
         "iconText": "",
         "unsandboxed": false,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "data"
         ],
-        "tags": ["finished"],
-        "type": ["sandboxed"],
         "hidden": false
     },
     {
         "id": "YouTilities",
-        "image": "/ext/[id]/cover.svg",
         "title": "You-tilities",
+        "image": "/ext/[id]/cover.svg",
         "description": "An extension to interface with youtube.",
         "subtext": "Download api is down, everything else works",
-        "icon": "/extras/images/icons/UnoficialAPI.svg",
-        "iconText": "This extension uses third party apis",
         "created": "Apr 22, 2024",
+        "icon": "[icons]/UnoficialAPI.svg",
+        "iconText": "This extension uses third party apis",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension (dev build)", "color": "#cbe0f2", "link": "/view/#/[id]/dev.js" }
+        "unfinished": true,
+        "builds": {
+            "dev": {
+                "link": "/view/#/[id]/dev.js",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "video",
+            "networking",
+            "media"
         ],
-        "tags": ["unfinished"],
-        "type": ["unsandboxed"],
         "hidden": true
     },
     {
         "id": "WindowHasher",
-        "image": "/ext/[id]/cover.png",
         "title": "Window Hasher",
+        "image": "/ext/[id]/cover.png",
         "description": "Interact with URL hash. <br>(the part of the URL after a hashtag)",
-        "created": "Aug 27, 2024",
         "subtext": "",
-        "icon": "/extras/images/icons/warn.png",
+        "created": "Aug 27, 2024",
+        "icon": "[icons]/warn.png",
         "iconText": "will set a url query instead of the hash in most editors, this does not happen when compiled",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "url"
         ],
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "PageOpener",
-        "image": "/ext/[id]/cover.svg",
         "title": "Page Opener",
+        "image": "/ext/[id]/cover.svg",
         "description": "A simple extension to open websites.",
-        "created": "Dec 5, 2024",
         "subtext": "",
+        "created": "Dec 5, 2024",
         "icon": "",
         "iconText": "",
         "unsandboxed": true,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "web"
         ],
-        "trusted": false,
-        "tags": ["finished"],
-        "type": ["unsandboxed"],
         "hidden": false
     },
     {
         "id": "Fetch",
-        "image": "/ext/[id]/cover.svg",
         "title": "Fetch",
+        "image": "/ext/[id]/cover.svg",
         "description": "Make requests to the internet.",
-        "created": "May 22, 2023",
         "subtext": "",
+        "created": "May 22, 2023",
         "icon": "",
         "iconText": "",
         "unsandboxed": false,
-        "buttons": [
-            { "text": "View extension", "color": "#cbe0f2", "link": "/view/#/[id]" }
+        "builds": {
+            "main": {
+                "link": "/view/#/[id]",
+                "direct": "/ext/[id]/[build].js"
+            }
+        },
+        "docs": {},
+        "extras": {},
+        "tags": [
+            "networking"
         ],
-        "tags": ["finished"],
-        "type": ["sandboxed"],
         "hidden": false
     }
 ]

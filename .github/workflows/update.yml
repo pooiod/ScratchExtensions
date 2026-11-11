@@ -1,0 +1,96 @@
+name: Update README
+
+on:
+  push:
+    paths:
+      - 'extensions.json'
+      - 'readbase.md'
+      - '.github/workflows/update-readme.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate Extensions Table
+        run: |
+          JSON_FILE="extensions.json"
+
+          jq -r '
+            [
+              "| Image | Name | Description | Link |",
+              "| :---: | :--- | :--- | :--- |"
+            ] +
+            [
+              .[] | select(.hidden != true) |
+              (
+                .id as $id |
+                .title as $title |
+                .description as $rawDesc |
+                ($rawDesc | gsub("<[^>]*>"; "") | gsub("\\r?\\n"; " ") | gsub("\\|"; "\\|")) as $desc |
+                (
+                  if .image and .image != "" then
+                    ("![" + $title + "](https://p7scratchextensions.pages.dev" + (.image | gsub("\\[id\\]"; $id)) + ")")
+                  else
+                    ""
+                  end
+                ) as $imgTag |
+                (
+                  if .builds and .builds.main then
+                    { key: "main", val: .builds.main }
+                  elif .builds and (.builds | length > 0) then
+                    (.builds | to_entries | .[0] | { key: .key, val: .value })
+                  else
+                    null
+                  end
+                ) as $chosenBuild |
+                (
+                  if $chosenBuild != null then
+                    (
+                      if $chosenBuild.val.direct then
+                        (if $chosenBuild.val.direct | startswith("http") then $chosenBuild.val.direct else "https://p7scratchextensions.pages.dev" + ($chosenBuild.val.direct | gsub("\\[id\\]"; $id) | gsub("\\[build\\]"; $chosenBuild.key)) end)
+                      elif $chosenBuild.val.link then
+                        (if $chosenBuild.val.link | startswith("http") then $chosenBuild.val.link else "https://p7scratchextensions.pages.dev" + ($chosenBuild.val.link | gsub("\\[id\\]"; $id) | gsub("\\[build\\]"; $chosenBuild.key)) end)
+                      else
+                        ("https://p7scratchextensions.pages.dev/ext/" + $id + "/" + $chosenBuild.key + ".js")
+                      end
+                    ) as $targetUrl |
+                    "[Link](" + $targetUrl + ")"
+                  else
+                    "-"
+                  end
+                ) as $buildLink |
+                "| " + $imgTag + " | **" + $title + "** | " + $desc + " | " + $buildLink + " |"
+              )
+            ] | join("\n")
+          ' "$JSON_FILE" > /tmp/extensions_rendered.md
+
+          python3 -c '
+          with open("readbase.md", "r", encoding="utf-8") as f:
+              template = f.read()
+          with open("/tmp/extensions_rendered.md", "r", encoding="utf-8") as f:
+              content = f.read()
+          result = template.replace("[extensions]", content.strip())
+          with open("README.md", "w", encoding="utf-8") as f:
+              f.write(result)
+          '
+
+          rm -f /tmp/extensions_rendered.md
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          if git diff --staged --quiet; then
+            echo "No changes in README.md"
+          else
+            git commit -m "Update README.md [skip ci]"
+            git push
+          fi
