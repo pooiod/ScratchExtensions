@@ -558,7 +558,7 @@
 
             return new Promise(async (resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'https://yeetyourfiles.lol/api/upload', true);
+                xhr.open('POST', 'https://yyf.mubilop.com/api/upload', true);
 
                 await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -572,7 +572,7 @@
                 xhr.onload = function() {
                     if (xhr.status === 200) {
                         const response = JSON.parse(xhr.responseText);
-                        resolve(`https://yeetyourfiles.lol${response.fileUrl}`);
+                        resolve(`https://yyf.mubilop.com${response.fileUrl}`);
                     } else {
                         showalert("Upload failed: " + xhr.status, 5000, false);
                         reject(new Error('Upload failed with status: ' + xhr.status));
@@ -591,7 +591,7 @@
 
     async function canYeet() {
         try {
-            const response = await fetch("https://yeetyourfiles.lol", {
+            const response = await fetch("https://yyf.mubilop.com/", {
                 method: "HEAD",
             });
             return response.ok && !window.location.hostname.includes('archive.org');
